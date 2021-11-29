@@ -106,7 +106,7 @@ if (DOXYGEN_FOUND)
     set (replacement_str "OUTPUT_DIRECTORY = ${doc_output_dir}")
     set (output_file "${CMAKE_CURRENT_BINARY_DIR}/doxygen.conf")
 
-    set (config_file "${CMAKE_CURRENT_SOURCE_DIR}/doc/doxygen.conf")
+    set (config_file "${CMAKE_CURRENT_SOURCE_DIR}/doxygen/doxygen.conf")
     file (READ ${config_file} config_text)
     string (REGEX REPLACE "${match_str}" "${replacement_str}" modified_config_text "${config_text}")
     file (WRITE "${output_file}" "${modified_config_text}")
