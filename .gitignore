@@ -1,0 +1,7 @@
+build*
+.project
+.cproject
+CMakeLists.txt.user
+*autosave
+.vscode
+externals*
