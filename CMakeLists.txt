@@ -3,13 +3,12 @@ project ("comms")
 
 # Available options
 
-option (CC_INSTALL_COMMS_LIB "Install comms library headers." ON)
-option (CC_BUILD_UNIT_TESTS "Build unittests." ${CC_INSTALL_COMMS_LIB})
-option (CC_UNIT_TESTS_USE_SANITIZERS "Use sanitizers during unittests. Applicable when unittest are enabled." ON)
-option (CC_WARN_AS_ERR "Treat warning as error" ON)
-option (CC_USE_CCACHE "Use ccache on UNIX systems if it's available" ON)
-option (CC_SKIP_CXX_STANDARD_FORCING "Do NOT force C++ standard to C++11, use compiler's default one." ON)
-option (CC_STATIC_RUNTIME "Enable/Disable static runtime" OFF)
+option (CC_COMMS_BUILD_UNIT_TESTS "Build unittests." ON)
+option (CC_COMMS_UNIT_TESTS_USE_SANITIZERS "Use sanitizers during unittests. Applicable when unittest are enabled." ON)
+option (CC_COMMS_WARN_AS_ERR "Treat warning as error" ON)
+option (CC_COMMS_USE_CCACHE "Use ccache on UNIX systems if it's available" ON)
+option (CC_COMMS_SKIP_CXX_STANDARD_FORCING "Do NOT force C++ standard to C++11, use compiler's default one." ON)
+option (CC_COMMS_STATIC_RUNTIME "Enable/Disable static runtime" OFF)
 
 # Extra variables
 # CC_EXTERNALS_DIR - Directory where pull externals, defaults to 
@@ -27,12 +26,12 @@ set (CMAKE_SCRIPTS_DIR "${PROJECT_SOURCE_DIR}/cmake")
 
 ################################################
 
-if ((NOT CMAKE_CXX_STANDARD) AND (NOT CC_SKIP_CXX_STANDARD_FORCING))
+if ((NOT CMAKE_CXX_STANDARD) AND (NOT CC_COMMS_SKIP_CXX_STANDARD_FORCING))
     set (CMAKE_CXX_STANDARD 11)
 endif()
 
 while (TRUE)
-    if (NOT CC_BUILD_UNIT_TESTS)
+    if (NOT CC_COMMS_BUILD_UNIT_TESTS)
         message (STATUS "Unittests are disabled")
         break()
     endif ()
@@ -50,17 +49,17 @@ endwhile ()
 ################################################
 # Compiler options
 set (warn_opt)
-if (CC_WARN_AS_ERR)
+if (CC_COMMS_WARN_AS_ERR)
     set (warn_opt WARN_AS_ERR)
 endif ()
 
 set (static_runtime_opt)
-if (CC_STATIC_RUNTIME)
+if (CC_COMMS_STATIC_RUNTIME)
     set (static_runtime_opt STATIC_RUNTIME)
 endif ()
 
 set (ccache_opt)
-if ((UNIX) AND (CC_USE_CCACHE))
+if ((UNIX) AND (CC_COMMS_USE_CCACHE))
     set (ccache_opt USE_CCACHE)
 endif ()
 
@@ -132,22 +131,20 @@ target_include_directories(comms INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-if (CC_INSTALL_COMMS_LIB)
-    install (
-        FILES ${LIB_COMMS_CMAKE_FILES}
-        DESTINATION ${LIB_INSTALL_DIR}/LibComms/cmake/
-    )
+install (
+    FILES ${LIB_COMMS_CMAKE_FILES}
+    DESTINATION ${LIB_INSTALL_DIR}/LibComms/cmake/
+)
 
-    install(TARGETS comms EXPORT commsExport)
-    install(EXPORT commsExport NAMESPACE cc::
-        DESTINATION ${LIB_INSTALL_DIR}/LibComms/cmake
-    )
+install(TARGETS comms EXPORT commsExport)
+install(EXPORT commsExport NAMESPACE cc::
+    DESTINATION ${LIB_INSTALL_DIR}/LibComms/cmake
+)
 
-    install (
-        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/comms
-        DESTINATION ${INC_INSTALL_DIR}
-    )
-endif ()    
+install (
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/comms
+    DESTINATION ${INC_INSTALL_DIR}
+)
 
 add_subdirectory (test)
 

@@ -48,7 +48,7 @@ the **COMMS** library headers in **install/include** subdirectory.
 $> cd /path/to/comms
 $> mkdir build && cd build
 $> cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/some/install/dir \
-    -DCC_BUILD_UNIT_TESTS=OFF 
+    -DCC_COMMS_BUILD_UNIT_TESTS=OFF 
 $> make install 
 ```
 ### Windows + Visual Studio Build Example

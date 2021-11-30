@@ -38,7 +38,7 @@ endfunction ()
 #################################################################
 
 set (CC_SANITIZER_OPTS)
-if (CC_UNIT_TESTS_USE_SANITIZERS AND
+if (CC_COMMS_UNIT_TESTS_USE_SANITIZERS AND
     ((CMAKE_COMPILER_IS_GNUCC) OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")))
     set (CC_SANITIZER_OPTS 
         -fno-omit-frame-pointer 

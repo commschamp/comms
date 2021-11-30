@@ -61,7 +61,7 @@ cc_comms_build_during_config(
     SRC_DIR /path/to/comms
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX=${cc_comms_install_dir}
-        -DCC_BUILD_UNIT_TESTS=OFF 
+        -DCC_COMMS_BUILD_UNIT_TESTS=OFF 
 )
 ```
 The code above will install the COMMS library and all the relevant cmake 

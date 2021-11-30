@@ -19,7 +19,7 @@
 #   when the compilation process is light, i.e. only comms library is installed.
 #     cc_comms_build_during_config(
 #         SRC_DIR <src_dir>
-#         [BUILD_dir <build_dir>]
+#         [BUILD_DIR <build_dir>]
 #         [TAG <tag>]
 #         [REPO <repo>]
 #         [CMAKE_ARGS <arg1> <arg2> ...]
