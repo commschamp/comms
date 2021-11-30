@@ -9,6 +9,7 @@ option (CC_UNIT_TESTS_USE_SANITIZERS "Use sanitizers during unittests. Applicabl
 option (CC_WARN_AS_ERR "Treat warning as error" ON)
 option (CC_USE_CCACHE "Use ccache on UNIX systems if it's available" ON)
 option (CC_SKIP_CXX_STANDARD_FORCING "Do NOT force C++ standard to C++11, use compiler's default one." ON)
+option (CC_STATIC_RUNTIME "Enable/Disable static runtime" OFF)
 
 # Extra variables
 # CC_EXTERNALS_DIR - Directory where pull externals, defaults to 
@@ -53,6 +54,11 @@ if (CC_WARN_AS_ERR)
     set (warn_opt WARN_AS_ERR)
 endif ()
 
+set (static_runtime_opt)
+if (CC_STATIC_RUNTIME)
+    set (static_runtime_opt STATIC_RUNTIME)
+endif ()
+
 set (ccache_opt)
 if ((UNIX) AND (CC_USE_CCACHE))
     set (ccache_opt USE_CCACHE)
@@ -88,11 +94,10 @@ write_basic_package_version_file(
 
 set (LIB_COMMS_CMAKE_FILES
     ${PROJECT_SOURCE_DIR}/cmake/CC_Compile.cmake
-    ${PROJECT_SOURCE_DIR}/cmake/CC_External.cmake
+    ${PROJECT_SOURCE_DIR}/cmake/CC_CommsExternal.cmake
     ${PROJECT_SOURCE_DIR}/cmake/CC_CxxtestFuncs.cmake
-    ${PROJECT_SOURCE_DIR}/cmake/CC_DefineExternalProjectTargets.cmake
     ${PROJECT_SOURCE_DIR}/cmake/CC_DocCleanupScript.cmake
-    ${PROJECT_SOURCE_DIR}/cmake/CC_Prefetch.cmake
+    ${PROJECT_SOURCE_DIR}/cmake/CC_CommsPrefetch.cmake
     ${PROJECT_SOURCE_DIR}/cmake/CC_RunWithValgrindScript.cmake
     ${PROJECT_SOURCE_DIR}/cmake/LibCommsConfig.cmake
     ${CMAKE_BINARY_DIR}/LibCommsConfigVersion.cmake

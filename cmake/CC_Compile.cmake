@@ -1,10 +1,9 @@
-# This file contains contains a function that prefetches comms_champion project. 
+# This file contains contains a function that prefetches comms project. 
 
 # ******************************************************
 # Set predefined compilation flags
 #     cc_compile(
 #         [WARN_AS_ERR]
-#         [STATIC_RUNTIME]
 #         [USE_CCACHE]
 #     )
 #
