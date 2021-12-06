@@ -1,8 +1,9 @@
 # Find COMMS library from CommsChampion Ecosystem
 # 
 # Output is provided using the following variables
-#  CC_COMMS_FOUND - Found COMMS library, use CC_COMMS_INCLUDE_DIRS for includes
-#  CC_COMMS_INCLUDE_DIRS - Where to find all the headers
+#  CC_COMMS_FOUND - Found COMMS library, use CC_COMMS_INCLUDE_DIRS for includes.
+#  CC_COMMS_INCLUDE_DIRS - Where to find all the headers.
+#  CC_COMMS_CMAKE_DIR - Where to find all the COMMS library cmake scripts.
 #
 # Additional output targets
 # cc::comms - Link target for COMMS library
