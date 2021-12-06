@@ -1,4 +1,4 @@
-# DISCLAMER
+# IMPORTANT NOTE
 This project is an **experimental** split of the **COMMS Library**
 from the [comms_champion](https://github.com/commschamp/comms_champion) as
 an independent stand alone project. It is work in progress and 
