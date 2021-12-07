@@ -2,7 +2,7 @@
 There are multiple ways to use COMMS library in other projects.
 
 ## Pre-built COMMS library
-In case the [comms](https://github.com/arobenko/comms) was already built as an external project
+In case the [comms](https://github.com/commschamp/comms) was already built as an external project
 it is recommended to use the following construct.
 ```
 list (APPEND CMAKE_PREFIX_PATH /path/to/comms/install/dir)
@@ -23,13 +23,13 @@ to be defined. Linking to `cc::comms` target will add all the relevant
 include paths.
 
 ## When external COMMS Library is not available
-In case the [comms](https://github.com/arobenko/comms) project is not available, the 
+In case the [comms](https://github.com/commschamp/comms) project is not available, the 
 [cmake/CC_CommsExternal.cmake](../cmake/CC_CommsExternal.cmake) script provides
 multiple macros / functions which could be used for easy 
 integration. Please open [it](../cmake/CC_CommsExternal.cmake) for 
 the documentation on available macros / functions.
 
-If the [comms](https://github.com/arobenko/comms) 
+If the [comms](https://github.com/commschamp/comms) 
 sources are not attached to the 
 project being developed as a submodule, it is recommended to 
 prefetch the sources to get an access to the 
@@ -39,7 +39,7 @@ the cmake execution.
 Please copy the [cmake/CC_CommsPrefetch.cmake](../cmake/CC_CommsPrefetch.cmake)
 file to your project (or use it as an example) and then 
 prefetch the 
-[comms](https://github.com/arobenko/comms) 
+[comms](https://github.com/commschamp/comms) 
 sources using following (or similar) 
 cmake code.
 ```
@@ -79,13 +79,13 @@ target_link_libraries(my_binary PRIVATE cc::comms)
 The CMake provides 
 [ExternalProject_Add()](https://cmake.org/cmake/help/v3.0/module/ExternalProject.html)
 function which can be used to build and install the 
-[comms](https://github.com/arobenko/comms) contents during the 
+[comms](https://github.com/commschamp/comms) contents during the 
 build process. The same [cmake/CC_CommsExternal.cmake](../cmake/CC_CommsExternal.cmake)
 script provides different `cc_comms_build_as_external_project()` function,
 which provides a convenient interface to build the 
-[comms](https://github.com/arobenko/comms) is such way.
+[comms](https://github.com/commschamp/comms) is such way.
 It is recommended to be used when the build process of the 
-[comms](https://github.com/arobenko/comms) is 
+[comms](https://github.com/commschamp/comms) is 
 a bit heavy, i.e. building unittests as well.
 ```
 include(/path/to/comms/cmake/CC_CommsExternal.cmake)
@@ -97,7 +97,7 @@ cc_comms_build_as_external_project(
 ```
 The CMake code above will create CMake target (default hidden name of which can be updated
 using TGT parameter), which checks out this project from 
-[github](https://github.com/arobenko/comms) (the repo url can be updated
+[github](https://github.com/commschamp/comms) (the repo url can be updated
 using REPO parameter). If this project sources are already checked out, as git submodule
 for example, just pass NO_REPO parameter.
 ```

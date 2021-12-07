@@ -12,7 +12,7 @@
 # - REPO - Override the default repository of the comms.
 #
 
-set (CC_FETCH_DEFAULT_REPO "https://github.com/arobenko/comms.git")
+set (CC_FETCH_DEFAULT_REPO "https://github.com/commschamp/comms.git")
 set (CC_FETCH_DEFAULT_TAG "master")
 
 function (cc_comms_prefetch)

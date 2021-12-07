@@ -77,7 +77,7 @@ The COMMS library is [doxygen documentated](https://commschamp.github.io/comms_d
 It contains detailed tutorial and examples how to use the provided 
 classes and functions. The same documentation can
 downloaded as **doc_comms_vX.zip** archive from the
-[release artefacts](https://github.com/arobenko/comms/releases).
+[release artefacts](https://github.com/commschamp/comms/releases).
 
 The documentation contains two major parts (pages):
 
