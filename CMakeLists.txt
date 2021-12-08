@@ -11,15 +11,15 @@ option (CC_COMMS_SKIP_CXX_STANDARD_FORCING "Do NOT force C++ standard to C++11, 
 option (CC_COMMS_STATIC_RUNTIME "Enable/Disable static runtime" OFF)
 
 # Extra variables
-# CC_EXTERNALS_DIR - Directory where pull externals, defaults to 
+# CC_COMMS_EXTERNALS_DIR - Directory where pull externals, defaults to 
 #   ${PROJECT_SOURCE_DIR}/externals
 
 if (CMAKE_TOOLCHAIN_FILE AND EXISTS ${CMAKE_TOOLCHAIN_FILE})
     message(STATUS "Loading toolchain from ${CMAKE_TOOLCHAIN_FILE}")
 endif()
 
-if (NOT CC_EXTERNALS_DIR)
-    set (CC_EXTERNALS_DIR "${PROJECT_SOURCE_DIR}/externals")
+if (NOT CC_COMMS_EXTERNALS_DIR)
+    set (CC_COMMS_EXTERNALS_DIR "${PROJECT_SOURCE_DIR}/externals")
 endif ()
 
 set (CMAKE_SCRIPTS_DIR "${PROJECT_SOURCE_DIR}/cmake")
@@ -42,7 +42,7 @@ while (TRUE)
     endif ()
 
     include (${CMAKE_SCRIPTS_DIR}/CC_CxxtestFuncs.cmake)
-    cc_get_cxxtest(INSTALL_PREFIX ${CC_EXTERNALS_DIR})
+    cc_get_cxxtest(INSTALL_PREFIX ${CC_COMMS_EXTERNALS_DIR})
     break()
 endwhile ()
 
