@@ -50,7 +50,7 @@ jobs:
       fail-fast: false
       matrix:
         type: [Debug, Release, MinSizeRel]
-        cc_ver: [7, 8, 9, 10]
+        cc_ver: [7, 8, 9, 10, 11]
         cpp: [11, 14, 17, 20]
         exclude:
           - cc_ver: 7
@@ -160,7 +160,7 @@ jobs:
       fail-fast: false
       matrix:
         type: [Debug, Release, MinSizeRel]
-        cc_ver: [10, 11]
+        cc_ver: [10, 11, 12]
         cpp: [11, 14, 17, 20]
 
     steps:
