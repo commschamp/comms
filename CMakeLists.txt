@@ -3,7 +3,7 @@ project ("comms")
 
 # Available options
 
-option (CC_COMMS_BUILD_UNIT_TESTS "Build unittests." ON)
+option (CC_COMMS_BUILD_UNIT_TESTS "Build unittests." OFF)
 option (CC_COMMS_UNIT_TESTS_USE_SANITIZERS "Use sanitizers during unittests. Applicable when unittest are enabled." ON)
 option (CC_COMMS_WARN_AS_ERR "Treat warning as error" ON)
 option (CC_COMMS_USE_CCACHE "Use ccache on UNIX systems if it's available" ON)
