@@ -263,7 +263,11 @@ TMessage MsgDataLayerTestSuite::internalReadWriteTest(
 
     if (es == comms::ErrorStatus::Success) {
         auto diff = static_cast<std::size_t>(std::distance(buf, readIter));
-        std::unique_ptr<char[]> outDataBuf(new char[diff]);
+        std::vector<char> outDataBuf(diff);
+        if (outDataBuf.empty()) {
+            outDataBuf.resize(1U); // Make sure the pointer to the first element is valid
+        }
+
         auto writeIter = &outDataBuf[0];
         auto writeES = stack.write(*msg, writeIter, diff);
         TS_ASSERT_EQUALS(writeES, comms::ErrorStatus::Success);
@@ -298,8 +302,12 @@ TMessage MsgDataLayerTestSuite::internalReadWriteCachedTest(
         TS_ASSERT_EQUALS(dataFieldVec.size(), diff);
         TS_ASSERT(std::equal(buf, buf + diff, dataFieldVec.begin()));
 
-        std::unique_ptr<char[]> outDataBuf(new char[diff]);
-        auto writeIter = &outDataBuf[0];
+        std::vector<char> outDataBuf(diff);
+        if (outDataBuf.empty()) {
+            outDataBuf.resize(1U); // Make sure the pointer to the first element is valid
+        }
+        auto writeIter = &outDataBuf[0];        
+
         typename ProtStack::AllFields allOutFields;
         auto writeES = stack.writeFieldsCached(allOutFields, *msg, writeIter, diff);
         TS_ASSERT_EQUALS(writeES, comms::ErrorStatus::Success);
@@ -403,7 +411,10 @@ void MsgDataLayerTestSuite::internalDirectReadWriteTest(
 
     if (es == comms::ErrorStatus::Success) {
         auto diff = static_cast<std::size_t>(std::distance(buf, readIter));
-        std::unique_ptr<char[]> outDataBuf(new char[diff]);
+        std::vector<char> outDataBuf(diff);
+        if (outDataBuf.empty()) {
+            outDataBuf.resize(1U); // Make sure the pointer to the first element is valid
+        }
         auto writeIter = &outDataBuf[0];
         auto writeES = stack.write(msg, writeIter, diff);
         TS_ASSERT_EQUALS(writeES, comms::ErrorStatus::Success);
