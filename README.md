@@ -1,11 +1,3 @@
-# IMPORTANT NOTE
-This project is an **experimental** split of the **COMMS Library**
-from the [comms_champion](https://github.com/commschamp/comms_champion) as
-an independent stand alone project. It is work in progress and 
-not suitable for general use yet.
-
-----
-
 # Overview
 This project contains the **COMMS Library**, which is a core component of the
 [CommsChampion Ecosystem](https://commschamp.github.io).
