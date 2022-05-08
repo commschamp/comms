@@ -94,6 +94,9 @@ public:
     /// @brief Type of the field object used to read/write checksum value.
     using Field = typename BaseImpl::Field;
 
+    /// @brief Provided checksum calculation algorithm
+    using ChecksumCalc = TCalc;    
+
     /// @brief Default constructor.
     ChecksumPrefixLayer() = default;
 
