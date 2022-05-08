@@ -65,7 +65,7 @@ contains a full tutorial how to use the **COMMS Library** in conjunction with
 [commsdsl2comms](https://github.com/commschamp/commsdsl) code generator.
 
 # Library Documentation
-The COMMS library is [doxygen documentated](https://commschamp.github.io/comms_doc/).
+The COMMS library is [doxygen documented](https://commschamp.github.io/comms_doc/).
 It contains detailed tutorial and examples how to use the provided 
 classes and functions. The same documentation can
 downloaded as **doc_comms_vX.zip** archive from the
