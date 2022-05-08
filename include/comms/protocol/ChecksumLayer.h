@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file 
-/// Contains definition of @ref comms::protocol::ChecksumLayer
+/// @brief Contains definition of @ref comms::protocol::ChecksumLayer
 
 #pragma once
 

@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// Contains definition of Message object interface and various base classes
+/// @brief Contains definition of Message object interface and various base classes
 /// for custom messages.
 
 #pragma once

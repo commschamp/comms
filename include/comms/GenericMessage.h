@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// Provides implementation of @ref comms::GenericMessage class
+/// @brief Provides implementation of @ref comms::GenericMessage class
 
 #pragma once
 

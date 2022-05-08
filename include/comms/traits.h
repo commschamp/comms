@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file comms/traits.h
-/// This file contains all the classes necessary to properly
+/// @brief This file contains all the classes necessary to properly
 /// define message traits.
 
 

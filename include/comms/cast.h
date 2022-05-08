@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// Contains definition of various casts
+/// @brief Contains definition of various casts
 
 #pragma once
 

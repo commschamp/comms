@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// Provides auxiliary functions for processing input and dispatching messages
+/// @brief Provides auxiliary functions for processing input and dispatching messages
 
 #pragma once
 

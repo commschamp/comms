@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file 
-/// This file contains "Message ID" protocol layer of the "comms" module.
+/// @brief This file contains "Message ID" protocol layer of the "comms" module.
 
 #pragma once
 

@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// This file provides all the definitions from comms::protocol namespace.
+/// @brief This file provides all the definitions from comms::protocol namespace.
 
 #pragma once
 

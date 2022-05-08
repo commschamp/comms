@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// Contains definition of MsgDispatcher class which facilitates
+/// @brief Contains definition of MsgDispatcher class which facilitates
 /// dispatching of message object to appropriate handler
 
 #pragma once

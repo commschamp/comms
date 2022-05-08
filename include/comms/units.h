@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// This file contains all the functions required for proper units conversion.
+/// @brief This file contains all the functions required for proper units conversion.
 
 #pragma once
 

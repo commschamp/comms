@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// Provides common base class for the custom messages with default implementation.
+/// @brief Provides common base class for the custom messages with default implementation.
 
 #pragma once
 

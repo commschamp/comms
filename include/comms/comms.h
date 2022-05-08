@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// Aggregates all the includes of the @b COMMS library interface
+/// @brief Aggregates all the includes of the @b COMMS library interface
 
 #pragma once
 

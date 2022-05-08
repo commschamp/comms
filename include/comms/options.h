@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// Contains definition of all the options used by the @b COMMS library
+/// @brief Contains definition of all the options used by the @b COMMS library
 
 #pragma once
 

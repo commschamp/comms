@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// Contains definition of @ref comms::Field class.
+/// @brief Contains definition of @ref comms::Field class.
 
 #pragma once
 

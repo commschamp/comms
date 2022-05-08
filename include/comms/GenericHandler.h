@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file comms/GenericHandler.h
-/// This file contains definition of common handler.
+/// @brief This file contains definition of common handler.
 
 #pragma once
 

@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// Contained definition of field_cast() function. Now deprecated, use "comms/cast.h" instead.
+/// @brief Contained definition of field_cast() function. Now deprecated, use "comms/cast.h" instead.
 
 #pragma once
 

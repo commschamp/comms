@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file comms/ErrorStatus.h
-/// This file contain definition of error statuses used by comms module.
+/// @brief This file contain definition of error statuses used by comms module.
 
 #pragma once
 

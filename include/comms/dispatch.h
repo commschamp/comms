@@ -3,7 +3,7 @@
 //
 
 /// @file
-/// Contains extra logic to help with dispatching message types and objects
+/// @brief Contains extra logic to help with dispatching message types and objects
 
 #pragma once
 

@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// Contains version information of the library
+/// @brief Contains version information of the library
 
 #pragma once
 

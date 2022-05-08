@@ -8,7 +8,7 @@
 #pragma once
 
 /// @file
-/// Provides auxiliary functions for retrieving best type of iterator for read/write operations
+/// @brief Provides auxiliary functions for retrieving best type of iterator for read/write operations
 
 #include "comms/details/ReadIteratorHelper.h"
 #include "comms/details/WriteIteratorHelper.h"

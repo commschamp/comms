@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// Contains various compiler related definitions
+/// @brief Contains various compiler related definitions
 
 #pragma once
 

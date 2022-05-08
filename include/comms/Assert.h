@@ -6,7 +6,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file comms/Assert.h
-/// This file contains classes required for generic custom assertion
+/// @brief This file contains classes required for generic custom assertion
 /// functionality
 
 #pragma once
