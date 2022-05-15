@@ -90,6 +90,7 @@ using BitmaskUndertlyingTypeT =
 ///     @li @ref comms::option::def::IgnoreInvalid
 ///     @li @ref comms::option::def::EmptySerialization
 ///     @li @ref comms::option::def::VersionStorage
+///     @li @ref comms::option::def::AvailableLengthLimit
 /// @extends comms::Field
 /// @headerfile comms/field/BitmaskValue.h
 /// @see COMMS_BITMASK_BITS()
@@ -343,6 +344,25 @@ public:
         return intValue_.setVersion(version);
     }
 
+    /// @brief Force serialization length of the field.
+    /// @details Available only when @ref comms::option::def::AvailableLengthLimit
+    ///     option is used for field definition.
+    /// @param[in] len Forced serialization length. 
+    ///     @li 0 means default serialization length determined by the storage type
+    ///     @li positive value means limit of the serialization length
+    ///     @li negative value means the length is determined by the stored value
+    void setForcedLength(int len)
+    {
+        intValue_.setForcedLength(len);
+    }
+
+    /// @brief Get forced serialization length
+    /// @see @ref setForcedLength()
+    int getForcedLength() const
+    {
+        return intValue_.getForcedLength();
+    }    
+
 protected:
     using BaseImpl::readData;
     using BaseImpl::writeData;
@@ -353,8 +373,6 @@ private:
         "comms::option::def::NumValueSerOffset option is not applicable to BitmaskValue field");
     static_assert(!ParsedOptions::HasVarLengthLimits,
         "comms::option::def::VarLength option is not applicable to BitmaskValue field");
-    static_assert(!ParsedOptions::HasAvailableLengthLimit,
-            "comms::option::def::AvailableLengthLimit option is not applicable to BitmaskValue field");
     static_assert(!ParsedOptions::HasSequenceElemLengthForcing,
         "comms::option::def::SequenceElemLengthForcingEnabled option is not applicable to BitmaskValue field");
     static_assert(!ParsedOptions::HasSequenceSizeForcing,

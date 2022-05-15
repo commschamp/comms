@@ -41,6 +41,7 @@ public:
     void test13();
     void test14();
     void test15();
+    void test16();
 
 private:
     template <typename TField>
@@ -1255,6 +1256,44 @@ void FieldsTestSuite2::test15()
         static const std::size_t ExpectedBufSize = std::extent<decltype(ExpectedBuf)>::value;
         writeAndVerifyFunc(field, ExpectedBuf, ExpectedBufSize);
     } while (false);
+}
+
+void FieldsTestSuite2::test16()
+{
+    typedef comms::field::BitmaskValue<
+        comms::Field<BigEndianOpt>,
+        comms::option::FixedLength<4>,
+        comms::option::def::AvailableLengthLimit
+    > Field;
+
+    static const char Buf[] = {
+        0x0f
+    };
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    auto field = readWriteField<Field>(Buf, BufSize);
+    TS_ASSERT_EQUALS(field.value(), 0x0f);
+    TS_ASSERT_EQUALS(field.getBitValue(0U), true);
+    TS_ASSERT_EQUALS(field.getBitValue(1U), true);
+    TS_ASSERT_EQUALS(field.getBitValue(2U), true);
+    TS_ASSERT_EQUALS(field.getBitValue(3U), true);
+    TS_ASSERT_EQUALS(field.getBitValue(4U), false);
+    TS_ASSERT_EQUALS(field.getBitValue(5U), false);
+    TS_ASSERT_EQUALS(field.getBitValue(6U), false);
+    TS_ASSERT_EQUALS(field.getBitValue(7U), false);
+    TS_ASSERT_EQUALS(field.getBitValue(8U), false);
+    TS_ASSERT_EQUALS(field.getBitValue(9U), false);
+    TS_ASSERT_EQUALS(field.getBitValue(10U), false);
+    TS_ASSERT_LESS_THAN(field.getForcedLength(), 0);
+    TS_ASSERT_EQUALS(field.length(), 1U);
+
+    field.setForcedLength(0);
+    TS_ASSERT_EQUALS(field.length(), 4U);
+
+    static const char OutBuf[] = {
+        0x0, 0x0, 0x0, 0x0f
+    };
+    static const std::size_t OutBufSize = std::extent<decltype(OutBuf)>::value;
+    writeField(field, &OutBuf[0], OutBufSize);
 }
 
 template <typename TField>
