@@ -62,7 +62,7 @@ public:
     std::size_t length() const
     {
         if (forced_ != Cleared) {
-            return BaseImpl::value().size() * forced_;
+            return BaseImpl::getValueAdapted().size() * forced_;
         }
 
         return BaseImpl::length();

@@ -148,6 +148,21 @@ public:
         return BaseImpl::value();
     }
 
+    /// @brief Get value
+    /// @details Should not be used in normal operation
+    const ValueType& getValue() const
+    {
+        return BaseImpl::getValue();
+    }
+
+    /// @brief Set value
+    /// @details Should not be used in normal operation
+    template <typename U>
+    void setValue(U&& val)
+    {
+        BaseImpl::setValue(std::forward<U>(val));
+    }          
+
     /// @brief Get length required to serialise contained fields.
     /// @details If the field doesn't contain a valid instance of other
     ///     field, the reported length is 0, otherwise the length of the

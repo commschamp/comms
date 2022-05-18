@@ -135,8 +135,11 @@ class AdaptBasicField
             "The following options are incompatible, cannot be used together: "
             "SequenceFixedSizeUseFixedSizeStorage, FixedSizeStorage");
 
+    using FieldTypeAdapted = 
+        typename ParsedOptions::template AdaptFieldType<TBasic>;            
+
     using InvalidByDefaultAdapted = 
-        typename ParsedOptions::template AdaptInvalidByDefault<TBasic>;
+        typename ParsedOptions::template AdaptInvalidByDefault<FieldTypeAdapted>;
         
     using VersionStorageAdapted = 
         typename ParsedOptions::template AdaptVersionStorage<InvalidByDefaultAdapted>;

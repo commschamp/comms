@@ -26,8 +26,7 @@ class SequenceSizeFieldPrefix : public TBase
     using SizeField = TSizeField;
 
     static const std::size_t MaxAllowedSize =
-            static_cast<std::size_t>(
-                std::numeric_limits<typename SizeField::ValueType>::max());
+            static_cast<std::size_t>(SizeField::maxValue());
 
     static_assert(!SizeField::isVersionDependent(),
             "Prefix fields must not be version dependent");
@@ -55,9 +54,8 @@ public:
 
     std::size_t length() const
     {
-        using SizeValueType = typename SizeField::ValueType;
         SizeField sizeField;
-        sizeField.value() = static_cast<SizeValueType>(BaseImpl::value().size());
+        sizeField.setValue(BaseImpl::getValueAdapted().size());
         return sizeField.length() + BaseImpl::length();
     }
 
@@ -76,9 +74,8 @@ public:
         if ((!BaseImpl::valid()) || (!canWrite())) {
             return false;
         }
-        using SizeValueType = typename SizeField::ValueType;
         SizeField sizeField;
-        sizeField.value() = static_cast<SizeValueType>(BaseImpl::value().size());
+        sizeField.setValue(BaseImpl::getValueAdapted().size());
         return sizeField.valid() && BaseImpl::valid();
     }
 
@@ -96,7 +93,7 @@ public:
         COMMS_ASSERT(diff <= len);
         len -= diff;
 
-        auto count = static_cast<std::size_t>(sizeField.value());
+        auto count = static_cast<std::size_t>(sizeField.getValue());
         return BaseImpl::readN(count, iter, len);
     }
 
@@ -105,7 +102,7 @@ public:
     {
         SizeField sizeField;
         sizeField.readNoStatus(iter);
-        auto count = static_cast<std::size_t>(sizeField.value());
+        auto count = static_cast<std::size_t>(sizeField.getValue());
         BaseImpl::readNoStatusN(count, iter);
     }
 
@@ -115,12 +112,12 @@ public:
             return false;
         }
 
-        if (MaxAllowedSize < BaseImpl::value().size()) {
+        if (MaxAllowedSize < BaseImpl::getValueAdapted().size()) {
             return false;
         }
 
         SizeField sizeField;
-        sizeField.value() = static_cast<typename SizeField::ValueType>(BaseImpl::value().size());
+        sizeField.setValue(BaseImpl::getValueAdapted().size());
         return sizeField.canWrite();
     }
 
@@ -131,9 +128,8 @@ public:
             return comms::ErrorStatus::InvalidMsgData;
         }
 
-        using SizeValueType = typename SizeField::ValueType;
         SizeField sizeField;
-        sizeField.value() = static_cast<SizeValueType>(BaseImpl::value().size());
+        sizeField.setValue(BaseImpl::getValueAdapted().size());
         auto es = sizeField.write(iter, len);
         if (es != comms::ErrorStatus::Success) {
             return es;

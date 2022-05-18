@@ -140,6 +140,28 @@ public:
         return value_;
     }
 
+    const ValueType& getValue() const
+    {
+        return value();
+    }
+
+    template <typename T>
+    void setValue(T&& val)
+    {
+        value() = std::forward<T>(val);
+    }    
+
+    const ValueType& getValueAdapted() const
+    {
+        return value();
+    }
+
+    template <typename T>
+    void setValueAdapted(T&& val)
+    {
+        value() = std::forward<T>(val);
+    }      
+
     ElementType& createBack()
     {
         value_.emplace_back();

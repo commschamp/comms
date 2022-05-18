@@ -83,6 +83,21 @@ public:
         return BaseImpl::value();
     }
 
+    /// @brief Get value
+    /// @details Implemented by calling @b value(), but can be overriden in the derived class
+    static const ValueType& getValue()
+    {
+        return BaseImpl::getValue();
+    }
+
+    /// @brief Set value
+    /// @details Implemented as re-assigning to @b value(), but can be overriden in the derived class.
+    template <typename U>
+    static void setValue(U&& val)
+    {
+        BaseImpl::setValue(std::forward<U>(val));
+    }          
+
     /// @brief Get length required to serialise the current field value.
     /// @return Always 0.
     static constexpr std::size_t length()

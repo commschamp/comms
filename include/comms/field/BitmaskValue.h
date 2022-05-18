@@ -169,6 +169,19 @@ public:
         return intValue_.value();
     }
 
+    /// @brief Get value
+    const ValueType& getValue() const
+    {
+        return intValue_.getValue();
+    }
+
+    /// @brief Set value
+    template <typename U>
+    void setValue(U&& val)
+    {
+        intValue_.setValue(std::forward<U>(val));
+    }        
+
     /// @brief Get length required to serialise the current field value.
     /// @return Number of bytes it will take to serialise the field value.
     constexpr std::size_t length() const

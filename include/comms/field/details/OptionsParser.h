@@ -66,6 +66,7 @@ public:
     static constexpr bool HasUnits = false;
     static constexpr bool HasOrigDataView = false;
     static constexpr bool HasCustomVersionUpdate = false;
+    static constexpr bool HasFieldType = false;
 
     using UnitsType = void;
     using ScalingRatio = std::ratio<1, 1>;
@@ -160,6 +161,9 @@ public:
 
     template <typename TField>
     using AdaptCustomWrite = TField;
+
+    template <typename TField>
+    using AdaptFieldType = TField;    
 };
 
 template <typename T, typename... TOptions>
@@ -721,6 +725,18 @@ public:
 
     template <typename TField>
     using AdaptCustomWrite = comms::field::adapter::CustomWriteWrap<TField>;
+};
+
+template <typename TActField, typename... TOptions>
+class OptionsParser<
+    comms::option::def::FieldType<TActField>,
+    TOptions...> : public OptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasFieldType = true;
+
+    template <typename TField>
+    using AdaptFieldType = comms::field::adapter::FieldType<TActField, TField>;
 };
 
 template <typename... TOptions>

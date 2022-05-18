@@ -32,8 +32,7 @@ class SequenceElemFixedSerLengthFieldPrefix : public TBase
     using BaseImpl = TBase;
     using LenField = TLenField;
     static const std::size_t MaxAllowedElemLength =
-            static_cast<std::size_t>(
-                std::numeric_limits<typename LenField::ValueType>::max());
+            static_cast<std::size_t>(LenField::maxValue());
 
     static_assert(!LenField::isVersionDependent(),
             "Prefix fields must not be version dependent");
@@ -160,24 +159,24 @@ public:
         }
 
         LenField lenField;
-        lenField.value() = static_cast<typename LenField::ValueType>(elemLen);
+        lenField.setValue(elemLen);
         return lenField.canWrite();
     }
 
     bool canWrite() const
     {
-        if (BaseImpl::value().empty()) {
+        if (BaseImpl::getValueAdapted().empty()) {
             return BaseImpl::canWrite();
         }
 
-        return BaseImpl::canWrite() && canWriteElement(BaseImpl::value().front());
+        return BaseImpl::canWrite() && canWriteElement(BaseImpl::getValueAdapted().front());
     }
 
     template <typename TIter>
     ErrorStatus write(TIter& iter, std::size_t len) const
     {
-        if (!BaseImpl::value().empty()) {
-            if (!canWriteElement(BaseImpl::value().front())) {
+        if (!BaseImpl::getValueAdapted().empty()) {
+            if (!canWriteElement(BaseImpl::getValueAdapted().front())) {
                 return ErrorStatus::InvalidMsgData;
             }
 
@@ -202,8 +201,8 @@ public:
     ErrorStatus writeN(std::size_t count, TIter& iter, std::size_t& len) const
     {
         if (0U < count) {
-            COMMS_ASSERT(!BaseImpl::value().empty());
-            if (!canWriteElement(BaseImpl::value().front())) {
+            COMMS_ASSERT(!BaseImpl::getValueAdapted().empty());
+            if (!canWriteElement(BaseImpl::getValueAdapted().front())) {
                 return ErrorStatus::InvalidMsgData;
             }
 
@@ -236,7 +235,7 @@ private:
     std::size_t lengthInternal(FixedLengthLenFieldTag<TParams...>) const
     {
         std::size_t prefixLen = 0U;
-        if (!BaseImpl::value().empty()) {
+        if (!BaseImpl::getValueAdapted().empty()) {
             prefixLen = LenField::minLength();
         }
         return (prefixLen + BaseImpl::length());
@@ -246,11 +245,11 @@ private:
     std::size_t lengthInternal(VarLengthLenFieldTag<TParams...>) const
     {
         std::size_t prefixLen = 0U;
-        if (!BaseImpl::value().empty()) {
+        if (!BaseImpl::getValueAdapted().empty()) {
             LenField lenField;
-            lenField.value() = 
+            lenField.setValue( 
                 static_cast<typename LenField::ValueType>(
-                    std::min(BaseImpl::minElementLength(), std::size_t(MaxAllowedElemLength)));
+                    std::min(BaseImpl::minElementLength(), std::size_t(MaxAllowedElemLength))));
             prefixLen = lenField.length();
         }
 
@@ -277,7 +276,7 @@ private:
         COMMS_ASSERT(diff <= len);
         len -= diff;
 
-        elemLen_ = static_cast<std::size_t>(lenField.value());
+        elemLen_ = static_cast<std::size_t>(lenField.getValue());
         if (elemLen_ == MaxLengthLimit) {
             return TStatus;
         }
@@ -290,7 +289,7 @@ private:
     {
         auto elemLength = BaseImpl::minElementLength();
         LenField lenField;
-        lenField.value() = static_cast<typename LenField::ValueType>(elemLength);
+        lenField.setValue(static_cast<typename LenField::ValueType>(elemLength));
         auto es = lenField.write(iter, len);
         if (es != ErrorStatus::Success) {
             return es;
@@ -305,7 +304,7 @@ private:
     {
         auto elemLength = BaseImpl::minElementLength();
         LenField lenField;
-        lenField.value() = elemLength;
+        lenField.setValue(elemLength);
         lenField.writeNoStatus(iter);
     }
 

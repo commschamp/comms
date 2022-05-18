@@ -26,8 +26,7 @@ class SequenceSerLengthFieldPrefix : public TBase
     using LenField = TLenField;
 
     static const std::size_t MaxAllowedLength =
-            static_cast<std::size_t>(
-                std::numeric_limits<typename LenField::ValueType>::max());
+            static_cast<std::size_t>(LenField::maxValue());
 
 
     static_assert(!LenField::isVersionDependent(),
@@ -56,10 +55,9 @@ public:
 
     std::size_t length() const
     {
-        using LenValueType = typename LenField::ValueType;
         auto valLength = BaseImpl::length();
         LenField lenField;
-        lenField.value() = static_cast<LenValueType>(std::min(valLength, std::size_t(MaxAllowedLength)));
+        lenField.setValue(std::min(valLength, std::size_t(MaxAllowedLength)));
         return lenField.length() + valLength;
     }
 
@@ -81,7 +79,7 @@ public:
 
         LenField lenField;
         auto lenValue = std::min(BaseImpl::length(), std::size_t(MaxAllowedLength));
-        lenField.value() = static_cast<typename LenField::ValueType>(lenValue);
+        lenField.setValue(lenValue);
         return lenField.valid();
     }
 
@@ -98,7 +96,7 @@ public:
         auto diff = static_cast<std::size_t>(std::distance(fromIter, iter));
         COMMS_ASSERT(diff <= len);
         len -= diff;
-        auto remLen = static_cast<std::size_t>(lenField.value());
+        auto remLen = static_cast<std::size_t>(lenField.getValue());
         if (len < remLen) {
             return TStatus;
         }
@@ -131,7 +129,7 @@ public:
         }
 
         LenField lenField;
-        lenField.value() = static_cast<typename LenField::ValueType>(len);
+        lenField.setValue(len);
         return lenField.canWrite();
     }
 
@@ -142,10 +140,9 @@ public:
             return comms::ErrorStatus::InvalidMsgData;
         }
 
-        using LenValueType = typename LenField::ValueType;
         auto lenVal = BaseImpl::length();
         LenField lenField;
-        lenField.value() = static_cast<LenValueType>(lenVal);
+        lenField.setValue(lenVal);
         auto es = lenField.write(iter, len);
         if (es != comms::ErrorStatus::Success) {
             return es;

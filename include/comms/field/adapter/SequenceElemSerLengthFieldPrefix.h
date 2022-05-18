@@ -32,8 +32,7 @@ class SequenceElemSerLengthFieldPrefix : public TBase
     using BaseImpl = TBase;
     using LenField = TLenField;
     static const std::size_t MaxAllowedElemLength =
-            static_cast<std::size_t>(
-                std::numeric_limits<typename LenField::ValueType>::max());
+            static_cast<std::size_t>(LenField::maxValue());
 
     static_assert(!LenField::isVersionDependent(),
             "Prefix fields must not be version dependent");
@@ -109,11 +108,11 @@ public:
         auto diff = static_cast<std::size_t>(std::distance(fromIter, iter));
         COMMS_ASSERT(diff <= len);
         len -= diff;
-        if (len < lenField.value()) {
+        if (len < lenField.getValue()) {
             return comms::ErrorStatus::NotEnoughData;
         }
 
-        const auto reqLen = static_cast<std::size_t>(lenField.value());
+        const auto reqLen = static_cast<std::size_t>(lenField.getValue());
         std::size_t elemLen = reqLen;
         es = BaseImpl::readElement(elem, iter, elemLen);
         if (es == ErrorStatus::NotEnoughData) {
@@ -168,7 +167,7 @@ public:
         }
 
         LenField lenField;
-        lenField.value() = static_cast<typename LenField::ValueType>(elemLen);
+        lenField.setValue(static_cast<typename LenField::ValueType>(elemLen));
         return lenField.canWrite();
     }
 
@@ -181,7 +180,7 @@ public:
 
         auto elemLength = BaseImpl::elementLength(elem);
         LenField lenField;
-        lenField.value() = static_cast<typename LenField::ValueType>(elemLength);
+        lenField.setValue(elemLength);
         auto es = lenField.write(iter, len);
         if (es != ErrorStatus::Success) {
             return es;
@@ -228,7 +227,7 @@ public:
             return false;
         }
 
-        auto& vec = BaseImpl::value();
+        auto& vec = BaseImpl::getValueAdapted();
         for (auto& elem : vec) {
             auto elemLen = BaseImpl::elementLength(elem);
             if (MaxAllowedElemLength < elemLen) {
@@ -264,7 +263,7 @@ private:
     template<typename... TParams>
     std::size_t lengthInternal(FixedLengthLenFieldTag<TParams...>, FixedLengthElemTag<TParams...>) const
     {
-        return (LenField::minLength() + BaseImpl::minElementLength()) * BaseImpl::value().size();
+        return (LenField::minLength() + BaseImpl::minElementLength()) * BaseImpl::getValueAdapted().size();
     }
 
     template<typename... TParams>
@@ -279,8 +278,8 @@ private:
         auto origElemLen = BaseImpl::minElementLength();
         auto elemLen = std::min(origElemLen, std::size_t(MaxAllowedElemLength));
         LenField lenField;
-        lenField.value() = static_cast<typename LenField::ValueType>(elemLen);
-        return (lenField.length() + origElemLen) * BaseImpl::value().size();
+        lenField.setValue(elemLen);
+        return (lenField.length() + origElemLen) * BaseImpl::getValueAdapted().size();
     }
 
     template <typename... TParams>
@@ -292,7 +291,7 @@ private:
     std::size_t lengthInternalIterative() const
     {
         std::size_t result = 0U;
-        for (auto& elem : BaseImpl::value()) {
+        for (auto& elem : BaseImpl::getValueAdapted()) {
             result += elementLength(elem);
         }
         return result;
@@ -310,7 +309,7 @@ private:
         LenField lenField;
         auto origElemLength = BaseImpl::elementLength(elem);
         auto elemLength = std::min(origElemLength, std::size_t(MaxAllowedElemLength));
-        lenField.value() = static_cast<typename LenField::ValueType>(elemLength);
+        lenField.setValue(static_cast<typename LenField::ValueType>(elemLength));
         return lenField.length() + origElemLength;
     }
 

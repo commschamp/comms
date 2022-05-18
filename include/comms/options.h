@@ -201,6 +201,11 @@ struct NoIdImpl {};
 template <typename TMsg>
 struct MsgType {};
 
+/// @brief Option used to specify actual type of the field.
+/// @headerfile comms/options.h
+template <typename TField>
+struct FieldType {};
+
 /// @brief Option used to specify some extra fields from transport framing.
 /// @details Some fields from transport framing may influence the way on how
 ///     message fields get read or written. It may also have an influence on
@@ -1495,6 +1500,10 @@ using NoIdImpl = comms::option::def::NoIdImpl;
 /// @brief Same as @ref comms::option::def::MsgType
 template <typename TMsg>
 using MsgType = comms::option::def::MsgType<TMsg>;
+
+/// @brief Same as @ref comms::option::def::FieldType
+template <typename TMsg>
+using FieldType = comms::option::def::FieldType<TMsg>;
 
 /// @brief Same as @ref comms::option::def::ExtraTransportFields
 template <typename TFields>

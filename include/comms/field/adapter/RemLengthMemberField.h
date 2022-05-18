@@ -187,13 +187,12 @@ public:
         }
 
         std::size_t expLen = BaseImpl::template lengthFrom<TLenFieldIdx + 1>();
-        using LenValueType = typename LengthFieldType::ValueType;
-        if (static_cast<std::size_t>(std::numeric_limits<LenValueType>::max()) < expLen) {
+        if (static_cast<std::size_t>(LengthFieldType::maxValue()) < expLen) {
             return false;
         }
 
         LengthFieldType lenField;
-        lenField.value() = static_cast<LenValueType>(expLen);
+        lenField.setValue(expLen);
         return lenField.canWrite();
     }
 
@@ -294,7 +293,7 @@ private:
         COMMS_ASSERT(lenFieldLen <= len);
         len -= lenFieldLen;
 
-        auto reqLen = static_cast<std::size_t>(lenField.value());
+        auto reqLen = static_cast<std::size_t>(lenField.getValue());
         if (len < reqLen) {
             return comms::ErrorStatus::NotEnoughData;
         }
@@ -313,14 +312,12 @@ private:
         auto& mems = BaseImpl::value();
         auto& lenField = std::get<TLenFieldIdx>(mems);
         std::size_t expLen = BaseImpl::template lengthFrom<TLenFieldIdx + 1>();
-        std::size_t actLen = static_cast<std::size_t>(lenField.value());
+        std::size_t actLen = static_cast<std::size_t>(lenField.getValue());
         if (expLen == actLen) {
             return false;
         }
 
-        using LenFieldType = typename std::decay<decltype(lenField)>::type;
-        using LenFieldValueType = typename LenFieldType::ValueType;
-        lenField.value() = static_cast<LenFieldValueType>(expLen);
+        lenField.setValue(expLen);
         return true;
     }
 

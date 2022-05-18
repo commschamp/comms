@@ -37,3 +37,4 @@
 #include "comms/field/adapter/RemLengthMemberField.h"
 #include "comms/field/adapter/CustomReadWrap.h"
 #include "comms/field/adapter/CustomWriteWrap.h"
+#include "comms/field/adapter/FieldType.h"

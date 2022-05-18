@@ -107,7 +107,7 @@ public:
     {
         auto serialisedValue =
             comms::util::readData<SerialisedType, Length>(iter, Endian());
-        BaseImpl::value() = fromSerialised(serialisedValue);
+        BaseImpl::setValueAdapted(fromSerialised(serialisedValue));
     }
 
     template <typename TIter>
@@ -124,7 +124,7 @@ public:
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        BaseImpl::template writeData<Length>(toSerialised(BaseImpl::value()), iter);
+        BaseImpl::template writeData<Length>(toSerialised(BaseImpl::getValueAdapted()), iter);
     }
 
 private:
