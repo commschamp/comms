@@ -167,7 +167,7 @@ public:
         }
 
         LenField lenField;
-        lenField.setValue(static_cast<typename LenField::ValueType>(elemLen));
+        lenField.setValue(elemLen);
         return lenField.canWrite();
     }
 
@@ -309,7 +309,7 @@ private:
         LenField lenField;
         auto origElemLength = BaseImpl::elementLength(elem);
         auto elemLength = std::min(origElemLength, std::size_t(MaxAllowedElemLength));
-        lenField.setValue(static_cast<typename LenField::ValueType>(elemLength));
+        lenField.setValue(elemLength);
         return lenField.length() + origElemLength;
     }
 
