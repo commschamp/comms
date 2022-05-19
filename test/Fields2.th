@@ -42,6 +42,7 @@ public:
     void test14();
     void test15();
     void test16();
+    void test17();
 
 private:
     template <typename TField>
@@ -1294,6 +1295,162 @@ void FieldsTestSuite2::test16()
     };
     static const std::size_t OutBufSize = std::extent<decltype(OutBuf)>::value;
     writeField(field, &OutBuf[0], OutBufSize);
+}
+
+class Test17_LengthField : public
+    comms::field::Bundle<
+        FieldsTestSuite2::BeFieldBase,
+        std::tuple<
+            comms::field::IntValue<FieldsTestSuite2::BeFieldBase, std::uint8_t>,
+            comms::field::Optional<
+                comms::field::IntValue<FieldsTestSuite2::BeFieldBase, std::uint32_t>,
+                comms::option::def::OptionalMissingByDefault
+            >
+        >,
+        comms::option::def::HasCustomRead,
+        comms::option::def::HasCustomRefresh
+    >
+{
+    using Base =
+        comms::field::Bundle<
+            FieldsTestSuite2::BeFieldBase,
+            std::tuple<
+                comms::field::IntValue<FieldsTestSuite2::BeFieldBase, std::uint8_t>,
+                comms::field::Optional<
+                    comms::field::IntValue<FieldsTestSuite2::BeFieldBase, std::uint32_t>,
+                    comms::option::def::OptionalMissingByDefault
+                >
+            >,
+            comms::option::def::HasCustomRead,
+            comms::option::def::HasCustomRefresh
+        >;
+public:
+    COMMS_FIELD_MEMBERS_NAMES(first, second);
+
+    std::size_t getValue() const
+    {
+        if (field_first().value() != 0U) {
+            return static_cast<std::size_t>(field_first().value());
+        }
+
+        return static_cast<std::size_t>(field_second().field().value());
+    }
+
+    template <typename U>
+    void setValue(U&& val)
+    {
+        if ((val != 0U) && (val <= std::numeric_limits<Field_first::ValueType>::max())) {
+            comms::cast_assign(field_first().value()) = val;
+            field_second().setMissing();
+            return;
+        }
+
+        field_first().value() = 0U;
+        comms::cast_assign(field_second().field().value()) = val;
+        field_second().setExists();
+    }
+
+    static constexpr std::size_t maxValue()
+    {
+        return std::numeric_limits<Field_second::Field::ValueType>::max();
+    }
+
+    template <typename TIter>
+    comms::ErrorStatus read(TIter& iter, std::size_t len)
+    {
+        auto es = Base::template readUntilAndUpdateLen<FieldIdx_second>(iter, len);
+        if (es != comms::ErrorStatus::Success) {
+            return es;
+        }
+
+        refresh();
+        return Base::template readFrom<FieldIdx_second>(iter, len);
+    }
+
+    bool refresh()
+    {
+        auto mode = comms::field::OptionalMode::Missing;
+        if (field_first().value() == 0U) {
+            mode = comms::field::OptionalMode::Exists;
+        }
+
+        if (field_second().getMode() == mode) {
+            return false;
+        }
+
+        field_second().setMode(mode);
+        return true;
+    }
+};
+
+class Test17_BundleField : public
+    comms::field::Bundle<
+        FieldsTestSuite2::BeFieldBase,
+        std::tuple<
+            Test17_LengthField,
+            comms::field::String<FieldsTestSuite2::BeFieldBase>
+        >,
+        comms::option::RemLengthMemberField<0>
+    >
+{
+    using Base = 
+        comms::field::Bundle<
+            FieldsTestSuite2::BeFieldBase,
+            std::tuple<
+                Test17_LengthField,
+                comms::field::String<FieldsTestSuite2::BeFieldBase>
+            >,
+            comms::option::RemLengthMemberField<0>
+        >;   
+
+public:
+    COMMS_FIELD_MEMBERS_NAMES(length, value);         
+};
+
+void FieldsTestSuite2::test17()
+{
+    using Field = Test17_BundleField;
+    do {
+        Field field;
+        static const char Buf[] = {
+            0x5, 'h', 'e', 'l', 'l', 'o', 'b', 'l', 'a'
+        };
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        field = readWriteField<Field>(&Buf[0], BufSize);
+        TS_ASSERT_EQUALS(field.length(), 6U);
+        TS_ASSERT_EQUALS(field.field_value().value(), std::string("hello"));  
+    } while (false);
+
+    do {
+        Field field;
+        static const char Buf[] = {
+            0x0, 0x0, 0x0, 0x0, 0x5, 'h', 'e', 'l', 'l', 'o', 'b', 'l', 'a'
+        };
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        field = readWriteField<Field>(&Buf[0], BufSize);
+        TS_ASSERT_EQUALS(field.length(), 10U);
+        TS_ASSERT_EQUALS(field.field_value().value(), std::string("hello"));  
+    } while (false);  
+
+    do {
+        Field field;
+        field.field_value().value().assign(300, 'a');
+        TS_ASSERT(field.refresh());
+        TS_ASSERT_EQUALS(field.length(), field.field_value().value().size() + 5);
+        std::vector<char> outBuf;
+        auto writeIter = std::back_inserter(outBuf);
+        auto es = field.write(writeIter, outBuf.max_size());
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+        TS_ASSERT_EQUALS(outBuf.size(), field.length());
+
+        static const char Buf[] = {0x0, 0x0, 0x0, 0x1, 0x2c};
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        TS_ASSERT(std::equal(std::begin(Buf), std::end(Buf), outBuf.begin()));
+        TS_ASSERT(std::equal(field.field_value().value().begin(), field.field_value().value().end(), outBuf.begin() + BufSize));
+    } while (false);         
 }
 
 template <typename TField>

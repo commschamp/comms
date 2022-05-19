@@ -323,10 +323,6 @@ private:
 
 
     static const std::size_t MaxPossibleLen = 0xffff;
-
-    static_assert(std::is_same<typename LengthFieldType::Tag, comms::field::tag::Int>::value,
-        "Only IntValue fields are supported as remaining length info inside bundle");
-
 };
 
 }  // namespace adapter
