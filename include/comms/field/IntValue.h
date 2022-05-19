@@ -67,6 +67,7 @@ namespace field
 ///     @li @ref comms::option::def::InvalidByDefault
 ///     @li @ref comms::option::def::VersionStorage
 ///     @li @ref comms::option::def::AvailableLengthLimit
+///     @li @ref comms::option::def::FieldType
 /// @extends comms::Field
 /// @headerfile comms/field/IntValue.h
 template <typename TFieldBase, typename T, typename... TOptions>

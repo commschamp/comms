@@ -187,6 +187,7 @@ using ArrayListBase =
 ///     @li @ref comms::option::def::IgnoreInvalid
 ///     @li @ref comms::option::def::EmptySerialization
 ///     @li @ref comms::option::def::VersionStorage
+///     @li @ref comms::option::def::FieldType
 /// @extends comms::Field
 /// @headerfile comms/field/ArrayList.h
 template <typename TFieldBase, typename TElement, typename... TOptions>

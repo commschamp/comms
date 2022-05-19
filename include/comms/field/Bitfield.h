@@ -88,6 +88,7 @@ namespace field
 ///         refresh functionality.
 ///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
 ///     @li @ref comms::option::def::VersionStorage - Add version storage.
+///     @li @ref comms::option::def::FieldType
 /// @pre TMember is a variant of std::tuple, that contains other fields.
 /// @pre Every field member specifies its length in bits using
 ///     @ref comms::option::def::FixedBitLength option.

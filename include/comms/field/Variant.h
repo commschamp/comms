@@ -74,6 +74,7 @@ namespace field
 ///         refresh functionality.
 ///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
 ///     @li @ref comms::option::def::VersionStorage - Add version storage.
+///     @li @ref comms::option::def::FieldType
 /// @extends comms::Field
 /// @headerfile comms/field/Variant.h
 /// @see COMMS_VARIANT_MEMBERS_NAMES()

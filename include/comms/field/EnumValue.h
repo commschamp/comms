@@ -68,6 +68,7 @@ namespace field
 ///     @li @ref comms::option::def::InvalidByDefault
 ///     @li @ref comms::option::def::VersionStorage
 ///     @li @ref comms::option::def::AvailableLengthLimit
+///     @li @ref comms::option::def::FieldType
 /// @extends comms::Field
 /// @headerfile comms/field/Bundle.h
 template <typename TFieldBase, typename TEnum, typename... TOptions>

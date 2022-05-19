@@ -154,6 +154,7 @@ using StringBase =
 ///     @li @ref comms::option::def::EmptySerialization
 ///     @li @ref comms::option::def::InvalidByDefault
 ///     @li @ref comms::option::def::VersionStorage
+///     @li @ref comms::option::def::FieldType
 /// @extends comms::Field
 /// @headerfile comms/field/String.h
 template <typename TFieldBase, typename... TOptions>
