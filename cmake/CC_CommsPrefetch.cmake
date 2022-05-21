@@ -38,9 +38,19 @@ function (cc_comms_prefetch)
         find_package(Git REQUIRED)
     endif ()
 
-    if (EXISTS "${CC_FETCH_SRC_DIR}/cmake/CC_CommsExternal.cmake")
+    if (EXISTS "${CC_FETCH_SRC_DIR}/.git")
+        execute_process (
+            COMMAND ${GIT_EXECUTABLE} fetch
+            WORKING_DIRECTORY ${CC_FETCH_SRC_DIR}
+        )
+
+        execute_process (
+            COMMAND ${GIT_EXECUTABLE} checkout ${CC_FETCH_TAG}
+            WORKING_DIRECTORY ${CC_FETCH_SRC_DIR}
+        )        
+
         return ()
-    endif()    
+    endif()     
 
     execute_process (
         COMMAND ${CMAKE_COMMAND} -E remove_directory "${CC_FETCH_SRC_DIR}"
