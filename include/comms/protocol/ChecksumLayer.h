@@ -43,8 +43,8 @@ namespace protocol
 ///     ResultType operator()(TIter& iter, std::size_t len) const;
 ///     @endcode
 ///     It is up to the checksum calculator to choose the "ResultType" it
-///     returns. The falue is going to be casted to @b Field::ValueType before
-///     assigning it as a value of the checksum field being read and/or written.@n
+///     returns. The @b setValue() member function is going to be used to 
+///     assign the field's value.@n
 ///     Available checksum algorithms provided by the COMMS library reside in
 ///     @ref comms::protocol::checksum namespace (`comms/protocol/checkum` folder).
 /// @tparam TNextLayer Next transport layer in protocol stack.
@@ -310,8 +310,7 @@ protected:
     /// @param[in] len Length of the output buffer
     /// @param[out] checksumValid Indication of whether the return checksum is valid, 
     ///     must be populated.
-    /// @return The checksum value, can be of any type, but should field 
-    ///     into @b Field::ValueType.
+    /// @return The checksum value.
     /// @note May be non-static in the extending class, but needs to be const.
     template <typename TMsg, typename TIter>
     static auto calculateChecksum(const TMsg* msg, TIter& iter, std::size_t len, bool& checksumValid) -> decltype(TCalc()(iter, len))
@@ -325,12 +324,12 @@ protected:
     /// @details May be overridden by the extending class.
     ///     Default implementation is
     ///     @code
-    ///     return field.value();
+    ///     return field.getValue();
     ///     @endcode
     /// @param[in] field Field for this layer.
-    static auto getChecksumFromField(const Field& field) -> typename Field::ValueType
+    static auto getChecksumFromField(const Field& field) -> decltype(field.getValue())
     {
-        return field.value();
+        return field.getValue();
     }
 
     /// @brief Prepare field for writing
@@ -338,7 +337,7 @@ protected:
     ///     May be overridden by the extending class if some complex functionality is required.
     ///     The default implementation is:
     ///     @code
-    ///     comms::cast_assign(field.value()) = checksum;
+    ///     field.setValue(checksum);
     ///     @endcode
     /// @param[in] checksum Checksum value to assign
     /// @param[in] msg Pointer to message object being written, may be nullptr.
@@ -348,7 +347,7 @@ protected:
     static void prepareFieldForWrite(TChecksum checksum, const TMsg* msg, Field& field)
     {
         static_cast<void>(msg);
-        comms::cast_assign(field.value()) = checksum;
+        field.setValue(checksum);
     }
 
 private:
