@@ -39,6 +39,7 @@ public:
     void test17();
     void test18();
     void test19();
+    void test20();
 
 private:
 
@@ -102,7 +103,7 @@ private:
 
     typedef BeMsgBase::Field BeField;
     typedef LeMsgBase::Field LeField;
-    typedef BeBackInsertMsgBase::Field BeBackInsertField;
+    typedef BeBackInsertMsgBase::Field BeBackInserTField;
 
     typedef Message1<BeMsgBase> BeMsg1;
     typedef Message1<BeNoLengthMsgBase> BeNoLengthMsg1;
@@ -135,12 +136,98 @@ private:
             comms::option::VarLength<TMin, TMax>
         >;
 
+    template <typename TField>
+    class ComplexLengthField : public
+        comms::field::Bundle<
+            TField,
+            std::tuple<
+                comms::field::IntValue<TField, std::uint8_t>,
+                comms::field::Optional<
+                    comms::field::IntValue<TField, std::uint32_t>,
+                    comms::option::def::OptionalMissingByDefault
+                >
+            >,
+            comms::option::def::HasCustomRead,
+            comms::option::def::HasCustomRefresh
+        >
+    {
+        using Base =
+            comms::field::Bundle<
+                TField,
+                std::tuple<
+                    comms::field::IntValue<TField, std::uint8_t>,
+                    comms::field::Optional<
+                        comms::field::IntValue<TField, std::uint32_t>,
+                        comms::option::def::OptionalMissingByDefault
+                    >
+                >,
+                comms::option::def::HasCustomRead,
+                comms::option::def::HasCustomRefresh
+            >;
+    public:
+        COMMS_FIELD_MEMBERS_NAMES(first, second);
+
+        std::size_t getValue() const
+        {
+            if (field_first().value() != 0U) {
+                return static_cast<std::size_t>(field_first().value());
+            }
+
+            return static_cast<std::size_t>(field_second().field().value());
+        }
+
+        template <typename U>
+        void setValue(U&& val)
+        {
+            if ((val != 0U) && (val <= std::numeric_limits<typename Field_first::ValueType>::max())) {
+                comms::cast_assign(field_first().value()) = val;
+                field_second().setMissing();
+                return;
+            }
+
+            field_first().value() = 0U;
+            comms::cast_assign(field_second().field().value()) = val;
+            field_second().setExists();
+        }
+
+        static constexpr std::size_t maxValue()
+        {
+            return std::numeric_limits<typename Field_second::Field::ValueType>::max();
+        }
+
+        template <typename TIter>
+        comms::ErrorStatus read(TIter& iter, std::size_t len)
+        {
+            auto es = Base::template readUntilAndUpdateLen<FieldIdx_second>(iter, len);
+            if (es != comms::ErrorStatus::Success) {
+                return es;
+            }
+
+            refresh();
+            return Base::template readFrom<FieldIdx_second>(iter, len);
+        }
+
+        bool refresh()
+        {
+            auto mode = comms::field::OptionalMode::Missing;
+            if (field_first().value() == 0U) {
+                mode = comms::field::OptionalMode::Exists;
+            }
+
+            if (field_second().getMode() == mode) {
+                return false;
+            }
+
+            field_second().setMode(mode);
+            return true;
+        }
+    };
 
     template <typename TField>
     using SizeField20 = SizeField<TField, 2, 0>;
     using BeSizeField20 = SizeField20<BeField>;
     using LeSizeField20 = SizeField20<LeField>;
-    using BeBackInsertSizeField20 = SizeField20<BeBackInsertField>;
+    using BeBackInsertSizeField20 = SizeField20<BeBackInserTField>;
 
     template <typename TField>
     using SizeField30 = SizeField<TField, 3, 0>;
@@ -151,6 +238,8 @@ private:
     using SizeField22 = SizeField<TField, 2, 2>;
     using BeSizeField22 = SizeField22<BeField>;
     using LeSizeField22 = SizeField22<LeField>;
+    
+    using BeSizeComplexField = ComplexLengthField<BeField>;
 
     template <typename TField>
     using VarLenSizeFieldDef = VarLenSizeField<TField>;
@@ -169,7 +258,7 @@ private:
     using IdField1 = IdField<TField, 1>;
     using BeIdField1 = IdField1<BeField>;
     using LeIdField1 = IdField1<LeField>;
-    using BeBackInsertIdField1 = IdField1<BeBackInsertField>;
+    using BeBackInsertIdField1 = IdField1<BeBackInserTField>;
 
     template <typename TField>
     using IdField2 = IdField<TField, 2>;
@@ -704,4 +793,17 @@ void MsgSizeLayerTestSuite::test19()
     ProtocolStack<BeSizeField20, BeIdField1, BeMsgBase> stack;
     auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
     TS_ASSERT(!msgPtr);
+}
+
+void MsgSizeLayerTestSuite::test20()
+{
+    static const char Buf[] = {
+        0x3, MessageType1, 0x01, 0x02, static_cast<char>(0x3f)
+    };
+
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    ProtocolStack<BeSizeComplexField, BeIdField1, BeMsgBase> stack;
+    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
 }
