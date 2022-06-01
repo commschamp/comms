@@ -77,6 +77,16 @@ public:
         return std::numeric_limits<typename Field_second::Field::ValueType>::max();
     }
 
+    static constexpr std::size_t minLength()
+    {
+        return 1U;
+    }
+
+    static constexpr std::size_t maxLength()
+    {
+        return 5U;
+    }
+
     template <typename TIter>
     comms::ErrorStatus read(TIter& iter, std::size_t len)
     {
