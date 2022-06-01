@@ -1282,9 +1282,11 @@ private:
         TNextLayerUpdater&& nextLayerUpdater,
         VarLengthTag<TParams...>) const
     {
+        auto iterTmp = iter;
         auto es = field.read(iter, size);
         if (es == comms::ErrorStatus::Success) {
-            es = nextLayerUpdater.update(iter, size - field.length());
+            auto diff = static_cast<std::size_t>(std::distance(iterTmp, iter));
+            es = nextLayerUpdater.update(iter, size - diff);
         }
         return es;
     }
@@ -1313,9 +1315,11 @@ private:
         TNextLayerUpdater&& nextLayerUpdater,
         VarLengthTag<TParams...>) const
     {
+        auto iterTmp = iter;
         auto es = field.read(iter, size);
         if (es == comms::ErrorStatus::Success) {
-            es = nextLayerUpdater.update(msg, iter, size - field.length());
+            auto diff = static_cast<std::size_t>(std::distance(iterTmp, iter));
+            es = nextLayerUpdater.update(msg, iter, size - diff);
         }
         return es;
     }

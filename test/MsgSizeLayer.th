@@ -17,103 +17,6 @@ CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
 CC_ENABLE_WARNINGS()
 
-// VS2015 compiler doesn't like this class to be a member of another
-template <typename TField>
-class ComplexLengthField : public
-    comms::field::Bundle<
-        TField,
-        std::tuple<
-            comms::field::IntValue<TField, std::uint8_t>,
-            comms::field::Optional<
-                comms::field::IntValue<TField, std::uint32_t>,
-                comms::option::def::OptionalMissingByDefault
-            >
-        >,
-        comms::option::def::HasCustomRead,
-        comms::option::def::HasCustomRefresh
-    >
-{
-    using Base =
-        comms::field::Bundle<
-            TField,
-            std::tuple<
-                comms::field::IntValue<TField, std::uint8_t>,
-                comms::field::Optional<
-                    comms::field::IntValue<TField, std::uint32_t>,
-                    comms::option::def::OptionalMissingByDefault
-                >
-            >,
-            comms::option::def::HasCustomRead,
-            comms::option::def::HasCustomRefresh
-        >;
-public:
-    COMMS_FIELD_MEMBERS_NAMES(first, second);
-
-    std::size_t getValue() const
-    {
-        if (field_first().value() != 0U) {
-            return static_cast<std::size_t>(field_first().value());
-        }
-
-        return static_cast<std::size_t>(field_second().field().value());
-    }
-
-    template <typename U>
-    void setValue(U&& val)
-    {
-        if ((val != 0U) && (val <= std::numeric_limits<typename Field_first::ValueType>::max())) {
-            comms::cast_assign(field_first().value()) = val;
-            field_second().setMissing();
-            return;
-        }
-
-        field_first().value() = 0U;
-        comms::cast_assign(field_second().field().value()) = val;
-        field_second().setExists();
-    }
-
-    static constexpr std::size_t maxValue()
-    {
-        return std::numeric_limits<typename Field_second::Field::ValueType>::max();
-    }
-
-    static constexpr std::size_t minLength()
-    {
-        return 1U;
-    }
-
-    static constexpr std::size_t maxLength()
-    {
-        return 5U;
-    }
-
-    template <typename TIter>
-    comms::ErrorStatus read(TIter& iter, std::size_t len)
-    {
-        auto es = Base::template readUntilAndUpdateLen<FieldIdx_second>(iter, len);
-        if (es != comms::ErrorStatus::Success) {
-            return es;
-        }
-
-        refresh();
-        return Base::template readFrom<FieldIdx_second>(iter, len);
-    }
-
-    bool refresh()
-    {
-        auto mode = comms::field::OptionalMode::Missing;
-        if (field_first().value() == 0U) {
-            mode = comms::field::OptionalMode::Exists;
-        }
-
-        if (field_second().getMode() == mode) {
-            return false;
-        }
-
-        field_second().setMode(mode);
-        return true;
-    }
-};
 
 class MsgSizeLayerTestSuite : public CxxTest::TestSuite
 {
@@ -249,6 +152,104 @@ private:
     using SizeField22 = SizeField<TField, 2, 2>;
     using BeSizeField22 = SizeField22<BeField>;
     using LeSizeField22 = SizeField22<LeField>;
+
+    template <typename TField>
+    class ComplexLengthField : public
+        comms::field::Bundle<
+            TField,
+            std::tuple<
+                comms::field::IntValue<TField, std::uint8_t>,
+                comms::field::Optional<
+                    comms::field::IntValue<TField, std::uint32_t>,
+                    comms::option::def::OptionalMissingByDefault
+                >
+            >,
+            comms::option::def::HasCustomRead,
+            comms::option::def::HasCustomRefresh
+        >
+    {
+        using Base =
+            comms::field::Bundle<
+                TField,
+                std::tuple<
+                    comms::field::IntValue<TField, std::uint8_t>,
+                    comms::field::Optional<
+                        comms::field::IntValue<TField, std::uint32_t>,
+                        comms::option::def::OptionalMissingByDefault
+                    >
+                >,
+                comms::option::def::HasCustomRead,
+                comms::option::def::HasCustomRefresh
+            >;
+    public:
+        COMMS_FIELD_MEMBERS_NAMES(first, second);
+
+        std::size_t getValue() const
+        {
+            if (field_first().value() != 0U) {
+                return static_cast<std::size_t>(field_first().value());
+            }
+
+            return static_cast<std::size_t>(field_second().field().value());
+        }
+
+        template <typename U>
+        void setValue(U&& val)
+        {
+            if ((val != 0U) && (val <= std::numeric_limits<typename Field_first::ValueType>::max())) {
+                comms::cast_assign(field_first().value()) = val;
+                field_second().setMissing();
+                return;
+            }
+
+            field_first().value() = 0U;
+            comms::cast_assign(field_second().field().value()) = val;
+            field_second().setExists();
+        }
+
+        static constexpr std::size_t maxValue()
+        {
+            return std::numeric_limits<typename Field_second::Field::ValueType>::max();
+        }
+
+        // VS2015 doesn't treat inherited minLength() and maxLength() as constexpr
+        static constexpr std::size_t minLength()
+        {
+            return 1U;
+        }
+
+        static constexpr std::size_t maxLength()
+        {
+            return 5U;
+        }
+
+        template <typename TIter>
+        comms::ErrorStatus read(TIter& iter, std::size_t len)
+        {
+            auto es = Base::template readUntilAndUpdateLen<FieldIdx_second>(iter, len);
+            if (es != comms::ErrorStatus::Success) {
+                return es;
+            }
+
+            refresh();
+            return Base::template readFrom<FieldIdx_second>(iter, len);
+        }
+
+        bool refresh()
+        {
+            auto mode = comms::field::OptionalMode::Missing;
+            if (field_first().value() == 0U) {
+                mode = comms::field::OptionalMode::Exists;
+            }
+
+            if (field_second().getMode() == mode) {
+                return false;
+            }
+
+            field_second().setMode(mode);
+            return true;
+        }
+    };    
     
     using BeSizeComplexField = ComplexLengthField<BeField>;
 
