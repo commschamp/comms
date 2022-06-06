@@ -47,6 +47,7 @@ public:
     void test19();
     void test20();
     void test21();
+    void test22();
 
 private:
     template <typename TField>
@@ -1625,6 +1626,40 @@ void FieldsTestSuite2::test21()
         TS_ASSERT_EQUALS(field.value(), -1878);
         TS_ASSERT_EQUALS(field.length(), 2U);
     } while (false);    
+}
+
+void FieldsTestSuite2::test22()
+{
+    using TermField = 
+        comms::field::IntValue<
+            BeFieldBase,
+            std::uint16_t,
+            comms::option::ValidNumValueRange<0, 0>
+        >;
+
+    using Field = 
+        comms::field::ArrayList<
+            BeFieldBase, 
+            comms::field::IntValue<BeFieldBase, std::uint32_t>,
+            comms::option::def::SequenceTerminationFieldSuffix<TermField>
+        >;
+
+    do {
+        Field field;
+        static const char Buf[] = {
+            0x01, 0x02, 0x03, 0x04,
+            0x05, 0x06, 0x07, 0x08,
+            0x0, 0x0 // term
+        };
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        field = readWriteField<Field>(&Buf[0], BufSize);
+        TS_ASSERT_EQUALS(field.value().size(), 2U);
+        TS_ASSERT_EQUALS(field.length(), BufSize);
+        TS_ASSERT_EQUALS(field.value()[0].value(), 0x01020304);
+        TS_ASSERT_EQUALS(field.value()[1].value(), 0x05060708);
+    } while (false);
+   
 }
 
 template <typename TField>
