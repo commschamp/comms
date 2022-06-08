@@ -1606,7 +1606,7 @@ void FieldsTestSuite2::test21()
     do {
         Field field;
         static const char Buf[] = {
-            char(0xff)
+            static_cast<char>(0xff)
         };
         static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
@@ -1618,7 +1618,7 @@ void FieldsTestSuite2::test21()
     do {
         Field field;
         static const char Buf[] = {
-            char(0xf8), char(0xaa)
+            static_cast<char>(0xf8), static_cast<char>(0xaa)
         };
         static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
