@@ -266,7 +266,7 @@ private:
     template <std::size_t TFromIdx, std::size_t TUntilIdx, typename TIter, typename... TParams>
     ErrorStatus readFromUntilInternal(TIter& iter, std::size_t& len, BaseRedirectTag<TParams...>)
     {
-        return BaseImpl::template readFromUntilAndUpdateLen<TFromIdx>(iter, len);
+        return BaseImpl::template readFromUntilAndUpdateLen<TFromIdx, TUntilIdx>(iter, len);
     }       
 
     template <std::size_t TFromIdx, std::size_t TUntilIdx, typename TIter, typename... TParams>
