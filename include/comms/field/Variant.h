@@ -596,6 +596,14 @@ bool operator<(
     const Variant<TFieldBase, TMembers, TOptions...>& field1,
     const Variant<TFieldBase, TMembers, TOptions...>& field2)
 {
+    if (!field1.currentFieldValid()) {
+        return (!field2.currentFieldValid());
+    }
+
+    if (!field2.currentFieldValid()) {
+        return false;
+    }    
+
     if (field1.currentField() < field2.currentField()) {
         return true;
     }

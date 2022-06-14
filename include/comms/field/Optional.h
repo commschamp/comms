@@ -409,7 +409,7 @@ bool operator<(
         return false;
     }
     
-    return false;
+    return field1.field() < field2.field();
 }
 
 /// @brief Equivalence comparison operator.

@@ -1625,7 +1625,19 @@ void FieldsTestSuite2::test21()
         field = readWriteField<Field>(&Buf[0], BufSize);
         TS_ASSERT_EQUALS(field.value(), -1878);
         TS_ASSERT_EQUALS(field.length(), 2U);
-    } while (false);    
+    } while (false);   
+
+    do {
+        Field field;
+        static const char Buf[] = {
+            0x0, static_cast<char>(0xff)
+        };
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        field = readWriteField<Field>(&Buf[0], BufSize);
+        TS_ASSERT_EQUALS(field.value(), 255);
+        TS_ASSERT_EQUALS(field.length(), 2U);
+    } while (false);        
 }
 
 void FieldsTestSuite2::test22()
