@@ -619,7 +619,6 @@ bool operator<(
     bool result = false;
     field1.currentFieldExec(details::makeVariantLessCompHelper(field2, result));
     return result;
-    return true;
 }
 
 /// @brief Compile time check function of whether a provided type is any
