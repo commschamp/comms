@@ -3671,7 +3671,7 @@ void FieldsTestSuite::test70()
     vec[0].accessField_mem2().field_value().setValue(5);
     std::sort(vec.begin(), vec.end());
     TS_ASSERT_EQUALS(vec[1].accessField_mem2().field_value().getValue(), 5U);
-    vec[0].accessField_mem2().field_value().setValue(10);
+    vec[0].initField_mem2().field_value().setValue(10);
     std::sort(vec.begin(), vec.end());
     TS_ASSERT_EQUALS(vec[1].accessField_mem2().field_value().getValue(), 10U);
 }
