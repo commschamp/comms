@@ -504,6 +504,8 @@ private:
             "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to ArrayList field");
     static_assert(!ParsedOptions::HasInvalidByDefault,
             "comms::option::def::InvalidByDefault option is not applicable to ArrayList field");
+    static_assert(!ParsedOptions::HasMissingOnReadFail,
+            "comms::option::def::MissingOnReadFail option is not applicable to ArrayList field");            
 };
 
 /// @brief Equivalence comparison operator.

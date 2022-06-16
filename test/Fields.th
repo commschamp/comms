@@ -1462,7 +1462,6 @@ void FieldsTestSuite::test30()
 
 void FieldsTestSuite::test31()
 {
-
     using Field =
         comms::field::Optional<
             comms::field::IntValue<

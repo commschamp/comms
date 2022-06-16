@@ -527,6 +527,8 @@ private:
         "comms::option::def::SequenceElemSerLengthFixedFieldPrefix option is not applicable to String field");
     static_assert(!ParsedOptions::HasVersionsRange,
         "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to String field");
+    static_assert(!ParsedOptions::HasMissingOnReadFail,
+            "comms::option::def::MissingOnReadFail option is not applicable to String field");           
 };
 
 /// @brief Equality comparison operator.

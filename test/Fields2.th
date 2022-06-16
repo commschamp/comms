@@ -48,6 +48,7 @@ public:
     void test20();
     void test21();
     void test22();
+    void test23();
 
 private:
     template <typename TField>
@@ -1672,6 +1673,42 @@ void FieldsTestSuite2::test22()
         TS_ASSERT_EQUALS(field.value()[1].value(), 0x05060708);
     } while (false);
    
+}
+
+void FieldsTestSuite2::test23()
+{
+    using Field =
+        comms::field::Optional<
+            comms::field::IntValue<
+                comms::Field<BigEndianOpt>,
+                std::uint16_t,
+                comms::option::def::ValidNumValueRange<0, 10>,
+                comms::option::def::FailOnInvalid<>
+            >,
+            comms::option::def::MissingOnReadFail,
+            comms::option::def::ExistsByDefault
+        >;
+
+    static_assert(!Field::isVersionDependent(),
+        "Invalid version dependency assumption");
+
+    typedef Field::Mode Mode;
+
+    Field field;
+    TS_ASSERT(field.valid());
+    TS_ASSERT_EQUALS(field.field().value(), 0U);
+    TS_ASSERT_EQUALS(field.getMode(), Mode::Exists);
+
+    static const char Buf[] = {
+        0x0f, 0x0f
+    };
+
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    const auto* readIter = &Buf[0];
+    auto es = field.read(readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS(field.getMode(), Mode::Missing);
+    TS_ASSERT_EQUALS(static_cast<const void*>(readIter), static_cast<const void*>(&Buf[0]));
 }
 
 template <typename TField>

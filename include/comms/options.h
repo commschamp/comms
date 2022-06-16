@@ -1243,6 +1243,7 @@ struct PseudoValue {};
 
 /// @brief Provide type to be used for versioning
 /// @tparam T Type of the version value. Expected to be unsigned integral one.
+/// @headerfile comms/options.h
 template <typename T>
 struct VersionType
 {
@@ -1260,6 +1261,7 @@ struct HasCustomVersionUpdate {};
 /// @tparam TFrom First version when field has been added
 /// @tparam TUntil Last version when field still hasn't been removed.
 /// @pre @b TFrom <= @b TUntil
+/// @headerfile comms/options.h
 template <std::uintmax_t TFrom, std::uintmax_t TUntil>
 struct ExistsBetweenVersions
 {
@@ -1270,6 +1272,7 @@ struct ExistsBetweenVersions
 ///     starting from specified version.
 /// @details Alias to @ref ExistsBetweenVersions
 /// @tparam TVer First version when field has been added
+/// @headerfile comms/options.h
 template <std::uintmax_t TVer>
 using ExistsSinceVersion = ExistsBetweenVersions<TVer, std::numeric_limits<std::uintmax_t>::max()>;
 
@@ -1277,25 +1280,35 @@ using ExistsSinceVersion = ExistsBetweenVersions<TVer, std::numeric_limits<std::
 ///     only until specified version.
 /// @details Alias to @ref ExistsBetweenVersions
 /// @tparam TVer Last version when field still hasn't been removed.
+/// @headerfile comms/options.h
 template <std::uintmax_t TVer>
 using ExistsUntilVersion = ExistsBetweenVersions<0, TVer>;
 
 /// @brief Make the field's contents to be invalid by default.
+/// @headerfile comms/options.h
 struct InvalidByDefault {};
 
 /// @brief Add storage of version information inside private data members.
 /// @details The version information can be accessed using @b getVersion() member function.
+/// @headerfile comms/options.h
 struct VersionStorage {};
 
 /// @brief Option to specify real extending class.
 /// @details Used for some layer classes in @ref comms::protocol namespace.
+/// @headerfile comms/options.h
 template <typename T>
 struct ExtendingClass {};
 
 /// @brief Option to specify index of member field containing remaining length in bytes
 /// @details Applicable only to @ref comms::field::Bundle fields.
+/// @headerfile comms/options.h
 template <std::size_t TIdx>
 struct RemLengthMemberField {};
+
+/// @brief Mark an @ref comms::field::Optional field as missing
+///     if its read operation fails.
+/// @headerfile comms/options.h
+struct MissingOnReadFail {};
 
 } // namespace def
 

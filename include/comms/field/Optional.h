@@ -39,6 +39,7 @@ namespace field
 ///     @li @ref comms::option::def::HasCustomRefresh
 ///     @li @ref comms::option::def::VersionStorage
 ///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::MissingOnReadFail
 /// @extends comms::Field
 /// @headerfile comms/field/Optional.h
 template <typename TField, typename... TOptions>

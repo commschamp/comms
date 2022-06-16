@@ -323,6 +323,8 @@ private:
         "comms::option::app::OrigDataView option is not applicable to EnumValue field");
     static_assert(!ParsedOptions::HasVersionsRange,
         "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to EnumValue field");
+    static_assert(!ParsedOptions::HasMissingOnReadFail,
+            "comms::option::def::MissingOnReadFail option is not applicable to EnumValue field");           
 };
 
 // Implementation

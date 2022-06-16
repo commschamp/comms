@@ -59,8 +59,9 @@ class AdaptBasicField
             ParsedOptions::HasSequenceElemSerLengthFieldPrefix ||
             ParsedOptions::HasSequenceElemFixedSerLengthFieldPrefix ||
             ParsedOptions::HasSequenceTrailingFieldSuffix ||
-            ParsedOptions::HasSequenceTerminationFieldSuffix |\
-            ParsedOptions::HasEmptySerialization;
+            ParsedOptions::HasSequenceTerminationFieldSuffix ||
+            ParsedOptions::HasEmptySerialization ||
+            ParsedOptions::HasMissingOnReadFail;
 
     static_assert(
             (!ParsedOptions::HasCustomValueReader) || (!CustomReaderIncompatible),
@@ -70,7 +71,7 @@ class AdaptBasicField
             "SequenceSizeForcingEnabled, SequenceLengthForcingEnabled, SequenceFixedSize, SequenceSizeFieldPrefix, "
             "SequenceSerLengthFieldPrefix, SequenceElemSerLengthFieldPrefix, "
             "SequenceElemFixedSerLengthFieldPrefix, SequenceTrailingFieldSuffix, "
-            "SequenceTerminationFieldSuffix, EmptySerialization");
+            "SequenceTerminationFieldSuffix, EmptySerialization, MissingOnReadFail");
 
     static const bool VarLengthIncompatible =
             ParsedOptions::HasFixedLengthLimit ||
@@ -228,8 +229,11 @@ class AdaptBasicField
     using CustomWriteWrapAdapted = 
             typename ParsedOptions::template AdaptCustomWrite<CustomRefreshWrapAdapted>;
 
+    using MissingOnReadFailAdapted = 
+            typename ParsedOptions::template AdaptMissingOnReadFail<CustomWriteWrapAdapted>;
+
 public:
-    using Type = CustomWriteWrapAdapted;
+    using Type = MissingOnReadFailAdapted;
 };
 
 template <typename TBasic, typename... TOptions>

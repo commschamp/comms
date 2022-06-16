@@ -38,3 +38,4 @@
 #include "comms/field/adapter/CustomReadWrap.h"
 #include "comms/field/adapter/CustomWriteWrap.h"
 #include "comms/field/adapter/FieldType.h"
+#include "comms/field/adapter/MissingOnReadFail.h"
