@@ -2077,50 +2077,6 @@
 /// };
 /// @endcode
 /// 
-/// Another way is to use @ref comms::option::def::ContentsValidator option. It
-/// receives one template parameter, which has to be a type of a custom
-/// validator class. Such class must implement @b operator() with the following
-/// signature:
-/// @code
-/// struct MyValidator
-/// {
-///     template <typename TField>
-///     bool operator()(const TField& field)
-///     {
-///         auto& value = field.value();
-///         return (... /* Check value */); // return true if valid.
-///     }
-/// };
-/// @endcode
-/// For example:
-/// @code
-/// struct CustomStringValidator
-/// {
-///     template <typename TField>
-///     bool operator()(const TField& field)
-///     {
-///         // Valid if not empty and starts with '$'
-///         auto& str = field.value();
-///         return (!str.empty()) && (str[0] == '$');
-///     }
-/// };
-///
-/// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-/// using MyString = comms::field::String<
-///     MyFieldBase, 
-///     comms::option::def::ContentsValidator<CustomStringValidator> 
-///  >;
-///
-/// MyString myStr; 
-/// assert(!myStr.valid()); // Default construction creates empty string - invalid
-/// 
-/// myStr.value() = "$somestring";
-/// assert(myStr.valid()); // Now the string is as expected
-/// @endcode
-/// @b NOTE that the used @b operator() specifies the field type as a template
-/// parameter. This is required because the passed reference is to one of the
-/// defined field's base classes, which is implementation dependent. Just use
-/// the provided @b value() member function to access the value.
 ///
 /// Quite often the valid values of the numeric fields can be expressed in limited
 /// number of ranges: [minValid - maxValid]. The COMMS library provides 
@@ -2169,10 +2125,10 @@
 /// that allows usage of multiple @ref comms::option::def::ValidNumValueRange options. If this is
 /// the case, please don't pass more than one @ref comms::option::def::ValidNumValueRange option.
 ///
-/// There is a also a convenience alias to @ref comms::option::def::ContentsValidator intended
+/// There is a also a convenience reserved bits checked option
 /// for use with bitmasks (comms::field::BitmaskValue). Many bitmask fields
 /// may have one or several reserved bits with predefined values they must contain.
-/// The alias option is @ref comms::option::def::BitmaskReservedBits. It receives two 
+/// The option is @ref comms::option::def::BitmaskReservedBits. It receives two 
 /// template parameters: one for the mask indicating the reserved bits and another
 /// for the expected values of these bits.@n
 /// For example, below is a definition of the 1 byte bitmask field that has

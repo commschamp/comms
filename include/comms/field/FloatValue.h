@@ -40,7 +40,6 @@ namespace field
 ///     be serialised using big endian notation.@n
 ///     Supported options are:
 ///     @li @ref comms::option::def::DefaultValueInitialiser or @ref comms::option::def::DefaultNumValue.
-///     @li @ref comms::option::def::ContentsValidator
 ///     @li @ref comms::option::def::ValidNumValueRange, @ref comms::option::def::ValidNumValue,
 ///         @ref comms::option::def::ValidBigUnsignedNumValueRange, @ref comms::option::def::ValidBigUnsignedNumValue
 ///     @li @ref comms::option::def::ValidRangesClear

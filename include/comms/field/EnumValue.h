@@ -55,7 +55,6 @@ namespace field
 ///     @li @ref comms::option::def::VarLength
 ///     @li @ref comms::option::def::NumValueSerOffset
 ///     @li @ref comms::option::def::DefaultValueInitialiser or @ref comms::option::def::DefaultNumValue.
-///     @li @ref comms::option::def::ContentsValidator
 ///     @li @ref comms::option::def::ValidNumValueRange, @ref comms::option::def::ValidNumValue,
 ///         @ref comms::option::def::ValidBigUnsignedNumValueRange, @ref comms::option::def::ValidBigUnsignedNumValue
 ///     @li @ref comms::option::def::ValidRangesClear

@@ -71,13 +71,6 @@ namespace field
 /// @tparam TOptions Zero or more options that modify/refine default behaviour
 ///     of the field.@n
 ///     Supported options are:
-///     @li @ref comms::option::def::ContentsValidator - All field members may specify
-///         their independent validators. The bitfield field considered to
-///         be valid if all the field members are valid. This option though,
-///         provides an ability to add extra validation logic that can
-///         observe value of more than one bitfield member. For example,
-///         protocol specifies that if one specific member has value X, than
-///         other member is NOT allowed to have value Y.
 ///     @li @ref comms::option::def::HasCustomRead - Mark field to have custom read
 ///         functionality
 ///     @li @ref comms::option::def::HasCustomRefresh - Mark field to have custom

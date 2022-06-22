@@ -653,6 +653,8 @@ struct DefaultValueInitialiser {};
 ///     have invalid value. To fix that you must also use
 ///     comms::option::DefaultValueInitialiser option to specify proper default
 ///     value.
+/// @note Direct usage of this option in the client code is not recommended. It's
+///     should be used for internal validators like @ref comms::option::def::BitmaskReservedBits
 /// @tparam T Type of the validator class.
 /// @headerfile comms/options.h
 template <typename T>
@@ -1509,10 +1511,6 @@ using SequenceFixedSize = comms::option::def::SequenceFixedSize<TSize>;
 /// @brief Same as @ref comms::option::def::DefaultValueInitialiser
 template <typename T>
 using DefaultValueInitialiser = comms::option::def::DefaultValueInitialiser<T>;
-
-/// @brief Same as @ref comms::option::def::ContentsValidator
-template <typename T>
-using ContentsValidator = comms::option::def::ContentsValidator<T>;
 
 /// @brief Same as @ref comms::option::def::FailOnInvalid
 template <comms::ErrorStatus TStatus = comms::ErrorStatus::InvalidMsgData>

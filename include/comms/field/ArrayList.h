@@ -179,7 +179,6 @@ using ArrayListBase =
 ///     @li @ref comms::option::def::SequenceTerminationFieldSuffix
 ///     @li @ref comms::option::def::SequenceTrailingFieldSuffix
 ///     @li @ref comms::option::def::DefaultValueInitialiser
-///     @li @ref comms::option::def::ContentsValidator
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
 ///     @li @ref comms::option::def::FailOnInvalid
@@ -365,9 +364,7 @@ public:
     }
 
     /// @brief Check validity of the field value.
-    /// @details The collection is valid if all the elements are valid. In case
-    ///     @ref comms::option::def::ContentsValidator option is used, the validator,
-    ///     it provides, is invoked IN ADDITION to the validation of the elements.
+    /// @details The collection is valid if all the elements are valid. 
     /// @return true in case the field's value is valid, false otherwise.
     bool valid() const
     {
