@@ -2247,25 +2247,6 @@
 /// perform various optimisations if there is no custom @b refresh.
 /// Failure to specify this option may result in incorrect behaviour.
 /// 
-/// Another way is to use comms::option::def::ContentsRefresher option. It
-/// receives one template parameter, which has to be a type of a custom
-/// refresher class. Such class must implement @b operator() with the following
-/// signature:
-/// @code
-/// struct MyRefresher
-/// {
-///     template <typename TField>
-///     bool operator()(TField& field)
-///     {
-///         ... // return true if field was modified, false otherwise
-///     }
-/// };
-/// @endcode
-/// @b NOTE that the used @b operator() specifies the field type as a template
-/// parameter. This is required because the passed reference is to one of the
-/// defined field's base classes, which is implementation dependent. Just use
-/// the provided @b value() member function to access the value.
-///
 /// @subsection sec_field_tutorial_common_options_write Custom Write Functionality
 /// On some very rare occasions there may be a need to write custom @b write
 /// functionality. It can be achieved by writing custom @b write() member function

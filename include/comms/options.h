@@ -658,27 +658,6 @@ struct DefaultValueInitialiser {};
 template <typename T>
 struct ContentsValidator {};
 
-/// @brief Option that specifies custom refreshing class.
-/// @details The "refreshing" functionality is there to allow bringing field's
-///     contents into a consistent state if it's not. The default "refreshing"
-///     functionality does nothing and returns @b false (meaning nothing has
-///     been changed). If there is a need to provide custom refreshing functionality
-///     use this option and provide custom refresher class. It must
-///     define the following member function:
-///     @code
-///     struct MyRefresher
-///     {
-///         template <typename TField>
-///         bool operator()(TField& field) {
-///             ... // return true if field's contents changed
-///         }
-///     };
-///     @endcode
-/// @tparam T Type of the refresher class.
-/// @headerfile comms/options.h
-template <typename T>
-struct ContentsRefresher {};
-
 /// @brief Option that forces field's read operation to fail if invalid value
 ///     is received.
 /// @details Sometimes protocol is very strict about what field's values are
@@ -1375,7 +1354,7 @@ struct SequenceFixedSizeUseFixedSizeStorage {};
 struct NoVirtualDestructor {};
 
 /// @brief Use "view" on original raw data instead of copying it.
-/// @details Can be used with @ref comms::field::String and raw data @ref comms::field::ArrayList.@n
+/// @details Can be used with @ref comms::field::String and raw data @ref comms::field::ArrayList. @n
 ///     For @ref comms::field::String it will force usage of 
 ///     <a href="https://en.cppreference.com/w/cpp/string/basic_string_view">std::string_view</a> (if available) as 
 ///     inner storage type (instead of @b std::string). In case @b std::string_view is unavalable 
@@ -1534,10 +1513,6 @@ using DefaultValueInitialiser = comms::option::def::DefaultValueInitialiser<T>;
 /// @brief Same as @ref comms::option::def::ContentsValidator
 template <typename T>
 using ContentsValidator = comms::option::def::ContentsValidator<T>;
-
-/// @brief Same as @ref comms::option::def::ContentsRefresher
-template <typename T>
-using ContentsRefresher = comms::option::def::ContentsRefresher<T>;
 
 /// @brief Same as @ref comms::option::def::FailOnInvalid
 template <comms::ErrorStatus TStatus = comms::ErrorStatus::InvalidMsgData>

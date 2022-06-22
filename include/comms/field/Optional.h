@@ -34,7 +34,6 @@ namespace field
 ///     @li @ref comms::option::def::DefaultValueInitialiser, @ref comms::option::def::DefaultOptionalMode,
 ///         @ref comms::option::def::OptionalMissingByDefault, or @ref comms::option::def::OptionalExistsByDefault.
 ///     @li @ref comms::option::def::ContentsValidator.
-///     @li @ref comms::option::def::ContentsRefresher
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
 ///     @li @ref comms::option::def::VersionStorage

@@ -56,10 +56,6 @@ namespace field
 ///         observe value of more than one wrapped fields. For example,
 ///         protocol specifies that if one specific field has value X, than
 ///         other field is NOT allowed to have value Y.
-///     @li @ref comms::option::def::ContentsRefresher - The default @b refresh()
-///         behavior is to call @b refresh() member function of the contained
-///         field (if such exists). This option allows specifying the custom
-///         refreshing behaviour.
 ///     @li @ref comms::option::def::DefaultVariantIndex - By default the Variant field
 ///         doesn't have any valid contents. This option may be used to specify
 ///         the index of the default member field.

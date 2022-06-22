@@ -196,11 +196,8 @@ class AdaptBasicField
     using CustomValidatorAdapted = 
         typename ParsedOptions::template AdaptCustomValidator<MultiRangeValidationAdapted>;
 
-    using CustomRefresherAdapted = 
-        typename ParsedOptions::template AdaptContentsRefresher<CustomValidatorAdapted>;
-
     using FailOnInvalidAdapted = 
-        typename ParsedOptions::template AdaptFailOnInvalid<CustomRefresherAdapted>;
+        typename ParsedOptions::template AdaptFailOnInvalid<CustomValidatorAdapted>;
 
     using IgnoreInvalidAdapted = 
         typename ParsedOptions::template AdaptIgnoreInvalid<FailOnInvalidAdapted>;

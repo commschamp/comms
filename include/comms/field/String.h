@@ -146,7 +146,6 @@ using StringBase =
 ///     @li @ref comms::option::def::SequenceTrailingFieldSuffix
 ///     @li @ref comms::option::def::DefaultValueInitialiser
 ///     @li @ref comms::option::def::ContentsValidator
-///     @li @ref comms::option::def::ContentsRefresher
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
 ///     @li @ref comms::option::def::FailOnInvalid

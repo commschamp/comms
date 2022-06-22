@@ -48,10 +48,6 @@ namespace field
 ///         observe value of more than one wrapped fields. For example,
 ///         protocol specifies that if one specific field has value X, than
 ///         other field is NOT allowed to have value Y.
-///     @li @ref comms::option::def::ContentsRefresher - The default refreshing
-///         behaviour is to call the @b refresh() member function of every
-///         member field. This option provides an ability to set a custom
-///         "refreshing" logic.
 ///     @li @ref comms::option::def::RemLengthMemberField - Specify index of member field
 ///         that contains remaining length information for all the subsequent fields.
 ///     @li @ref comms::option::def::HasCustomRead - Mark field to have custom read

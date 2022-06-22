@@ -83,7 +83,6 @@ using BitmaskUndertlyingTypeT =
 ///     @li @ref comms::option::def::FixedBitLength
 ///     @li @ref comms::option::def::DefaultValueInitialiser or comms::option::def::DefaultNumValue.
 ///     @li @ref comms::option::def::ContentsValidator or comms::option::def::BitmaskReservedBits.
-///     @li @ref comms::option::def::ContentsRefresher
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
 ///     @li @ref comms::option::def::FailOnInvalid

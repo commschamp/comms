@@ -51,7 +51,6 @@ public:
     static constexpr bool HasDefaultValueInitialiser = false;
     static constexpr bool HasMultiRangeValidation = false;
     static constexpr bool HasCustomValidator = false;
-    static constexpr bool HasContentsRefresher = false;
     static constexpr bool HasFailOnInvalid = false;
     static constexpr bool HasIgnoreInvalid = false;
     static constexpr bool HasEmptySerialization = false;
@@ -138,9 +137,6 @@ public:
     template <typename TField>
     using AdaptCustomValidator = TField;
 
-    template <typename TField>
-    using AdaptContentsRefresher = TField;
-    
     template <typename TField>
     using AdaptFailOnInvalid = TField;
 
@@ -431,19 +427,6 @@ public:
 
     template <typename TField>
     using AdaptCustomValidator = comms::field::adapter::CustomValidator<CustomValidator, TField>;
-};
-
-template <typename TRefresher, typename... TOptions>
-class OptionsParser<
-    comms::option::def::ContentsRefresher<TRefresher>,
-    TOptions...> : public OptionsParser<TOptions...>
-{
-public:
-    static constexpr bool HasContentsRefresher = true;
-    using CustomRefresher = TRefresher;
-
-    template <typename TField>
-    using AdaptContentsRefresher = comms::field::adapter::CustomRefresher<CustomRefresher, TField>;
 };
 
 template <typename... TOptions>

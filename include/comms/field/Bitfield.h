@@ -78,10 +78,6 @@ namespace field
 ///         observe value of more than one bitfield member. For example,
 ///         protocol specifies that if one specific member has value X, than
 ///         other member is NOT allowed to have value Y.
-///     @li @ref comms::option::def::ContentsRefresher - The default refreshing
-///         behaviour is to call the @b refresh() member function of every
-///         member field. This option provides an ability to set a custom
-///         "refreshing" logic.
 ///     @li @ref comms::option::def::HasCustomRead - Mark field to have custom read
 ///         functionality
 ///     @li @ref comms::option::def::HasCustomRefresh - Mark field to have custom
