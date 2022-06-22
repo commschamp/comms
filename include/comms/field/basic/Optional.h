@@ -96,17 +96,6 @@ public:
         value() = std::forward<T>(val);
     }    
 
-    const ValueType& getValueAdapted() const
-    {
-        return value();
-    }
-
-    template <typename T>
-    void setValueAdapted(T&& val)
-    {
-        value() = std::forward<T>(val);
-    }     
-
     Mode getMode() const
     {
         return mode_;

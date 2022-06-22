@@ -189,7 +189,7 @@ using ArrayListBase =
 /// @extends comms::Field
 /// @headerfile comms/field/ArrayList.h
 template <typename TFieldBase, typename TElement, typename... TOptions>
-class ArrayList : private details::ArrayListBase<TFieldBase, TElement, TOptions...>
+class ArrayList : public details::ArrayListBase<TFieldBase, TElement, TOptions...>
 {
     using BaseImpl = details::ArrayListBase<TFieldBase, TElement, TOptions...>;
 public:

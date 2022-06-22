@@ -69,7 +69,7 @@ namespace field
 /// @extends comms::Field
 /// @headerfile comms/field/IntValue.h
 template <typename TFieldBase, typename T, typename... TOptions>
-class IntValue : private details::AdaptBasicFieldT<basic::IntValue<TFieldBase, T>, TOptions...>
+class IntValue : public details::AdaptBasicFieldT<basic::IntValue<TFieldBase, T>, TOptions...>
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::IntValue<TFieldBase, T>, TOptions...>;
 public:

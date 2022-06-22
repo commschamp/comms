@@ -49,6 +49,7 @@ public:
     void test21();
     void test22();
     void test23();
+    void test24();
 
 private:
     template <typename TField>
@@ -1709,6 +1710,46 @@ void FieldsTestSuite2::test23()
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT_EQUALS(field.getMode(), Mode::Missing);
     TS_ASSERT_EQUALS(static_cast<const void*>(readIter), static_cast<const void*>(&Buf[0]));
+}
+
+class Test24Field : public
+    comms::field::IntValue<
+        comms::Field<FieldsTestSuite2::BigEndianOpt>,
+        std::uint8_t,
+        comms::option::def::FailOnInvalid<>,
+        comms::option::def::FieldType<Test24Field>
+    >
+{
+    using Base = 
+        comms::field::IntValue<
+            comms::Field<FieldsTestSuite2::BigEndianOpt>,
+            std::uint8_t,
+            comms::option::def::FailOnInvalid<>,
+            comms::option::def::FieldType<Test24Field>
+        >;    
+public:
+
+    using Base::getValue;
+
+    bool valid() const
+    {
+        return false;
+    }
+};
+
+void FieldsTestSuite2::test24()
+{
+    using Field = Test24Field;
+
+    static const char Buf[] = {
+        0x00
+    };
+
+    Field field;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    const auto* readIter = &Buf[0];
+    auto es = field.read(readIter, BufSize);
+    TS_ASSERT_DIFFERS(es, comms::ErrorStatus::Success);
 }
 
 template <typename TField>

@@ -65,7 +65,7 @@ namespace field
 /// @see COMMS_VARIANT_MEMBERS_ACCESS()
 /// @see COMMS_VARIANT_MEMBERS_ACCESS_NOTEMPLATE()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
-class Variant : private
+class Variant : public
         details::AdaptBasicFieldT<basic::Variant<TFieldBase, TMembers>, TOptions...>
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::Variant<TFieldBase, TMembers>, TOptions...>;

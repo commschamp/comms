@@ -78,7 +78,7 @@ public:
             return std::min(BaseImpl::length(), static_cast<std::size_t>(m_forcedLength));
         }
 
-        auto serValue = toSerialised(BaseImpl::getValueAdapted());
+        auto serValue = toSerialised(BaseImpl::getValue());
         for (std::size_t len = 1U; len < sizeof(SerialisedType); ++len) {
             if (fitsLength(serValue, len)) {
                 return len;
@@ -118,7 +118,7 @@ public:
         auto fromIter = iter;
         auto unsignedSerialized = util::readData<UnsignedSerialisedType>(iter, std::min(size, BaseImpl::maxLength()), Endian());
         auto len = static_cast<std::size_t>(std::distance(fromIter, iter));
-        BaseImpl::setValueAdapted(fromSerialised(signExtUnsignedSerialised(unsignedSerialized, len, HasSignTag())));
+        BaseImpl::setValue(fromSerialised(signExtUnsignedSerialised(unsignedSerialized, len, HasSignTag())));
         return comms::ErrorStatus::Success;
     }
 
@@ -146,7 +146,7 @@ public:
             return ErrorStatus::BufferOverflow;
         }
 
-        auto serValue = toSerialised(BaseImpl::getValueAdapted());
+        auto serValue = toSerialised(BaseImpl::getValue());
         if (0 < m_forcedLength) {
             comms::util::writeData(serValue, fieldLen, iter, Endian());
             return comms::ErrorStatus::Success;

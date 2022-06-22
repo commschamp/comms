@@ -105,17 +105,6 @@ public:
         value() = std::forward<T>(val);
     }    
 
-    const ValueType& getValueAdapted() const
-    {
-        return value();
-    }
-
-    template <typename T>
-    void setValueAdapted(T&& val)
-    {
-        value() = std::forward<T>(val);
-    }    
-
     ValueType& createBack()
     {
         value_.push_back(ValueType());

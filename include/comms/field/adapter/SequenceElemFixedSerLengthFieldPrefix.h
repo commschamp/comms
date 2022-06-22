@@ -165,18 +165,18 @@ public:
 
     bool canWrite() const
     {
-        if (BaseImpl::getValueAdapted().empty()) {
+        if (BaseImpl::getValue().empty()) {
             return BaseImpl::canWrite();
         }
 
-        return BaseImpl::canWrite() && canWriteElement(BaseImpl::getValueAdapted().front());
+        return BaseImpl::canWrite() && canWriteElement(BaseImpl::getValue().front());
     }
 
     template <typename TIter>
     ErrorStatus write(TIter& iter, std::size_t len) const
     {
-        if (!BaseImpl::getValueAdapted().empty()) {
-            if (!canWriteElement(BaseImpl::getValueAdapted().front())) {
+        if (!BaseImpl::getValue().empty()) {
+            if (!canWriteElement(BaseImpl::getValue().front())) {
                 return ErrorStatus::InvalidMsgData;
             }
 
@@ -201,8 +201,8 @@ public:
     ErrorStatus writeN(std::size_t count, TIter& iter, std::size_t& len) const
     {
         if (0U < count) {
-            COMMS_ASSERT(!BaseImpl::getValueAdapted().empty());
-            if (!canWriteElement(BaseImpl::getValueAdapted().front())) {
+            COMMS_ASSERT(!BaseImpl::getValue().empty());
+            if (!canWriteElement(BaseImpl::getValue().front())) {
                 return ErrorStatus::InvalidMsgData;
             }
 
@@ -235,7 +235,7 @@ private:
     std::size_t lengthInternal(FixedLengthLenFieldTag<TParams...>) const
     {
         std::size_t prefixLen = 0U;
-        if (!BaseImpl::getValueAdapted().empty()) {
+        if (!BaseImpl::getValue().empty()) {
             prefixLen = LenField::minLength();
         }
         return (prefixLen + BaseImpl::length());
@@ -245,7 +245,7 @@ private:
     std::size_t lengthInternal(VarLengthLenFieldTag<TParams...>) const
     {
         std::size_t prefixLen = 0U;
-        if (!BaseImpl::getValueAdapted().empty()) {
+        if (!BaseImpl::getValue().empty()) {
             LenField lenField;
             lenField.setValue( 
                     std::min(BaseImpl::minElementLength(), std::size_t(MaxAllowedElemLength)));

@@ -53,7 +53,7 @@ public:
     bool valid() const
     {
         return BaseImpl::valid() &&
-               comms::util::tupleTypeAccumulate<TRanges>(false, Validator(BaseImpl::getValueAdapted()));
+               comms::util::tupleTypeAccumulate<TRanges>(false, Validator(BaseImpl::getValue()));
     }
 
 private:

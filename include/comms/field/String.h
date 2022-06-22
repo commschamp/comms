@@ -156,7 +156,7 @@ using StringBase =
 /// @extends comms::Field
 /// @headerfile comms/field/String.h
 template <typename TFieldBase, typename... TOptions>
-class String : private details::StringBase<TFieldBase, TOptions...>
+class String : public details::StringBase<TFieldBase, TOptions...>
 {
     using BaseImpl = details::StringBase<TFieldBase, TOptions...>;
 public:

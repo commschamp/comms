@@ -88,7 +88,7 @@ namespace field
 /// @see @ref COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE()
 /// @see @ref COMMS_FIELD_ALIAS()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
-class Bitfield : private
+class Bitfield : public
         details::AdaptBasicFieldT<basic::Bitfield<TFieldBase, TMembers>, TOptions...>
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::Bitfield<TFieldBase, TMembers>, TOptions...>;

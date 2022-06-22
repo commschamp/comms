@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <type_traits>
 #include <utility>
 
 #include "comms/cast.h"
@@ -28,16 +29,18 @@ class FieldType : public TBase
 public:
     using ValueType = typename BaseImpl::ValueType;
 
-    auto getValueAdapted() const -> decltype(std::declval<TActField>().getValue())
+    bool valid() const
     {
-        return static_cast<const TActField*>(this)->getValue();
+        if (m_entered) {
+            return BaseImpl::valid();
+        }
+
+        m_entered = true;
+        return static_cast<const TActField*>(this)->valid();
     }
 
-    template <typename T>
-    void setValueAdapted(T&& val)
-    {
-        static_cast<TActField*>(this)->setValue(std::forward<T>(val));
-    }
+private:
+    mutable bool m_entered = false;    
 };
 
 }  // namespace adapter

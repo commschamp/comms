@@ -34,7 +34,7 @@ namespace field
 /// @extends comms::Field
 /// @headerfile comms/field/NoValue.h
 template <typename TFieldBase>
-class NoValue : private details::AdaptBasicFieldT<basic::NoValue<TFieldBase> >
+class NoValue : public details::AdaptBasicFieldT<basic::NoValue<TFieldBase> >
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::NoValue<TFieldBase> >;
 public:

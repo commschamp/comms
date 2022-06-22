@@ -55,7 +55,7 @@ public:
     std::size_t length() const
     {
         SizeField sizeField;
-        sizeField.setValue(BaseImpl::getValueAdapted().size());
+        sizeField.setValue(BaseImpl::getValue().size());
         return sizeField.length() + BaseImpl::length();
     }
 
@@ -75,7 +75,7 @@ public:
             return false;
         }
         SizeField sizeField;
-        sizeField.setValue(BaseImpl::getValueAdapted().size());
+        sizeField.setValue(BaseImpl::getValue().size());
         return sizeField.valid() && BaseImpl::valid();
     }
 
@@ -112,12 +112,12 @@ public:
             return false;
         }
 
-        if (MaxAllowedSize < BaseImpl::getValueAdapted().size()) {
+        if (MaxAllowedSize < BaseImpl::getValue().size()) {
             return false;
         }
 
         SizeField sizeField;
-        sizeField.setValue(BaseImpl::getValueAdapted().size());
+        sizeField.setValue(BaseImpl::getValue().size());
         return sizeField.canWrite();
     }
 
@@ -129,7 +129,7 @@ public:
         }
 
         SizeField sizeField;
-        sizeField.setValue(BaseImpl::getValueAdapted().size());
+        sizeField.setValue(BaseImpl::getValue().size());
         auto es = sizeField.write(iter, len);
         if (es != comms::ErrorStatus::Success) {
             return es;

@@ -75,17 +75,6 @@ public:
         value() = std::forward<T>(val);
     }    
 
-    const ValueType& getValueAdapted() const
-    {
-        return value();
-    }
-
-    template <typename T>
-    void setValueAdapted(T&& val)
-    {
-        value() = std::forward<T>(val);
-    }  
-
     constexpr std::size_t length() const
     {
         return comms::util::tupleAccumulate(

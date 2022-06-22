@@ -56,7 +56,7 @@ namespace field
 /// @extends comms::Field
 /// @headerfile comms/field/FloatValue.h
 template <typename TFieldBase, typename T, typename... TOptions>
-class FloatValue : private details::AdaptBasicFieldT<basic::FloatValue<TFieldBase, T>, TOptions...>
+class FloatValue : public details::AdaptBasicFieldT<basic::FloatValue<TFieldBase, T>, TOptions...>
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::FloatValue<TFieldBase, T>, TOptions...>;
 public:

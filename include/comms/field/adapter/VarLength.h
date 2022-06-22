@@ -124,7 +124,7 @@ public:
         }
 
         auto adjustedValue = signExtUnsignedSerialised(val, bytesCount, HasSignTag());
-        BaseImpl::setValueAdapted(BaseImpl::fromSerialised(static_cast<BaseSerialisedType>(adjustedValue)));
+        BaseImpl::setValue(BaseImpl::fromSerialised(static_cast<BaseSerialisedType>(adjustedValue)));
         return comms::ErrorStatus::Success;
     }
 
@@ -156,7 +156,7 @@ public:
             return ErrorStatus::BufferOverflow;
         }
 
-        writeNoStatusInternal(toSerialised(BaseImpl::getValueAdapted()), iter, HasSignTag(), Endian());
+        writeNoStatusInternal(toSerialised(BaseImpl::getValue()), iter, HasSignTag(), Endian());
         return ErrorStatus::Success;
     }
 
@@ -194,7 +194,7 @@ private:
     std::size_t lengthInternal(UnsignedTag<TParams...>) const
     {
         auto serValue = 
-            static_cast<UnsignedSerialisedType>(toSerialised(BaseImpl::getValueAdapted()));
+            static_cast<UnsignedSerialisedType>(toSerialised(BaseImpl::getValue()));
         std::size_t len = 0U;
         while (0 < serValue) {
             serValue = static_cast<decltype(serValue)>(serValue >> VarLengthShift);
@@ -207,7 +207,7 @@ private:
     template <typename... TParams>
     std::size_t lengthInternal(SignedTag<TParams...>) const
     {
-        auto serValue = toSerialised(BaseImpl::getValueAdapted());
+        auto serValue = toSerialised(BaseImpl::getValue());
         if (0 <= serValue) {
             // positive
             return lengthSignedPositiveInternal();
@@ -218,7 +218,7 @@ private:
 
     std::size_t lengthSignedNegativeInternal() const
     {
-        auto serValue = toSerialised(BaseImpl::getValueAdapted());
+        auto serValue = toSerialised(BaseImpl::getValue());
         std::size_t len = 0U;
         std::uint8_t lastByte = 0U;
         while (serValue != static_cast<decltype(serValue)>(-1)) {
@@ -244,7 +244,7 @@ private:
 
     std::size_t lengthSignedPositiveInternal() const
     {
-        auto serValue = toSerialised(BaseImpl::getValueAdapted());
+        auto serValue = toSerialised(BaseImpl::getValue());
         std::size_t len = 0U;
         std::uint8_t lastByte = 0U;
         while (serValue != static_cast<decltype(serValue)>(0)) {

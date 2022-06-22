@@ -64,7 +64,7 @@ public:
     {
         auto serialisedValue =
             comms::util::readData<SerialisedType>(iter, Endian());
-        BaseImpl::setValueAdapted(fromSerialised(serialisedValue));
+        BaseImpl::setValue(fromSerialised(serialisedValue));
     }
 
     template <typename TIter>
@@ -81,7 +81,7 @@ public:
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        comms::util::writeData(toSerialised(BaseImpl::getValueAdapted()), iter, Endian());
+        comms::util::writeData(toSerialised(BaseImpl::getValue()), iter, Endian());
     }
 
     static constexpr SerialisedType toSerialised(ValueType val)

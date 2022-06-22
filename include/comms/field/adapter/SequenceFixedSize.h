@@ -57,7 +57,7 @@ public:
 
     std::size_t length() const
     {
-        auto currSize = BaseImpl::getValueAdapted().size();
+        auto currSize = BaseImpl::getValue().size();
         if (currSize == fixedSize_) {
             return BaseImpl::length();
         }
@@ -94,7 +94,7 @@ public:
     template <typename TIter>
     comms::ErrorStatus write(TIter& iter, std::size_t len) const
     {
-        auto writeCount = std::min(BaseImpl::getValueAdapted().size(), fixedSize_);
+        auto writeCount = std::min(BaseImpl::getValue().size(), fixedSize_);
         auto es = BaseImpl::writeN(writeCount, iter, len);
         if (es != comms::ErrorStatus::Success) {
             return es;
@@ -121,7 +121,7 @@ public:
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        auto writeCount = std::min(BaseImpl::getValueAdapted().size(), fixedSize_);
+        auto writeCount = std::min(BaseImpl::getValue().size(), fixedSize_);
         BaseImpl::writeNoStatusN(writeCount, iter);
 
         auto remCount = fixedSize_ - writeCount;
@@ -138,7 +138,7 @@ public:
 
     bool valid() const
     {
-        return BaseImpl::valid() && (BaseImpl::getValueAdapted().size() <= fixedSize_);
+        return BaseImpl::valid() && (BaseImpl::getValue().size() <= fixedSize_);
     }
 
     bool refresh()
@@ -207,7 +207,7 @@ private:
     {
         std::size_t result = 0U;
         auto count = fixedSize_;
-        for (auto& elem : BaseImpl::getValueAdapted()) {
+        for (auto& elem : BaseImpl::getValue()) {
             if (count == 0U) {
                 break;
             }
@@ -221,7 +221,7 @@ private:
     template <typename... TParams>
     bool doRefresh(HasResizeTag<TParams...>)
     {
-        if (BaseImpl::getValueAdapted().size() == fixedSize_) {
+        if (BaseImpl::getValue().size() == fixedSize_) {
             return false;
         }
 

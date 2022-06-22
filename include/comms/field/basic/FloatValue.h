@@ -69,17 +69,6 @@ public:
         value() = static_cast<ValueType>(std::forward<U>(val));
     }    
 
-    const ValueType& getValueAdapted() const
-    {
-        return value();
-    }
-
-    template <typename U>
-    void setValueAdapted(U&& val)
-    {
-        value() = static_cast<ValueType>(std::forward<U>(val));
-    } 
-
     static constexpr std::size_t length()
     {
         return sizeof(SerialisedType);

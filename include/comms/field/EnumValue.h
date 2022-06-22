@@ -70,7 +70,7 @@ namespace field
 /// @extends comms::Field
 /// @headerfile comms/field/Bundle.h
 template <typename TFieldBase, typename TEnum, typename... TOptions>
-class EnumValue : private details::AdaptBasicFieldT<basic::EnumValue<TFieldBase, TEnum>, TOptions...>
+class EnumValue : public details::AdaptBasicFieldT<basic::EnumValue<TFieldBase, TEnum>, TOptions...>
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::EnumValue<TFieldBase, TEnum>, TOptions...>;
     static_assert(std::is_enum<TEnum>::value, "TEnum must be enum type");

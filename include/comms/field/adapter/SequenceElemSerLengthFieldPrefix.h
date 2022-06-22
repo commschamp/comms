@@ -227,7 +227,7 @@ public:
             return false;
         }
 
-        auto& vec = BaseImpl::getValueAdapted();
+        auto& vec = BaseImpl::getValue();
         for (auto& elem : vec) {
             auto elemLen = BaseImpl::elementLength(elem);
             if (MaxAllowedElemLength < elemLen) {
@@ -263,7 +263,7 @@ private:
     template<typename... TParams>
     std::size_t lengthInternal(FixedLengthLenFieldTag<TParams...>, FixedLengthElemTag<TParams...>) const
     {
-        return (LenField::minLength() + BaseImpl::minElementLength()) * BaseImpl::getValueAdapted().size();
+        return (LenField::minLength() + BaseImpl::minElementLength()) * BaseImpl::getValue().size();
     }
 
     template<typename... TParams>
@@ -279,7 +279,7 @@ private:
         auto elemLen = std::min(origElemLen, std::size_t(MaxAllowedElemLength));
         LenField lenField;
         lenField.setValue(elemLen);
-        return (lenField.length() + origElemLen) * BaseImpl::getValueAdapted().size();
+        return (lenField.length() + origElemLen) * BaseImpl::getValue().size();
     }
 
     template <typename... TParams>
@@ -291,7 +291,7 @@ private:
     std::size_t lengthInternalIterative() const
     {
         std::size_t result = 0U;
-        for (auto& elem : BaseImpl::getValueAdapted()) {
+        for (auto& elem : BaseImpl::getValue()) {
             result += elementLength(elem);
         }
         return result;

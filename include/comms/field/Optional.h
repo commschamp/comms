@@ -41,7 +41,7 @@ namespace field
 /// @extends comms::Field
 /// @headerfile comms/field/Optional.h
 template <typename TField, typename... TOptions>
-class Optional : private details::AdaptBasicFieldT<basic::Optional<TField>, TOptions...>
+class Optional : public details::AdaptBasicFieldT<basic::Optional<TField>, TOptions...>
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::Optional<TField>, TOptions...>;
 public:

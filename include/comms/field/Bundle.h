@@ -57,7 +57,7 @@ namespace field
 /// @see @ref COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE()
 /// @see @ref COMMS_FIELD_ALIAS()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
-class Bundle : private details::AdaptBasicFieldT<basic::Bundle<TFieldBase, TMembers>, TOptions...>
+class Bundle : public details::AdaptBasicFieldT<basic::Bundle<TFieldBase, TMembers>, TOptions...>
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::Bundle<TFieldBase, TMembers>, TOptions...>;
     static_assert(comms::util::IsTuple<TMembers>::Value,
