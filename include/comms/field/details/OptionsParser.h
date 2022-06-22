@@ -31,7 +31,6 @@ class OptionsParser<>
 public:
     static constexpr bool HasInvalidByDefault = false;
     static constexpr bool HasVersionStorage = false;
-    static constexpr bool HasCustomValueReader = false;
     static constexpr bool HasSerOffset = false;
     static constexpr bool HasVersionsRange = false;
     static constexpr bool HasFixedLengthLimit = false;
@@ -78,9 +77,6 @@ public:
 
     template <typename TField>
     using AdaptVersionStorage = TField;
-
-    template <typename TField>
-    using AdaptCustomValueReader = TField;
 
     template <typename TField>
     using AdaptSerOffset = TField;
@@ -168,19 +164,6 @@ public:
 
     template <typename TField>
     using AdaptMissingOnReadFail = TField;      
-};
-
-template <typename T, typename... TOptions>
-class OptionsParser<
-    comms::option::def::CustomValueReader<T>,
-    TOptions...> : public OptionsParser<TOptions...>
-{
-public:
-    static constexpr bool HasCustomValueReader = true;
-    using CustomValueReader = T;
-
-    template <typename TField>
-    using AdaptCustomValueReader = comms::field::adapter::CustomValueReader<CustomValueReader, TField>;    
 };
 
 template <typename... TOptions>

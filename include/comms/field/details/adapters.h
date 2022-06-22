@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include "comms/field/adapter/CustomValueReader.h"
 #include "comms/field/adapter/SerOffset.h"
 #include "comms/field/adapter/FixedLength.h"
 #include "comms/field/adapter/FixedBitLength.h"

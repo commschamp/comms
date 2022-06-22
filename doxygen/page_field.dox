@@ -2058,25 +2058,6 @@
 /// and @ref comms::field::Bundle::readFromUntilAndUpdateLen()). The latter
 /// can be used to automatically reduce remaining length value.
 ///
-/// Another way is to use @ref comms::option::def::CustomValueReader option. It
-/// receives one template parameter, which has to be a type of a custom
-/// reader class. Such class must implement @b operator() with the following
-/// signature:
-/// @code
-/// struct MyReader
-/// {
-///     template <typename TField, typename TIter>
-///     comms::ErrorStatus operator()(TField& field, TIter& iter, std::size_t len) const
-///     {
-///         ... // Do proper read of the field's value.
-///     }
-/// };
-/// @endcode
-/// @b NOTE that the used @b operator() specifies the field type as a template
-/// parameter. This is required because the passed reference is to one of the
-/// defined field's base classes, which is implementation dependent. Just use
-/// the provided @b value() member function to access the tuple of member fields.
-/// 
 /// @subsection sec_field_tutorial_common_options_validation Custom Value Validation Logic
 /// Every field provides @b valid() member function to validate the internal value.
 /// By default, every internal value of the field is considered to be valid, i.e.

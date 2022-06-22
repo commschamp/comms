@@ -2301,26 +2301,66 @@ struct BundleCustomReaderTest49
     }
 };
 
-void FieldsTestSuite::test49()
-{
-
-    typedef comms::field::Bundle<
-        comms::Field<BigEndianOpt>,
+class Test49Field : public
+    comms::field::Bundle<
+        comms::Field<FieldsTestSuite::BigEndianOpt>,
         std::tuple<
             comms::field::IntValue<
-                comms::Field<BigEndianOpt>,
+                comms::Field<FieldsTestSuite::BigEndianOpt>,
                 std::uint8_t
             >,
             comms::field::Optional<
                 comms::field::IntValue<
-                    comms::Field<BigEndianOpt>,
+                    comms::Field<FieldsTestSuite::BigEndianOpt>,
                     std::uint16_t
                 >
             >
-        >,
-        comms::option::CustomValueReader<BundleCustomReaderTest49>
-    > Field;
+        >
+    >
+{
+    using Base = 
+        comms::field::Bundle<
+            comms::Field<FieldsTestSuite::BigEndianOpt>,
+            std::tuple<
+                comms::field::IntValue<
+                    comms::Field<FieldsTestSuite::BigEndianOpt>,
+                    std::uint8_t
+                >,
+                comms::field::Optional<
+                    comms::field::IntValue<
+                        comms::Field<FieldsTestSuite::BigEndianOpt>,
+                        std::uint16_t
+                    >
+                >
+            >
+        >; 
+public:
+    template <typename TIter>
+    comms::ErrorStatus read(TIter& iter, std::size_t len)
+    {
+        auto& members = Base::value();
+        auto& first = std::get<0>(members);
+        auto& second = std::get<1>(members);
 
+        auto es = first.read(iter, len);
+        if (es != comms::ErrorStatus::Success) {
+            return es;
+        }
+
+        if (first.value() != 0) {
+            second.setMode(comms::field::OptionalMode::Missing);
+        }
+        else {
+            second.setMode(comms::field::OptionalMode::Exists);
+        }
+
+        return second.read(iter, len - first.length());
+    }    
+};
+
+void FieldsTestSuite::test49()
+{
+    using Field = Test49Field;
     static_assert(!Field::isVersionDependent(),
         "Invalid version dependency assumption");
 

@@ -63,15 +63,6 @@ class AdaptBasicField
             ParsedOptions::HasEmptySerialization ||
             ParsedOptions::HasMissingOnReadFail;
 
-    static_assert(
-            (!ParsedOptions::HasCustomValueReader) || (!CustomReaderIncompatible),
-            "CustomValueReader option is incompatible with following options: "
-            "NumValueSerOffset, FixedLength, FixedBitLength, VarLength, "
-            "AvailableLengthLimit, SequenceElemLengthForcingEnabled, "
-            "SequenceSizeForcingEnabled, SequenceLengthForcingEnabled, SequenceFixedSize, SequenceSizeFieldPrefix, "
-            "SequenceSerLengthFieldPrefix, SequenceElemSerLengthFieldPrefix, "
-            "SequenceElemFixedSerLengthFieldPrefix, SequenceTrailingFieldSuffix, "
-            "SequenceTerminationFieldSuffix, EmptySerialization, MissingOnReadFail");
 
     static const bool VarLengthIncompatible =
             ParsedOptions::HasFixedLengthLimit ||
@@ -119,7 +110,7 @@ class AdaptBasicField
 
     static_assert(
             1U >= FieldsOptionsCompatibilityCalc<
-                ParsedOptions::HasCustomValueReader,
+                ParsedOptions::HasCustomStorageType,
                 ParsedOptions::HasFixedSizeStorage,
                 ParsedOptions::HasOrigDataView>::Value,
             "The following options are incompatible, cannot be used together: "
@@ -145,11 +136,8 @@ class AdaptBasicField
     using VersionStorageAdapted = 
         typename ParsedOptions::template AdaptVersionStorage<InvalidByDefaultAdapted>;
     
-    using CustomReaderAdapted = 
-        typename ParsedOptions::template AdaptCustomValueReader<VersionStorageAdapted>;
-
     using SerOffsetAdapted = 
-        typename ParsedOptions::template AdaptSerOffset<CustomReaderAdapted>;
+        typename ParsedOptions::template AdaptSerOffset<VersionStorageAdapted>;
 
     using VersionsRangeAdapted = 
         typename ParsedOptions::template AdaptVersionsRange<SerOffsetAdapted>;

@@ -60,11 +60,6 @@ namespace field
 ///         behavior is to call @b refresh() member function of the contained
 ///         field (if such exists). This option allows specifying the custom
 ///         refreshing behaviour.
-///     @li @ref comms::option::def::CustomValueReader - It may be required to implement
-///         custom reading functionality instead of default behaviour of
-///         invoking read() member function of every member field. It is possible
-///         to provide cusom reader functionality using comms::option::def::CustomValueReader
-///         option.
 ///     @li @ref comms::option::def::DefaultVariantIndex - By default the Variant field
 ///         doesn't have any valid contents. This option may be used to specify
 ///         the index of the default member field.

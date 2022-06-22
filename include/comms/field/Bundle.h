@@ -52,11 +52,6 @@ namespace field
 ///         behaviour is to call the @b refresh() member function of every
 ///         member field. This option provides an ability to set a custom
 ///         "refreshing" logic.
-///     @li @ref comms::option::def::CustomValueReader - It may be required to implement
-///         custom reading functionality instead of default behaviour of
-///         invoking read() member function of every member field. It is possible
-///         to provide cusom reader functionality using @ref comms::option::def::CustomValueReader
-///         option.
 ///     @li @ref comms::option::def::RemLengthMemberField - Specify index of member field
 ///         that contains remaining length information for all the subsequent fields.
 ///     @li @ref comms::option::def::HasCustomRead - Mark field to have custom read
