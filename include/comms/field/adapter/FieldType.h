@@ -11,6 +11,7 @@
 #include <utility>
 
 #include "comms/cast.h"
+#include "comms/util/ScopeGuard.h"
 
 namespace comms
 {
@@ -36,6 +37,13 @@ public:
         }
 
         m_entered = true;
+        auto onExit =
+            comms::util::makeScopeGuard(
+                [this]()
+                {
+                    m_entered = false;
+                });
+                
         return static_cast<const TActField*>(this)->valid();
     }
 

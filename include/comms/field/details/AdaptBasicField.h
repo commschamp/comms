@@ -214,8 +214,11 @@ class AdaptBasicField
     using CustomWriteWrapAdapted = 
             typename ParsedOptions::template AdaptCustomWrite<CustomRefreshWrapAdapted>;
 
+    using MissingOnInvalidAdapted = 
+            typename ParsedOptions::template AdaptMissingOnInvalid<CustomWriteWrapAdapted>;
+
     using MissingOnReadFailAdapted = 
-            typename ParsedOptions::template AdaptMissingOnReadFail<CustomWriteWrapAdapted>;
+            typename ParsedOptions::template AdaptMissingOnReadFail<MissingOnInvalidAdapted>;
 
 public:
     using Type = MissingOnReadFailAdapted;

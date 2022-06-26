@@ -50,6 +50,7 @@ public:
     void test22();
     void test23();
     void test24();
+    void test25();
 
 private:
     template <typename TField>
@@ -1728,9 +1729,6 @@ class Test24Field : public
             comms::option::def::FieldType<Test24Field>
         >;    
 public:
-
-    using Base::getValue;
-
     bool valid() const
     {
         return false;
@@ -1750,6 +1748,57 @@ void FieldsTestSuite2::test24()
     const auto* readIter = &Buf[0];
     auto es = field.read(readIter, BufSize);
     TS_ASSERT_DIFFERS(es, comms::ErrorStatus::Success);
+}
+
+class Test25Field : public
+    comms::field::Optional<
+        comms::field::IntValue<comms::Field<FieldsTestSuite2::BigEndianOpt>, std::uint8_t>,
+        comms::option::def::ExistsByDefault,
+        comms::option::def::MissingOnInvalid,
+        comms::option::def::FieldType<Test25Field>
+    >
+{
+    using Base = 
+        comms::field::Optional<
+            comms::field::IntValue<comms::Field<FieldsTestSuite2::BigEndianOpt>, std::uint8_t>,
+            comms::option::def::ExistsByDefault,
+            comms::option::def::MissingOnInvalid,
+            comms::option::def::FieldType<Test25Field>
+        >;    
+public:
+    bool valid() const
+    {
+        return Base::isMissing() || (Base::field().value() == 0U);
+    }
+};
+
+void FieldsTestSuite2::test25()
+{
+    using Field = Test25Field;
+    Field field;
+
+    const char Buf[] = {
+        0x01
+    };
+    const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    
+    static_assert(Field::ParsedOptions::HasMissingOnInvalid, "Invalid assumption");
+    TS_ASSERT(field.valid());
+    TS_ASSERT(field.doesExist());
+    const auto* readIter = &Buf[0];
+    auto es = field.read(readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT(field.valid());
+    TS_ASSERT(field.isMissing());
+    TS_ASSERT_EQUALS(static_cast<const void*>(readIter), static_cast<const void*>(&Buf[0]));
+
+    field.setExists();
+    field.field().value() = 1U;
+    TS_ASSERT(!field.valid());
+    TS_ASSERT(field.refresh());
+    TS_ASSERT(field.valid());
+    TS_ASSERT(field.isMissing());
 }
 
 template <typename TField>

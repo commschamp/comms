@@ -1219,6 +1219,11 @@ struct RemLengthMemberField {};
 /// @headerfile comms/options.h
 struct MissingOnReadFail {};
 
+/// @brief Mark an @ref comms::field::Optional field as missing
+///     if its contents are invalid (member field has invalid value).
+/// @headerfile comms/options.h
+struct MissingOnInvalid {};
+
 } // namespace def
 
 namespace app

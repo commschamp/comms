@@ -281,6 +281,8 @@ private:
         "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to FloatValue field");
     static_assert(!ParsedOptions::HasMissingOnReadFail,
             "comms::option::def::MissingOnReadFail option is not applicable to FloatValue field");           
+    static_assert(!ParsedOptions::HasMissingOnInvalid,
+            "comms::option::def::MissingOnInvalid option is not applicable to FloatValue field");    
 };
 
 /// @brief Equality comparison operator.

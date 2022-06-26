@@ -667,7 +667,9 @@ private:
     static_assert(!ParsedOptions::HasInvalidByDefault,
         "comms::option::def::InvalidByDefault option is not applicable to Bundle field");
     static_assert(!ParsedOptions::HasMissingOnReadFail,
-            "comms::option::def::MissingOnReadFail option is not applicable to Bundle field");           
+            "comms::option::def::MissingOnReadFail option is not applicable to Bundle field");     
+    static_assert(!ParsedOptions::HasMissingOnInvalid,
+            "comms::option::def::MissingOnInvalid option is not applicable to Bundle field");          
 };
 
 /// @brief Equality comparison operator.

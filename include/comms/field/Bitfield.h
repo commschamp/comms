@@ -352,6 +352,8 @@ private:
         "comms::option::def::InvalidByDefault option is not applicable to Bitfield field");
     static_assert(!ParsedOptions::HasMissingOnReadFail,
             "comms::option::def::MissingOnReadFail option is not applicable to Bitfield field");   
+    static_assert(!ParsedOptions::HasMissingOnInvalid,
+            "comms::option::def::MissingOnInvalid option is not applicable to Bitfield field");                
 };
 
 /// @brief Equality comparison operator.

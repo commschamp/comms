@@ -66,6 +66,7 @@ public:
     static constexpr bool HasCustomVersionUpdate = false;
     static constexpr bool HasFieldType = false;
     static constexpr bool HasMissingOnReadFail = false;
+    static constexpr bool HasMissingOnInvalid = false;
 
     using UnitsType = void;
     using ScalingRatio = std::ratio<1, 1>;
@@ -159,7 +160,10 @@ public:
     using AdaptFieldType = TField;    
 
     template <typename TField>
-    using AdaptMissingOnReadFail = TField;      
+    using AdaptMissingOnReadFail = TField; 
+
+    template <typename TField>
+    using AdaptMissingOnInvalid = TField;  
 };
 
 template <typename... TOptions>
@@ -719,6 +723,18 @@ public:
 
     template <typename TField>
     using AdaptMissingOnReadFail = comms::field::adapter::MissingOnReadFail<TField>;       
+};
+
+template <typename... TOptions>
+class OptionsParser<
+    comms::option::def::MissingOnInvalid,
+    TOptions...> : public OptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasMissingOnInvalid = true;
+
+    template <typename TField>
+    using AdaptMissingOnInvalid = comms::field::adapter::MissingOnInvalid<TField>;       
 };
 
 template <typename... TOptions>
