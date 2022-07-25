@@ -24,6 +24,9 @@ public:
     {
         return false;
     }
+
+    template <typename TIter>
+    void writeNoStatus(TIter& iter) const = delete;    
 };
 
 }  // namespace adapter
