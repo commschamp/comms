@@ -51,6 +51,7 @@ public:
     void test23();
     void test24();
     void test25();
+    void test26();
 
 private:
     template <typename TField>
@@ -1799,6 +1800,20 @@ void FieldsTestSuite2::test25()
     TS_ASSERT(field.refresh());
     TS_ASSERT(field.valid());
     TS_ASSERT(field.isMissing());
+}
+
+
+void FieldsTestSuite2::test26()
+{
+    using Field = 
+        comms::field::BitmaskValue<
+            BeFieldBase,
+            comms::option::def::FixedLength<8U>,
+            comms::option::def::BitmaskReservedBits<0xFFFFFFFFFFFFFEFEULL, 0x0U>
+        >;
+
+    Field field;
+    static_cast<void>(field);
 }
 
 template <typename TField>
