@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -1282,9 +1282,11 @@ private:
         TNextLayerUpdater&& nextLayerUpdater,
         VarLengthTag<TParams...>) const
     {
+        auto iterTmp = iter;
         auto es = field.read(iter, size);
         if (es == comms::ErrorStatus::Success) {
-            es = nextLayerUpdater.update(iter, size - field.length());
+            auto diff = static_cast<std::size_t>(std::distance(iterTmp, iter));
+            es = nextLayerUpdater.update(iter, size - diff);
         }
         return es;
     }
@@ -1313,9 +1315,11 @@ private:
         TNextLayerUpdater&& nextLayerUpdater,
         VarLengthTag<TParams...>) const
     {
+        auto iterTmp = iter;
         auto es = field.read(iter, size);
         if (es == comms::ErrorStatus::Success) {
-            es = nextLayerUpdater.update(msg, iter, size - field.length());
+            auto diff = static_cast<std::size_t>(std::distance(iterTmp, iter));
+            es = nextLayerUpdater.update(msg, iter, size - diff);
         }
         return es;
     }

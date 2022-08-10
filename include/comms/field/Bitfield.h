@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -71,23 +71,13 @@ namespace field
 /// @tparam TOptions Zero or more options that modify/refine default behaviour
 ///     of the field.@n
 ///     Supported options are:
-///     @li @ref comms::option::def::ContentsValidator - All field members may specify
-///         their independent validators. The bitfield field considered to
-///         be valid if all the field members are valid. This option though,
-///         provides an ability to add extra validation logic that can
-///         observe value of more than one bitfield member. For example,
-///         protocol specifies that if one specific member has value X, than
-///         other member is NOT allowed to have value Y.
-///     @li @ref comms::option::def::ContentsRefresher - The default refreshing
-///         behaviour is to call the @b refresh() member function of every
-///         member field. This option provides an ability to set a custom
-///         "refreshing" logic.
 ///     @li @ref comms::option::def::HasCustomRead - Mark field to have custom read
 ///         functionality
 ///     @li @ref comms::option::def::HasCustomRefresh - Mark field to have custom
 ///         refresh functionality.
 ///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
 ///     @li @ref comms::option::def::VersionStorage - Add version storage.
+///     @li @ref comms::option::def::FieldType
 /// @pre TMember is a variant of std::tuple, that contains other fields.
 /// @pre Every field member specifies its length in bits using
 ///     @ref comms::option::def::FixedBitLength option.
@@ -98,7 +88,7 @@ namespace field
 /// @see @ref COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE()
 /// @see @ref COMMS_FIELD_ALIAS()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
-class Bitfield : private
+class Bitfield : public
         details::AdaptBasicFieldT<basic::Bitfield<TFieldBase, TMembers>, TOptions...>
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::Bitfield<TFieldBase, TMembers>, TOptions...>;
@@ -166,6 +156,21 @@ public:
     {
         return BaseImpl::value();
     }
+
+    /// @brief Get value
+    /// @details Implemented by calling @b value(), but can be overriden in the derived class
+    const ValueType& getValue() const
+    {
+        return BaseImpl::getValue();
+    }
+
+    /// @brief Set value
+    /// @details Implemented as re-assigning to @b value(), but can be overriden in the derived class.
+    template <typename U>
+    void setValue(U&& val)
+    {
+        BaseImpl::setValue(std::forward<U>(val));
+    }        
 
     /// @brief Get length required to serialise the current field value.
     /// @return Number of bytes it will take to serialise the field value.
@@ -345,7 +350,10 @@ private:
         "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to Bitfield field");
     static_assert(!ParsedOptions::HasInvalidByDefault,
         "comms::option::def::InvalidByDefault option is not applicable to Bitfield field");
-
+    static_assert(!ParsedOptions::HasMissingOnReadFail,
+            "comms::option::def::MissingOnReadFail option is not applicable to Bitfield field");   
+    static_assert(!ParsedOptions::HasMissingOnInvalid,
+            "comms::option::def::MissingOnInvalid option is not applicable to Bitfield field");                
 };
 
 /// @brief Equality comparison operator.

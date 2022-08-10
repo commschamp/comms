@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -145,8 +145,6 @@ using StringBase =
 ///     @li @ref comms::option::def::SequenceTerminationFieldSuffix
 ///     @li @ref comms::option::def::SequenceTrailingFieldSuffix
 ///     @li @ref comms::option::def::DefaultValueInitialiser
-///     @li @ref comms::option::def::ContentsValidator
-///     @li @ref comms::option::def::ContentsRefresher
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
 ///     @li @ref comms::option::def::FailOnInvalid
@@ -154,10 +152,11 @@ using StringBase =
 ///     @li @ref comms::option::def::EmptySerialization
 ///     @li @ref comms::option::def::InvalidByDefault
 ///     @li @ref comms::option::def::VersionStorage
+///     @li @ref comms::option::def::FieldType
 /// @extends comms::Field
 /// @headerfile comms/field/String.h
 template <typename TFieldBase, typename... TOptions>
-class String : private details::StringBase<TFieldBase, TOptions...>
+class String : public details::StringBase<TFieldBase, TOptions...>
 {
     using BaseImpl = details::StringBase<TFieldBase, TOptions...>;
 public:
@@ -201,7 +200,7 @@ public:
     /// @brief Constructor
     explicit String(const char* str)
     {
-        BaseImpl::value() = str;
+        setValue(str);
     }
 
     /// @brief Copy constructor
@@ -283,6 +282,21 @@ public:
     {
         return BaseImpl::value();
     }
+
+    /// @brief Get value
+    /// @details Implemented by calling @b value(), but can be overriden in the derived class
+    const ValueType& getValue() const
+    {
+        return BaseImpl::getValue();
+    }
+
+    /// @brief Set value
+    /// @details Implemented as re-assigning to @b value(), but can be overriden in the derived class.
+    template <typename U>
+    void setValue(U&& val)
+    {
+        BaseImpl::setValue(std::forward<U>(val));
+    }          
 
     /// @brief Get length of serialised data
     std::size_t length() const
@@ -511,6 +525,10 @@ private:
         "comms::option::def::SequenceElemSerLengthFixedFieldPrefix option is not applicable to String field");
     static_assert(!ParsedOptions::HasVersionsRange,
         "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to String field");
+    static_assert(!ParsedOptions::HasMissingOnReadFail,
+            "comms::option::def::MissingOnReadFail option is not applicable to String field");           
+    static_assert(!ParsedOptions::HasMissingOnInvalid,
+            "comms::option::def::MissingOnInvalid option is not applicable to String field");  
 };
 
 /// @brief Equality comparison operator.

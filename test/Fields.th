@@ -205,9 +205,11 @@ private:
 
 void FieldsTestSuite::test1()
 {
-    typedef comms::field::IntValue<
-        comms::Field<BigEndianOpt>,
-        std::uint32_t> Field;
+    using Field = 
+        comms::field::IntValue<
+            comms::Field<BigEndianOpt>,
+            std::uint32_t
+        >;
 
     static_assert(!Field::isVersionDependent(), "Invalid version dependency assumption");
     static const char Buf[] = {
@@ -220,6 +222,15 @@ void FieldsTestSuite::test1()
     TS_ASSERT_EQUALS(field.value(), 0x01020304);
     TS_ASSERT(field.valid());
     TS_ASSERT(!field.setVersion(5));
+
+    std::vector<Field> vec;
+    vec.resize(2U);
+    TS_ASSERT_EQUALS(vec[0], vec[1]);
+    vec[0].setValue(100);
+    vec[1].setValue(5);
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT_EQUALS(vec[0].value(), 5U);
+    TS_ASSERT_EQUALS(vec[1].value(), 100U);
 }
 
 void FieldsTestSuite::test2()
@@ -417,10 +428,11 @@ void FieldsTestSuite::test9()
 
 void FieldsTestSuite::test10()
 {
-    typedef comms::field::BitmaskValue<
-        comms::Field<BigEndianOpt>,
-        comms::option::FixedLength<2>
-    > Field;
+    using Field = 
+        comms::field::BitmaskValue<
+            comms::Field<BigEndianOpt>,
+            comms::option::FixedLength<2>
+        >;
 
     static_assert(!Field::isVersionDependent(), "Invalid version dependency assumption");
     Field field;
@@ -463,6 +475,13 @@ void FieldsTestSuite::test10()
     };
     const std::size_t ExpectedBufSize = std::extent<decltype(ExpectedBuf)>::value;
     writeReadField(field, ExpectedBuf, ExpectedBufSize);
+
+    std::vector<Field> vec;
+    vec.resize(2U);
+    TS_ASSERT_EQUALS(vec[0], vec[1]);
+    vec[0].setValue(0xffff);
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT_EQUALS(vec[0].getValue(), 0U)
 }
 
 void FieldsTestSuite::test11()
@@ -526,13 +545,14 @@ void FieldsTestSuite::test11()
 
 void FieldsTestSuite::test12()
 {
-    typedef comms::field::EnumValue<
-        comms::Field<BigEndianOpt>,
-        Enum1,
-        comms::option::FixedLength<1>,
-        comms::option::ValidNumValueRange<0, Enum1_NumOfValues - 1>,
-        comms::option::DefaultNumValue<Enum1_NumOfValues>
-    > Field;
+    using Field =  
+        comms::field::EnumValue<
+            comms::Field<BigEndianOpt>,
+            Enum1,
+            comms::option::FixedLength<1>,
+            comms::option::ValidNumValueRange<0, Enum1_NumOfValues - 1>,
+            comms::option::DefaultNumValue<Enum1_NumOfValues>
+        >;
 
     static_assert(!Field::isVersionDependent(),
         "Invalid version dependency assumption");
@@ -560,6 +580,14 @@ void FieldsTestSuite::test12()
     };
     static const std::size_t ExpectedBufSize = std::extent<decltype(ExpectedBuf)>::value;
     writeReadField(field, ExpectedBuf, ExpectedBufSize);
+
+    std::vector<Field> vec;
+    vec.resize(2U);
+    TS_ASSERT_EQUALS(vec[0], vec[1]);
+    vec[0].setValue(Enum1_Value3);
+    vec[1].setValue(Enum1_Value1);
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT_EQUALS(vec[0].getValue(), Enum1_Value1);
 }
 
 void FieldsTestSuite::test13()
@@ -602,13 +630,14 @@ void FieldsTestSuite::test13()
 
 void FieldsTestSuite::test14()
 {
-    typedef comms::field::ArrayList<
-        comms::Field<BigEndianOpt>,
-        comms::field::IntValue<
+    using Field = 
+        comms::field::ArrayList<
             comms::Field<BigEndianOpt>,
-            std::uint8_t
-        >
-    > Field;
+            comms::field::IntValue<
+                comms::Field<BigEndianOpt>,
+                std::uint8_t
+            >
+        >;
 
     static_assert(!Field::isVersionDependent(),
         "Invalid version dependency assumption");
@@ -625,6 +654,11 @@ void FieldsTestSuite::test14()
     TS_ASSERT_EQUALS(field.length(), BufSize);
     TS_ASSERT(field.valid());
     TS_ASSERT(!field.refresh());
+
+    std::vector<Field> vec;
+    vec.resize(2U);
+    TS_ASSERT_EQUALS(vec[0], vec[1]);
+    std::sort(vec.begin(), vec.end());
 }
 
 void FieldsTestSuite::test15()
@@ -672,19 +706,21 @@ void FieldsTestSuite::test16()
     {
     };        
 
-    typedef comms::field::String<
-        comms::Field<BigEndianOpt>,
-        comms::option::SequenceSizeFieldPrefix<SizeField>
-    > Field;
+    using Field = 
+        comms::field::String<
+            comms::Field<BigEndianOpt>,
+            comms::option::SequenceSizeFieldPrefix<SizeField>
+        >;
 
     static_assert(!Field::isVersionDependent(),
         "Invalid version dependency assumption");
 
-    typedef comms::field::String<
-        comms::Field<BigEndianOpt>,
-        comms::option::SequenceSizeFieldPrefix<SizeField>,
-        comms::option::FixedSizeStorage<256>
-    > StaticStorageField;
+    using StaticStorageField = 
+        comms::field::String<
+            comms::Field<BigEndianOpt>,
+            comms::option::SequenceSizeFieldPrefix<SizeField>,
+            comms::option::FixedSizeStorage<256>
+        >;
 
     static_assert(!StaticStorageField::isVersionDependent(),
         "Invalid version dependency assumption");
@@ -718,6 +754,22 @@ void FieldsTestSuite::test16()
     TS_ASSERT_EQUALS(staticStorageField.value().size(), static_cast<std::size_t>(Buf[0]));
     TS_ASSERT_EQUALS(staticStorageField.length(), staticStorageField.value().size() + 1U);
     TS_ASSERT(staticStorageField.valid());
+
+    std::vector<Field> vec;
+    vec.resize(2U);
+    TS_ASSERT_EQUALS(vec[0], vec[1]);
+    vec[0].setValue("hello");
+    vec[1].setValue("aaa");
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT_EQUALS(vec[0].getValue(), "aaa");
+
+    std::vector<StaticStorageField> vec2;
+    vec2.resize(2U);
+    TS_ASSERT_EQUALS(vec2[0], vec2[1]);
+    vec2[0].setValue("hello");
+    vec2[1].setValue("aaa");
+    std::sort(vec2.begin(), vec2.end());
+    TS_ASSERT_EQUALS(vec2[0].getValue(), "aaa");    
 }
 
 void FieldsTestSuite::test17()
@@ -1128,11 +1180,11 @@ void FieldsTestSuite::test25()
             comms::option::FixedLength<1>,
             comms::option::FixedBitLength<6>
         >
-    > BitfileMembers;
+    > BitfieldMembers;
 
     typedef comms::field::Bitfield<
         comms::Field<BigEndianOpt>,
-        BitfileMembers
+        BitfieldMembers
     > Field;
 
     static_assert(!Field::isVersionDependent(),
@@ -1156,6 +1208,18 @@ void FieldsTestSuite::test25()
 
     auto& mem2 = std::get<1>(members);
     TS_ASSERT_EQUALS(mem2.value(), 0x10);
+
+    std::vector<Field> vec;
+    vec.resize(2U);
+    TS_ASSERT_EQUALS(vec[0], vec[1]);
+    std::get<0>(vec[0].value()).setValue(1);
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT_EQUALS(std::get<0>(vec[1].value()).getValue(), 1U);    
+
+    std::get<0>(vec[0].value()).setValue(1);
+    std::get<1>(vec[0].value()).setValue(1U);
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT_EQUALS(std::get<1>(vec[0].value()).getValue(), 0U);    
 }
 
 void FieldsTestSuite::test26()
@@ -1171,11 +1235,11 @@ void FieldsTestSuite::test26()
             comms::option::FixedLength<1>,
             comms::option::FixedBitLength<5>
         >
-    > BitfileMembers;
+    > BitfieldMembers;
 
     typedef comms::field::Bitfield<
         comms::Field<BigEndianOpt>,
-        BitfileMembers
+        BitfieldMembers
     > Field;
 
     static_assert(!Field::isVersionDependent(),
@@ -1398,14 +1462,14 @@ void FieldsTestSuite::test30()
 
 void FieldsTestSuite::test31()
 {
-
-    typedef comms::field::Optional<
-        comms::field::IntValue<
-            comms::Field<BigEndianOpt>,
-            std::uint16_t,
-            comms::option::ValidNumValueRange<0, 10>
-        >
-    > Field;
+    using Field =
+        comms::field::Optional<
+            comms::field::IntValue<
+                comms::Field<BigEndianOpt>,
+                std::uint16_t,
+                comms::option::ValidNumValueRange<0, 10>
+            >
+        >;
 
     static_assert(!Field::isVersionDependent(),
         "Invalid version dependency assumption");
@@ -1437,29 +1501,40 @@ void FieldsTestSuite::test31()
     es = field.write(writeIter, BufTmpSize);
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT_EQUALS(writeIter, &bufTmp[0]);
+
+    std::vector<Field> vec;
+    vec.resize(2U);
+    TS_ASSERT_EQUALS(vec[0], vec[1]);
+    vec[0].field().setValue(2U);
+    vec[1].field().setValue(1U);
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT_EQUALS(vec[0].field().getValue(), 1U);
+    vec[1].setMissing();
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT_EQUALS(vec[1].field().getValue(), 1U);
 }
 
 void FieldsTestSuite::test32()
 {
-
-    typedef comms::field::Bundle<
-        comms::Field<BigEndianOpt>,
-        std::tuple<
-            comms::field::IntValue<
-                comms::Field<BigEndianOpt>,
-                std::uint16_t,
-                comms::option::ValidNumValueRange<0, 10>,
-                comms::option::DefaultNumValue<5>
-            >,
-            comms::field::EnumValue<
-                comms::Field<BigEndianOpt>,
-                Enum1,
-                comms::option::FixedLength<1>,
-                comms::option::ValidNumValueRange<0, Enum1_NumOfValues - 1>,
-                comms::option::DefaultNumValue<Enum1_Value2>
+    using Field =
+        comms::field::Bundle<
+            comms::Field<BigEndianOpt>,
+            std::tuple<
+                comms::field::IntValue<
+                    comms::Field<BigEndianOpt>,
+                    std::uint16_t,
+                    comms::option::ValidNumValueRange<0, 10>,
+                    comms::option::DefaultNumValue<5>
+                >,
+                comms::field::EnumValue<
+                    comms::Field<BigEndianOpt>,
+                    Enum1,
+                    comms::option::FixedLength<1>,
+                    comms::option::ValidNumValueRange<0, Enum1_NumOfValues - 1>,
+                    comms::option::DefaultNumValue<Enum1_Value2>
+                >
             >
-        >
-    > Field;
+        >;
 
     static_assert(!Field::isVersionDependent(),
         "Invalid version dependency assumption");
@@ -1540,6 +1615,13 @@ void FieldsTestSuite::test32()
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT_EQUALS(outBuf.size(), ExpectedBufSize);
     TS_ASSERT(std::equal(outBuf.begin(), outBuf.end(), (const std::uint8_t*)&ExpectedBuf[0]));
+
+    std::vector<Field> vec;
+    vec.resize(2U);
+    TS_ASSERT_EQUALS(vec[0], vec[1]);
+    std::get<0>(vec[0].value()).setValue(8);
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT_EQUALS(std::get<0>(vec[0].value()).getValue(), 5U);
 }
 
 void FieldsTestSuite::test33()
@@ -1654,6 +1736,13 @@ void FieldsTestSuite::test35()
     es = field.read(readIter, buf.size());
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT(fpEquals(field.value(), 1.23f));
+
+    std::vector<Field> vec;
+    vec.resize(2U);
+    TS_ASSERT_EQUALS(vec[0], vec[1]);
+    vec[0].setValue(std::numeric_limits<float>::infinity());
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT_EQUALS(vec[0].getValue(), 0.0f);    
 }
 
 void FieldsTestSuite::test36()
@@ -2212,26 +2301,66 @@ struct BundleCustomReaderTest49
     }
 };
 
-void FieldsTestSuite::test49()
-{
-
-    typedef comms::field::Bundle<
-        comms::Field<BigEndianOpt>,
+class Test49Field : public
+    comms::field::Bundle<
+        comms::Field<FieldsTestSuite::BigEndianOpt>,
         std::tuple<
             comms::field::IntValue<
-                comms::Field<BigEndianOpt>,
+                comms::Field<FieldsTestSuite::BigEndianOpt>,
                 std::uint8_t
             >,
             comms::field::Optional<
                 comms::field::IntValue<
-                    comms::Field<BigEndianOpt>,
+                    comms::Field<FieldsTestSuite::BigEndianOpt>,
                     std::uint16_t
                 >
             >
-        >,
-        comms::option::CustomValueReader<BundleCustomReaderTest49>
-    > Field;
+        >
+    >
+{
+    using Base = 
+        comms::field::Bundle<
+            comms::Field<FieldsTestSuite::BigEndianOpt>,
+            std::tuple<
+                comms::field::IntValue<
+                    comms::Field<FieldsTestSuite::BigEndianOpt>,
+                    std::uint8_t
+                >,
+                comms::field::Optional<
+                    comms::field::IntValue<
+                        comms::Field<FieldsTestSuite::BigEndianOpt>,
+                        std::uint16_t
+                    >
+                >
+            >
+        >; 
+public:
+    template <typename TIter>
+    comms::ErrorStatus read(TIter& iter, std::size_t len)
+    {
+        auto& members = Base::value();
+        auto& first = std::get<0>(members);
+        auto& second = std::get<1>(members);
 
+        auto es = first.read(iter, len);
+        if (es != comms::ErrorStatus::Success) {
+            return es;
+        }
+
+        if (first.value() != 0) {
+            second.setMode(comms::field::OptionalMode::Missing);
+        }
+        else {
+            second.setMode(comms::field::OptionalMode::Exists);
+        }
+
+        return second.read(iter, len - first.length());
+    }    
+};
+
+void FieldsTestSuite::test49()
+{
+    using Field = Test49Field;
     static_assert(!Field::isVersionDependent(),
         "Invalid version dependency assumption");
 
@@ -3569,6 +3698,21 @@ void FieldsTestSuite::test70()
     std::size_t len4 = 0U;
     field.currentFieldExec(Test70_LengthRetriever(len4));
     TS_ASSERT_EQUALS(field.length(), len4);
+
+    std::vector<Field> vec;
+    vec.resize(2U);
+    TS_ASSERT_EQUALS(vec[0], vec[1]);
+    vec[0].initField_mem1();
+    vec[1].initField_mem1();
+    TS_ASSERT_EQUALS(vec[0], vec[1]);
+    vec[0].initField_mem2();
+    TS_ASSERT_LESS_THAN(vec[1], vec[0]);
+    vec[0].accessField_mem2().field_value().setValue(5);
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT_EQUALS(vec[1].accessField_mem2().field_value().getValue(), 5U);
+    vec[0].initField_mem2().field_value().setValue(10);
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT_EQUALS(vec[1].accessField_mem2().field_value().getValue(), 10U);
 }
 
 struct Test71_Field : public
@@ -3827,6 +3971,16 @@ void FieldsTestSuite::test74()
 
     field = readWriteField<Field>(&ExpectedBuf2[0], ExpectedBufSize2);
     TS_ASSERT_EQUALS(field.value(), "foo");
+
+    std::vector<Field> vec;
+    vec.resize(2U);
+    TS_ASSERT_EQUALS(vec[0], vec[1]);
+    std::string Str1("hello");
+    std::string Str2("bla");
+    comms::util::assign(vec[0].value(), Str1.begin(), Str1.end());
+    comms::util::assign(vec[1].value(), Str2.begin(), Str2.end());
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT(std::equal(vec[0].value().begin(), vec[0].value().end(), Str2.begin()));
 }
 
 void FieldsTestSuite::test75()
@@ -3867,6 +4021,16 @@ void FieldsTestSuite::test75()
     auto* viewStart = reinterpret_cast<const char*>(&(*view.begin()));
     TS_ASSERT_EQUALS(viewStart, &Buf[0]);
     TS_ASSERT(!field.refresh());
+
+    std::vector<Field> vec;
+    vec.resize(2U);
+    TS_ASSERT_EQUALS(vec[0], vec[1]);
+    std::vector<std::uint8_t> Data1 = {0xa, 0xb, 0xc};
+    std::vector<std::uint8_t> Data2 = {0x0, 0x1, 0x2};
+    comms::util::assign(vec[0].value(), Data1.begin(), Data1.end());
+    comms::util::assign(vec[1].value(), Data2.begin(), Data2.end());
+    std::sort(vec.begin(), vec.end());
+    TS_ASSERT(std::equal(vec[0].value().begin(), vec[0].value().end(), Data2.begin()));    
 }
 
 void FieldsTestSuite::test76()
@@ -4752,11 +4916,11 @@ void FieldsTestSuite::test92()
             comms::Field<LittleEndianOpt>,
             std::uint8_t
         >
-    > BitfileMembers;
+    > BitfieldMembers;
 
     typedef comms::field::Bitfield<
         comms::Field<LittleEndianOpt>,
-        BitfileMembers
+        BitfieldMembers
     > Field;
 
     static_assert(!Field::isVersionDependent(),
@@ -4809,11 +4973,11 @@ void FieldsTestSuite::test93()
             comms::option::FixedBitLength<12>,
             comms::option::DefaultNumValue<0x801>
         >
-    > BitfileMembers;
+    > BitfieldMembers;
 
     typedef comms::field::Bitfield<
         comms::Field<LittleEndianOpt>,
-        BitfileMembers
+        BitfieldMembers
     > Field;
 
     static_assert(!Field::isVersionDependent(),

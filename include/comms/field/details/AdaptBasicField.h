@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -59,18 +59,10 @@ class AdaptBasicField
             ParsedOptions::HasSequenceElemSerLengthFieldPrefix ||
             ParsedOptions::HasSequenceElemFixedSerLengthFieldPrefix ||
             ParsedOptions::HasSequenceTrailingFieldSuffix ||
-            ParsedOptions::HasSequenceTerminationFieldSuffix |\
-            ParsedOptions::HasEmptySerialization;
+            ParsedOptions::HasSequenceTerminationFieldSuffix ||
+            ParsedOptions::HasEmptySerialization ||
+            ParsedOptions::HasMissingOnReadFail;
 
-    static_assert(
-            (!ParsedOptions::HasCustomValueReader) || (!CustomReaderIncompatible),
-            "CustomValueReader option is incompatible with following options: "
-            "NumValueSerOffset, FixedLength, FixedBitLength, VarLength, "
-            "AvailableLengthLimit, SequenceElemLengthForcingEnabled, "
-            "SequenceSizeForcingEnabled, SequenceLengthForcingEnabled, SequenceFixedSize, SequenceSizeFieldPrefix, "
-            "SequenceSerLengthFieldPrefix, SequenceElemSerLengthFieldPrefix, "
-            "SequenceElemFixedSerLengthFieldPrefix, SequenceTrailingFieldSuffix, "
-            "SequenceTerminationFieldSuffix, EmptySerialization");
 
     static const bool VarLengthIncompatible =
             ParsedOptions::HasFixedLengthLimit ||
@@ -118,7 +110,7 @@ class AdaptBasicField
 
     static_assert(
             1U >= FieldsOptionsCompatibilityCalc<
-                ParsedOptions::HasCustomValueReader,
+                ParsedOptions::HasCustomStorageType,
                 ParsedOptions::HasFixedSizeStorage,
                 ParsedOptions::HasOrigDataView>::Value,
             "The following options are incompatible, cannot be used together: "
@@ -135,17 +127,17 @@ class AdaptBasicField
             "The following options are incompatible, cannot be used together: "
             "SequenceFixedSizeUseFixedSizeStorage, FixedSizeStorage");
 
+    using FieldTypeAdapted = 
+        typename ParsedOptions::template AdaptFieldType<TBasic>;            
+
     using InvalidByDefaultAdapted = 
-        typename ParsedOptions::template AdaptInvalidByDefault<TBasic>;
+        typename ParsedOptions::template AdaptInvalidByDefault<FieldTypeAdapted>;
         
     using VersionStorageAdapted = 
         typename ParsedOptions::template AdaptVersionStorage<InvalidByDefaultAdapted>;
     
-    using CustomReaderAdapted = 
-        typename ParsedOptions::template AdaptCustomValueReader<VersionStorageAdapted>;
-
     using SerOffsetAdapted = 
-        typename ParsedOptions::template AdaptSerOffset<CustomReaderAdapted>;
+        typename ParsedOptions::template AdaptSerOffset<VersionStorageAdapted>;
 
     using VersionsRangeAdapted = 
         typename ParsedOptions::template AdaptVersionsRange<SerOffsetAdapted>;
@@ -204,11 +196,8 @@ class AdaptBasicField
     using CustomValidatorAdapted = 
         typename ParsedOptions::template AdaptCustomValidator<MultiRangeValidationAdapted>;
 
-    using CustomRefresherAdapted = 
-        typename ParsedOptions::template AdaptContentsRefresher<CustomValidatorAdapted>;
-
     using FailOnInvalidAdapted = 
-        typename ParsedOptions::template AdaptFailOnInvalid<CustomRefresherAdapted>;
+        typename ParsedOptions::template AdaptFailOnInvalid<CustomValidatorAdapted>;
 
     using IgnoreInvalidAdapted = 
         typename ParsedOptions::template AdaptIgnoreInvalid<FailOnInvalidAdapted>;
@@ -225,8 +214,14 @@ class AdaptBasicField
     using CustomWriteWrapAdapted = 
             typename ParsedOptions::template AdaptCustomWrite<CustomRefreshWrapAdapted>;
 
+    using MissingOnInvalidAdapted = 
+            typename ParsedOptions::template AdaptMissingOnInvalid<CustomWriteWrapAdapted>;
+
+    using MissingOnReadFailAdapted = 
+            typename ParsedOptions::template AdaptMissingOnReadFail<MissingOnInvalidAdapted>;
+
 public:
-    using Type = CustomWriteWrapAdapted;
+    using Type = MissingOnReadFailAdapted;
 };
 
 template <typename TBasic, typename... TOptions>

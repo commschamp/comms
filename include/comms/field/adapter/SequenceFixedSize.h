@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -57,7 +57,7 @@ public:
 
     std::size_t length() const
     {
-        auto currSize = BaseImpl::value().size();
+        auto currSize = BaseImpl::getValue().size();
         if (currSize == fixedSize_) {
             return BaseImpl::length();
         }
@@ -94,7 +94,7 @@ public:
     template <typename TIter>
     comms::ErrorStatus write(TIter& iter, std::size_t len) const
     {
-        auto writeCount = std::min(BaseImpl::value().size(), fixedSize_);
+        auto writeCount = std::min(BaseImpl::getValue().size(), fixedSize_);
         auto es = BaseImpl::writeN(writeCount, iter, len);
         if (es != comms::ErrorStatus::Success) {
             return es;
@@ -121,7 +121,7 @@ public:
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        auto writeCount = std::min(BaseImpl::value().size(), fixedSize_);
+        auto writeCount = std::min(BaseImpl::getValue().size(), fixedSize_);
         BaseImpl::writeNoStatusN(writeCount, iter);
 
         auto remCount = fixedSize_ - writeCount;
@@ -138,7 +138,7 @@ public:
 
     bool valid() const
     {
-        return BaseImpl::valid() && (BaseImpl::value().size() <= fixedSize_);
+        return BaseImpl::valid() && (BaseImpl::getValue().size() <= fixedSize_);
     }
 
     bool refresh()
@@ -207,7 +207,7 @@ private:
     {
         std::size_t result = 0U;
         auto count = fixedSize_;
-        for (auto& elem : BaseImpl::value()) {
+        for (auto& elem : BaseImpl::getValue()) {
             if (count == 0U) {
                 break;
             }
@@ -221,7 +221,7 @@ private:
     template <typename... TParams>
     bool doRefresh(HasResizeTag<TParams...>)
     {
-        if (BaseImpl::value() == fixedSize_) {
+        if (BaseImpl::getValue().size() == fixedSize_) {
             return false;
         }
 

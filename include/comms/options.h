@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -200,6 +200,11 @@ struct NoIdImpl {};
 /// @headerfile comms/options.h
 template <typename TMsg>
 struct MsgType {};
+
+/// @brief Option used to specify actual type of the field.
+/// @headerfile comms/options.h
+template <typename TField>
+struct FieldType {};
 
 /// @brief Option used to specify some extra fields from transport framing.
 /// @details Some fields from transport framing may influence the way on how
@@ -648,103 +653,12 @@ struct DefaultValueInitialiser {};
 ///     have invalid value. To fix that you must also use
 ///     comms::option::DefaultValueInitialiser option to specify proper default
 ///     value.
+/// @note Direct usage of this option in the client code is not recommended. It's
+///     should be used for internal validators like @ref comms::option::def::BitmaskReservedBits
 /// @tparam T Type of the validator class.
 /// @headerfile comms/options.h
 template <typename T>
 struct ContentsValidator {};
-
-/// @brief Option that specifies custom refreshing class.
-/// @details The "refreshing" functionality is there to allow bringing field's
-///     contents into a consistent state if it's not. The default "refreshing"
-///     functionality does nothing and returns @b false (meaning nothing has
-///     been changed). If there is a need to provide custom refreshing functionality
-///     use this option and provide custom refresher class. It must
-///     define the following member function:
-///     @code
-///     struct MyRefresher
-///     {
-///         template <typename TField>
-///         bool operator()(TField& field) {
-///             ... // return true if field's contents changed
-///         }
-///     };
-///     @endcode
-/// @tparam T Type of the refresher class.
-/// @headerfile comms/options.h
-template <typename T>
-struct ContentsRefresher {};
-
-/// @brief Option that specifies custom value reader class.
-/// @details It may be useful to override default reading functionality for complex
-///     fields, such as comms::field::Bundle, where the way members are read is
-///     defined by the values of other members. For example, bundle of two integer
-///     fields, the first one is normal, and the second one is optional.
-///     The optional mode of the latter is determined by
-///     the value of the first field. If its value is 0, than the second
-///     member exists, otherwise it's missing.
-///     @code
-///     typedef comms::field::Bundle<
-///         comms::Field<BigEndianOpt>,
-///         std::tuple<
-///             comms::field::IntValue<
-///                 comms::Field<BigEndianOpt>,
-///                 std::uint8_t
-///             >,
-///             comms::field::Optional<
-///                 comms::field::IntValue<
-///                     comms::Field<BigEndianOpt>,
-///                     std::uint16_t
-///                 >
-///             >
-///         >,
-///         comms::option::CustomValueReader<MyCustomReader>
-///     > Field;
-///     @endcode
-///     The @b MyCustomReader custom reading class may implement required
-///     functionality of reading the first member, analysing its value, setting
-///     appropriate mode for the second one and read the second member.
-///
-///     The custom value reader class provided as template argument
-///     must define the following member function:
-///     @code
-///     struct MyCustomReader
-///     {
-///         template <typename TField, typename TIter>
-///         comms::ErrorStatus operator()(TField& field, TIter& iter, std::size_t len) {...}
-///     };
-///     @endcode
-///
-///     The custom reader for the example above may be implemented as:
-///     @code
-///     struct MyCustomReader
-///     {
-///         template <typename TField, typename TIter>
-///         comms::ErrorStatus operator()(TField& field, TIter& iter, std::size_t len) const
-///         {
-///             auto& members = field.value();
-///             auto& first = std::get<0>(members);
-///             auto& second = std::get<1>(members);
-///
-///             auto es = first.read(iter, len);
-///             if (es != comms::ErrorStatus::Success) {
-///                 return es;
-///             }
-///
-///             if (first.value() != 0) {
-///                 second.setMode(comms::field::OptionalMode::Missing);
-///             }
-///             else {
-///                 second.setMode(comms::field::OptionalMode::Exists);
-///             }
-///
-///             return second.read(iter, len - first.length());
-///         }
-///     };
-///     @endcode
-/// @tparam T Type of the custom reader class.
-/// @headerfile comms/options.h
-template <typename T>
-struct CustomValueReader {};
 
 /// @brief Option that forces field's read operation to fail if invalid value
 ///     is received.
@@ -1238,6 +1152,7 @@ struct PseudoValue {};
 
 /// @brief Provide type to be used for versioning
 /// @tparam T Type of the version value. Expected to be unsigned integral one.
+/// @headerfile comms/options.h
 template <typename T>
 struct VersionType
 {
@@ -1255,6 +1170,7 @@ struct HasCustomVersionUpdate {};
 /// @tparam TFrom First version when field has been added
 /// @tparam TUntil Last version when field still hasn't been removed.
 /// @pre @b TFrom <= @b TUntil
+/// @headerfile comms/options.h
 template <std::uintmax_t TFrom, std::uintmax_t TUntil>
 struct ExistsBetweenVersions
 {
@@ -1265,6 +1181,7 @@ struct ExistsBetweenVersions
 ///     starting from specified version.
 /// @details Alias to @ref ExistsBetweenVersions
 /// @tparam TVer First version when field has been added
+/// @headerfile comms/options.h
 template <std::uintmax_t TVer>
 using ExistsSinceVersion = ExistsBetweenVersions<TVer, std::numeric_limits<std::uintmax_t>::max()>;
 
@@ -1272,25 +1189,40 @@ using ExistsSinceVersion = ExistsBetweenVersions<TVer, std::numeric_limits<std::
 ///     only until specified version.
 /// @details Alias to @ref ExistsBetweenVersions
 /// @tparam TVer Last version when field still hasn't been removed.
+/// @headerfile comms/options.h
 template <std::uintmax_t TVer>
 using ExistsUntilVersion = ExistsBetweenVersions<0, TVer>;
 
 /// @brief Make the field's contents to be invalid by default.
+/// @headerfile comms/options.h
 struct InvalidByDefault {};
 
 /// @brief Add storage of version information inside private data members.
 /// @details The version information can be accessed using @b getVersion() member function.
+/// @headerfile comms/options.h
 struct VersionStorage {};
 
 /// @brief Option to specify real extending class.
 /// @details Used for some layer classes in @ref comms::protocol namespace.
+/// @headerfile comms/options.h
 template <typename T>
 struct ExtendingClass {};
 
 /// @brief Option to specify index of member field containing remaining length in bytes
 /// @details Applicable only to @ref comms::field::Bundle fields.
+/// @headerfile comms/options.h
 template <std::size_t TIdx>
 struct RemLengthMemberField {};
+
+/// @brief Mark an @ref comms::field::Optional field as missing
+///     if its read operation fails.
+/// @headerfile comms/options.h
+struct MissingOnReadFail {};
+
+/// @brief Mark an @ref comms::field::Optional field as missing
+///     if its contents are invalid (member field has invalid value).
+/// @headerfile comms/options.h
+struct MissingOnInvalid {};
 
 } // namespace def
 
@@ -1429,7 +1361,7 @@ struct SequenceFixedSizeUseFixedSizeStorage {};
 struct NoVirtualDestructor {};
 
 /// @brief Use "view" on original raw data instead of copying it.
-/// @details Can be used with @ref comms::field::String and raw data @ref comms::field::ArrayList.@n
+/// @details Can be used with @ref comms::field::String and raw data @ref comms::field::ArrayList. @n
 ///     For @ref comms::field::String it will force usage of 
 ///     <a href="https://en.cppreference.com/w/cpp/string/basic_string_view">std::string_view</a> (if available) as 
 ///     inner storage type (instead of @b std::string). In case @b std::string_view is unavalable 
@@ -1495,6 +1427,10 @@ using NoIdImpl = comms::option::def::NoIdImpl;
 /// @brief Same as @ref comms::option::def::MsgType
 template <typename TMsg>
 using MsgType = comms::option::def::MsgType<TMsg>;
+
+/// @brief Same as @ref comms::option::def::FieldType
+template <typename TMsg>
+using FieldType = comms::option::def::FieldType<TMsg>;
 
 /// @brief Same as @ref comms::option::def::ExtraTransportFields
 template <typename TFields>
@@ -1580,18 +1516,6 @@ using SequenceFixedSize = comms::option::def::SequenceFixedSize<TSize>;
 /// @brief Same as @ref comms::option::def::DefaultValueInitialiser
 template <typename T>
 using DefaultValueInitialiser = comms::option::def::DefaultValueInitialiser<T>;
-
-/// @brief Same as @ref comms::option::def::ContentsValidator
-template <typename T>
-using ContentsValidator = comms::option::def::ContentsValidator<T>;
-
-/// @brief Same as @ref comms::option::def::ContentsRefresher
-template <typename T>
-using ContentsRefresher = comms::option::def::ContentsRefresher<T>;
-
-/// @brief Same as @ref comms::option::def::CustomValueReader
-template <typename T>
-using CustomValueReader = comms::option::def::CustomValueReader<T>;
 
 /// @brief Same as @ref comms::option::def::FailOnInvalid
 template <comms::ErrorStatus TStatus = comms::ErrorStatus::InvalidMsgData>

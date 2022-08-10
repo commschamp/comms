@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -33,15 +33,16 @@ namespace field
 ///     Supported options are:
 ///     @li @ref comms::option::def::DefaultValueInitialiser, @ref comms::option::def::DefaultOptionalMode,
 ///         @ref comms::option::def::OptionalMissingByDefault, or @ref comms::option::def::OptionalExistsByDefault.
-///     @li @ref comms::option::def::ContentsValidator.
-///     @li @ref comms::option::def::ContentsRefresher
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
 ///     @li @ref comms::option::def::VersionStorage
+///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::MissingOnReadFail
+///     @li @ref comms::option::def::MissingOnInvalid
 /// @extends comms::Field
 /// @headerfile comms/field/Optional.h
 template <typename TField, typename... TOptions>
-class Optional : private details::AdaptBasicFieldT<basic::Optional<TField>, TOptions...>
+class Optional : public details::AdaptBasicFieldT<basic::Optional<TField>, TOptions...>
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::Optional<TField>, TOptions...>;
 public:
@@ -171,6 +172,21 @@ public:
     {
         return BaseImpl::value();
     }
+
+    /// @brief Get value
+    /// @details Implemented by calling @b value(), but can be overriden in the derived class
+    const ValueType& getValue() const
+    {
+        return BaseImpl::getValue();
+    }
+
+    /// @brief Set value
+    /// @details Implemented as re-assigning to @b value(), but can be overriden in the derived class.
+    template <typename U>
+    void setValue(U&& val)
+    {
+        BaseImpl::setValue(std::forward<U>(val));
+    }          
 
     /// @brief Get current optional mode
     Mode getMode() const
@@ -393,7 +409,7 @@ bool operator<(
         return false;
     }
     
-    return false;
+    return field1.field() < field2.field();
 }
 
 /// @brief Equivalence comparison operator.

@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -107,7 +107,7 @@ public:
     {
         auto serialisedValue =
             comms::util::readData<SerialisedType, Length>(iter, Endian());
-        BaseImpl::value() = fromSerialised(serialisedValue);
+        BaseImpl::setValue(fromSerialised(serialisedValue));
     }
 
     template <typename TIter>
@@ -124,7 +124,7 @@ public:
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        BaseImpl::template writeData<Length>(toSerialised(BaseImpl::value()), iter);
+        BaseImpl::template writeData<Length>(toSerialised(BaseImpl::getValue()), iter);
     }
 
 private:

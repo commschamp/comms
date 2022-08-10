@@ -1,5 +1,5 @@
 //
-// Copyright 2016 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2016 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -43,6 +43,17 @@ public:
         static ValueType value = ValueType();
         return value;
     }
+
+    static const ValueType& getValue()
+    {
+        return value();
+    }
+
+    template <typename U>
+    static void setValue(U&& val)
+    {
+        value() = static_cast<ValueType>(std::forward<U>(val));
+    }    
 
     static constexpr std::size_t length()
     {

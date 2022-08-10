@@ -1,5 +1,5 @@
 //
-// Copyright 2016 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2016 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -34,7 +34,7 @@ namespace field
 /// @extends comms::Field
 /// @headerfile comms/field/NoValue.h
 template <typename TFieldBase>
-class NoValue : private details::AdaptBasicFieldT<basic::NoValue<TFieldBase> >
+class NoValue : public details::AdaptBasicFieldT<basic::NoValue<TFieldBase> >
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::NoValue<TFieldBase> >;
 public:
@@ -82,6 +82,21 @@ public:
     {
         return BaseImpl::value();
     }
+
+    /// @brief Get value
+    /// @details Implemented by calling @b value(), but can be overriden in the derived class
+    static const ValueType& getValue()
+    {
+        return BaseImpl::getValue();
+    }
+
+    /// @brief Set value
+    /// @details Implemented as re-assigning to @b value(), but can be overriden in the derived class.
+    template <typename U>
+    static void setValue(U&& val)
+    {
+        BaseImpl::setValue(std::forward<U>(val));
+    }          
 
     /// @brief Get length required to serialise the current field value.
     /// @return Always 0.

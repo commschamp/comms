@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -124,7 +124,7 @@ public:
         }
 
         auto adjustedValue = signExtUnsignedSerialised(val, bytesCount, HasSignTag());
-        BaseImpl::value() = BaseImpl::fromSerialised(static_cast<BaseSerialisedType>(adjustedValue));
+        BaseImpl::setValue(BaseImpl::fromSerialised(static_cast<BaseSerialisedType>(adjustedValue)));
         return comms::ErrorStatus::Success;
     }
 
@@ -156,7 +156,7 @@ public:
             return ErrorStatus::BufferOverflow;
         }
 
-        writeNoStatusInternal(toSerialised(BaseImpl::value()), iter, HasSignTag(), Endian());
+        writeNoStatusInternal(toSerialised(BaseImpl::getValue()), iter, HasSignTag(), Endian());
         return ErrorStatus::Success;
     }
 
@@ -194,7 +194,7 @@ private:
     std::size_t lengthInternal(UnsignedTag<TParams...>) const
     {
         auto serValue = 
-            static_cast<UnsignedSerialisedType>(toSerialised(BaseImpl::value()));
+            static_cast<UnsignedSerialisedType>(toSerialised(BaseImpl::getValue()));
         std::size_t len = 0U;
         while (0 < serValue) {
             serValue = static_cast<decltype(serValue)>(serValue >> VarLengthShift);
@@ -207,7 +207,7 @@ private:
     template <typename... TParams>
     std::size_t lengthInternal(SignedTag<TParams...>) const
     {
-        auto serValue = toSerialised(BaseImpl::value());
+        auto serValue = toSerialised(BaseImpl::getValue());
         if (0 <= serValue) {
             // positive
             return lengthSignedPositiveInternal();
@@ -218,7 +218,7 @@ private:
 
     std::size_t lengthSignedNegativeInternal() const
     {
-        auto serValue = toSerialised(BaseImpl::value());
+        auto serValue = toSerialised(BaseImpl::getValue());
         std::size_t len = 0U;
         std::uint8_t lastByte = 0U;
         while (serValue != static_cast<decltype(serValue)>(-1)) {
@@ -244,7 +244,7 @@ private:
 
     std::size_t lengthSignedPositiveInternal() const
     {
-        auto serValue = toSerialised(BaseImpl::value());
+        auto serValue = toSerialised(BaseImpl::getValue());
         std::size_t len = 0U;
         std::uint8_t lastByte = 0U;
         while (serValue != static_cast<decltype(serValue)>(0)) {

@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -74,7 +74,7 @@ public:
         static_assert(std::is_base_of<std::random_access_iterator_tag, IterTag>::value,
             "Only random access iterator for reading is supported with comms::option::def::SequenceTerminationFieldSuffix option");
 
-        using ElemTag =
+        using ReadElemTag =
             typename comms::util::LazyShallowConditional<
                 std::is_integral<ElementType>::value && (sizeof(ElementType) == sizeof(std::uint8_t))
             >::template Type<
@@ -82,7 +82,7 @@ public:
                 FieldTag
             >;
 
-        return readInternal(iter, len, ElemTag());
+        return readInternal(iter, len, ReadElemTag());
     }
 
     static constexpr bool hasReadNoStatus()

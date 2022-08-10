@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -24,6 +24,27 @@ namespace field
 
 namespace adapter
 {
+
+namespace details
+{
+
+template <std::size_t TLen>
+struct UnsignedValueMaskWrap
+{
+    static const std::uintmax_t Value = 
+        static_cast<std::uintmax_t>(
+            (static_cast<std::uintmax_t>(1U) << (TLen * std::numeric_limits<std::uint8_t>::digits)) - 1U);        
+};
+
+template <>
+struct UnsignedValueMaskWrap<sizeof(std::uintmax_t)>
+{
+    static const std::uintmax_t Value = std::numeric_limits<std::uintmax_t>::max();
+};
+
+
+} // namespace details
+    
 
 template <std::size_t TLen, bool TSignExtend, typename TBase>
 class FixedLength : public TBase
@@ -100,7 +121,7 @@ public:
     {
         auto serialisedValue =
             comms::util::readData<SerialisedType, Length>(iter, Endian());
-        BaseImpl::value() = fromSerialised(serialisedValue);
+        BaseImpl::setValue(fromSerialised(serialisedValue));
     }
 
     template <typename TIter>
@@ -117,7 +138,7 @@ public:
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        BaseImpl::template writeData<Length>(toSerialised(BaseImpl::value()), iter);
+        BaseImpl::template writeData<Length>(toSerialised(BaseImpl::getValue()), iter);
     }
 
 private:
@@ -191,8 +212,7 @@ private:
     template <typename... TParams>
     static SerialisedType signExtUnsignedSerialised(UnsignedSerialisedType val, SignedTag<TParams...>)
     {
-        static const UnsignedSerialisedType SignExtMask =
-            ~((static_cast<UnsignedSerialisedType>(1U) << BitLength) - 1);
+        static const UnsignedSerialisedType SignExtMask = ~(UnsignedValueMask);
         static const UnsignedSerialisedType SignMask =
             static_cast<UnsignedSerialisedType>(1U) << (BitLength - 1);
 
@@ -207,8 +227,7 @@ private:
     static const std::size_t BitLength = Length * BitsInByte;
 
     static const UnsignedSerialisedType UnsignedValueMask =
-        static_cast<UnsignedSerialisedType>(
-            (static_cast<std::uintmax_t>(1U) << BitLength) - 1);
+        static_cast<UnsignedSerialisedType>(details::UnsignedValueMaskWrap<Length>::Value);
 
     static_assert(0 < Length, "Length is expected to be greater than 0");
 };

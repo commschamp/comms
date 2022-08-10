@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -40,11 +40,9 @@ namespace field
 ///     be serialised using big endian notation.@n
 ///     Supported options are:
 ///     @li @ref comms::option::def::DefaultValueInitialiser or @ref comms::option::def::DefaultNumValue.
-///     @li @ref comms::option::def::ContentsValidator
 ///     @li @ref comms::option::def::ValidNumValueRange, @ref comms::option::def::ValidNumValue,
 ///         @ref comms::option::def::ValidBigUnsignedNumValueRange, @ref comms::option::def::ValidBigUnsignedNumValue
 ///     @li @ref comms::option::def::ValidRangesClear
-///     @li @ref comms::option::def::ContentsRefresher
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
 ///     @li @ref comms::option::def::FailOnInvalid
@@ -54,10 +52,11 @@ namespace field
 ///     @li @ref comms::option::def::EmptySerialization
 ///     @li @ref comms::option::def::InvalidByDefault
 ///     @li @ref comms::option::def::VersionStorage
+///     @li @ref comms::option::def::FieldType
 /// @extends comms::Field
 /// @headerfile comms/field/FloatValue.h
 template <typename TFieldBase, typename T, typename... TOptions>
-class FloatValue : private details::AdaptBasicFieldT<basic::FloatValue<TFieldBase, T>, TOptions...>
+class FloatValue : public details::AdaptBasicFieldT<basic::FloatValue<TFieldBase, T>, TOptions...>
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::FloatValue<TFieldBase, T>, TOptions...>;
 public:
@@ -101,6 +100,21 @@ public:
     {
         return BaseImpl::value();
     }
+
+    /// @brief Get value
+    /// @details Implemented by calling @b value(), but can be overriden in the derived class
+    const ValueType& getValue() const
+    {
+        return BaseImpl::getValue();
+    }
+
+    /// @brief Set value
+    /// @details Implemented as re-assigning to @b value(), but can be overriden in the derived class.
+    template <typename U>
+    void setValue(U&& val)
+    {
+        BaseImpl::setValue(std::forward<U>(val));
+    }          
 
     /// @brief Get length required to serialise the current field value.
     /// @return Number of bytes it will take to serialise the field value.
@@ -265,6 +279,10 @@ private:
         "comms::option::app::OrigDataView option is not applicable to FloatValue field");
     static_assert(!ParsedOptions::HasVersionsRange,
         "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to FloatValue field");
+    static_assert(!ParsedOptions::HasMissingOnReadFail,
+            "comms::option::def::MissingOnReadFail option is not applicable to FloatValue field");           
+    static_assert(!ParsedOptions::HasMissingOnInvalid,
+            "comms::option::def::MissingOnInvalid option is not applicable to FloatValue field");    
 };
 
 /// @brief Equality comparison operator.

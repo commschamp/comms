@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -31,7 +31,6 @@ class OptionsParser<>
 public:
     static constexpr bool HasInvalidByDefault = false;
     static constexpr bool HasVersionStorage = false;
-    static constexpr bool HasCustomValueReader = false;
     static constexpr bool HasSerOffset = false;
     static constexpr bool HasVersionsRange = false;
     static constexpr bool HasFixedLengthLimit = false;
@@ -52,7 +51,6 @@ public:
     static constexpr bool HasDefaultValueInitialiser = false;
     static constexpr bool HasMultiRangeValidation = false;
     static constexpr bool HasCustomValidator = false;
-    static constexpr bool HasContentsRefresher = false;
     static constexpr bool HasFailOnInvalid = false;
     static constexpr bool HasIgnoreInvalid = false;
     static constexpr bool HasEmptySerialization = false;
@@ -66,6 +64,9 @@ public:
     static constexpr bool HasUnits = false;
     static constexpr bool HasOrigDataView = false;
     static constexpr bool HasCustomVersionUpdate = false;
+    static constexpr bool HasFieldType = false;
+    static constexpr bool HasMissingOnReadFail = false;
+    static constexpr bool HasMissingOnInvalid = false;
 
     using UnitsType = void;
     using ScalingRatio = std::ratio<1, 1>;
@@ -76,9 +77,6 @@ public:
 
     template <typename TField>
     using AdaptVersionStorage = TField;
-
-    template <typename TField>
-    using AdaptCustomValueReader = TField;
 
     template <typename TField>
     using AdaptSerOffset = TField;
@@ -141,9 +139,6 @@ public:
     using AdaptCustomValidator = TField;
 
     template <typename TField>
-    using AdaptContentsRefresher = TField;
-    
-    template <typename TField>
     using AdaptFailOnInvalid = TField;
 
     template <typename TField>
@@ -160,19 +155,15 @@ public:
 
     template <typename TField>
     using AdaptCustomWrite = TField;
-};
-
-template <typename T, typename... TOptions>
-class OptionsParser<
-    comms::option::def::CustomValueReader<T>,
-    TOptions...> : public OptionsParser<TOptions...>
-{
-public:
-    static constexpr bool HasCustomValueReader = true;
-    using CustomValueReader = T;
 
     template <typename TField>
-    using AdaptCustomValueReader = comms::field::adapter::CustomValueReader<CustomValueReader, TField>;    
+    using AdaptFieldType = TField;    
+
+    template <typename TField>
+    using AdaptMissingOnReadFail = TField; 
+
+    template <typename TField>
+    using AdaptMissingOnInvalid = TField;  
 };
 
 template <typename... TOptions>
@@ -442,19 +433,6 @@ public:
     using AdaptCustomValidator = comms::field::adapter::CustomValidator<CustomValidator, TField>;
 };
 
-template <typename TRefresher, typename... TOptions>
-class OptionsParser<
-    comms::option::def::ContentsRefresher<TRefresher>,
-    TOptions...> : public OptionsParser<TOptions...>
-{
-public:
-    static constexpr bool HasContentsRefresher = true;
-    using CustomRefresher = TRefresher;
-
-    template <typename TField>
-    using AdaptContentsRefresher = comms::field::adapter::CustomRefresher<CustomRefresher, TField>;
-};
-
 template <typename... TOptions>
 class OptionsParser<
     comms::option::def::HasCustomRefresh,
@@ -721,6 +699,42 @@ public:
 
     template <typename TField>
     using AdaptCustomWrite = comms::field::adapter::CustomWriteWrap<TField>;
+};
+
+template <typename TActField, typename... TOptions>
+class OptionsParser<
+    comms::option::def::FieldType<TActField>,
+    TOptions...> : public OptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasFieldType = true;
+
+    template <typename TField>
+    using AdaptFieldType = comms::field::adapter::FieldType<TActField, TField>;
+};
+
+template <typename... TOptions>
+class OptionsParser<
+    comms::option::def::MissingOnReadFail,
+    TOptions...> : public OptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasMissingOnReadFail = true;
+
+    template <typename TField>
+    using AdaptMissingOnReadFail = comms::field::adapter::MissingOnReadFail<TField>;       
+};
+
+template <typename... TOptions>
+class OptionsParser<
+    comms::option::def::MissingOnInvalid,
+    TOptions...> : public OptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasMissingOnInvalid = true;
+
+    template <typename TField>
+    using AdaptMissingOnInvalid = comms::field::adapter::MissingOnInvalid<TField>;       
 };
 
 template <typename... TOptions>

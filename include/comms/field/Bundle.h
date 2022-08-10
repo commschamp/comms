@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -41,22 +41,6 @@ namespace field
 ///         also possible to provide initialiser for the Bundle field which
 ///         will set appropriate values to the fields based on some
 ///         internal logic.
-///     @li @ref comms::option::def::ContentsValidator - All wrapped fields may specify
-///         their independent validators. The bundle field considered to
-///         be valid if all the wrapped fields are valid. This option though,
-///         provides an ability to add extra validation logic that can
-///         observe value of more than one wrapped fields. For example,
-///         protocol specifies that if one specific field has value X, than
-///         other field is NOT allowed to have value Y.
-///     @li @ref comms::option::def::ContentsRefresher - The default refreshing
-///         behaviour is to call the @b refresh() member function of every
-///         member field. This option provides an ability to set a custom
-///         "refreshing" logic.
-///     @li @ref comms::option::def::CustomValueReader - It may be required to implement
-///         custom reading functionality instead of default behaviour of
-///         invoking read() member function of every member field. It is possible
-///         to provide cusom reader functionality using @ref comms::option::def::CustomValueReader
-///         option.
 ///     @li @ref comms::option::def::RemLengthMemberField - Specify index of member field
 ///         that contains remaining length information for all the subsequent fields.
 ///     @li @ref comms::option::def::HasCustomRead - Mark field to have custom read
@@ -65,6 +49,7 @@ namespace field
 ///         refresh functionality.
 ///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
 ///     @li @ref comms::option::def::VersionStorage - Add version storage.
+///     @li @ref comms::option::def::FieldType
 /// @extends comms::Field
 /// @headerfile comms/field/Bundle.h
 /// @see @ref COMMS_FIELD_MEMBERS_NAMES()
@@ -72,7 +57,7 @@ namespace field
 /// @see @ref COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE()
 /// @see @ref COMMS_FIELD_ALIAS()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
-class Bundle : private details::AdaptBasicFieldT<basic::Bundle<TFieldBase, TMembers>, TOptions...>
+class Bundle : public details::AdaptBasicFieldT<basic::Bundle<TFieldBase, TMembers>, TOptions...>
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::Bundle<TFieldBase, TMembers>, TOptions...>;
     static_assert(comms::util::IsTuple<TMembers>::Value,
@@ -130,6 +115,21 @@ public:
     {
         return BaseImpl::value();
     }
+
+    /// @brief Get value
+    /// @details Implemented by calling @b value(), but can be overriden in the derived class
+    const ValueType& getValue() const
+    {
+        return BaseImpl::getValue();
+    }
+
+    /// @brief Set value
+    /// @details Implemented as re-assigning to @b value(), but can be overriden in the derived class.
+    template <typename U>
+    void setValue(U&& val)
+    {
+        BaseImpl::setValue(std::forward<U>(val));
+    }          
 
     /// @brief Get length required to serialise bundled fields.
     /// @details Summarises all the results returned by the call to length() for
@@ -666,6 +666,10 @@ private:
         "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to Bundle field");
     static_assert(!ParsedOptions::HasInvalidByDefault,
         "comms::option::def::InvalidByDefault option is not applicable to Bundle field");
+    static_assert(!ParsedOptions::HasMissingOnReadFail,
+            "comms::option::def::MissingOnReadFail option is not applicable to Bundle field");     
+    static_assert(!ParsedOptions::HasMissingOnInvalid,
+            "comms::option::def::MissingOnInvalid option is not applicable to Bundle field");          
 };
 
 /// @brief Equality comparison operator.

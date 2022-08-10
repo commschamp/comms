@@ -51,6 +51,7 @@ public:
     void test29();
     void test30();
     void test31();
+    void test32();
 
 private:
 
@@ -138,12 +139,63 @@ private:
             comms::option::FixedLength<3>
         >;
 
+    template <typename TField>
+    class Field4 : public
+        comms::field::Bitfield<
+            TField,
+            std::tuple<
+                comms::field::EnumValue<
+                    TField,
+                    MessageType,
+                    comms::option::FixedBitLength<6>
+                >,
+                comms::field::IntValue<
+                    TField,
+                    std::uint8_t,
+                    comms::option::FixedBitLength<2>
+                >
+            >
+        >
+    {
+        using Base = 
+            comms::field::Bitfield<
+                TField,
+                std::tuple<
+                    comms::field::EnumValue<
+                        TField,
+                        MessageType,
+                        comms::option::FixedBitLength<6>
+                    >,
+                    comms::field::IntValue<
+                        TField,
+                        std::uint8_t,
+                        comms::option::FixedBitLength<2>
+                    >
+                >
+            >;   
+    public:
+        COMMS_FIELD_MEMBERS_NAMES(id, flags);
+
+        MessageType getValue() const
+        {
+            return field_id().getValue();
+        }
+
+        template <typename U>
+        void setValue(U&& val)
+        {
+            field_id().setValue(val);
+        }    
+
+    };
+
     typedef Field1<BeField> BeField1;
     typedef Field1<LeField> LeField1;
     typedef Field2<BeField> BeField2;
     typedef Field2<LeField> LeField2;
     typedef Field3<BeField> BeField3;
     typedef Field3<LeField> LeField3;
+    typedef Field4<BeField> BeField4;
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
     class ProtocolStack : public
@@ -1218,4 +1270,27 @@ void MsgIdLayerTestSuite::test31()
     TS_ASSERT_EQUALS((std::size_t)std::distance(&Buf[0], readIter), BufSize);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
     TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
+}
+
+void MsgIdLayerTestSuite::test32()
+{
+    static const char Buf[] = {
+        static_cast<char>(static_cast<unsigned>(0x80) | static_cast<unsigned>(MessageType1)), 0x0a, 0x0b
+    };
+
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    using Stack = ProtocolStack<BeField4, BeMsgBase>;
+    static_assert(!Stack::FactoryParsedOptions::HasForcedDispatch, "Invalid options");
+
+    Stack stack;
+    Stack::MsgPtr msgPtr;
+    auto readIter = comms::readIteratorFor(msgPtr, &Buf[0]);
+
+    auto es = stack.read(msgPtr, readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT(msgPtr);
+    auto* msg1 = dynamic_cast<BeMsg1*>(msgPtr.get());
+    TS_ASSERT(msg1 != nullptr)
+    TS_ASSERT_EQUALS(std::get<0>(msg1->fields()).value(), 0x0a0b);
 }

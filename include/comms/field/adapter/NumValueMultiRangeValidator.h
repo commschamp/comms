@@ -1,5 +1,5 @@
 //
-// Copyright 2017 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -53,7 +53,7 @@ public:
     bool valid() const
     {
         return BaseImpl::valid() &&
-               comms::util::tupleTypeAccumulate<TRanges>(false, Validator(BaseImpl::value()));
+               comms::util::tupleTypeAccumulate<TRanges>(false, Validator(BaseImpl::getValue()));
     }
 
 private:

@@ -1,5 +1,5 @@
 //
-// Copyright 2017 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -49,22 +49,6 @@ namespace field
 ///         also possible to provide initialiser for the Variant field which
 ///         will set appropriate values to the fields based on some
 ///         internal logic.
-///     @li @ref comms::option::def::ContentsValidator - All wrapped fields may specify
-///         their independent validators. The bundle field considered to
-///         be valid if all the wrapped fields are valid. This option though,
-///         provides an ability to add extra validation logic that can
-///         observe value of more than one wrapped fields. For example,
-///         protocol specifies that if one specific field has value X, than
-///         other field is NOT allowed to have value Y.
-///     @li @ref comms::option::def::ContentsRefresher - The default @b refresh()
-///         behavior is to call @b refresh() member function of the contained
-///         field (if such exists). This option allows specifying the custom
-///         refreshing behaviour.
-///     @li @ref comms::option::def::CustomValueReader - It may be required to implement
-///         custom reading functionality instead of default behaviour of
-///         invoking read() member function of every member field. It is possible
-///         to provide cusom reader functionality using comms::option::def::CustomValueReader
-///         option.
 ///     @li @ref comms::option::def::DefaultVariantIndex - By default the Variant field
 ///         doesn't have any valid contents. This option may be used to specify
 ///         the index of the default member field.
@@ -74,13 +58,14 @@ namespace field
 ///         refresh functionality.
 ///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
 ///     @li @ref comms::option::def::VersionStorage - Add version storage.
+///     @li @ref comms::option::def::FieldType
 /// @extends comms::Field
 /// @headerfile comms/field/Variant.h
 /// @see COMMS_VARIANT_MEMBERS_NAMES()
 /// @see COMMS_VARIANT_MEMBERS_ACCESS()
 /// @see COMMS_VARIANT_MEMBERS_ACCESS_NOTEMPLATE()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
-class Variant : private
+class Variant : public
         details::AdaptBasicFieldT<basic::Variant<TFieldBase, TMembers>, TOptions...>
 {
     using BaseImpl = details::AdaptBasicFieldT<basic::Variant<TFieldBase, TMembers>, TOptions...>;
@@ -147,6 +132,21 @@ public:
     {
         return BaseImpl::value();
     }
+
+    /// @brief Get value
+    /// @details Should not be used in normal operation
+    const ValueType& getValue() const
+    {
+        return BaseImpl::getValue();
+    }
+
+    /// @brief Set value
+    /// @details Should not be used in normal operation
+    template <typename U>
+    void setValue(U&& val)
+    {
+        BaseImpl::setValue(std::forward<U>(val));
+    }          
 
     /// @brief Get length required to serialise contained fields.
     /// @details If the field doesn't contain a valid instance of other
@@ -465,7 +465,10 @@ private:
             "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to Variant field");
     static_assert(!ParsedOptions::HasInvalidByDefault,
             "comms::option::def::InvalidByDefault option is not applicable to Variant field");
-
+    static_assert(!ParsedOptions::HasMissingOnReadFail,
+            "comms::option::def::MissingOnReadFail option is not applicable to Variant field");   
+    static_assert(!ParsedOptions::HasMissingOnInvalid,
+            "comms::option::def::MissingOnInvalid option is not applicable to Variant field");              
 };
 
 namespace details
@@ -580,6 +583,14 @@ bool operator<(
     const Variant<TFieldBase, TMembers, TOptions...>& field1,
     const Variant<TFieldBase, TMembers, TOptions...>& field2)
 {
+    if (!field1.currentFieldValid()) {
+        return (!field2.currentFieldValid());
+    }
+
+    if (!field2.currentFieldValid()) {
+        return false;
+    }    
+
     if (field1.currentField() < field2.currentField()) {
         return true;
     }
@@ -595,7 +606,6 @@ bool operator<(
     bool result = false;
     field1.currentFieldExec(details::makeVariantLessCompHelper(field2, result));
     return result;
-    return true;
 }
 
 /// @brief Compile time check function of whether a provided type is any

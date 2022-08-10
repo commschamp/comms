@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -179,18 +179,17 @@ using ArrayListBase =
 ///     @li @ref comms::option::def::SequenceTerminationFieldSuffix
 ///     @li @ref comms::option::def::SequenceTrailingFieldSuffix
 ///     @li @ref comms::option::def::DefaultValueInitialiser
-///     @li @ref comms::option::def::ContentsValidator
-///     @li @ref comms::option::def::ContentsRefresher
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
 ///     @li @ref comms::option::def::FailOnInvalid
 ///     @li @ref comms::option::def::IgnoreInvalid
 ///     @li @ref comms::option::def::EmptySerialization
 ///     @li @ref comms::option::def::VersionStorage
+///     @li @ref comms::option::def::FieldType
 /// @extends comms::Field
 /// @headerfile comms/field/ArrayList.h
 template <typename TFieldBase, typename TElement, typename... TOptions>
-class ArrayList : private details::ArrayListBase<TFieldBase, TElement, TOptions...>
+class ArrayList : public details::ArrayListBase<TFieldBase, TElement, TOptions...>
 {
     using BaseImpl = details::ArrayListBase<TFieldBase, TElement, TOptions...>;
 public:
@@ -266,6 +265,21 @@ public:
     {
         return BaseImpl::value();
     }
+
+    /// @brief Get value
+    /// @details Implemented by calling @b value(), but can be overriden in the derived class
+    const ValueType& getValue() const
+    {
+        return BaseImpl::getValue();
+    }
+
+    /// @brief Set value
+    /// @details Implemented as re-assigning to @b value(), but can be overriden in the derived class.
+    template <typename U>
+    void setValue(U&& val)
+    {
+        BaseImpl::setValue(std::forward<U>(val));
+    }    
 
     /// @brief Get length of serialised data
     constexpr std::size_t length() const
@@ -350,9 +364,7 @@ public:
     }
 
     /// @brief Check validity of the field value.
-    /// @details The collection is valid if all the elements are valid. In case
-    ///     @ref comms::option::def::ContentsValidator option is used, the validator,
-    ///     it provides, is invoked IN ADDITION to the validation of the elements.
+    /// @details The collection is valid if all the elements are valid. 
     /// @return true in case the field's value is valid, false otherwise.
     bool valid() const
     {
@@ -488,6 +500,10 @@ private:
             "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to ArrayList field");
     static_assert(!ParsedOptions::HasInvalidByDefault,
             "comms::option::def::InvalidByDefault option is not applicable to ArrayList field");
+    static_assert(!ParsedOptions::HasMissingOnReadFail,
+            "comms::option::def::MissingOnReadFail option is not applicable to ArrayList field");     
+    static_assert(!ParsedOptions::HasMissingOnInvalid,
+            "comms::option::def::MissingOnInvalid option is not applicable to ArrayList field");                       
 };
 
 /// @brief Equivalence comparison operator.

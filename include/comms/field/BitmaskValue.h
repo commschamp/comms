@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -82,14 +82,15 @@ using BitmaskUndertlyingTypeT =
 ///     @li @ref comms::option::def::FixedLength
 ///     @li @ref comms::option::def::FixedBitLength
 ///     @li @ref comms::option::def::DefaultValueInitialiser or comms::option::def::DefaultNumValue.
-///     @li @ref comms::option::def::ContentsValidator or comms::option::def::BitmaskReservedBits.
-///     @li @ref comms::option::def::ContentsRefresher
+///     @li @ref comms::option::def::BitmaskReservedBits.
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
 ///     @li @ref comms::option::def::FailOnInvalid
 ///     @li @ref comms::option::def::IgnoreInvalid
 ///     @li @ref comms::option::def::EmptySerialization
 ///     @li @ref comms::option::def::VersionStorage
+///     @li @ref comms::option::def::AvailableLengthLimit
+///     @li @ref comms::option::def::FieldType
 /// @extends comms::Field
 /// @headerfile comms/field/BitmaskValue.h
 /// @see COMMS_BITMASK_BITS()
@@ -167,6 +168,19 @@ public:
     {
         return intValue_.value();
     }
+
+    /// @brief Get value
+    const ValueType& getValue() const
+    {
+        return intValue_.getValue();
+    }
+
+    /// @brief Set value
+    template <typename U>
+    void setValue(U&& val)
+    {
+        intValue_.setValue(std::forward<U>(val));
+    }        
 
     /// @brief Get length required to serialise the current field value.
     /// @return Number of bytes it will take to serialise the field value.
@@ -343,6 +357,25 @@ public:
         return intValue_.setVersion(version);
     }
 
+    /// @brief Force serialization length of the field.
+    /// @details Available only when @ref comms::option::def::AvailableLengthLimit
+    ///     option is used for field definition.
+    /// @param[in] len Forced serialization length. 
+    ///     @li 0 means default serialization length determined by the storage type
+    ///     @li positive value means limit of the serialization length
+    ///     @li negative value means the length is determined by the stored value
+    void setForcedLength(int len)
+    {
+        intValue_.setForcedLength(len);
+    }
+
+    /// @brief Get forced serialization length
+    /// @see @ref setForcedLength()
+    int getForcedLength() const
+    {
+        return intValue_.getForcedLength();
+    }    
+
 protected:
     using BaseImpl::readData;
     using BaseImpl::writeData;
@@ -353,8 +386,6 @@ private:
         "comms::option::def::NumValueSerOffset option is not applicable to BitmaskValue field");
     static_assert(!ParsedOptions::HasVarLengthLimits,
         "comms::option::def::VarLength option is not applicable to BitmaskValue field");
-    static_assert(!ParsedOptions::HasAvailableLengthLimit,
-            "comms::option::def::AvailableLengthLimit option is not applicable to BitmaskValue field");
     static_assert(!ParsedOptions::HasSequenceElemLengthForcing,
         "comms::option::def::SequenceElemLengthForcingEnabled option is not applicable to BitmaskValue field");
     static_assert(!ParsedOptions::HasSequenceSizeForcing,
@@ -393,7 +424,10 @@ private:
         "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to BitmaskValue field");
     static_assert(!ParsedOptions::HasInvalidByDefault,
         "comms::option::def::InvalidByDefault option is not applicable to BitmaskValue field");
-
+    static_assert(!ParsedOptions::HasMissingOnReadFail,
+            "comms::option::def::MissingOnReadFail option is not applicable to BitmaskValue field");   
+    static_assert(!ParsedOptions::HasMissingOnInvalid,
+            "comms::option::def::MissingOnInvalid option is not applicable to BitmaskValue field");                
     IntValueField intValue_;
 };
 

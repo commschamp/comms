@@ -1,5 +1,5 @@
 //
-// Copyright 2019 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2019 - 2022 (C). Alex Robenko. All rights reserved.
 //
 
 /// @file

@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2022 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -291,10 +291,7 @@ protected:
     /// @param[in] field Field for this layer.
     static std::size_t getRemainingSizeFromField(const Field& field)
     {
-        static_assert(comms::field::isIntValue<Field>(),
-            "Field must be of IntValue type");
-
-        return static_cast<std::size_t>(field.value());
+        return static_cast<std::size_t>(field.getValue());
     }
 
     /// @brief Extra operation before read is forwarded to the next layer.
@@ -323,12 +320,8 @@ protected:
     template <typename TMsg>
     static void prepareFieldForWrite(std::size_t size, const TMsg* msg, Field& field)
     {
-        static_assert(
-            comms::field::isIntValue<Field>(),
-            "Field must be of IntValue or EnumValue types");
-
         static_cast<void>(msg);
-        field.value() = static_cast<typename Field::ValueType>(size);
+        field.setValue(size);
     }
 
 private:
