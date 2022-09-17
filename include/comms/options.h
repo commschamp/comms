@@ -219,7 +219,7 @@ struct ExtraTransportFields {};
 
 /// @brief Option used to specify index of the version field inside
 ///     extra transport fields tuple provided with @ref
-///     comms::option::ExtraTransportFields option.
+///     comms::option::def::ExtraTransportFields option.
 /// @tparam TIdx Index of the field inside the tuple.
 /// @headerfile comms/options.h
 template <std::size_t TIdx>
@@ -265,12 +265,12 @@ struct AssumeFieldsExistence {};
 ///     of space exactly. The closest alternative is std::int32_t or
 ///     std::uint32_t. Such field may be defined as:
 ///     @code
-///     using MyFieldBase = comms::Field<comms::option::BigEndian>;
+///     using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///     using MyField =
 ///         comms::field::IntValue<
 ///             MyFieldBase,
 ///             std::uint32_t,
-///             comms::option::FixedLength<3>
+///             comms::option::def::FixedLength<3>
 ///         >;
 ///     @endcode
 /// @tparam TLen Length of the serialised value.
@@ -285,7 +285,7 @@ struct FixedLength {};
 ///     values of 6 and 10 bits respectively packed into two bytes to save space.
 ///     Such combined field may be defined as:
 ///     @code
-///     using MyFieldBase = comms::Field<comms::option::BigEndian>;
+///     using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///     using MyField =
 ///         comms::field::Bitfield<
 ///             MyFieldBase,
@@ -293,19 +293,20 @@ struct FixedLength {};
 ///                 comms::field::IntValue<
 ///                     MyFieldBase,
 ///                     std::uint8_t,
-///                     comms::option::FixedBitLength<6>
+///                     comms::option::def::FixedBitLength<6>
 ///                 >,
 ///                 comms::field::IntValue<
 ///                     MyFieldBase,
 ///                     std::uint16_t,
-///                     comms::option::FixedBitLength<10>
+///                     comms::option::def::FixedBitLength<10>
 ///                 >
 ///             >
 ///         >;
 ///     @endcode
 /// @tparam TLen Length of the serialised value in bits.
+/// @tparam TSignExtend Perform sign extension, relevant only to signed types.
 /// @headerfile comms/options.h
-template<std::size_t TLen>
+template<std::size_t TLen, bool TSignExtend = true>
 struct FixedBitLength {};
 
 /// @brief Option used to specify that field may have variable serialisation length
@@ -319,12 +320,12 @@ struct FixedBitLength {};
 ///     which value can be serialised using between 1 and 4 bytes can be
 ///     defined as:
 ///     @code
-///     using MyFieldBase = comms::Field<comms::option::BigEndian>;
+///     using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///     using MyField =
 ///         comms::field::IntValue<
 ///             MyFieldBase,
 ///             std::uint32_t,
-///             comms::option::VarLength<1, 4>
+///             comms::option::def::VarLength<1, 4>
 ///         >;
 ///         @endcode
 /// @tparam TMin Minimal length the field may consume.
@@ -356,21 +357,21 @@ struct AvailableLengthLimit
 ///     single byte, i.e. to specify year 2015 is to write value 15.
 ///     However it may be inconvenient to manually adjust serialised/deserialised
 ///     value by predefined offset 2000. To help with such case option
-///     comms::option::NumValueSerOffset can be used. For example:
+///     comms::option::def::NumValueSerOffset can be used. For example:
 ///     @code
-///     using MyFieldBase = comms::Field<comms::option::BigEndian>;
+///     using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///     using MyField =
 ///         comms::field::IntValue<
 ///             MyFieldBase,
 ///             std::uint16_t,
-///             comms::option::FixedLength<1>,
-///             comms::option::NumValueSerOffset<-2000>
+///             comms::option::def::FixedLength<1>,
+///             comms::option::def::NumValueSerOffset<-2000>
 ///         >;
 ///     @endcode
 ///     Note that in the example above the field value (accessible by @b value() member
 ///     function of the field) will have type std::uint16_t and will be equal to
 ///     say 2015, while when serialised it consumes only 1 byte (thanks to
-///     comms::option::FixedLength option) and reduced value of 15 is written.
+///     comms::option::def::FixedLength option) and reduced value of 15 is written.
 /// @tparam TOffset Offset value to be added when serialising field.
 /// @headerfile comms/options.h
 template<std::intmax_t TOffset>
@@ -384,12 +385,12 @@ struct NumValueSerOffset {};
 ///     integer value of millimetres, but while processing it should be handled as floating
 ///     point value of meters. Such field is defined as:
 ///     @code
-///     using MyFieldBase = comms::Field<comms::option::BigEndian>;
+///     using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///     using MyField =
 ///         comms::field::IntValue<
 ///             MyFieldBase,
 ///             std::int32_t,
-///             comms::option::ScalingRatio<1, 100>
+///             comms::option::def::ScalingRatio<1, 100>
 ///         >;
 ///     @endcode
 ///     Then, to accessed the scaled value of the field use @b scaleAs() or
@@ -421,12 +422,12 @@ struct ScalingRatio
 ///     For example sequence of raw bytes must be prefixed with 2 bytes stating
 ///     the size of the sequence:
 ///     @code
-///     using MyFieldBase = comms::Field<comms::option::BigEndian>;
+///     using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///     using MyField =
 ///         comms::field::ArrayList<
 ///             MyFieldBase,
 ///             std::uint8_t,
-///             comms::option::SequenceSizeFieldPrefix<
+///             comms::option::def::SequenceSizeFieldPrefix<
 ///                 comms::field::IntValue<MyFieldBase, std::uint16_t>
 ///             >
 ///         >;
@@ -442,7 +443,7 @@ struct SequenceSizeFieldPrefix {};
 ///     number of @b elements to follow, the prefix field contains number of
 ///     @b bytes that will follow.
 ///     @code
-///     using MyFieldBase = comms::Field<comms::option::BigEndian>;
+///     using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///     using MyField =
 ///         comms::field::ArrayList<
 ///             MyFieldBase,
@@ -452,7 +453,7 @@ struct SequenceSizeFieldPrefix {};
 ///                     comms::field::String<MyFieldBase>
 ///                 >
 ///             >,
-///             comms::option::SequenceSerLengthFieldPrefix<
+///             comms::option::def::SequenceSerLengthFieldPrefix<
 ///                 comms::field::IntValue<MyFieldBase, std::uint16_t>
 ///             >
 ///         >;
@@ -491,12 +492,12 @@ struct SequenceElemFixedSerLengthFieldPrefix {};
 ///     prefixing them with their size. Below is an example of how to achieve
 ///     such termination using SequenceTerminationFieldSuffix option.
 ///     @code
-///     using MyFieldBase = comms::Field<comms::option::BigEndian>;
+///     using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///     using MyField =
 ///         comms::field::String<
 ///             MyFieldBase,
-///             comms::option::SequenceTerminationFieldSuffix<
-///                 comms::field::IntValue<MyFieldBase, char, comms::option::DefaultNumValue<0> >
+///             comms::option::def::SequenceTerminationFieldSuffix<
+///                 comms::field::IntValue<MyFieldBase, char, comms::option::def::DefaultNumValue<0> >
 ///             >
 ///         >;
 ///     @endcode
@@ -514,13 +515,13 @@ struct SequenceTerminationFieldSuffix {};
 ///     occupies exactly 6 bytes when serialised (padded with zeroes at the end)
 ///     will be defined like this:
 ///     @code
-///     using MyFieldBase = comms::Field<comms::option::BigEndian>;
+///     using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///     using MyField =
 ///         comms::field::String<
 ///             MyFieldBase,
-///             comms::option::SequenceFixedSize<5>,
-///             comms::option::SequenceTrailingFieldSuffix<
-///                 comms::field::IntValue<MyFieldBase, char, comms::option::DefaultNumValue<0> >
+///             comms::option::def::SequenceFixedSize<5>,
+///             comms::option::def::SequenceTrailingFieldSuffix<
+///                 comms::field::IntValue<MyFieldBase, char, comms::option::def::DefaultNumValue<0> >
 ///             >
 ///         >;
 ///     @endcode
@@ -602,11 +603,11 @@ struct SequenceFixedSize {};
 ///         }
 ///     };
 ///
-///     using MyFieldBase = comms::Field<comms::option::BigEndian>;
+///     using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///     using MyField =
 ///         comms::field::String<
 ///             MyFieldBase,
-///             comms::option::DefaultValueInitialiser<MyStringInitialiser>
+///             comms::option::def::DefaultValueInitialiser<MyStringInitialiser>
 ///         >;
 ///     @endcode
 /// @tparam T Type of the initialiser class.
@@ -642,16 +643,16 @@ struct DefaultValueInitialiser {};
 ///         }
 ///     };
 ///
-///     using MyFieldBase = comms::Field<comms::option::BigEndian>;
+///     using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///     using MyField =
 ///         comms::field::String<
 ///             MyFieldBase,
-///             comms::option::ContentsValidator<MyStringValidator>
+///             comms::option::def::ContentsValidator<MyStringValidator>
 ///         >;
 ///     @endcode
 ///     Note that in the example above the default constructed MyField will
 ///     have invalid value. To fix that you must also use
-///     comms::option::DefaultValueInitialiser option to specify proper default
+///     comms::option::def::DefaultValueInitialiser option to specify proper default
 ///     value.
 /// @note Direct usage of this option in the client code is not recommended. It's
 ///     should be used for internal validators like @ref comms::option::def::BitmaskReservedBits
@@ -664,7 +665,7 @@ struct ContentsValidator {};
 ///     is received.
 /// @details Sometimes protocol is very strict about what field's values are
 ///     allowed and forces to abandon a message if invalid value is received.
-///     If comms::option::FailOnInvalid is provided as an option to a field,
+///     If comms::option::def::FailOnInvalid is provided as an option to a field,
 ///     the validity is going to checked automatically after the read. If invalid
 ///     value is identified, error will be returned from the @b read() operation.
 /// @tparam TStatus Error status to return when the content of the read field is invalid.
@@ -937,7 +938,7 @@ using DefaultBigUnsignedNumValue =
 
 /// @brief Provide range of valid numeric values.
 /// @details Quite often numeric fields such as comms::field::IntValue or
-///     comms::option::EnumValue have limited number of valid values ranges.
+///     comms::field::EnumValue have limited number of valid values ranges.
 ///     This option can be used multiple times to provide several valid ranges.@n
 ///     If values are too big to fit into @b std::intmax_t type, please use
 ///     @ref ValidBigUnsignedNumValueRange option instead.
@@ -1375,9 +1376,9 @@ struct NoVirtualDestructor {};
 /// @note The original data must be preserved until destruction of the field
 ///     that uses the "view".
 /// @note Incompatible with other options that contol data storage type,
-///     such as @ref comms::option::CustomStorageType or @ref comms::option::FixedSizeStorage
+///     such as @ref comms::option::app::CustomStorageType or @ref comms::option::app::FixedSizeStorage
 /// @note To force usage of provided @ref comms::util::StringView or @ref comms::util::ArrayView
-///     instead of standard @b std::string_view or @b std::span, use @ref comms::option::CustomStorageType
+///     instead of standard @b std::string_view or @b std::span, use @ref comms::option::app::CustomStorageType
 ///     option.
 /// @headerfile comms/options.h
 struct OrigDataView {};
@@ -1458,8 +1459,8 @@ template<std::size_t TLen, bool TSignExtend = true>
 using FixedLength = comms::option::def::FixedLength<TLen, TSignExtend>;
 
 /// @brief Same as @ref comms::option::def::FixedBitLength
-template<std::size_t TLen>
-using FixedBitLength = comms::option::def::FixedBitLength<TLen>;
+template<std::size_t TLen, bool TSignExtend = true>
+using FixedBitLength = comms::option::def::FixedBitLength<TLen, TSignExtend>;
 
 /// @brief Same as @ref comms::option::def::VarLength
 template<std::size_t TMin, std::size_t TMax>

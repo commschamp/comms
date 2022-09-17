@@ -52,6 +52,7 @@ public:
     void test24();
     void test25();
     void test26();
+    void test27();
 
 private:
     template <typename TField>
@@ -1814,6 +1815,47 @@ void FieldsTestSuite2::test26()
 
     Field field;
     static_cast<void>(field);
+}
+
+void FieldsTestSuite2::test27()
+{
+    typedef std::tuple<
+        comms::field::IntValue<
+            comms::Field<BigEndianOpt>,
+            std::int16_t,
+            comms::option::def::FixedBitLength<7, false>,
+            comms::option::def::NumValueSerOffset<-2000>,
+            comms::option::def::DefaultNumValue<2000>
+        >,
+        comms::field::BitmaskValue<
+            comms::Field<BigEndianOpt>,
+            comms::option::def::FixedBitLength<1>
+        >
+    > BitfieldMembers;
+
+    typedef comms::field::Bitfield<
+        comms::Field<BigEndianOpt>,
+        BitfieldMembers
+    > Field;
+
+    static_assert(!Field::isVersionDependent(),
+        "Invalid version dependency assumption");
+
+    Field field;
+    static_cast<void>(field);
+    TS_ASSERT_EQUALS(field.length(), 1U);
+    TS_ASSERT_EQUALS(field.memberBitLength<0>(), 7U);
+    TS_ASSERT_EQUALS(field.memberBitLength<1>(), 1U);
+
+    static const char Buf[] = {
+        static_cast<char>(0xff)
+    };
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    field = readWriteField<Field>(Buf, BufSize);
+    auto& members = field.value();
+    auto& mem1 = std::get<0>(members);
+    TS_ASSERT_EQUALS(mem1.value(), 2127);
 }
 
 template <typename TField>

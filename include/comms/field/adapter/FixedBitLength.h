@@ -26,11 +26,12 @@ namespace field
 namespace adapter
 {
 
-template <std::size_t TLen, typename TBase>
+template <std::size_t TLen, bool TSignExtend, typename TBase>
 class FixedBitLength : public TBase
 {
     using BaseImpl = TBase;
     using BaseSerialisedType = typename BaseImpl::SerialisedType;
+    using BaseUnsignedSerialisedType = typename std::make_unsigned<BaseSerialisedType>::type;
 
     static const std::size_t BitLength = TLen;
     static const std::size_t Length =
@@ -143,7 +144,7 @@ private:
     template <typename...>
     using HasSignTag = 
         typename comms::util::LazyShallowConditional<
-            std::is_signed<SerialisedType>::value
+            TSignExtend && std::is_signed<SerialisedType>::value
         >::template Type<
             SignedTag,
             UnsignedTag
@@ -154,7 +155,7 @@ private:
     template <typename... TParams>
     static SerialisedType adjustToSerialised(BaseSerialisedType val, UnsignedTag<TParams...>)
     {
-        return static_cast<SerialisedType>(val & UnsignedValueMask);
+        return static_cast<SerialisedType>(static_cast<BaseUnsignedSerialisedType>(val) & UnsignedValueMask);
     }
 
     template <typename... TParams>
@@ -162,7 +163,7 @@ private:
     {
         auto valueTmp =
             static_cast<UnsignedSerialisedType>(
-                static_cast<UnsignedSerialisedType>(val) & UnsignedValueMask);
+                static_cast<BaseUnsignedSerialisedType>(val) & UnsignedValueMask);
 
         return signExtUnsignedSerialised(valueTmp);
     }
@@ -170,7 +171,7 @@ private:
     template <typename... TParams>
     static BaseSerialisedType adjustFromSerialised(SerialisedType val, UnsignedTag<TParams...>)
     {
-        return static_cast<BaseSerialisedType>(val & UnsignedValueMask);
+        return static_cast<BaseSerialisedType>(static_cast<UnsignedSerialisedType>(val) & UnsignedValueMask);
     }
 
     template <typename... TParams>

@@ -210,17 +210,22 @@ public:
         >;            
 };
 
-template <std::size_t TLen, typename... TOptions>
+template <std::size_t TLen, bool TSignExtend, typename... TOptions>
 class OptionsParser<
-    comms::option::def::FixedBitLength<TLen>,
+    comms::option::def::FixedBitLength<TLen, TSignExtend>,
     TOptions...> : public OptionsParser<TOptions...>
 {
 public:
     static constexpr bool HasFixedBitLengthLimit = true;
     static constexpr std::size_t FixedBitLength = TLen;
+    static constexpr bool FixedBitLengthSignExtend = TSignExtend;
 
     template <typename TField>
-    using AdaptFixedBitLengthLimit = comms::field::adapter::FixedBitLength<FixedBitLength, TField>;
+    using AdaptFixedBitLengthLimit = 
+        comms::field::adapter::FixedBitLength<
+            FixedBitLength, 
+            FixedBitLengthSignExtend,
+            TField>;
 };
 
 template <std::size_t TMinLen, std::size_t TMaxLen, typename... TOptions>
