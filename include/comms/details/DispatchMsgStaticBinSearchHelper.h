@@ -854,7 +854,7 @@ public:
             "The used message object must provide polymorphic ID retrieval function");
         static_assert(MsgType::hasMsgIdType(), 
             "Message interface class must define its id type");            
-        return dispatch<TAllMessages>(msg.getId(), msg, handler, AdjustedTag<TAllMessages, MsgType>());
+        return dispatchInternal<TAllMessages>(msg.getId(), msg, handler, AdjustedTag<TAllMessages, MsgType>());
     }
 
     template <
