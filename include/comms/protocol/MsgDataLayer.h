@@ -15,14 +15,14 @@
 #include <type_traits>
 #include "comms/Assert.h"
 #include "comms/Field.h"
-#include "comms/util/Tuple.h"
-#include "comms/util/type_traits.h"
-#include "comms/field/ArrayList.h"
-#include "comms/field/IntValue.h"
 #include "comms/Message.h"
 #include "comms/MessageBase.h"
 #include "comms/details/detect.h"
 #include "comms/details/tag.h"
+#include "comms/field/ArrayList.h"
+#include "comms/field/IntValue.h"
+#include "comms/util/Tuple.h"
+#include "comms/util/type_traits.h"
 #include "ProtocolLayerBase.h"
 
 namespace comms

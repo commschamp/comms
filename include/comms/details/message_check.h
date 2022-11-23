@@ -12,8 +12,8 @@
 
 #include <type_traits>
 
-#include "comms/CompileControl.h"
 #include "comms/Assert.h"
+#include "comms/MessageBase.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/type_traits.h"
 

@@ -19,15 +19,17 @@
 
 #include "comms/CompileControl.h"
 #include "comms/Assert.h"
-#include "comms/util/Tuple.h"
-#include "comms/util/type_traits.h"
-#include "comms/fields.h"
+#include "comms/MessageBase.h"
 #include "comms/MsgFactory.h"
-#include "comms/dispatch.h"
+#include "comms/details/tag.h"
 #include "comms/protocol/details/ProtocolLayerBase.h"
 #include "comms/protocol/details/MsgIdLayerOptionsParser.h"
 #include "comms/protocol/details/ProtocolLayerExtendingClassHelper.h"
-#include "comms/details/tag.h"
+#include "comms/util/Tuple.h"
+#include "comms/util/type_traits.h"
+#include "comms/dispatch.h"
+#include "comms/fields.h"
+
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4100) // Disable warning about unreferenced parameters
