@@ -13,14 +13,14 @@
 #include <limits>
 
 #include "comms/Assert.h"
+#include "comms/CompileControl.h"
 #include "comms/Message.h"
 #include "comms/MessageBase.h"
-#include "comms/util/Tuple.h"
-#include "comms/util/type_traits.h"
 #include "comms/details/message_check.h"
-#include "comms/CompileControl.h"
 #include "comms/details/DispatchMsgIdRetrieveHelper.h"
 #include "comms/details/tag.h"
+#include "comms/util/Tuple.h"
+#include "comms/util/type_traits.h"
 
 namespace comms
 {

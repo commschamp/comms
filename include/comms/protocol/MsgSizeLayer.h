@@ -15,11 +15,12 @@
 
 #include "comms/CompileControl.h"
 #include "comms/field/IntValue.h"
+#include "comms/MessageBase.h"
+#include "comms/details/tag.h"
 #include "comms/protocol/details/ProtocolLayerBase.h"
 #include "comms/protocol/details/MsgSizeLayerOptionsParser.h"
 #include "comms/protocol/details/ProtocolLayerExtendingClassHelper.h"
 #include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4189) // Disable erroneous initialized but not referenced variable warning

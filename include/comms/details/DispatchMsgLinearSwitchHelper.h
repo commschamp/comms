@@ -11,9 +11,10 @@
 
 #include "comms/CompileControl.h"
 #include "comms/Message.h"
+#include "comms/MessageBase.h"
+#include "comms/details/tag.h"
 #include "comms/details/message_check.h"
 #include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
 #include "DispatchMsgHelperType.h"
 
 COMMS_MSVC_WARNING_PUSH

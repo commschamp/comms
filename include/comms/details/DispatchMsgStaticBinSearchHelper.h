@@ -10,9 +10,10 @@
 #include <type_traits>
 
 #include "comms/Message.h"
+#include "comms/MessageBase.h"
+#include "comms/details/tag.h"
 #include "comms/details/message_check.h"
 #include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
 #include "DispatchMsgHelperType.h"
 
 namespace comms
