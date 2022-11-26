@@ -229,7 +229,9 @@ public:
     {
         COMMS_ASSERT(pos <= end());
         COMMS_ASSERT((size() + count) <= capacity());
-        auto* posIter = begin() + std::distance(cbegin(), pos);
+        auto dist = std::distance(cbegin(), pos);
+        COMMS_ASSERT((0 <= dist) && static_cast<std::size_t>(dist) < size());
+        auto* posIter = begin() + dist;
         if (end() <= posIter) {
             while (0 < count) {
                 push_back(value);
@@ -250,7 +252,17 @@ public:
             auto moveBegIter = posIter;
             auto moveEndIter = moveBegIter + (tailCount - count);
             COMMS_ASSERT(moveEndIter < pushEndIter);
+
+#if COMMS_IS_GCC_12 && defined(NDEBUG)
+            // For some reason RELEASE compilation with gcc-12
+            // gives a warning here, while any debug build works fine.
+            COMMS_GNU_WARNING_PUSH    
+            COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow")
             std::move_backward(moveBegIter, moveEndIter, pushEndIter);
+            COMMS_GNU_WARNING_POP
+#else
+            std::move_backward(moveBegIter, moveEndIter, pushEndIter);            
+#endif                 
 
             auto* assignBegIter = posIter;
             auto* assignEndIter = assignBegIter + count;

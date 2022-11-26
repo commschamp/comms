@@ -591,7 +591,7 @@ class OptionsParser<
 {
     using BaseImpl = OptionsParser<TOptions...>;
 public:
-#ifdef CC_COMPILER_GCC47
+#ifdef COMMS_COMPILER_GCC47
     static_assert(!BaseImpl::HasMultiRangeValidation,
         "Sorry gcc-4.7 fails to compile valid C++11 code that allows multiple usage"
         "of comms::option::def::ValidNumValueRange options. Either use it only once or"
@@ -627,7 +627,7 @@ class OptionsParser<
 {
     using BaseImpl = OptionsParser<TOptions...>;
 public:
-#ifdef CC_COMPILER_GCC47
+#ifdef COMMS_COMPILER_GCC47
     static_assert(!BaseImpl::HasMultiRangeValidation,
         "Sorry gcc-4.7 fails to compile valid C++11 code that allows multiple usage"
         "of comms::option::def::ValidNumValueRange options. Either use it only once or"

@@ -5269,12 +5269,9 @@ void FieldsTestSuite::test99()
 
     field2.forceReadLength(5U);
 
-    static const char Buf2[] = {
-        'h', 'e', 'l', 'l', 'o', 'a', 'b', 'c', 'd'
-    };
-    static const std::size_t Buf2Size = std::extent<decltype(Buf)>::value;
+    static const std::string Buf2 = "helloabcd";
     auto readIter2 = &Buf2[0];
-    es = field2.read(readIter2, Buf2Size);
+    es = field2.read(readIter2, Buf2.size());
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT_EQUALS(field2.value(), "hello");
     TS_ASSERT(field2.valid());
