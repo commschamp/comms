@@ -61,7 +61,7 @@ public:
 protected:
     virtual auto dispatchImpl(TMsgBase& msg, THandler& handler) const ->
         MessageInterfaceDispatchRetType<THandler> 
-#ifndef CC_COMPILER_GCC47        
+#ifndef COMMS_COMPILER_GCC47        
             override final 
 #endif        
     {
@@ -125,7 +125,7 @@ public:
 protected:
     
     virtual MsgIdParamType getIdImpl() const 
-#ifndef CC_COMPILER_GCC47        
+#ifndef COMMS_COMPILER_GCC47        
         override final 
 #endif  
     {
@@ -134,7 +134,7 @@ protected:
 
     virtual auto dispatchImpl(TMsgBase& msg, THandler& handler) const ->
         MessageInterfaceDispatchRetType<THandler> 
-#ifndef CC_COMPILER_GCC47        
+#ifndef COMMS_COMPILER_GCC47        
             override final 
 #endif  
     {
@@ -824,7 +824,7 @@ public:
 
 protected:
     virtual void dispatchImpl(THandler& handler) const 
-#ifndef CC_COMPILER_GCC47        
+#ifndef COMMS_COMPILER_GCC47        
         override final 
 #endif  
     {
@@ -874,7 +874,7 @@ public:
 
 protected:
     virtual TMsgIdType getIdImpl() const
-#ifndef CC_COMPILER_GCC47        
+#ifndef COMMS_COMPILER_GCC47        
         override final 
 #endif      
     {
@@ -882,7 +882,7 @@ protected:
     }
 
     virtual void dispatchImpl(THandler& handler) const 
-#ifndef CC_COMPILER_GCC47        
+#ifndef COMMS_COMPILER_GCC47        
         override final 
 #endif  
     {

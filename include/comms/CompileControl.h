@@ -73,6 +73,7 @@
 #define COMMS_IS_GCC_10 (COMMS_IS_GCC && (__GNUC__ == 10))
 #define COMMS_IS_GCC_10_OR_ABOVE (COMMS_IS_GCC && (__GNUC__ >= 10))
 #define COMMS_IS_GCC_10_OR_BELOW (COMMS_IS_GCC && (__GNUC__ <= 10))
+#define COMMS_IS_GCC_12 (COMMS_IS_GCC && (__GNUC__ == 12))
 #define COMMS_IS_CLANG_7_OR_ABOVE (COMMS_IS_CLANG && (__clang_major__ >= 7))
 #define COMMS_IS_CLANG_8 (COMMS_IS_CLANG && (__clang_major__ == 8))
 #define COMMS_IS_CLANG_8_OR_BELOW (COMMS_IS_CLANG && (__clang_major__ <= 8))
@@ -83,8 +84,8 @@
 #define COMMS_IS_MSVC_2017_OR_BELOW (COMMS_IS_MSVC && (_MSC_VER < 1920))
 #define COMMS_IS_MSVC_2015_OR_BELOW (COMMS_IS_MSVC && (_MSC_VER < 1910))
 
-#if !defined(CC_COMPILER_GCC47) && COMMS_IS_GCC_47_OR_BELOW
-#define CC_COMPILER_GCC47
+#if !defined(COMMS_COMPILER_GCC47) && COMMS_IS_GCC_47_OR_BELOW
+#define COMMS_COMPILER_GCC47
 #endif
 
 #define COMMS_IS_CPP14 (__cplusplus >= 201402L)
