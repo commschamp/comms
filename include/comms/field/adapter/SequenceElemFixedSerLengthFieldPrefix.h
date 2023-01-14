@@ -113,6 +113,11 @@ public:
     template <typename TIter>
     comms::ErrorStatus read(TIter& iter, std::size_t len)
     {
+        if (len == 0U) {
+            elemLen_ = 0U;
+            return ErrorStatus::Success;
+        }
+                
         auto es = readLen(iter, len);
         if (es != comms::ErrorStatus::Success) {
             return es;
