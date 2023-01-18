@@ -525,7 +525,7 @@ toFieldBase(const BitmaskValue<TFieldBase, TOptions...>& field)
 ///     @endcode
 ///     @b NOTE, that provided names @b first, @b second, @b third, and @b fourth have
 ///     found their way to the enum @b BitIdx. @n
-///     Also note, that there is automatically added @b BitIdx_nameOfValues
+///     Also note, that there is automatically added @b BitIdx_numOfValues
 ///     value to the end of @b BitIdx enum.
 ///
 ///     It is possible to assign values to the provided names. It could be useful
