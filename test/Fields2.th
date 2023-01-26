@@ -53,6 +53,7 @@ public:
     void test25();
     void test26();
     void test27();
+    void test28();
 
 private:
     template <typename TField>
@@ -1856,6 +1857,29 @@ void FieldsTestSuite2::test27()
     auto& members = field.value();
     auto& mem1 = std::get<0>(members);
     TS_ASSERT_EQUALS(mem1.value(), 2127);
+}
+
+void FieldsTestSuite2::test28()
+{
+    using LengthField = comms::field::IntValue<BeFieldBase, std::uint8_t>;
+    using Field = 
+        comms::field::ArrayList<
+            BeFieldBase, 
+            comms::field::IntValue<BeFieldBase, std::uint16_t>,
+            comms::option::SequenceSerLengthFieldPrefix<LengthField>,
+            comms::option::SequenceElemFixedSerLengthFieldPrefix<LengthField>
+        >;
+
+    do {
+        Field field;
+        static const char Buf[] = {
+            0x0, 
+        };
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        field = readWriteField<Field>(&Buf[0], BufSize);
+        TS_ASSERT_EQUALS(field.length(), 1U);
+    } while (false);
 }
 
 template <typename TField>

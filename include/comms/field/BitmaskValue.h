@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2022 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2023 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -525,7 +525,7 @@ toFieldBase(const BitmaskValue<TFieldBase, TOptions...>& field)
 ///     @endcode
 ///     @b NOTE, that provided names @b first, @b second, @b third, and @b fourth have
 ///     found their way to the enum @b BitIdx. @n
-///     Also note, that there is automatically added @b BitIdx_nameOfValues
+///     Also note, that there is automatically added @b BitIdx_numOfValues
 ///     value to the end of @b BitIdx enum.
 ///
 ///     It is possible to assign values to the provided names. It could be useful
