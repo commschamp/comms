@@ -970,10 +970,13 @@ protected:
     template <typename... TParams>
     using VarLengthTag = comms::details::tag::Tag2<>;
 
+    static constexpr bool MinFieldLength = Field::minLength();
+    static constexpr bool MaxFieldLength = Field::maxLength();
+
     template <typename...>
     using LengthTag = 
         typename comms::util::LazyShallowConditional<
-            (Field::minLength() == Field::maxLength())
+            (MinFieldLength == MaxFieldLength)
         >::template Type<
             FixedLengthTag,
             VarLengthTag

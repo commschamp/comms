@@ -464,7 +464,7 @@ private:
         TWriter&& nextLayerWriter) const
     {
         static_assert(
-            (Field::minLength() == Field::maxLength()) ||
+            (BaseImpl::MinFieldLength == BaseImpl::MaxFieldLength) ||
             (comms::isMessageBase<typename std::decay<decltype(msg)>::type>()),
                 "Unable to perform write with size field having variable length and "
                 "no polymorphic length calculation available.");
