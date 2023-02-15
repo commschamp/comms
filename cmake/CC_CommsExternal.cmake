@@ -38,6 +38,8 @@
 #         * CMAKE_CXX_COMPILER
 #         * CMAKE_TOOLCHAIN_FILE
 #         * CMAKE_GENERATOR
+#         * CMAKE_GENERATOR_PLATFORM
+#         * CMAKE_GENERATOR_TOOLSET
 #         * CMAKE_BUILD_TYPE
 #         * CMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
 #       The default values are passed before ones specified in CMAKE_ARGS, which can overwrite 
@@ -76,6 +78,8 @@
 #         * CMAKE_CXX_COMPILER
 #         * CMAKE_TOOLCHAIN_FILE
 #         * CMAKE_GENERATOR
+#         * CMAKE_GENERATOR_PLATFORM
+#         * CMAKE_GENERATOR_TOOLSET
 #         * CMAKE_BUILD_TYPE
 #         * CMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
 #       The default values are passed before ones specified in CMAKE_ARGS, which can overwrite 
@@ -188,6 +192,8 @@ function (cc_comms_build_during_config)
             -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
             -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
             -DCMAKE_GENERATOR=${CMAKE_GENERATOR}
+            -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
+            -DCMAKE_GENERATOR_TOOLSET=${CMAKE_GENERATOR_TOOLSET}
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
         )
@@ -278,6 +284,8 @@ function (cc_comms_build_as_external_project)
             -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
             -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
             -DCMAKE_GENERATOR=${CMAKE_GENERATOR}
+            -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
+            -DCMAKE_GENERATOR_TOOLSET=${CMAKE_GENERATOR_TOOLSET}            
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
         )
