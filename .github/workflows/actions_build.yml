@@ -44,6 +44,52 @@ jobs:
       shell: bash
       run: ctest 
 
+  build_gcc_old_ubuntu_20_04:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [Debug, Release, MinSizeRel]
+        cc_ver: [4.8, 5, 6]
+        cpp: [11, 14]
+        exclude:
+          - cc_ver: 4.8
+            cpp: 14
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Add repositories
+      run: |
+        sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu/ xenial main'; \
+        sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu/ xenial universe'
+    
+    - name: Install Packages
+      run: sudo apt install gcc-${{matrix.cc_ver}} g++-${{matrix.cc_ver}}
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=gold -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON
+      env:
+        CC: gcc-${{matrix.cc_ver}}
+        CXX: g++-${{matrix.cc_ver}}
+
+    - name: Build
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: cmake --build . --config ${{matrix.type}} --target install
+      env:
+        VERBOSE: 1 
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: ctest       
+
   build_gcc_ubuntu_20_04:
     runs-on: ubuntu-20.04
     strategy:
