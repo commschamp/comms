@@ -237,7 +237,58 @@ jobs:
     - name: Documentation
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: make doc_comms       
+      run: make doc_comms   
+      
+  build_clang_old_ubuntu_20_04:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [Debug, Release, MinSizeRel]
+        cc_ver: ["4.0", "5.0", "6.0"]
+        cpp: [11, 14, 17]
+        exclude:
+          - cc_ver: "4.0"
+            cpp: 17
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Add repositories
+      run: |
+        sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu/ xenial main'; \
+        sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu/ xenial universe'    
+    
+    - name: Prepare Install
+      run: sudo apt-get update --fix-missing
+      
+    - name: Install Packages
+      run: sudo apt install clang-${{matrix.cc_ver}}
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: |
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install \
+          -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON -DCC_COMMS_UNIT_TESTS_USE_SANITIZERS=OFF
+      env:
+        CC: clang-${{matrix.cc_ver}}
+        CXX: clang++-${{matrix.cc_ver}}
+
+    - name: Build
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: cmake --build . --config ${{matrix.type}} --target install
+      env:
+        VERBOSE: 1 
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: ctest 
       
   build_clang_ubuntu_20_04:
     runs-on: ubuntu-20.04
