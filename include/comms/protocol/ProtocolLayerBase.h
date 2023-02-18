@@ -970,8 +970,8 @@ protected:
     template <typename... TParams>
     using VarLengthTag = comms::details::tag::Tag2<>;
 
-    static constexpr bool MinFieldLength = Field::minLength();
-    static constexpr bool MaxFieldLength = Field::maxLength();
+    static constexpr std::size_t MinFieldLength = Field::minLength();
+    static constexpr std::size_t MaxFieldLength = Field::maxLength();
 
     template <typename...>
     using LengthTag = 
