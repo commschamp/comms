@@ -66,6 +66,7 @@ namespace comms
 ///     @li @ref comms::option::def::HasDoGetId - Enable implementation of getIdImpl() even if
 ///         @ref comms::option::def::StaticNumIdImpl option wasn't used. Must be paired with
 ///         @ref comms::option::def::MsgType.
+///     @li @ref comms::option::def::FailOnInvalid - Fail the read operation if the contents are invalid.
 ///     @li @ref comms::option::app::NoReadImpl - Inhibit the implementation of readImpl().
 ///     @li @ref comms::option::app::NoWriteImpl - Inhibit the implementation of writeImpl().
 ///     @li @ref comms::option::app::NoLengthImpl - Inhibit the implementation of lengthImpl().

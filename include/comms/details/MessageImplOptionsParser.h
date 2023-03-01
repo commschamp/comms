@@ -17,6 +17,12 @@ namespace comms
 namespace details
 {
 
+template <typename T, T TValue>
+struct MessageImplValueWrapper
+{
+    static constexpr T Value = TValue;
+};
+
 template <typename... TOptions>
 class MessageImplOptionsParser;
 
@@ -39,9 +45,11 @@ public:
     static constexpr bool HasDoGetId = false;
     static constexpr bool HasNoIdImpl = false;
     static constexpr bool HasName = false;
+    static constexpr bool HasFailOnInvalid = false;
 
     using Fields = std::tuple<>;
     using MsgType = void;
+    using FailOnInvalidStatusWrapper = MessageImplValueWrapper<comms::ErrorStatus, comms::ErrorStatus::InvalidMsgData>;
 
     template <typename TBase>
     using BuildFieldsImpl = TBase;
@@ -74,7 +82,10 @@ public:
     using BuildMsgIdImpl = TBase;    
 
     template <typename TBase>
-    using BuildNameImpl = TBase;                  
+    using BuildNameImpl = TBase;     
+
+    template <typename TBase>
+    using BuildFailOnInvalidImpl = TBase;                   
 };
 
 template <std::intmax_t TId,
@@ -143,6 +154,16 @@ public:
 
     template <typename TBase>
     using BuildFieldsImpl = MessageImplFieldsBase<TBase, Fields>;
+
+    template <typename TBase>
+    using BuildFailOnInvalidImpl = 
+        typename comms::util::LazyShallowDeepConditional<
+            BaseImpl::HasFailOnInvalid
+        >::template Type<
+            MessageImplFailOnInvalidBase,
+            comms::util::TypeDeepWrap,
+            TBase, typename BaseImpl::MsgType, typename BaseImpl::FailOnInvalidStatusWrapper
+        >;       
 
     template <typename TBase>
     using BuildVersionImpl = 
@@ -373,6 +394,16 @@ public:
     using MsgType = TMsgType;
 
     template <typename TBase>
+    using BuildFailOnInvalidImpl = 
+        typename comms::util::LazyShallowDeepConditional<
+            BaseImpl::HasFieldsImpl && BaseImpl::HasFailOnInvalid
+        >::template Type<
+            MessageImplFailOnInvalidBase,
+            comms::util::TypeDeepWrap,
+            TBase, MsgType, typename BaseImpl::FailOnInvalidStatusWrapper
+        >;       
+
+    template <typename TBase>
     using BuildReadImpl = 
         typename comms::util::LazyShallowDeepConditional<
             TBase::InterfaceOptions::HasReadIterator && (!BaseImpl::HasNoReadImpl)
@@ -458,6 +489,28 @@ public:
             comms::util::TypeDeepWrap,
             TBase, MsgType
         >; 
+};
+
+template <comms::ErrorStatus TStatus, typename... TOptions>
+class MessageImplOptionsParser<
+    comms::option::def::FailOnInvalid<TStatus>,
+    TOptions...> : public MessageImplOptionsParser<TOptions...>
+{
+    using BaseImpl = MessageImplOptionsParser<TOptions...>;
+
+public:
+    static constexpr bool HasFailOnInvalid = true;
+    using FailOnInvalidStatusWrapper = MessageImplValueWrapper<comms::ErrorStatus, TStatus>;
+
+    template <typename TBase>
+    using BuildFailOnInvalidImpl = 
+        typename comms::util::LazyShallowDeepConditional<
+            BaseImpl::HasFieldsImpl
+        >::template Type<
+            MessageImplFailOnInvalidBase,
+            comms::util::TypeDeepWrap,
+            TBase, typename BaseImpl::MsgType, FailOnInvalidStatusWrapper
+        >;         
 };
 
 template <typename... TOptions>

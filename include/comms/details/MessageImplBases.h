@@ -10,6 +10,7 @@
 #include <tuple>
 #include <cstddef>
 
+#include "comms/ErrorStatus.h"
 #include "comms/util/Tuple.h"
 #include "comms/details/tag.h"
 #include "comms/field/basic/CommonFuncs.h"
@@ -681,6 +682,66 @@ private:
         return static_cast<const TActual*>(this)->doLength();
     }
 };
+
+// ------------------------------------------------------
+
+template <typename TBase, typename TActual, typename TFailOnInvalidStatusWrapper>
+class MessageImplFailOnInvalidBase : public TBase
+{
+    using BaseImpl = TBase;
+
+public:
+    template <typename TIter>
+    comms::ErrorStatus doRead(TIter& iter, std::size_t len)
+    {
+        auto es = TBase::doRead(iter, len);
+        if (es != comms::ErrorStatus::Success) {
+            return es;
+        }
+
+        if (!doValidInternal()) {
+            return TFailOnInvalidStatusWrapper::Value;
+        }
+
+        return comms::ErrorStatus::Success;
+    }    
+
+protected:
+    ~MessageImplFailOnInvalidBase() noexcept = default;
+
+private:
+    template <typename... TParams>
+    using HasActual = comms::details::tag::Tag1<>;
+
+    template <typename... TParams>
+    using NoActual = comms::details::tag::Tag2<>;
+
+    template <typename... TParams>
+    bool doValidInternal(NoActual<TParams...>) const
+    {
+        return BaseImpl::doValid();
+    }
+
+    template <typename... TParams>
+    bool doValidInternal(HasActual<TParams...>) const
+    {
+        return static_cast<const TActual*>(this)->doValid();
+    }
+
+    bool doValidInternal() const
+    {
+        using Tag = 
+            typename comms::util::LazyShallowConditional<
+                std::is_same<TActual, void>::value
+            >::template Type<
+                NoActual,
+                HasActual
+            >;   
+
+        return doValidInternal(Tag());
+    }
+};
+
 
 // ------------------------------------------------------
 
