@@ -173,7 +173,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using Tag = tag::String;
+    using CommsTag = tag::String;
 
     /// @brief Type of underlying value.
     /// @details If @ref comms::option::app::FixedSizeStorage option is NOT used, the
@@ -485,7 +485,7 @@ private:
                 >
             >;
 
-        static_assert(!std::is_void<Tag>::value,
+        static_assert(!std::is_void<TagTmp>::value,
             "The string storage value type must have either resize() or remove_suffix() "
             "member functions");
         doResize(count, TagTmp());
@@ -579,7 +579,7 @@ bool operator<(
 template <typename T>
 constexpr bool isString()
 {
-    return std::is_same<typename T::Tag, tag::String>::value;
+    return std::is_same<typename T::CommsTag, tag::String>::value;
 }
 
 /// @brief Upcast type of the field definition to its parent comms::field::String type

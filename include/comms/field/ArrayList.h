@@ -206,7 +206,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using Tag = 
+    using CommsTag = 
         typename comms::util::Conditional<
             std::is_integral<TElement>::value
         >::template Type<
@@ -568,8 +568,8 @@ template <typename T>
 constexpr bool isArrayList()
 {
     return 
-        std::is_same<typename T::Tag, tag::ArrayList>::value || 
-        std::is_same<typename T::Tag, tag::RawArrayList>::value;
+        std::is_same<typename T::CommsTag, tag::ArrayList>::value || 
+        std::is_same<typename T::CommsTag, tag::RawArrayList>::value;
 }
 
 /// @brief Upcast type of the field definition to its parent comms::field::ArrayList type

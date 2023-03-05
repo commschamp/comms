@@ -81,7 +81,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using Tag = tag::Bundle;
+    using CommsTag = tag::Bundle;
 
     /// @brief Value type.
     /// @details Same as TMemebers template argument, i.e. it is std::tuple
@@ -754,7 +754,7 @@ bool operator>=(
 template <typename T>
 constexpr bool isBundle()
 {
-    return std::is_same<typename T::Tag, tag::Bundle>::value;
+    return std::is_same<typename T::CommsTag, tag::Bundle>::value;
 }
 
 /// @brief Upcast type of the field definition to its parent comms::field::Bundle type

@@ -56,7 +56,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using Tag = tag::Optional;
+    using CommsTag = tag::Optional;
 
     /// @brief Type of the field.
     using Field = TField;
@@ -459,7 +459,7 @@ bool operator>=(
 template <typename T>
 constexpr bool isOptional()
 {
-    return std::is_same<typename T::Tag, tag::Optional>::value;
+    return std::is_same<typename T::CommsTag, tag::Optional>::value;
 }
 
 /// @brief Upcast type of the field definition to its parent comms::field::Optional type

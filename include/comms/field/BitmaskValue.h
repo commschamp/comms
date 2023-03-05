@@ -128,7 +128,7 @@ public:
     using ParsedOptions = OptionsBundle;
 
     /// @brief Tag indicating type of the field
-    using Tag = tag::Bitmask;
+    using CommsTag = tag::Bitmask;
 
     /// @brief Type of underlying integral value.
     /// @details Unsigned integral type, which depends on the length of the
@@ -480,7 +480,7 @@ bool operator<(
 template <typename T>
 constexpr bool isBitmaskValue()
 {
-    return std::is_same<typename T::Tag, tag::Bitmask>::value;
+    return std::is_same<typename T::CommsTag, tag::Bitmask>::value;
 }
 
 /// @brief Upcast type of the field definition to its parent comms::field::BitmaskValue type

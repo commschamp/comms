@@ -91,7 +91,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using Tag = tag::Variant;
+    using CommsTag = tag::Variant;
 
     /// @brief Value type.
     /// @details Type of the internal buffer used to store contained field,
@@ -616,7 +616,7 @@ bool operator<(
 template <typename T>
 constexpr bool isVariant()
 {
-    return std::is_same<typename T::Tag, tag::Variant>::value;
+    return std::is_same<typename T::CommsTag, tag::Variant>::value;
 }
 
 /// @brief Upcast type of the field definition to its parent comms::field::Variant type
