@@ -28,7 +28,7 @@ macro (cc_compile)
     set (_prefix CC_COMPILE)
     set (_options WARN_AS_ERR STATIC_RUNTIME USE_CCACHE DEFAULT_SANITIZERS)
     set (_oneValueArgs)
-    set (_mutiValueArgs SANITIZERS)
+    set (_mutiValueArgs EXTRA)
     cmake_parse_arguments(${_prefix} "${_options}" "${_oneValueArgs}" "${_mutiValueArgs}" ${ARGN})
    
     if ((CMAKE_COMPILER_IS_GNUCC) OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
