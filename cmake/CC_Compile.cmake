@@ -4,12 +4,17 @@
 # Set predefined compilation flags
 #     cc_compile(
 #         [WARN_AS_ERR]
+#         [STATIC_RUNTIME]
 #         [USE_CCACHE]
+#         [DEFAULT_SANITIZERS]
+#         [EXTRA flags...]
 #     )
 #
 # - WARN_AS_ERR - Treat warnings as errors.
 # - STATIC_RUNTIME - Static link with runtime.
 # - USE_CCACHE - Force usage of ccache
+# - DEFAULT_SANITIZERS - Add default sanitiers options
+# - EXTRA - Extra flags
 # 
 # ******************************************************
 # Update default MSVC warning level option
@@ -70,14 +75,13 @@ macro (cc_compile)
         if (CC_COMPILE_DEFAULT_SANITIZERS)
             list (APPEND extra_flags_list
                 -fno-omit-frame-pointer 
-                -fno-sanitize-recover=address 
                 -fsanitize=address
-                -fno-sanitize-recover=undefined
-                -fsanitize=undefined)        
+                -fsanitize=undefined
+                -fno-sanitize-recover=all)        
         endif ()
             
-        if (CC_COMPILE_SANITIZERS)
-            list (APPEND extra_flags_list ${CC_COMPILE_SANITIZERS})
+        if (CC_COMPILE_EXTRA)
+            list (APPEND extra_flags_list ${CC_COMPILE_EXTRA})
         endif ()
 
         if (CC_COMPILE_WARN_AS_ERR)
