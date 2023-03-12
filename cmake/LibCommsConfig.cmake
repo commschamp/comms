@@ -22,8 +22,6 @@ if (NOT TARGET cc::comms)
     return ()
 endif ()
 
-add_library (cc::cc_comms ALIAS cc::comms)
-
 get_target_property(CC_COMMS_INCLUDE_DIRS cc::comms INTERFACE_INCLUDE_DIRECTORIES)
 set (CC_COMMS_CMAKE_DIR ${CMAKE_CURRENT_LIST_DIR})
 
