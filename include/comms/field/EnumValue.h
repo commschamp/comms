@@ -89,7 +89,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using Tag = tag::Enum;
+    using CommsTag = tag::Enum;
 
     /// @brief Type of underlying enum value.
     /// @details Same as template parameter TEnum to this class.
@@ -376,7 +376,7 @@ bool operator<(
 template <typename T>
 constexpr bool isEnumValue()
 {
-    return std::is_same<typename T::Tag, tag::Enum>::value;
+    return std::is_same<typename T::CommsTag, tag::Enum>::value;
 }
 
 /// @brief Upcast type of the field definition to its parent comms::field::EnumValue type

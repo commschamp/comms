@@ -51,7 +51,7 @@ public:
     using ParsedOptions = details::OptionsParser<>;
 
     /// @brief Tag indicating type of the field
-    using Tag = tag::NoValue;
+    using CommsTag = tag::NoValue;
 
     /// @brief Type of underlying value.
     /// @details Defined to be "unsigned", not really used
@@ -274,7 +274,7 @@ bool operator<(const NoValue<TFieldBase>& field1, const NoValue<TFieldBase>& fie
 template <typename T>
 constexpr bool isNoValue()
 {
-    return std::is_same<typename T::Tag, tag::NoValue>::value;
+    return std::is_same<typename T::CommsTag, tag::NoValue>::value;
 }
 
 }  // namespace field

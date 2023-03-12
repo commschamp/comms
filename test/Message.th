@@ -59,6 +59,7 @@ public:
     void test37();
     void test38();
     void test39();
+    void test40();
 
 private:
 
@@ -229,6 +230,8 @@ private:
 
     typedef Message3<BeMessageBase> BeMsg3;
     typedef Message3<LeMessageBase> LeMsg3;
+
+    typedef Message10<BeMessageBase> BeMsg10;
 
     typedef Message90_1<BeMessageBase> BeMsg90_1;
     typedef Message90_2<BeMessageBase> BeMsg90_2;    
@@ -1954,6 +1957,45 @@ void MessageTestSuite::test39()
     Dispatcher4::dispatch<AllMessages>(msg90.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 3U);
     TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);
+}
+
+void MessageTestSuite::test40()
+{
+    BeMsg10 msg;
+    TS_ASSERT(msg.doValid());
+
+    do {
+        static const std::uint8_t Buf[] = {
+            0x00, 0x00, 0x00, 0x00
+        };
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        auto readIter = &Buf[0];
+        auto es = msg.doRead(readIter, BufSize);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::InvalidMsgData);
+    } while (false);
+
+    do {
+        static const std::uint8_t Buf[] = {
+            0x00, 0x0a, 0x00, 0x0a
+        };
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        auto readIter = &Buf[0];
+        auto es = msg.doRead(readIter, BufSize);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::InvalidMsgData);
+    } while (false);   
+
+    do {
+        static const std::uint8_t Buf[] = {
+            0x00, 0x0a, 0x00, 0x0b
+        };
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        auto readIter = &Buf[0];
+        auto es = msg.doRead(readIter, BufSize);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    } while (false);        
 }
 
 template <typename TMessage>

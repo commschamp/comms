@@ -3,8 +3,9 @@ name: Github Actions Build
 on: [push]
 
 jobs:
-  build_gcc_ubuntu_18_04:
-    runs-on: ubuntu-18.04
+
+  build_gcc_old_ubuntu_20_04:
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
@@ -17,6 +18,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Add repositories
+      run: |
+        sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu/ bionic main'; \
+        sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu/ bionic universe'        
     
     - name: Install Packages
       run: sudo apt install gcc-${{matrix.cc_ver}} g++-${{matrix.cc_ver}}
@@ -27,7 +33,10 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=gold -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON
+      run: |
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install \
+          -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=gold -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON \
+          -DCC_COMMS_UNIT_TESTS_USE_SANITIZERS=OFF
       env:
         CC: gcc-${{matrix.cc_ver}}
         CXX: g++-${{matrix.cc_ver}}
@@ -42,7 +51,7 @@ jobs:
     - name: Test
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: ctest 
+      run: ctest       
 
   build_gcc_ubuntu_20_04:
     runs-on: ubuntu-20.04
@@ -141,8 +150,8 @@ jobs:
       shell: bash
       run: make doc_comms       
       
-  build_clang_ubuntu_18_04:
-    runs-on: ubuntu-18.04
+  build_clang_old_ubuntu_20_04:
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
@@ -155,12 +164,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Add repositories
+      run: |
+        sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu/ bionic main'; \
+        sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu/ bionic universe'    
     
     - name: Prepare Install
       run: sudo apt-get update --fix-missing
       
     - name: Install Packages
-      run: sudo apt install doxygen dia clang-${{matrix.cc_ver}}
+      run: sudo apt install clang-${{matrix.cc_ver}}
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
@@ -168,7 +182,9 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON
+      run: |
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install \
+          -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON -DCC_COMMS_UNIT_TESTS_USE_SANITIZERS=OFF
       env:
         CC: clang-${{matrix.cc_ver}}
         CXX: clang++-${{matrix.cc_ver}}
@@ -184,11 +200,6 @@ jobs:
       working-directory: ${{runner.workspace}}/build
       shell: bash
       run: ctest 
-
-    - name: Documentation
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: make doc_comms       
       
   build_clang_ubuntu_20_04:
     runs-on: ubuntu-20.04

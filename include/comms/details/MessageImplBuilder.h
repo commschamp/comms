@@ -36,8 +36,11 @@ class MessageImplBuilder
     using FieldsBase = 
         typename ParsedOptions::template BuildFieldsImpl<TMessage>;
 
+    using FailOnInvalidBase = 
+        typename ParsedOptions::template BuildFailOnInvalidImpl<FieldsBase>;        
+
     using VersionBase = 
-        typename ParsedOptions::template BuildVersionImpl<FieldsBase>;
+        typename ParsedOptions::template BuildVersionImpl<FailOnInvalidBase>;
 
     using FieldsReadImplBase = 
         typename ParsedOptions::template BuildReadImpl<VersionBase>;

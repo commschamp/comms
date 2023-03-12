@@ -87,7 +87,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using Tag = tag::Int;
+    using CommsTag = tag::Int;
 
     /// @brief Type of underlying integral value.
     /// @details Same as template parameter T to this class.
@@ -546,7 +546,7 @@ bool operator<(
 template <typename T>
 constexpr bool isIntValue()
 {
-    return std::is_same<typename T::Tag, tag::Int>::value;
+    return std::is_same<typename T::CommsTag, tag::Int>::value;
 }
 
 /// @brief Upcast type of the field definition to its parent comms::field::IntValue type

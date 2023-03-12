@@ -22,6 +22,12 @@ If the package was successfully found, the target `cc::comms` needs
 to be defined. Linking to `cc::comms` target will add all the relevant
 include paths.
 
+Since **v5.1" the comms library can also be found using the following calls:
+```
+find_package(comms NO_MODULE)
+find_package(cc_comms NO_MODULE)
+```
+
 ## When external COMMS Library is not available
 In case the [comms](https://github.com/commschamp/comms) project is not available, the 
 [cmake/CC_CommsExternal.cmake](../cmake/CC_CommsExternal.cmake) script provides

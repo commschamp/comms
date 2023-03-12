@@ -107,7 +107,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using Tag = tag::Bitfield;
+    using CommsTag = tag::Bitfield;
 
     /// @brief Value type.
     /// @details Same as TMemebers template argument, i.e. it is std::tuple
@@ -403,7 +403,7 @@ bool operator<(
 template <typename T>
 constexpr bool isBitfield()
 {
-    return std::is_same<typename T::Tag, tag::Bitfield>::value;
+    return std::is_same<typename T::CommsTag, tag::Bitfield>::value;
 }
 
 /// @brief Upcast type of the field definition to its parent comms::field::Bitfield type

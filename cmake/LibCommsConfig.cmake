@@ -25,9 +25,14 @@ endif ()
 get_target_property(CC_COMMS_INCLUDE_DIRS cc::comms INTERFACE_INCLUDE_DIRECTORIES)
 set (CC_COMMS_CMAKE_DIR ${CMAKE_CURRENT_LIST_DIR})
 
+set (name "${CMAKE_FIND_PACKAGE_NAME}")
+if ("${name}" STREQUAL "")
+    set (name "LibComms")
+endif ()
+
 find_package(PackageHandleStandardArgs REQUIRED)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(
-    LibComms
+    ${name}
     REQUIRED_VARS CC_COMMS_INCLUDE_DIRS CC_COMMS_CMAKE_DIR)
 
 set (CC_COMMS_FOUND ${LibComms_FOUND})

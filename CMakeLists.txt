@@ -4,11 +4,11 @@ project ("comms")
 # Available options
 
 option (CC_COMMS_BUILD_UNIT_TESTS "Build unittests." OFF)
-option (CC_COMMS_UNIT_TESTS_USE_SANITIZERS "Use sanitizers during unittests. Applicable when unittest are enabled." ON)
+option (CC_COMMS_UNIT_TESTS_USE_SANITIZERS "Use sanitizers during unittests. Applicable when unittest are enabled." ${CC_COMMS_BUILD_UNIT_TESTS})
+option (CC_COMMS_UNIT_TESTS_USE_VALGRIND "Use valgrind to do extra testing. Applicable when unittest are enabled." OFF)
 option (CC_COMMS_WARN_AS_ERR "Treat warning as error" ON)
 option (CC_COMMS_USE_CCACHE "Use ccache on UNIX systems if it's available" ON)
 option (CC_COMMS_SKIP_CXX_STANDARD_FORCING "Do NOT force C++ standard to C++11, use compiler's default one." ON)
-option (CC_COMMS_STATIC_RUNTIME "Enable/Disable static runtime" OFF)
 
 # Extra variables
 # CC_COMMS_EXTERNALS_DIR - Directory where pull externals, defaults to 
@@ -48,23 +48,21 @@ endwhile ()
 
 ################################################
 # Compiler options
-set (warn_opt)
+set (extra_opts)
 if (CC_COMMS_WARN_AS_ERR)
-    set (warn_opt WARN_AS_ERR)
+    list (APPEND extra_opts WARN_AS_ERR)
 endif ()
 
-set (static_runtime_opt)
-if (CC_COMMS_STATIC_RUNTIME)
-    set (static_runtime_opt STATIC_RUNTIME)
-endif ()
-
-set (ccache_opt)
 if ((UNIX) AND (CC_COMMS_USE_CCACHE))
-    set (ccache_opt USE_CCACHE)
+    list (APPEND extra_opts USE_CCACHE)
+endif ()
+
+if (CC_COMMS_UNIT_TESTS_USE_SANITIZERS)
+    list (APPEND extra_opts DEFAULT_SANITIZERS)
 endif ()
 
 include (${CMAKE_SCRIPTS_DIR}/CC_Compile.cmake)
-cc_compile(${warn_opt} ${static_runtime_opt} ${ccache_opt})
+cc_compile(${extra_opts})
 cc_msvc_force_warn_opt("/W4")
 
 ################################################
@@ -145,6 +143,18 @@ install (
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/comms
     DESTINATION ${INC_INSTALL_DIR}
 )
+
+if (UNIX)
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibComms ${CMAKE_INSTALL_FULL_LIBDIR}/comms)")    
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibComms ${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms)")
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibCommsConfig.cmake ${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/commsConfig.cmake)")
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibCommsConfig.cmake ${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/cc_commsConfig.cmake)")
+elseif (WIN32)
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_INSTALL_FULL_LIBDIR}/LibComms ${CMAKE_INSTALL_FULL_LIBDIR}/comms)")
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_INSTALL_FULL_LIBDIR}/LibComms ${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms)")
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/LibCommsConfig.cmake ${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/commsConfig.cmake)")
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms/cmake/LibCommsConfig.cmake ${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms/cmake/cc_commsConfig.cmake)")
+endif ()
 
 add_subdirectory (test)
 

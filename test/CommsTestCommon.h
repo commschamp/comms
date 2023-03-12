@@ -48,6 +48,7 @@ enum MessageType {
     MessageType7,
     MessageType8,
     MessageType9,
+    MessageType10,
 
     MessageType90 = 90
 };
@@ -674,6 +675,79 @@ public:
 };
 
 
+template <typename TField>
+struct Message10Fields
+{
+    using field1 = 
+        comms::field::IntValue<
+            TField,
+            std::uint16_t,
+            comms::option::def::ValidNumValueRange<0, 10>
+        >;
+
+    using field2 = 
+        comms::field::IntValue<
+            TField,
+            std::uint16_t,
+            comms::option::def::ValidNumValueRange<10, 20>,
+            comms::option::def::DefaultNumValue<10>
+        >;
+
+    using All = std::tuple<
+        field1,
+        field2
+    >;
+
+};
+
+template <typename TMessage>
+class Message10 : public
+        comms::MessageBase<
+            TMessage,
+            comms::option::StaticNumIdImpl<MessageType10>,
+            comms::option::FieldsImpl<typename Message10Fields<typename TMessage::Field>::All>,
+            comms::option::MsgType<Message10<TMessage> >,
+            comms::option::HasName,
+            comms::option::FailOnInvalid<>
+        >
+{
+    using Base =
+        comms::MessageBase<
+            TMessage,
+            comms::option::StaticNumIdImpl<MessageType10>,
+            comms::option::FieldsImpl<typename Message10Fields<typename TMessage::Field>::All>,
+            comms::option::MsgType<Message10<TMessage> >,
+            comms::option::HasName,
+            comms::option::FailOnInvalid<>
+        >;
+public:
+
+    static const bool AreFieldsVersionDependent = Base::areFieldsVersionDependent();
+    static_assert(!AreFieldsVersionDependent, "Fields not must be version dependent");
+
+    COMMS_MSG_FIELDS_NAMES(f1, f2);
+
+    static const std::size_t MsgMinLen = Base::doMinLength();
+    static_assert(MsgMinLen == 4U, "Wrong serialisation length");
+
+    Message10() = default;
+
+    ~Message10() noexcept = default;
+
+    bool doValid() const
+    {
+        if (!Base::doValid()) {
+            return false;
+        }
+
+        return (field_f1().value() != field_f2().value());
+    }
+
+    static const char* doName()
+    {
+        return "Message10";
+    }
+};
 
 template <typename TField>
 struct Message90_1Fields

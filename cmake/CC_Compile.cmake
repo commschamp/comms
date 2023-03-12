@@ -4,12 +4,17 @@
 # Set predefined compilation flags
 #     cc_compile(
 #         [WARN_AS_ERR]
+#         [STATIC_RUNTIME]
 #         [USE_CCACHE]
+#         [DEFAULT_SANITIZERS]
+#         [EXTRA flags...]
 #     )
 #
 # - WARN_AS_ERR - Treat warnings as errors.
 # - STATIC_RUNTIME - Static link with runtime.
 # - USE_CCACHE - Force usage of ccache
+# - DEFAULT_SANITIZERS - Add default sanitiers options
+# - EXTRA - Extra flags
 # 
 # ******************************************************
 # Update default MSVC warning level option
@@ -21,9 +26,9 @@
 
 macro (cc_compile)
     set (_prefix CC_COMPILE)
-    set (_options WARN_AS_ERR STATIC_RUNTIME USE_CCACHE)
+    set (_options WARN_AS_ERR STATIC_RUNTIME USE_CCACHE DEFAULT_SANITIZERS)
     set (_oneValueArgs)
-    set (_mutiValueArgs)
+    set (_mutiValueArgs EXTRA)
     cmake_parse_arguments(${_prefix} "${_options}" "${_oneValueArgs}" "${_mutiValueArgs}" ${ARGN})
    
     if ((CMAKE_COMPILER_IS_GNUCC) OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
@@ -66,7 +71,19 @@ macro (cc_compile)
         if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
             list (APPEND extra_flags_list "-Wno-dangling-field -Wno-unused-command-line-argument")
         endif ()
-        
+
+        if (CC_COMPILE_DEFAULT_SANITIZERS)
+            list (APPEND extra_flags_list
+                -fno-omit-frame-pointer 
+                -fsanitize=address
+                -fsanitize=undefined
+                -fno-sanitize-recover=all)        
+        endif ()
+            
+        if (CC_COMPILE_EXTRA)
+            list (APPEND extra_flags_list ${CC_COMPILE_EXTRA})
+        endif ()
+
         if (CC_COMPILE_WARN_AS_ERR)
             list (APPEND extra_flags_list "-Werror")
         endif ()
@@ -77,6 +94,7 @@ macro (cc_compile)
         if (CC_COMPILE_STATIC_RUNTIME)
             SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
         endif ()
+
     elseif (MSVC)
         add_definitions("/wd4503" "-D_SCL_SECURE_NO_WARNINGS")
 
