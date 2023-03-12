@@ -144,5 +144,17 @@ install (
     DESTINATION ${INC_INSTALL_DIR}
 )
 
+if (UNIX)
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibComms ${CMAKE_INSTALL_FULL_LIBDIR}/comms)")    
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibComms ${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms)")
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibCommsConfig.cmake ${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/commsConfig.cmake)")
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibCommsConfig.cmake ${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/cc_commsConfig.cmake)")
+elseif (WIN32)
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_INSTALL_FULL_LIBDIR}/LibComms ${CMAKE_INSTALL_FULL_LIBDIR}/comms)")
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_INSTALL_FULL_LIBDIR}/LibComms ${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms)")
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/LibCommsConfig.cmake ${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/commsConfig.cmake)")
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms/cmake/LibCommsConfig.cmake ${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms/cmake/cc_commsConfig.cmake)")
+endif ()
+
 add_subdirectory (test)
 
