@@ -68,11 +68,6 @@ cc_msvc_force_warn_opt("/W4")
 ################################################
 
 include(GNUInstallDirs)
-set (INSTALL_NAME "CommsChampion")
-set (LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
-set (BIN_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
-set (INC_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR})
-set (DOC_INSTALL_DIR ${CMAKE_INSTALL_DATAROOTDIR}/doc)
 
 file (READ "${PROJECT_SOURCE_DIR}/include/comms/version.h" version_file)
 string (REGEX MATCH "COMMS_MAJOR_VERSION ([0-9]*)U*" _ ${version_file})
@@ -102,7 +97,7 @@ set (LIB_COMMS_CMAKE_FILES
 
 find_package (Doxygen)
 if (DOXYGEN_FOUND)
-    set (doc_output_dir "${CMAKE_INSTALL_PREFIX}/${DOC_INSTALL_DIR}/comms")
+    set (doc_output_dir "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/doc/comms")
     
     set (match_str "OUTPUT_DIRECTORY[^\n]*")
     set (replacement_str "OUTPUT_DIRECTORY = ${doc_output_dir}")
@@ -131,17 +126,17 @@ target_include_directories(comms INTERFACE
 
 install (
     FILES ${LIB_COMMS_CMAKE_FILES}
-    DESTINATION ${LIB_INSTALL_DIR}/LibComms/cmake/
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/LibComms/cmake/
 )
 
 install(TARGETS comms EXPORT commsExport)
 install(EXPORT commsExport NAMESPACE cc::
-    DESTINATION ${LIB_INSTALL_DIR}/LibComms/cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/LibComms/cmake
 )
 
 install (
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/comms
-    DESTINATION ${INC_INSTALL_DIR}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 if (UNIX)
