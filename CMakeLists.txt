@@ -9,6 +9,7 @@ option (CC_COMMS_UNIT_TESTS_USE_VALGRIND "Use valgrind to do extra testing. Appl
 option (CC_COMMS_WARN_AS_ERR "Treat warning as error" ON)
 option (CC_COMMS_USE_CCACHE "Use ccache on UNIX systems if it's available" ON)
 option (CC_COMMS_SKIP_CXX_STANDARD_FORCING "Do NOT force C++ standard to C++11, use compiler's default one." ON)
+option (CC_COMMS_EXTALL_EXTRA_CONFIGS "Install extra \"comms\" and \"cc_comms\" cmake configs in addition to \"LibComms\"" OFF)
 
 # Extra variables
 # CC_COMMS_EXTERNALS_DIR - Directory where pull externals, defaults to 
@@ -68,11 +69,6 @@ cc_msvc_force_warn_opt("/W4")
 ################################################
 
 include(GNUInstallDirs)
-set (INSTALL_NAME "CommsChampion")
-set (LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
-set (BIN_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
-set (INC_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR})
-set (DOC_INSTALL_DIR ${CMAKE_INSTALL_DATAROOTDIR}/doc)
 
 file (READ "${PROJECT_SOURCE_DIR}/include/comms/version.h" version_file)
 string (REGEX MATCH "COMMS_MAJOR_VERSION ([0-9]*)U*" _ ${version_file})
@@ -102,7 +98,7 @@ set (LIB_COMMS_CMAKE_FILES
 
 find_package (Doxygen)
 if (DOXYGEN_FOUND)
-    set (doc_output_dir "${CMAKE_INSTALL_PREFIX}/${DOC_INSTALL_DIR}/comms")
+    set (doc_output_dir "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/doc/comms")
     
     set (match_str "OUTPUT_DIRECTORY[^\n]*")
     set (replacement_str "OUTPUT_DIRECTORY = ${doc_output_dir}")
@@ -131,29 +127,36 @@ target_include_directories(comms INTERFACE
 
 install (
     FILES ${LIB_COMMS_CMAKE_FILES}
-    DESTINATION ${LIB_INSTALL_DIR}/LibComms/cmake/
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/LibComms/cmake/
 )
 
 install(TARGETS comms EXPORT commsExport)
 install(EXPORT commsExport NAMESPACE cc::
-    DESTINATION ${LIB_INSTALL_DIR}/LibComms/cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/LibComms/cmake
 )
 
 install (
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/comms
-    DESTINATION ${INC_INSTALL_DIR}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-if (UNIX)
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibComms ${CMAKE_INSTALL_FULL_LIBDIR}/comms)")    
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibComms ${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms)")
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibCommsConfig.cmake ${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/commsConfig.cmake)")
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibCommsConfig.cmake ${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/cc_commsConfig.cmake)")
-elseif (WIN32)
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_INSTALL_FULL_LIBDIR}/LibComms ${CMAKE_INSTALL_FULL_LIBDIR}/comms)")
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_INSTALL_FULL_LIBDIR}/LibComms ${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms)")
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/LibCommsConfig.cmake ${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/commsConfig.cmake)")
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms/cmake/LibCommsConfig.cmake ${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms/cmake/cc_commsConfig.cmake)")
+if (CC_COMMS_EXTALL_EXTRA_CONFIGS)
+    install(CODE "set (install_lib_dir ${CMAKE_INSTALL_FULL_LIBDIR})")
+    install(CODE [[
+        message (STATUS "Installing extra cmake configs into ${install_lib_dir}")
+
+        if (UNIX)
+            execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibComms ${install_lib_dir}/comms)
+            execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibComms ${install_lib_dir}/cc_comms)
+            execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibCommsConfig.cmake ${install_lib_dir}/comms/cmake/commsConfig.cmake)
+            execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibCommsConfig.cmake ${install_lib_dir}/cc_comms/cmake/cc_commsConfig.cmake)
+        elseif (WIN32)
+            execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${install_lib_dir}/LibComms ${install_lib_dir}/comms)
+            execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${install_lib_dir}/LibComms ${install_lib_dir}/cc_comms)
+            execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${install_lib_dir}/comms/cmake/LibCommsConfig.cmake ${install_lib_dir}/comms/cmake/commsConfig.cmake)
+            execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${install_lib_dir}/cc_comms/cmake/LibCommsConfig.cmake ${install_lib_dir}/cc_comms/cmake/cc_commsConfig.cmake)
+        endif ()
+    ]])
 endif ()
 
 add_subdirectory (test)
