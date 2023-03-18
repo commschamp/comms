@@ -139,17 +139,27 @@ install (
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-if (UNIX)
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibComms ${CMAKE_SYSROOT}/${CMAKE_INSTALL_FULL_LIBDIR}/comms)")    
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibComms ${CMAKE_SYSROOT}/${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms)")
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibCommsConfig.cmake ${CMAKE_SYSROOT}/${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/commsConfig.cmake)")
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibCommsConfig.cmake ${CMAKE_SYSROOT}/${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms/cmake/cc_commsConfig.cmake)")
-elseif (WIN32)
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SYSROOT}/${CMAKE_INSTALL_FULL_LIBDIR}/LibComms ${CMAKE_SYSROOT}/${CMAKE_INSTALL_FULL_LIBDIR}/comms)")
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SYSROOT}/${CMAKE_INSTALL_FULL_LIBDIR}/LibComms ${CMAKE_SYSROOT}/${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms)")
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SYSROOT}/${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/LibCommsConfig.cmake ${CMAKE_SYSROOT}/${CMAKE_INSTALL_FULL_LIBDIR}/comms/cmake/commsConfig.cmake)")
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SYSROOT}/${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms/cmake/LibCommsConfig.cmake ${CMAKE_SYSROOT}/${CMAKE_INSTALL_FULL_LIBDIR}/cc_comms/cmake/cc_commsConfig.cmake)")
-endif ()
+install(CODE "set (install_lib_dir ${CMAKE_SYSROOT}${CMAKE_INSTALL_FULL_LIBDIR})")
+install(CODE [[
+    if (NOT "$ENV{DESTDIR}" STREQUAL "")
+        message (STATUS "New DESTDIR requested: $ENV{DESTDIR}")
+        set (install_lib_dir "$ENV{DESTDIR}/${install_lib_dir}")
+    endif ()
+
+    message (STATUS "Installing extra cmake configs into ${install_lib_dir}")
+
+    if (UNIX)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibComms ${install_lib_dir}/comms)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibComms ${install_lib_dir}/cc_comms)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibCommsConfig.cmake ${install_lib_dir}/comms/cmake/commsConfig.cmake)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink LibCommsConfig.cmake ${install_lib_dir}/cc_comms/cmake/cc_commsConfig.cmake)
+    elseif (WIN32)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${install_lib_dir}/LibComms ${install_lib_dir}/comms)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${install_lib_dir}/LibComms ${install_lib_dir}/cc_comms)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${install_lib_dir}/comms/cmake/LibCommsConfig.cmake ${install_lib_dir}/comms/cmake/commsConfig.cmake)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${install_lib_dir}/cc_comms/cmake/LibCommsConfig.cmake ${install_lib_dir}/cc_comms/cmake/cc_commsConfig.cmake)
+    endif ()
+]])
 
 add_subdirectory (test)
 
