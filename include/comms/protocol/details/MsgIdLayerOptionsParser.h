@@ -8,6 +8,8 @@
 #pragma once
 
 #include <tuple>
+#include "comms/util/type_traits.h"
+#include "comms/MsgFactory.h"
 #include "comms/options.h"
 
 namespace comms
@@ -28,7 +30,12 @@ class MsgIdLayerOptionsParser<>
 {
 public:
     static const bool HasExtendingClass = false;
+    static const bool HasMsgFactory = false;
+
     using FactoryOptions = std::tuple<>;
+
+    template <typename TInterface, typename TAllMessages>
+    using MsgFactory = comms::MsgFactory<TInterface, TAllMessages>;
 
     template <typename TLayer>
     using DefineExtendingClass = TLayer;    
@@ -44,6 +51,17 @@ public:
 
     template <typename TLayer>
     using DefineExtendingClass = ExtendingClass;       
+};
+
+template <typename TFactory, typename... TOptions>
+class MsgIdLayerOptionsParser<comms::option::def::MsgFactory<TFactory>, TOptions...> :
+        public MsgIdLayerOptionsParser<TOptions...>
+{
+public:
+    static const bool HasMsgFactory = true;
+
+    template <typename TInterface, typename TAllMessages>
+    using MsgFactory = TFactory;
 };
 
 template <typename... TOptions>
@@ -74,6 +92,16 @@ public:
                 )
             )
         >::type;
+
+    // Ignoring all the options if MsgFactory is overriden
+    template <typename TInterface, typename TAllMessages>
+    using MsgFactory = 
+        typename comms::util::Conditional<
+            BaseImpl::HasMsgFactory
+        >::template Type<
+            typename BaseImpl::template MsgFactory<TInterface, TAllMessages>,
+            comms::MsgFactory<TInterface, TAllMessages, FactoryOptions>  
+        >;
 };
 
 } // namespace details

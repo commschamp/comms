@@ -55,6 +55,8 @@ namespace protocol
 ///     @li @ref comms::option::def::ExtendingClass - Use this option to provide a class
 ///         name of the extending class, which can be used to extend existing functionality.
 ///         See also @ref page_custom_id_layer tutorial page.
+///     @li @ref comms::option::def::MsgFactory - Override default message factory class.
+///         The overriding class is expected to have the same public interface as @ref comms::MsgFactory.
 ///     @li All the options supported by the @ref comms::MsgFactory. All the options
 ///         except ones listed above will be forwarded to the definition of the
 ///         inner instance of @ref comms::MsgFactory.
@@ -88,10 +90,6 @@ class MsgIdLayer : public
         >;
 
     /// @brief Parsed options
-    using ParsedOptionsInternal = details::MsgIdLayerOptionsParser<TOptions...>;
-    using FactoryOptions = typename ParsedOptionsInternal::FactoryOptions;
-    using Factory = comms::MsgFactory<TMessage, TAllMessages, FactoryOptions>;
-
     static_assert(TMessage::InterfaceOptions::HasMsgIdType,
         "Usage of MsgIdLayer requires support for ID type. "
         "Use comms::option::def::MsgIdType option in message interface type definition.");
@@ -99,14 +97,13 @@ class MsgIdLayer : public
 public:
 
     /// @brief Parsed options
-    using ParsedOptions = ParsedOptionsInternal;
+    using ParsedOptions =  details::MsgIdLayerOptionsParser<TOptions...>;
 
-    /// @brief Parsed options of the message Factory
-    using FactoryParsedOptions = typename Factory::ParsedOptions;
+    // @brief Message factory class
+    using Factory = typename ParsedOptions::template MsgFactory<TMessage, TAllMessages>;
 
     /// @brief All supported message types bundled in std::tuple.
-    /// @see comms::MsgFactory::AllMessages.
-    using AllMessages = typename Factory::AllMessages;
+    using AllMessages = TAllMessages;
 
     /// @brief Type of smart pointer that will hold allocated message object.
     /// @details Same as comms::MsgFactory::MsgPtr.
@@ -729,7 +726,7 @@ private:
         COMMS_ASSERT(failureReason == CreateFailureReason::InvalidId);
         using GenericMsgTag = 
             typename comms::util::LazyShallowConditional<
-                Factory::ParsedOptions::HasSupportGenericMessage
+                Factory::hasGenericMessageSupport()
             >::template Type<
                 HasGenericMsgTag,
                 NoGenericMsgTag
@@ -838,7 +835,7 @@ private:
         HasGenericMsgTag<>,
         TExtraValues... extraValues)
     {
-        using GenericMsgType = typename Factory::ParsedOptions::GenericMessage;
+        using GenericMsgType = typename Factory::GenericMessage;
 
         auto& thisObj = BaseImpl::thisLayer();
         auto id = thisObj.getMsgIdFromField(field);
@@ -888,7 +885,7 @@ private:
         DirectOpTag<>,
         TExtraValues... extraValues)
     {
-        using GenericMsgType = typename Factory::ParsedOptions::GenericMessage;
+        using GenericMsgType = typename Factory::GenericMessage;
         auto& castedMsgRef = static_cast<GenericMsgType&>(*msg);
         return nextLayerReader.read(castedMsgRef, iter, size, extraValues...);
     }               

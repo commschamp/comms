@@ -1225,6 +1225,12 @@ struct MissingOnReadFail {};
 /// @headerfile comms/options.h
 struct MissingOnInvalid {};
 
+/// @brief Force usage of the provide message factory.
+/// @details Applicable to @ref comms::protocol::MsgIdLayer.
+/// @tparam TFactory Factory class, expected to expose the same interface as @ref comms::MsgFactory
+template <typename TFactory>
+struct MsgFactory {};
+
 } // namespace def
 
 namespace app

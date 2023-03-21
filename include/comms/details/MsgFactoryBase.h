@@ -121,13 +121,7 @@ public:
     using MsgPtr = typename Alloc::Ptr;
     using AllMessages = TAllMessages;
 
-    enum class CreateFailureReason
-    {
-        None,
-        InvalidId,
-        AllocFailure,
-        NumOfValues
-    };
+    using CreateFailureReason = MsgFactoryCreateFailureReason;
 
     MsgPtr createMsg(MsgIdParamType id, unsigned idx, CreateFailureReason* reason) const
     {
