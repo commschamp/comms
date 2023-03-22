@@ -54,6 +54,7 @@ public:
     void test26();
     void test27();
     void test28();
+    void test29();
 
 private:
     template <typename TField>
@@ -1879,6 +1880,30 @@ void FieldsTestSuite2::test28()
 
         field = readWriteField<Field>(&Buf[0], BufSize);
         TS_ASSERT_EQUALS(field.length(), 1U);
+    } while (false);
+}
+
+void FieldsTestSuite2::test29()
+{
+    using Field = 
+       comms::field::IntValue<
+            BeFieldBase,
+            std::int16_t,
+            comms::option::def::FixedLength<1U, false>,
+            comms::option::def::NumValueSerOffset<128>,
+            comms::option::def::ValidNumValueRange<-128, 127>
+        >;
+
+    do {
+        Field field;
+        field.value() = 10;
+
+        static const char Buf[] = {
+            static_cast<char>(0x8a), 
+        };
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        writeReadField(field, &Buf[0], BufSize);
     } while (false);
 }
 
