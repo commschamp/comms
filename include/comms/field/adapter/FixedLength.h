@@ -193,14 +193,14 @@ private:
     template <typename... TParams>
     static constexpr BaseSerialisedType adjustFromSerialised(SerialisedType val, JustCastTag<TParams...>)
     {
-        return static_cast<BaseSerialisedType>(val);
+        return castToBaseSerializedType(val, HasSignTag<>());
     }
 
     template <typename... TParams>
     static BaseSerialisedType adjustFromSerialised(SerialisedType val, SignExtendTag<TParams...>)
     {
         auto valueTmp = static_cast<UnsignedSerialisedType>(val) & UnsignedValueMask;
-        return static_cast<BaseSerialisedType>(signExtUnsignedSerialised(valueTmp, HasSignTag<>()));
+        return castToBaseSerializedType(signExtUnsignedSerialised(valueTmp, HasSignTag<>()), HasSignTag<>());
     }
 
     template <typename... TParams>
@@ -220,6 +220,18 @@ private:
             val |= SignExtMask;
         }
         return static_cast<SerialisedType>(val);
+    }
+
+    template <typename... TParams>
+    static constexpr BaseSerialisedType castToBaseSerializedType(SerialisedType val, UnsignedTag<TParams...>)
+    {
+        return static_cast<BaseSerialisedType>(static_cast<UnsignedSerialisedType>(val));
+    }
+
+    template <typename... TParams>
+    static constexpr BaseSerialisedType castToBaseSerializedType(SerialisedType val, SignedTag<TParams...>)
+    {
+        return static_cast<BaseSerialisedType>(val);
     }
 
     static const std::size_t Length = TLen;
