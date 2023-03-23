@@ -34,8 +34,8 @@ public:
 
     using FactoryOptions = std::tuple<>;
 
-    template <typename TInterface, typename TAllMessages>
-    using MsgFactory = comms::MsgFactory<TInterface, TAllMessages>;
+    template <typename TInterface, typename TAllMessages, typename... TExtraOptions>
+    using MsgFactory = comms::MsgFactory<TInterface, TAllMessages, TExtraOptions...>;
 
     template <typename TLayer>
     using DefineExtendingClass = TLayer;    
@@ -60,9 +60,23 @@ class MsgIdLayerOptionsParser<comms::option::def::MsgFactory<TFactory>, TOptions
 public:
     static const bool HasMsgFactory = true;
 
-    template <typename TInterface, typename TAllMessages>
+    template <typename TInterface, typename TAllMessages, typename... TExtraOptions>
     using MsgFactory = TFactory;
 };
+
+template <template<typename, typename, typename...> class TFactory, typename... TOptions>
+class MsgIdLayerOptionsParser<comms::option::def::MsgFactoryTempl<TFactory>, TOptions...> :
+        public MsgIdLayerOptionsParser<TOptions...>
+{
+    using BaseImpl = MsgIdLayerOptionsParser<TOptions...>;
+public:
+
+    static const bool HasMsgFactory = true;
+
+    template <typename TInterface, typename TAllMessages, typename... TExtraOptions>
+    using MsgFactory = TFactory<TInterface, TAllMessages, typename BaseImpl::FactoryOptions, TExtraOptions...>;
+};
+
 
 template <typename... TOptions>
 class MsgIdLayerOptionsParser<
@@ -94,13 +108,13 @@ public:
         >::type;
 
     // Ignoring all the options if MsgFactory is overriden
-    template <typename TInterface, typename TAllMessages>
+    template <typename TInterface, typename TAllMessages, typename... TExtraOptions>
     using MsgFactory = 
         typename comms::util::Conditional<
             BaseImpl::HasMsgFactory
         >::template Type<
-            typename BaseImpl::template MsgFactory<TInterface, TAllMessages>,
-            comms::MsgFactory<TInterface, TAllMessages, FactoryOptions>  
+            typename BaseImpl::template MsgFactory<TInterface, TAllMessages, FactoryOptions, TExtraOptions...>,
+            comms::MsgFactory<TInterface, TAllMessages, FactoryOptions, TExtraOptions...>  
         >;
 };
 

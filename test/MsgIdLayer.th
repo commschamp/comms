@@ -547,6 +547,12 @@ private:
         }            
     };
 
+    template <typename TInterface, typename TAllMessages, typename... TOptions>
+    class CustomMsgFactoryTempl : public CustomMsgFactory<TInterface>
+    {
+    };
+
+
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
     class ProtocolStackCustomFactory : public
         comms::protocol::MsgIdLayer<
@@ -568,7 +574,30 @@ private:
 
     public:
         COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
-    };    
+    };  
+
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
+    class ProtocolStackCustomFactoryTempl : public
+        comms::protocol::MsgIdLayer<
+            TField,
+            TMessage,
+            TAllMessages<TMessage>,
+            comms::protocol::MsgDataLayer<>,
+            comms::option::def::MsgFactoryTempl<CustomMsgFactoryTempl>
+        >
+    {
+    using Base =
+        comms::protocol::MsgIdLayer<
+            TField,
+            TMessage,
+            TAllMessages<TMessage>,
+            comms::protocol::MsgDataLayer<>,
+            comms::option::def::MsgFactoryTempl<CustomMsgFactoryTempl>
+        >;
+
+    public:
+        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
+    };        
 };
 
 void MsgIdLayerTestSuite::test1()
@@ -1486,13 +1515,27 @@ void MsgIdLayerTestSuite::test33()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    using Stack = ProtocolStackCustomFactory<BeField1, BeMsgBase>;
+    do {
+        using Stack = ProtocolStackCustomFactory<BeField1, BeMsgBase>;
 
-    Stack stack;
+        Stack stack;
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
-    TS_ASSERT(msgPtr);
-    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
-    auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
-    TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
+        auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+        TS_ASSERT(msgPtr);
+        TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+        auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
+        TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
+    } while (false);
+
+    do {
+        using Stack = ProtocolStackCustomFactoryTempl<BeField1, BeMsgBase>;
+
+        Stack stack;
+
+        auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+        TS_ASSERT(msgPtr);
+        TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+        auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
+        TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
+    } while (false);    
 }
