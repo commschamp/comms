@@ -548,9 +548,7 @@ private:
     };
 
     template <typename TInterface, typename TAllMessages, typename... TOptions>
-    class CustomMsgFactoryTempl : public CustomMsgFactory<TInterface>
-    {
-    };
+    using CustomMsgFactoryTempl = CustomMsgFactory<TInterface>;
 
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
