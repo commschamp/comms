@@ -176,6 +176,14 @@ public:
         return ImplOptions::HasCustomRefresh;
     }    
 
+    /// @brief Compile time inquiry of whether @ref comms::MessageBase has
+    ///    notified about custom name retrieval function in the derived class
+    ///    via @ref comms::option::def::HasName.
+    static constexpr bool hasCustomName()
+    {
+        return ImplOptions::HasName;
+    }     
+
 #ifdef FOR_DOXYGEN_DOC_ONLY
 
     /// @brief All field classes provided with @ref comms::option::def::FieldsImpl option.

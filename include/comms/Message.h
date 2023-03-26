@@ -173,6 +173,14 @@ public:
         return InterfaceOptions::HasVersionInExtraTransportFields;
     }
 
+    /// @brief Compile type inquiry of version field index in transport field.
+    /// @details If @ref comms::option::def::VersionInExtraTransportFields option
+    ///     hasn't been used, the @b std::numeric_limits<std::size_t>::max() is returned. 
+    static constexpr std::size_t versionIdxInTransportFields()
+    {
+        return InterfaceOptions::VersionInExtraTransportFields;
+    }
+
     /// @brief Compile type inquiry whether message interface class defines
     ///     @ref name() and @ref nameImpl() member functions.
     static constexpr bool hasName()
