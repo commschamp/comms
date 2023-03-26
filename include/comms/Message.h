@@ -82,6 +82,7 @@ class Message : public details::MessageInterfaceBuilderT<TOptions...>
 public:
 
     /// @brief All the options bundled into struct.
+    /// @details For internal use only.
     using InterfaceOptions = details::MessageInterfaceOptionsParser<TOptions...>;
 
     /// @brief Destructor.

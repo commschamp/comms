@@ -42,7 +42,7 @@ struct ProtocolLayerHasFieldsImplHelper;
 template <typename T>
 struct ProtocolLayerHasFieldsImplHelper<T, true>
 {
-    static const bool Value = T::ImplOptions::HasFieldsImpl;
+    static const bool Value = T::hasFields();
 };
 
 template <typename T>
@@ -70,7 +70,7 @@ struct ProtocolLayerHasDoGetIdHelper;
 template <typename T>
 struct ProtocolLayerHasDoGetIdHelper<T, true>
 {
-    static const bool Value = T::ImplOptions::HasStaticMsgId;
+    static const bool Value = T::hasStaticMsgId();
 };
 
 template <typename T>

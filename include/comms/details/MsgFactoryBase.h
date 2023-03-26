@@ -42,7 +42,7 @@ constexpr bool msgFactoryMessageHasStaticNumId()
 template <typename TMsgBase, typename TAllMessages, typename... TOptions>
 class MsgFactoryBase
 {
-    static_assert(TMsgBase::InterfaceOptions::HasMsgIdType,
+    static_assert(TMsgBase::hasMsgIdType(),
         "Usage of MsgFactoryBase requires Message interface to provide ID type. "
         "Use comms::option::def::MsgIdType option in message interface type definition.");
     using ParsedOptionsInternal = details::MsgFactoryOptionsParser<TOptions...>;

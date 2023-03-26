@@ -29,7 +29,6 @@ template <typename TMessage, typename... TOptions>
 class MessageImplBuilder
 {
     using ParsedOptions = MessageImplOptionsParser<TOptions...>;
-    using InterfaceOptions = typename TMessage::InterfaceOptions;
 
     static_assert(ParsedOptions::HasFieldsImpl, "Option comms::option::def::FieldsImpl must be used");
 

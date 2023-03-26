@@ -366,7 +366,7 @@ private:
     template<typename TMsg>
     using MsgLengthTag =
         typename comms::util::LazyShallowConditional<
-            details::ProtocolLayerHasFieldsImpl<TMsg>::Value || TMsg::InterfaceOptions::HasLength
+            details::ProtocolLayerHasFieldsImpl<TMsg>::Value || TMsg::hasLength()
         >::template Type<
             MsgHasLengthTag,
             MsgNoLengthTag

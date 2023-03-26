@@ -86,7 +86,7 @@ template <typename TMsgBase, typename TAllMessages, typename... TOptions>
 class MsgFactory : private details::MsgFactoryBase<TMsgBase, TAllMessages, TOptions...>
 {
     using Base = details::MsgFactoryBase<TMsgBase, TAllMessages, TOptions...>;
-    static_assert(TMsgBase::InterfaceOptions::HasMsgIdType,
+    static_assert(TMsgBase::hasMsgIdType(),
         "Usage of MsgFactory requires Message interface to provide ID type. "
         "Use comms::option::def::MsgIdType option in message interface type definition.");
 

@@ -91,7 +91,7 @@ class MsgIdLayer : public
             >
         >;
 
-    static_assert(TMessage::InterfaceOptions::HasMsgIdType,
+    static_assert(TMessage::hasMsgIdType(),
         "Usage of MsgIdLayer requires support for ID type. "
         "Use comms::option::def::MsgIdType option in message interface type definition.");
 
@@ -605,7 +605,7 @@ private:
         using MsgType = typename std::decay<decltype(msg)>::type;
         static_assert(comms::isMessage<MsgType>(),
             "The message class is expected to inherit from comms::Message");
-        static_assert(MsgType::InterfaceOptions::HasMsgIdInfo,
+        static_assert(MsgType::hasGetId(),
             "The message interface class must expose polymorphic ID retrieval functionality, "
             "use comms::option::app::IdInfoInterface option to define it.");
 
