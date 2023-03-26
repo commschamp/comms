@@ -182,7 +182,6 @@ private:
             >
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             comms::protocol::SyncPrefixLayer<
                 TSyncField,
@@ -200,9 +199,8 @@ private:
                     >
                 >
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(sync, checksum, size, id, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(sync, checksum, size, id, payload);
     };
 
     template <typename TSyncField, typename TChecksumField, typename TSizeField, typename TIdField, typename TMessage>
@@ -244,7 +242,6 @@ private:
             >
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             comms::protocol::SyncPrefixLayer<
                 TSyncField,
@@ -262,9 +259,13 @@ private:
                     >
                 >
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_INNER(payload, id, size, checksum, sync);
+        COMMS_PROTOCOL_LAYERS_NAMES(payload, id, size, checksum, sync);
+        static_assert(comms::protocol::isSyncPrefixLayer<Layer_sync>(), "Invalid type");
+        static_assert(comms::protocol::isChecksumPrefixLayer<Layer_checksum>(), "Invalid type");
+        static_assert(comms::protocol::isMsgSizeLayer<Layer_size>(), "Invalid type");
+        static_assert(comms::protocol::isMsgIdLayer<Layer_id>(), "Invalid type");
+        static_assert(comms::protocol::isMsgDataLayer<Layer_payload>(), "Invalid type");
     };
 
 };

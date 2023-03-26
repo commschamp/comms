@@ -655,6 +655,59 @@
 ///     COMMS_PROTOCOL_LAYERS_ACCESS(payload, id, size, checksum, sync);
 /// };
 /// @endcode
+/// Since **v5.2** the COMMS library defines @ref COMMS_PROTOCOL_LAYERS_NAMES() and
+/// @ref COMMS_PROTOCOL_LAYERS_NAMES_OUTER() macros they are similar to
+/// the @ref COMMS_PROTOCOL_LAYERS_NAMES() and @ref COMMS_PROTOCOL_LAYERS_NAMES_OUTER()
+/// respectively, but also provide aliases to the layer types. However usage of these
+/// macros requires inner **Base** type definition of the base class:
+/// @code
+/// template <
+///     typename TMessage, // common interface class defined by the application
+///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
+///     typename TAllocationOptions = comms::option::app::EmptyOption, // Extra options for MsgIdLayer
+///     typename TPayloadOptions = comms::option::app::EmptyOption // Extra options for payload storage
+/// >
+/// class ProtocolStack : public
+///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions, TPayloadOptions>
+/// {
+///     // Base type definition is a requirement
+///     using Base = MySyncPrefix<TMessage, TInputMessages, TAllocationOptions, TPayloadOptions>
+/// public:
+///     COMMS_PROTOCOL_LAYERS_NAMES(payload, id, size, checksum, sync);
+/// };
+/// @endcode
+/// It is equivalent to having the following types and member function being defined:
+/// @code
+/// template <
+///     typename TMessage, // common interface class defined by the application
+///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
+///     typename TAllocationOptions = comms::option::app::EmptyOption, // Extra options for MsgIdLayer
+///     typename TPayloadOptions = comms::option::app::EmptyOption // Extra options for payload storage
+/// >
+/// struct ProtocolStack : public
+///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions, TPayloadOptions>
+/// {
+///     using Layer_payload = ...;
+///     decltype(auto) layer_payload();
+///     decltype(auto) layer_payload() const;
+///
+///     using Layer_id = ...;
+///     decltype(auto) layer_id();
+///     decltype(auto) layer_id() const;
+///
+///     using Layer_size = ...;
+///     decltype(auto) layer_size();
+///     decltype(auto) layer_size() const;
+///
+///     using Layer_checksum = ...;
+///     decltype(auto) layer_checksum();
+///     decltype(auto) layer_checksum() const;
+///
+///     using Layer_sync = ...;
+///     decltype(auto) layer_sync();
+///     decltype(auto) layer_sync() const;
+/// };
+/// @endcode
 ///
 /// @section page_prot_stack_tutorial_new_layers Implementing New Layers
 /// Every protocol is unique, and there is a chance that COMMS library doesn't

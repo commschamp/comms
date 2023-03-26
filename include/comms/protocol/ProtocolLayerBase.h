@@ -1644,7 +1644,7 @@ details::MsgPayloadRetriever<TIter> msgPayload(TIter& iter, std::size_t& len)
 
 }  // namespace comms
 
-/// @brief Provide names and convenience access functions to protocol
+/// @brief Provide convenience access functions to protocol
 ///     layers.
 /// @details The first argument is a name for innermost layer
 ///     (@ref comms::protocol::MsgDataLayer), while the last one
@@ -1653,12 +1653,28 @@ details::MsgPayloadRetriever<TIter> msgPayload(TIter& iter, std::size_t& len)
 #define COMMS_PROTOCOL_LAYERS_ACCESS(...) \
     COMMS_DO_ACCESS_LAYER_ACC_FUNC(__VA_ARGS__)
 
+/// @brief Provide names and convenience access functions to protocol
+///     layers.
+/// @details Similar to @ref COMMS_PROTOCOL_LAYERS_ACCESS() but
+///     defines "Layer_<name>" type names.
+/// @pre Requires definition of inner "Base" type aliasing the base class.
+/// @related comms::protocol::ProtocolLayerBase
+#define COMMS_PROTOCOL_LAYERS_NAMES(...) \
+    COMMS_DO_LAYER_TYPE_ALIAS(Base, __VA_ARGS__) \
+    COMMS_DO_ACCESS_LAYER_ACC_FUNC(__VA_ARGS__)
+
+
 /// @brief Same as @ref COMMS_PROTOCOL_LAYERS_ACCESS()
 /// @related comms::protocol::ProtocolLayerBase
 #define COMMS_PROTOCOL_LAYERS_ACCESS_INNER(...) \
     COMMS_PROTOCOL_LAYERS_ACCESS(__VA_ARGS__)
 
-/// @brief Provide names and convenience access functions to protocol
+/// @brief Same as @ref COMMS_PROTOCOL_LAYERS_NAMES()
+/// @related comms::protocol::ProtocolLayerBase
+#define COMMS_PROTOCOL_LAYERS_NAMES_INNER(...) \
+    COMMS_PROTOCOL_LAYERS_NAMES(__VA_ARGS__)    
+
+/// @brief Provide convenience access functions to protocol
 ///     layers.
 /// @details Similar to @ref COMMS_PROTOCOL_LAYERS_ACCESS(), but
 ///     the arguments are expected to be in reverse order, i.e.
@@ -1668,5 +1684,14 @@ details::MsgPayloadRetriever<TIter> msgPayload(TIter& iter, std::size_t& len)
 /// @related comms::protocol::ProtocolLayerBase
 #define COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(...) \
     COMMS_PROTOCOL_LAYERS_ACCESS(COMMS_EXPAND(COMMS_REVERSE_MACRO_ARGS(__VA_ARGS__)))
+
+/// @brief Provide names and convenience access functions to protocol
+///     layers.
+/// @details Similar to @ref COMMS_PROTOCOL_LAYERS_ACCESS_OUTER() but
+///     defines "Layer_<name>" type names.
+/// @pre Requires definition of inner "Base" type aliasing the base class.
+/// @related comms::protocol::ProtocolLayerBase
+#define COMMS_PROTOCOL_LAYERS_NAMES_OUTER(...) \
+    COMMS_PROTOCOL_LAYERS_NAMES(COMMS_EXPAND(COMMS_REVERSE_MACRO_ARGS(__VA_ARGS__)))
 
 COMMS_MSVC_WARNING_POP

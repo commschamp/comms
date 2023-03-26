@@ -92,12 +92,17 @@ class TransportValueLayer : public
             >,
             TOptions...
         >;
+
+    using ParsedOptionsInternal = details::TransportValueLayerOptionsParser<TOptions...>;
+    
 public:
     /// @brief Type of the field object used to read/write "sync" value.
     using Field = typename BaseImpl::Field;
 
-    /// @brief Parsed options
-    using TransportParsedOptions = details::TransportValueLayerOptionsParser<TOptions...>;
+    /// @brief Type of real extending class
+    /// @details Updated when @ref comms::option::ExtendingClass extension option us used,
+    ///    aliasing @b void if the options is not used.
+    using ExtendingClass = typename ParsedOptionsInternal::ExtendingClass;
 
     /// @brief Default constructor
     TransportValueLayer() = default;
@@ -110,6 +115,22 @@ public:
 
     /// @brief Destructor
     ~TransportValueLayer() noexcept = default;
+
+    /// @brief Compile time inquiry of whether this class was extended via 
+    ///    @ref comms::option::ExtendingClass option.
+    /// @details If @b true is returned, the @ref SyncPrefixLayer::ExtendingClass "ExtendingClass"
+    ///     type aliasing the real layer type.
+    static constexpr bool hasExtendingClass()
+    {
+        return ParsedOptionsInternal::HasExtendingClass;
+    }    
+
+    /// @brief Compile time inquiry of whether the @ref comms::option::def::PseudoValue
+    ///     option has been used.
+    static constexpr bool hasPseudoValue()
+    {
+        return ParsedOptionsInternal::HasPseudoValue;
+    }        
 
     /// @brief Customized read functionality, invoked by @ref read().
     /// @details Reads the value from the input data and assigns it to appropriate
@@ -331,7 +352,7 @@ private:
     template <typename...>
     using ValueTag =
         typename comms::util::LazyShallowConditional<
-            TransportParsedOptions::HasPseudoValue
+            ParsedOptionsInternal::HasPseudoValue
         >::template Type<
             PseudoValueTag,
             NormalValueTag

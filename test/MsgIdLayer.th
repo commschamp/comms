@@ -207,7 +207,6 @@ private:
             comms::protocol::MsgDataLayer<>
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             comms::protocol::MsgIdLayer<
                 TField,
@@ -215,9 +214,8 @@ private:
                 TAllMessages<TMessage>,
                 comms::protocol::MsgDataLayer<>
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
@@ -230,7 +228,6 @@ private:
             comms::option::InPlaceAllocation
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             comms::protocol::MsgIdLayer<
                 TField,
@@ -239,9 +236,8 @@ private:
                 comms::protocol::MsgDataLayer<>,
                 comms::option::InPlaceAllocation
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS(payload, id);
+        COMMS_PROTOCOL_LAYERS_NAMES(payload, id);
     };
 
     template <typename TField, typename TMessage>
@@ -253,7 +249,6 @@ private:
             comms::protocol::MsgDataLayer<>
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             comms::protocol::MsgIdLayer<
                 TField,
@@ -261,9 +256,8 @@ private:
                 std::tuple<>,
                 comms::protocol::MsgDataLayer<>
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
@@ -276,7 +270,6 @@ private:
             comms::option::SupportGenericMessage<comms::GenericMessage<TMessage> >
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             comms::protocol::MsgIdLayer<
                 TField,
@@ -285,9 +278,8 @@ private:
                 comms::protocol::MsgDataLayer<>,
                 comms::option::SupportGenericMessage<comms::GenericMessage<TMessage> >
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
@@ -301,7 +293,6 @@ private:
             comms::option::InPlaceAllocation
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             comms::protocol::MsgIdLayer<
                 TField,
@@ -311,9 +302,8 @@ private:
                 comms::option::SupportGenericMessage<comms::GenericMessage<TMessage> >,
                 comms::option::InPlaceAllocation
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
@@ -326,7 +316,6 @@ private:
             comms::option::ForceDispatchPolymorphic
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             comms::protocol::MsgIdLayer<
                 TField,
@@ -335,9 +324,8 @@ private:
                 comms::protocol::MsgDataLayer<>,
                 comms::option::ForceDispatchPolymorphic
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
@@ -350,7 +338,6 @@ private:
             comms::option::ForceDispatchStaticBinSearch
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             comms::protocol::MsgIdLayer<
                 TField,
@@ -359,9 +346,8 @@ private:
                 comms::protocol::MsgDataLayer<>,
                 comms::option::ForceDispatchStaticBinSearch
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
@@ -374,7 +360,6 @@ private:
             comms::option::ForceDispatchLinearSwitch
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             comms::protocol::MsgIdLayer<
                 TField,
@@ -383,9 +368,8 @@ private:
                 comms::protocol::MsgDataLayer<>,
                 comms::option::ForceDispatchLinearSwitch
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TInterface>
@@ -571,7 +555,7 @@ private:
         >;
 
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };  
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
@@ -594,7 +578,7 @@ private:
         >;
 
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };        
 };
 

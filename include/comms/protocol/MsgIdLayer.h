@@ -57,6 +57,8 @@ namespace protocol
 ///         See also @ref page_custom_id_layer tutorial page.
 ///     @li @ref comms::option::def::MsgFactory - Override default message factory class.
 ///         The overriding class is expected to have the same public interface as @ref comms::MsgFactory.
+///     @li @ref comms::option::def::MsgFactoryTempl - Override default message factory class.
+///         The overriding class is expected to have the same public interface as @ref comms::MsgFactory.
 ///     @li All the options supported by the @ref comms::MsgFactory. All the options
 ///         except ones listed above will be forwarded to the definition of the
 ///         inner instance of @ref comms::MsgFactory.
@@ -89,18 +91,20 @@ class MsgIdLayer : public
             >
         >;
 
-    /// @brief Parsed options
     static_assert(TMessage::InterfaceOptions::HasMsgIdType,
         "Usage of MsgIdLayer requires support for ID type. "
         "Use comms::option::def::MsgIdType option in message interface type definition.");
 
+    using ParsedOptionsInternal =  details::MsgIdLayerOptionsParser<TOptions...>;
+
 public:
-
-    /// @brief Parsed options
-    using ParsedOptions =  details::MsgIdLayerOptionsParser<TOptions...>;
-
     // @brief Message factory class
-    using Factory = typename ParsedOptions::template MsgFactory<TMessage, TAllMessages>;
+    using Factory = typename ParsedOptionsInternal::template MsgFactory<TMessage, TAllMessages>;
+
+    /// @brief Type of real extending class
+    /// @details Updated when @ref comms::option::ExtendingClass extension option us used,
+    ///    aliasing @b void if the options is not used.
+    using ExtendingClass = typename ParsedOptionsInternal::ExtendingClass;    
 
     /// @brief All supported message types bundled in std::tuple.
     using AllMessages = TAllMessages;
@@ -141,6 +145,23 @@ public:
 
     /// @brief Destructor
     ~MsgIdLayer() noexcept = default;
+
+    /// @brief Compile time inquiry of whether this class was extended via 
+    ///    @ref comms::option::ExtendingClass option.
+    /// @details If @b true is returned, the @ref SyncPrefixLayer::ExtendingClass "ExtendingClass"
+    ///     type aliasing the real layer type.
+    static constexpr bool hasExtendingClass()
+    {
+        return ParsedOptionsInternal::HasExtendingClass;
+    }     
+
+    /// @brief Compile time inquiry of whether custom message factory class has been
+    ///   provided via @ref comms::option::def::MsgFactory or @ref comms::option::def::MsgFactoryTempl
+    ///   options.
+    static constexpr bool hasMsgFactory()
+    {
+        return ParsedOptionsInternal::HasMsgFactory;
+    }   
 
     /// @brief Customized read functionality, invoked by @ref read().
     /// @details The function will read message ID from the data sequence first,

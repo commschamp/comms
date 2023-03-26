@@ -31,6 +31,8 @@ public:
     static const bool HasPseudoValue = false;
     static constexpr bool HasExtendingClass = false;
 
+    using ExtendingClass = void;
+
     template <typename TBase>
     using BuildPseudoBase = TBase;
 

@@ -32,6 +32,7 @@ public:
     static const bool HasExtendingClass = false;
     static const bool HasMsgFactory = false;
 
+    using ExtendingClass = void;
     using FactoryOptions = std::tuple<>;
 
     template <typename TInterface, typename TAllMessages, typename... TExtraOptions>

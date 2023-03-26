@@ -60,9 +60,16 @@ class SyncPrefixLayer : public
             >            
         >;
 
+    using ParsedOptionsInternal = details::SyncPrefixLayerOptionsParser<TOptions...>;
+
 public:
     /// @brief Type of the field object used to read/write "sync" value.
     using Field = typename BaseImpl::Field;
+
+    /// @brief Type of real extending class
+    /// @details Updated when @ref comms::option::ExtendingClass extension option us used,
+    ///    aliasing @b void if the options is not used.
+    using ExtendingClass = typename ParsedOptionsInternal::ExtendingClass;
 
     /// @brief Default constructor
     SyncPrefixLayer() = default;
@@ -75,6 +82,15 @@ public:
 
     /// @brief Destructor
     ~SyncPrefixLayer() noexcept = default;
+
+    /// @brief Compile time inquiry of whether this class was extended via 
+    ///    @ref comms::option::ExtendingClass option.
+    /// @details If @b true is returned, the @ref SyncPrefixLayer::ExtendingClass "ExtendingClass"
+    ///     type aliasing the real layer type.
+    static constexpr bool hasExtendingClass()
+    {
+        return ParsedOptionsInternal::HasExtendingClass;
+    }
 
     /// @brief Customized read functionality, invoked by @ref read().
     /// @details Reads the "sync" value from the input data. If the read value
