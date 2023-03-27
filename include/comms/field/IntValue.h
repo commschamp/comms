@@ -93,6 +93,18 @@ public:
     /// @details Same as template parameter T to this class.
     using ValueType = typename BaseImpl::ValueType;
 
+    /// @brief Units type defined by any of the @b comms::option::def::Units* option
+    /// @details Aliased to @b void if no relevant options is used.
+    using UnitsType = typename ParsedOptions::UnitsType;
+
+    /// @brief Scaling ratio defined by the @ref comms::option::def::ScalingRatio option.
+    /// @details Equals to <b>std::ratio&lt;1, 1&gt;</b> if the option hasn't been used
+    using ScalingRatio = typename ParsedOptions::ScalingRatio;
+
+    /// @brief Scaling ratio determined by the forced units via the @b comms::option::def::Units* option.
+    /// @details Equals to <b>std::ratio&lt;1, 1&gt;</b> if the option hasn't been used.
+    using UnitsRatio = typename ParsedOptions::UnitsRatio;
+
     /// @brief Default constructor
     /// @details Initialises internal value to 0.
     IntValue() = default;
@@ -111,6 +123,41 @@ public:
 
     /// @brief Copy assignment
     IntValue& operator=(const IntValue&) = default;
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FailOnInvalid option
+    ///     has been used.
+    static constexpr bool hasFailOnInvalid()
+    {
+        return ParsedOptions::HasFailOnInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::IgnoreInvalid option
+    ///     has been used.
+    static constexpr bool hasIgnoreInvalid()
+    {
+        return ParsedOptions::HasIgnoreInvalid;
+    }    
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::EmptySerialization option
+    ///     has been used.
+    static constexpr bool hasEmptySerialization()
+    {
+        return ParsedOptions::HasEmptySerialization;
+    }
+
+    /// @brief Compile time inquiry of whether units have been set via any of the
+    ///     @b comms::option::def::Units* options.
+    static constexpr bool hasUnits()
+    {
+        return ParsedOptions::HasUnits;
+    }    
+
+    /// @brief Compile time inquiry of whether scaling ratio has been provided via
+    ///     @ref comms::option::def::ScalingRatio option.
+    static constexpr bool hasScaling()
+    {
+        return ParsedOptions::HasScalingRatio && !std::is_same<ScalingRatio, std::ratio<1, 1> >::value;
+    }
 
     /// @brief Scales value according to ratio specified in provided
     ///     @ref comms::option::def::ScalingRatio option.

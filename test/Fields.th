@@ -2679,7 +2679,7 @@ void FieldsTestSuite::test57()
 
     using Scaling = comms::units::details::ScalingRatioOf<Field>;
     static_assert(std::is_same<Scaling, std::ratio<1, 10> >::value, "Wrong scaling");
-    static_assert(std::is_same<Field::ParsedOptions::UnitsRatio, std::milli >::value, "Wrong scaling");
+    static_assert(std::is_same<Field::UnitsRatio, std::milli >::value, "Wrong scaling");
 
     using FullRatio = comms::units::details::FullUnitsRatioOf<Field, std::milli>;
     static_assert(std::is_same<Scaling, FullRatio>::value, "Wrong ratio");
@@ -2758,6 +2758,7 @@ void FieldsTestSuite::test58()
     static_assert(!Field1::isVersionDependent(),
         "Invalid version dependency assumption");
     static_assert(comms::units::isNanoseconds<Field1>(), "Invalid units");
+    static_assert(Field1::hasScaling(), "Invalid assumption");
 
     do {
         Field1 field(1U);

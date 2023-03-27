@@ -289,6 +289,7 @@ private:
             >
         >
     {
+#ifdef COMMS_MUST_DEFINE_BASE        
         using Base =
             comms::protocol::MsgSizeLayer<
                 TSizeField,
@@ -299,8 +300,9 @@ private:
                     comms::protocol::MsgDataLayer<>
                 >
             >;
+#endif // #ifdef COMMS_MUST_DEFINE_BASE           
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_INNER(payload, id, size);
+        COMMS_PROTOCOL_LAYERS_ACCESS_INNER(payload, id, size);
     };
 
     template <typename TIdField, typename TSizeField, typename TMessage>
