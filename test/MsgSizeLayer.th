@@ -276,9 +276,22 @@ private:
     using IdField2 = IdField<TField, 2>;
     using BeIdField2 = IdField2<BeField>;
     using LeIdField2 = IdField2<LeField>;
+};
 
-    template <typename TSizeField, typename TIdField, typename TMessage>
-    class ProtocolStack : public
+
+template <typename TSizeField, typename TIdField, typename TMessage>
+class ProtocolStack : public
+    comms::protocol::MsgSizeLayer<
+        TSizeField,
+        comms::protocol::MsgIdLayer<
+            TIdField,
+            TMessage,
+            AllMessages<TMessage>,
+            comms::protocol::MsgDataLayer<>
+        >
+    >
+{
+    using Base =
         comms::protocol::MsgSizeLayer<
             TSizeField,
             comms::protocol::MsgIdLayer<
@@ -287,26 +300,24 @@ private:
                 AllMessages<TMessage>,
                 comms::protocol::MsgDataLayer<>
             >
-        >
-    {
-#ifdef COMMS_MUST_DEFINE_BASE        
-        using Base =
-            comms::protocol::MsgSizeLayer<
-                TSizeField,
-                comms::protocol::MsgIdLayer<
-                    TIdField,
-                    TMessage,
-                    AllMessages<TMessage>,
-                    comms::protocol::MsgDataLayer<>
-                >
-            >;
-#endif // #ifdef COMMS_MUST_DEFINE_BASE           
-    public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_INNER(payload, id, size);
-    };
+        >;
+public:
+    COMMS_PROTOCOL_LAYERS_NAMES_INNER(payload, id, size);
+};
 
-    template <typename TIdField, typename TSizeField, typename TMessage>
-    class RevProtocolStack : public
+template <typename TIdField, typename TSizeField, typename TMessage>
+class RevProtocolStack : public
+    comms::protocol::MsgIdLayer<
+        TIdField,
+        TMessage,
+        AllMessages<TMessage>,
+        comms::protocol::MsgSizeLayer<
+            TSizeField,
+            comms::protocol::MsgDataLayer<>
+        >
+    >
+{
+    using Base =
         comms::protocol::MsgIdLayer<
             TIdField,
             TMessage,
@@ -315,66 +326,53 @@ private:
                 TSizeField,
                 comms::protocol::MsgDataLayer<>
             >
-        >
-    {
-        using Base =
-            comms::protocol::MsgIdLayer<
-                TIdField,
-                TMessage,
-                AllMessages<TMessage>,
-                comms::protocol::MsgSizeLayer<
-                    TSizeField,
-                    comms::protocol::MsgDataLayer<>
-                >
-            >;
-    public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, size, payload);
-    };
-
-    template <typename TSizeField, typename TIdField, typename TMessage>
-    using InPlaceProtocolStack =
-        comms::protocol::MsgSizeLayer<
-            TSizeField,
-            comms::protocol::MsgIdLayer<
-                TIdField,
-                TMessage,
-                AllMessages<TMessage>,
-                comms::protocol::MsgDataLayer<>,
-                comms::option::InPlaceAllocation
-            >
         >;
-
-    template <typename TMsgBase>
-    class GenericMsg : public
-        comms::GenericMessage<TMsgBase>
-    {
-        using Base = comms::GenericMessage<TMsgBase>;
-    public:
-        using MsgIdParamType = typename Base::MsgIdParamType;
-
-        explicit GenericMsg(MsgIdParamType id) : Base(id) {}
-        GenericMsg(const GenericMsg&) = default;
-
-        const char* doName() const
-        {
-            return "Generic Message";
-        }
-    };
-
-    template <typename TSizeField, typename TIdField, typename TMessage>
-    using GenMsgProtocolStack =
-        comms::protocol::MsgSizeLayer<
-            TSizeField,
-            comms::protocol::MsgIdLayer<
-                TIdField,
-                TMessage,
-                AllMessages<TMessage>,
-                comms::protocol::MsgDataLayer<>,
-                comms::option::SupportGenericMessage<GenericMsg<TMessage> >
-            >
-        >;
-
+public:
+    COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, size, payload);
 };
+
+template <typename TSizeField, typename TIdField, typename TMessage>
+using InPlaceProtocolStack =
+    comms::protocol::MsgSizeLayer<
+        TSizeField,
+        comms::protocol::MsgIdLayer<
+            TIdField,
+            TMessage,
+            AllMessages<TMessage>,
+            comms::protocol::MsgDataLayer<>,
+            comms::option::InPlaceAllocation
+        >
+    >;
+
+template <typename TMsgBase>
+class GenericMsg : public
+    comms::GenericMessage<TMsgBase>
+{
+    using Base = comms::GenericMessage<TMsgBase>;
+public:
+    using MsgIdParamType = typename Base::MsgIdParamType;
+
+    explicit GenericMsg(MsgIdParamType id) : Base(id) {}
+    GenericMsg(const GenericMsg&) = default;
+
+    const char* doName() const
+    {
+        return "Generic Message";
+    }
+};
+
+template <typename TSizeField, typename TIdField, typename TMessage>
+using GenMsgProtocolStack =
+    comms::protocol::MsgSizeLayer<
+        TSizeField,
+        comms::protocol::MsgIdLayer<
+            TIdField,
+            TMessage,
+            AllMessages<TMessage>,
+            comms::protocol::MsgDataLayer<>,
+            comms::option::SupportGenericMessage<GenericMsg<TMessage> >
+        >
+    >;
 
 void MsgSizeLayerTestSuite::test1()
 {
