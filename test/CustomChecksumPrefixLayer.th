@@ -337,7 +337,7 @@ private:
                 comms::protocol::MsgIdLayer<
                     TIdField,
                     TMessage,
-                    AllMessages<TMessage>,
+                    AllTestMessages<TMessage>,
                     CustomChecksumPrefixLayer<
                         TChecksumField,
                         comms::protocol::MsgDataLayer<>
@@ -354,7 +354,7 @@ private:
                     comms::protocol::MsgIdLayer<
                         TIdField,
                         TMessage,
-                        AllMessages<TMessage>,
+                        AllTestMessages<TMessage>,
                         CustomChecksumPrefixLayer<
                             TChecksumField,
                             comms::protocol::MsgDataLayer<>
@@ -380,7 +380,7 @@ private:
                 comms::protocol::MsgIdLayer<
                     TIdField,
                     TMessage,
-                    AllMessages<TMessage>,
+                    AllTestMessages<TMessage>,
                     OptionalChecksumPrefixLayer<
                         TChecksumField,
                         comms::protocol::MsgDataLayer<>
@@ -397,7 +397,7 @@ private:
                     comms::protocol::MsgIdLayer<
                         TIdField,
                         TMessage,
-                        AllMessages<TMessage>,
+                        AllTestMessages<TMessage>,
                         OptionalChecksumPrefixLayer<
                             TChecksumField,
                             comms::protocol::MsgDataLayer<>

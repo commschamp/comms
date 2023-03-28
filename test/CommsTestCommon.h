@@ -871,7 +871,7 @@ public:
 
 
 template <typename TMessage>
-using AllMessages =
+using AllTestMessages =
     std::tuple<
         Message1<TMessage>,
         Message2<TMessage>,

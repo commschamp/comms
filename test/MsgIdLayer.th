@@ -198,7 +198,7 @@ private:
     typedef Field3<LeField> LeField3;
     typedef Field4<BeField> BeField4;
 
-    template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
     class ProtocolStack : public
         comms::protocol::MsgIdLayer<
             TField,
@@ -218,7 +218,7 @@ private:
         COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
-    template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
     class InPlaceProtocolStack : public
         comms::protocol::MsgIdLayer<
             TField,
@@ -260,7 +260,7 @@ private:
         COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
-    template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
     class GenericMessageProtocolStack : public
         comms::protocol::MsgIdLayer<
             TField,
@@ -282,7 +282,7 @@ private:
         COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
-    template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
     class GenericMessageInPlaceAllocProtocolStack : public
         comms::protocol::MsgIdLayer<
             TField,
@@ -306,7 +306,7 @@ private:
         COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
-    template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
     class ProtocolStackPolymorphic : public
         comms::protocol::MsgIdLayer<
             TField,
@@ -328,7 +328,7 @@ private:
         COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
-    template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
     class ProtocolStackStaticBinSearch : public
         comms::protocol::MsgIdLayer<
             TField,
@@ -350,7 +350,7 @@ private:
         COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
-    template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
     class ProtocolStackLinearSwitch : public
         comms::protocol::MsgIdLayer<
             TField,
@@ -470,9 +470,6 @@ private:
             return true;
         }
 
-        /// @brief Get number of message types from @ref AllMessages, that have the specified ID.
-        /// @param id ID of the message.
-        /// @return Number of message classes that report same ID.
         std::size_t msgCount(MsgIdParamType id) const
         {
             switch (id) {
@@ -535,7 +532,7 @@ private:
     using CustomMsgFactoryTempl = CustomMsgFactory<TInterface>;
 
 
-    template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
     class ProtocolStackCustomFactory : public
         comms::protocol::MsgIdLayer<
             TField,
@@ -558,7 +555,7 @@ private:
         COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };  
 
-    template <typename TField, typename TMessage, template<class> class TAllMessages = AllMessages>
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
     class ProtocolStackCustomFactoryTempl : public
         comms::protocol::MsgIdLayer<
             TField,
