@@ -135,6 +135,11 @@ public:
     ///     mask determined by the @ref comms::option::def::FixedLength option.
     using ValueType = typename IntValueField::ValueType;
 
+    /// @brief Type of actual extending field specified via 
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;    
+
     /// @brief Default constructor.
     /// @brief Initial bitmask has all bits cleared (equals 0)
     BitmaskValue() = default;
@@ -175,6 +180,13 @@ public:
     {
         return ParsedOptions::HasEmptySerialization;
     }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }    
 
     /// @brief Get access to underlying mask value storage.
     /// @return Const reference to the underlying stored value.

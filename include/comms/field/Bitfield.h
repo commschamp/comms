@@ -114,6 +114,11 @@ public:
     ///     of all the member fields.
     using ValueType = typename BaseImpl::ValueType;
 
+    /// @brief Type of actual extending field specified via 
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;    
+
     /// @brief Default constructor
     /// @details All field members are initialised using their default constructors.
     Bitfield() = default;
@@ -152,6 +157,13 @@ public:
     {
         return ParsedOptions::HasEmptySerialization;
     }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }    
 
     /// @brief Retrieve number of bits specified member field consumes.
     /// @tparam TIdx Index of the member field.

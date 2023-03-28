@@ -1742,6 +1742,7 @@ public:
 void FieldsTestSuite2::test24()
 {
     using Field = Test24Field;
+    static_assert(Field::hasFieldType(), "Invalid assumption");
 
     static const char Buf[] = {
         0x00

@@ -7,8 +7,10 @@
 
 #pragma once
 
-#include <tuple>
+#include <limits>
 #include <ratio>
+#include <tuple>
+
 #include "comms/options.h"
 #include "comms/CompileControl.h"
 #include "adapters.h"
@@ -71,6 +73,15 @@ public:
     using UnitsType = void;
     using ScalingRatio = std::ratio<1, 1>;
     using UnitsRatio = std::ratio<1, 1>;
+    using FieldType = void;
+    using SequenceSizeFieldPrefix = void;
+    using SequenceSerLengthFieldPrefix = void;
+    using SequenceTerminationFieldSuffix = void;
+    using SequenceTrailingFieldSuffix = void;
+    using SequenceElemSerLengthFieldPrefix = void;
+    using SequenceElemFixedSerLengthFieldPrefix = void;
+
+    static constexpr std::size_t SequenceFixedSize = std::numeric_limits<std::size_t>::max();
 
     template <typename TField>
     using AdaptInvalidByDefault = TField;
@@ -713,6 +724,7 @@ class OptionsParser<
 {
 public:
     static constexpr bool HasFieldType = true;
+    using FieldType = TActField;
 
     template <typename TField>
     using AdaptFieldType = comms::field::adapter::FieldType<TActField, TField>;

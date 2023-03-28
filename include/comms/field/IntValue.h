@@ -105,6 +105,11 @@ public:
     /// @details Equals to <b>std::ratio&lt;1, 1&gt;</b> if the option hasn't been used.
     using UnitsRatio = typename ParsedOptions::UnitsRatio;
 
+    /// @brief Type of actual extending field specified via 
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;
+
     /// @brief Default constructor
     /// @details Initialises internal value to 0.
     IntValue() = default;
@@ -158,6 +163,20 @@ public:
     {
         return ParsedOptions::HasScalingRatio && !std::is_same<ScalingRatio, std::ratio<1, 1> >::value;
     }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }    
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::VarLength option
+    ///     has been used.
+    static constexpr bool hasVarLength()
+    {
+        return ParsedOptions::HasVarLengthLimits;
+    }        
 
     /// @brief Scales value according to ratio specified in provided
     ///     @ref comms::option::def::ScalingRatio option.

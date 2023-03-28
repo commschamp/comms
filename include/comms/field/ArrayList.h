@@ -224,6 +224,35 @@ public:
     /// @brief Type of the element.
     using ElementType = typename BaseImpl::ElementType;
 
+    /// @brief Type of actual extending field specified via 
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;    
+
+    /// @brief Type of size field prefix specified via @ref comms::option::def::SequenceSizeFieldPrefix.
+    /// @details @b void if @ref comms::option::def::SequenceSizeFieldPrefix is not used.
+    using SizeFieldPrefix = typename ParsedOptions::SequenceSizeFieldPrefix;
+
+    /// @brief Type of length field prefix specified via @ref comms::option::def::SequenceSerLengthFieldPrefix.
+    /// @details @b void if @ref comms::option::def::SequenceSerLengthFieldPrefix is not used.
+    using SerLengthFieldPrefix = typename ParsedOptions::SequenceSerLengthFieldPrefix;    
+
+    /// @brief Type of element's length field prefix specified via @ref comms::option::def::SequenceElemSerLengthFieldPrefix.
+    /// @details @b void if @ref comms::option::def::SequenceElemSerLengthFieldPrefix is not used.
+    using ElemSerLengthFieldPrefix = typename ParsedOptions::SequenceElemSerLengthFieldPrefix;    
+
+    /// @brief Type of element's fixed length field prefix specified via @ref comms::option::def::SequenceElemFixedSerLengthFieldPrefix.
+    /// @details @b void if @ref comms::option::def::SequenceElemFixedSerLengthFieldPrefix is not used.
+    using ElemFixedSerLengthFieldPrefix = typename ParsedOptions::SequenceElemFixedSerLengthFieldPrefix;    
+
+    /// @brief Type of termination field suffix specified via @ref comms::option::def::SequenceTerminationFieldSuffix.
+    /// @details @b void if @ref comms::option::def::SequenceTerminationFieldSuffix is not used.
+    using TerminationFieldSuffix = typename ParsedOptions::SequenceTerminationFieldSuffix;    
+
+    /// @brief Type of trailing field suffix specified via @ref comms::option::def::SequenceTrailingFieldSuffix.
+    /// @details @b void if @ref comms::option::def::SequenceTrailingFieldSuffix is not used.
+    using TrailingFieldSuffix = typename ParsedOptions::SequenceTrailingFieldSuffix;      
+
         /// @brief Default constructor
     ArrayList() = default;
 
@@ -274,6 +303,70 @@ public:
     {
         return ParsedOptions::HasEmptySerialization;
     }    
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceSizeFieldPrefix option
+    ///     has been used.
+    static constexpr bool hasSizeFieldPrefix()
+    {
+        return ParsedOptions::HasSequenceSizeFieldPrefix;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceSerLengthFieldPrefix option
+    ///     has been used.
+    static constexpr bool hasSerLengthFieldPrefix()
+    {
+        return ParsedOptions::HasSequenceSerLengthFieldPrefix;
+    }    
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceElemSerLengthFieldPrefix option
+    ///     has been used.
+    static constexpr bool hasElemSerLengthFieldPrefix()
+    {
+        return ParsedOptions::HasSequenceElemSerLengthFieldPrefix;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceElemFixedSerLengthFieldPrefix option
+    ///     has been used.
+    static constexpr bool hasElemFixedSerLengthFieldPrefix()
+    {
+        return ParsedOptions::HasSequenceElemFixedSerLengthFieldPrefix;
+    }    
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceTerminationFieldSuffix option
+    ///     has been used.
+    static constexpr bool hasTerminationFieldSuffix()
+    {
+        return ParsedOptions::HasSequenceTerminationFieldSuffix;
+    }      
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceTrailingFieldSuffix option
+    ///     has been used.
+    static constexpr bool hasTrailingFieldSuffix()
+    {
+        return ParsedOptions::HasSequenceTrailingFieldSuffix;
+    }    
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceFixedSize option
+    ///     has been used.
+    static constexpr bool hasFixedSize()
+    {
+        return ParsedOptions::HasSequenceFixedSize;
+    }   
+
+    /// @brief Compile time inquiry of fixed size provided via @ref comms::option::def::SequenceFixedSize option.
+    /// @details If the @ref comms::option::def::SequenceFixedSize option hasn't been used
+    ///     <b>std::numeric_limits&lt;std::size_t&gt;\::max()</b> is returned.
+    static constexpr bool fixedSize()
+    {
+        return ParsedOptions::SequenceFixedSize;
+    }           
 
     /// @brief Get access to the value storage.
     ValueType& value()

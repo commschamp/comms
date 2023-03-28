@@ -88,6 +88,11 @@ public:
     ///     of all the wrapped fields.
     using ValueType = typename BaseImpl::ValueType;
 
+    /// @brief Type of actual extending field specified via 
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;    
+
     /// @brief Default constructor
     /// @details Invokes default constructor of every wrapped field
     Bundle() = default;
@@ -124,6 +129,13 @@ public:
     {
         return ParsedOptions::HasEmptySerialization;
     }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }    
 
     /// @brief Get access to the stored tuple of fields.
     ValueType& value()

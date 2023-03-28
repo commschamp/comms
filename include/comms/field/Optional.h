@@ -68,6 +68,11 @@ public:
     /// @see OptionalMode
     using Mode = OptionalMode;
 
+    /// @brief Type of actual extending field specified via 
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;    
+
     /// @brief Default constructor
     /// @details The mode it is created in is OptionalMode::Tentative.
     Optional() = default;
@@ -120,7 +125,14 @@ public:
     static constexpr bool hasEmptySerialization()
     {
         return ParsedOptions::HasEmptySerialization;
-    }    
+    } 
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }       
 
     /// @brief Check whether mode is equivalent to Mode::Tentative
     /// @details Convenience wrapper for getMode(), equivalent to

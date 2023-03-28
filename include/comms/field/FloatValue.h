@@ -87,6 +87,11 @@ public:
     /// @details Equals to <b>std::ratio&lt;1, 1&gt;</b> if the option hasn't been used.
     using UnitsRatio = typename ParsedOptions::UnitsRatio;    
 
+    /// @brief Type of actual extending field specified via 
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;    
+
     /// @brief Default constructor
     /// @details Initialises internal value to 0.
     FloatValue() = default;
@@ -124,6 +129,13 @@ public:
     {
         return ParsedOptions::HasUnits;
     }        
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }    
 
     /// @brief Get access to floating point value storage.
     const ValueType& value() const
