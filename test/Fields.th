@@ -2187,8 +2187,10 @@ void FieldsTestSuite::test45()
 
 void FieldsTestSuite::test46()
 {
-    typedef comms::field::NoValue<
-        comms::Field<BigEndianOpt>
+    typedef comms::field::IntValue<
+        comms::Field<BigEndianOpt>,
+        std::uint8_t,
+        comms::option::def::EmptySerialization
     > Field;
 
     static_assert(!Field::isVersionDependent(),

@@ -29,10 +29,9 @@ using Bundle = comms::details::tag::Tag5<>;
 using Enum = comms::details::tag::Tag6<>;
 using Float = comms::details::tag::Tag7<>;
 using Int = comms::details::tag::Tag8<>;
-using NoValue = comms::details::tag::Tag9<>;
-using Optional = comms::details::tag::Tag10<>;
-using String = comms::details::tag::Tag11<>;
-using Variant = comms::details::tag::Tag12<>;
+using Optional = comms::details::tag::Tag9<>;
+using String = comms::details::tag::Tag10<>;
+using Variant = comms::details::tag::Tag11<>;
 
 }  // namespace tag
 

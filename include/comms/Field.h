@@ -78,6 +78,7 @@ public:
     {
         return true;
     }
+    
 
     /// @brief Default check of whether the field has @b writeNoStatus() member function
     /// @return Always @b true.

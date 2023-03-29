@@ -19,7 +19,6 @@
 #include "field/Optional.h"
 #include "field/Bundle.h"
 #include "field/FloatValue.h"
-#include "field/NoValue.h"
 #include "field/Variant.h"
 
 #include "field/basics.h"
