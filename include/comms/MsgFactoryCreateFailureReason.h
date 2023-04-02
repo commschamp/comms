@@ -8,6 +8,8 @@
 /// @file
 /// @brief Contains definition of comms::MsgFactoryCreateFailureReason enum.
 
+#pragma once
+
 namespace comms
 {
 
