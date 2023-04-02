@@ -55,9 +55,9 @@ namespace protocol
 ///     @li @ref comms::option::def::ExtendingClass - Use this option to provide a class
 ///         name of the extending class, which can be used to extend existing functionality.
 ///         See also @ref page_custom_id_layer tutorial page.
-///     @li @ref comms::option::def::MsgFactory - Override default message factory class.
+///     @li @ref comms::option::app::MsgFactory - Override default message factory class.
 ///         The overriding class is expected to have the same public interface as @ref comms::MsgFactory.
-///     @li @ref comms::option::def::MsgFactoryTempl - Override default message factory class.
+///     @li @ref comms::option::app::MsgFactoryTempl - Override default message factory class.
 ///         The overriding class is expected to have the same public interface as @ref comms::MsgFactory.
 ///     @li All the options supported by the @ref comms::MsgFactory. All the options
 ///         except ones listed above will be forwarded to the definition of the
@@ -156,7 +156,7 @@ public:
     }     
 
     /// @brief Compile time inquiry of whether custom message factory class has been
-    ///   provided via @ref comms::option::def::MsgFactory or @ref comms::option::def::MsgFactoryTempl
+    ///   provided via @ref comms::option::app::MsgFactory or @ref comms::option::app::MsgFactoryTempl
     ///   options.
     static constexpr bool hasMsgFactory()
     {

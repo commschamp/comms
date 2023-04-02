@@ -55,7 +55,7 @@ public:
 };
 
 template <typename TFactory, typename... TOptions>
-class MsgIdLayerOptionsParser<comms::option::def::MsgFactory<TFactory>, TOptions...> :
+class MsgIdLayerOptionsParser<comms::option::app::MsgFactory<TFactory>, TOptions...> :
         public MsgIdLayerOptionsParser<TOptions...>
 {
 public:
@@ -66,7 +66,7 @@ public:
 };
 
 template <template<typename, typename, typename...> class TFactory, typename... TOptions>
-class MsgIdLayerOptionsParser<comms::option::def::MsgFactoryTempl<TFactory>, TOptions...> :
+class MsgIdLayerOptionsParser<comms::option::app::MsgFactoryTempl<TFactory>, TOptions...> :
         public MsgIdLayerOptionsParser<TOptions...>
 {
     using BaseImpl = MsgIdLayerOptionsParser<TOptions...>;
