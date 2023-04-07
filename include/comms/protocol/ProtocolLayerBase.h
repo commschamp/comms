@@ -83,7 +83,13 @@ public:
 
     /// @brief All supported messages.
     /// @details Same as NextLayer::AllMessages or void if such doesn't exist.
-    using AllMessages = details::ProtocolLayerAllMessagesType<NextLayer>;
+    ///     Expected to be overrided by @ref comms::protocol::MsgIdLayer
+    using AllMessages = typename NextLayer::AllMessages;
+
+    /// @brief Type of message factory.
+    /// @details Same as NextLayer::AllMessages or void if such doesn't exist.
+    ///     Expected to be overrided by @ref comms::protocol::MsgIdLayer
+    using MsgFactory = typename NextLayer::MsgFactory;    
 
     /// @brief Type of pointer to the message.
     /// @details Same as NextLayer::MsgPtr or void if such doesn't exist.

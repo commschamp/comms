@@ -18,24 +18,6 @@ namespace protocol
 namespace details
 {
 
-template <class T, class R = void>
-struct ProtocolLayerEnableIfHasAllMessages { using Type = R; };
-
-template <class T, class Enable = void>
-struct ProtocolLayerAllMessagesHelper
-{
-    using Type = void;
-};
-
-template <class T>
-struct ProtocolLayerAllMessagesHelper<T, typename ProtocolLayerEnableIfHasAllMessages<typename T::AllMessages>::Type>
-{
-    using Type = typename T::AllMessages;
-};
-
-template <class T>
-using ProtocolLayerAllMessagesType = typename ProtocolLayerAllMessagesHelper<T>::Type;
-
 template <typename T, bool THasImpl>
 struct ProtocolLayerHasFieldsImplHelper;
 

@@ -99,7 +99,7 @@ class MsgIdLayer : public
 
 public:
     // @brief Message factory class
-    using Factory = typename ParsedOptionsInternal::template MsgFactory<TMessage, TAllMessages>;
+    using MsgFactory = typename ParsedOptionsInternal::template MsgFactory<TMessage, TAllMessages>;
 
     /// @brief Type of real extending class
     /// @details Updated when @ref comms::option::ExtendingClass extension option us used,
@@ -111,7 +111,7 @@ public:
 
     /// @brief Type of smart pointer that will hold allocated message object.
     /// @details Same as comms::MsgFactory::MsgPtr.
-    using MsgPtr = typename Factory::MsgPtr;
+    using MsgPtr = typename MsgFactory::MsgPtr;
 
     /// @brief Type of the @b input message interface.
     using Message = TMessage;
@@ -126,7 +126,7 @@ public:
     using Field = typename BaseImpl::Field;
 
     /// @brief Reason for message creation failure
-    using CreateFailureReason = typename Factory::CreateFailureReason;
+    using CreateFailureReason = typename MsgFactory::CreateFailureReason;
 
     /// @brief Default constructor.
     explicit MsgIdLayer() = default;
@@ -321,21 +321,21 @@ public:
     ///     generated internally to map message ID to actual type.
     static constexpr bool isDispatchPolymorphic()
     {
-        return Factory::isDispatchPolymorphic();
+        return MsgFactory::isDispatchPolymorphic();
     }
 
     /// @brief Compile time inquiry whether static binary search dispatch is 
     ///     generated internally to map message ID to actual type.
     static constexpr bool isDispatchStaticBinSearch()
     {
-        return Factory::isDispatchStaticBinSearch();
+        return MsgFactory::isDispatchStaticBinSearch();
     }
 
     /// @brief Compile time inquiry whether linear switch dispatch is 
     ///     generated internally to map message ID to actual type.
     static constexpr bool isDispatchLinearSwitch()
     {
-        return Factory::isDispatchLinearSwitch();
+        return MsgFactory::isDispatchLinearSwitch();
     }
 
 protected:
@@ -747,7 +747,7 @@ private:
         COMMS_ASSERT(failureReason == CreateFailureReason::InvalidId);
         using GenericMsgTag = 
             typename comms::util::LazyShallowConditional<
-                Factory::hasGenericMessageSupport()
+                MsgFactory::hasGenericMessageSupport()
             >::template Type<
                 HasGenericMsgTag,
                 NoGenericMsgTag
@@ -856,7 +856,7 @@ private:
         HasGenericMsgTag<>,
         TExtraValues... extraValues)
     {
-        using GenericMsgType = typename Factory::GenericMessage;
+        using GenericMsgType = typename MsgFactory::GenericMessage;
 
         auto& thisObj = BaseImpl::thisLayer();
         auto id = thisObj.getMsgIdFromField(field);
@@ -906,7 +906,7 @@ private:
         DirectOpTag<>,
         TExtraValues... extraValues)
     {
-        using GenericMsgType = typename Factory::GenericMessage;
+        using GenericMsgType = typename MsgFactory::GenericMessage;
         auto& castedMsgRef = static_cast<GenericMsgType&>(*msg);
         return nextLayerReader.read(castedMsgRef, iter, size, extraValues...);
     }               
@@ -960,8 +960,7 @@ private:
         return comms::dispatchMsgStaticBinSearch(id, msg, handler);
     }
 
-    Factory factory_;
-
+    MsgFactory factory_;
 };
 
 

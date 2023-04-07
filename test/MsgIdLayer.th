@@ -588,7 +588,7 @@ void MsgIdLayerTestSuite::test1()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using Stack = ProtocolStack<BeField1, BeMsgBase>;
-    static_assert(!Stack::Factory::hasForcedDispatch(), "Invalid options");
+    static_assert(!Stack::MsgFactory::hasForcedDispatch(), "Invalid options");
 
     Stack stack;
     static_cast<void>(stack.layer_id());
@@ -916,8 +916,8 @@ void MsgIdLayerTestSuite::test14()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using Stack = ProtocolStackPolymorphic<BeField1, BeMsgBase>;
-    static_assert(Stack::Factory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<Stack::Factory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value, 
+    static_assert(Stack::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<Stack::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value, 
         "Invalid options");
     static_assert(Stack::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(!Stack::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -947,8 +947,8 @@ void MsgIdLayerTestSuite::test15()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using Stack = ProtocolStackPolymorphic<BeField1, BeMsgBase, Test15Messages>;
-    static_assert(Stack::Factory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<Stack::Factory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value, 
+    static_assert(Stack::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<Stack::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value, 
         "Invalid options");
     static_assert(Stack::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(!Stack::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -979,8 +979,8 @@ void MsgIdLayerTestSuite::test16()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using Stack = ProtocolStackPolymorphic<BeField1, BeMsgBase, Test16Messages>;
-    static_assert(Stack::Factory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<Stack::Factory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value, 
+    static_assert(Stack::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<Stack::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value, 
         "Invalid options");
     static_assert(Stack::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(!Stack::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -1003,8 +1003,8 @@ void MsgIdLayerTestSuite::test17()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using Stack = ProtocolStackStaticBinSearch<BeField1, BeMsgBase>;
-    static_assert(Stack::Factory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<Stack::Factory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value, 
+    static_assert(Stack::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<Stack::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value, 
         "Invalid options");
     static_assert(!Stack::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(Stack::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -1034,8 +1034,8 @@ void MsgIdLayerTestSuite::test18()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using Stack = ProtocolStackStaticBinSearch<BeField1, BeMsgBase, Test18Messages>;
-    static_assert(Stack::Factory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<Stack::Factory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value, 
+    static_assert(Stack::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<Stack::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value, 
         "Invalid options");
     static_assert(!Stack::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(Stack::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -1066,8 +1066,8 @@ void MsgIdLayerTestSuite::test19()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using Stack = ProtocolStackStaticBinSearch<BeField1, BeMsgBase, Test19Messages>;
-    static_assert(Stack::Factory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<Stack::Factory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value, 
+    static_assert(Stack::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<Stack::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value, 
         "Invalid options");
     static_assert(!Stack::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(Stack::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -1090,8 +1090,8 @@ void MsgIdLayerTestSuite::test20()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using Stack = ProtocolStackLinearSwitch<BeField1, BeMsgBase>;
-    static_assert(Stack::Factory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<Stack::Factory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value, 
+    static_assert(Stack::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<Stack::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value, 
         "Invalid options");
     static_assert(!Stack::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(!Stack::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -1121,8 +1121,8 @@ void MsgIdLayerTestSuite::test21()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using Stack = ProtocolStackLinearSwitch<BeField1, BeMsgBase, Test21Messages>;
-    static_assert(Stack::Factory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<Stack::Factory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value, 
+    static_assert(Stack::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<Stack::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value, 
         "Invalid options");
     static_assert(!Stack::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(!Stack::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -1153,8 +1153,8 @@ void MsgIdLayerTestSuite::test22()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using Stack = ProtocolStackLinearSwitch<BeField1, BeMsgBase, Test22Messages>;
-    static_assert(Stack::Factory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<Stack::Factory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value, 
+    static_assert(Stack::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<Stack::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value, 
         "Invalid options");
     static_assert(!Stack::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(!Stack::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -1472,7 +1472,7 @@ void MsgIdLayerTestSuite::test32()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using Stack = ProtocolStack<BeField4, BeMsgBase>;
-    static_assert(!Stack::Factory::hasForcedDispatch(), "Invalid options");
+    static_assert(!Stack::MsgFactory::hasForcedDispatch(), "Invalid options");
 
     Stack stack;
     Stack::MsgPtr msgPtr;
