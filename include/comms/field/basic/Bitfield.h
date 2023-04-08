@@ -15,6 +15,7 @@
 #include "comms/util/access.h"
 #include "comms/util/type_traits.h"
 #include "comms/field/details/FieldOpHelpers.h"
+#include "comms/field/tag.h"
 #include "comms/Assert.h"
 #include "comms/ErrorStatus.h"
 
@@ -271,6 +272,7 @@ public:
     using Endian = typename BaseImpl::Endian;
     using VersionType = typename BaseImpl::VersionType;
     using ValueType = Members;
+    using CommsTag = comms::field::tag::Bitfield;
 
     Bitfield() = default;
     explicit Bitfield(const ValueType& val)

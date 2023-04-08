@@ -16,7 +16,6 @@
 #include "OptionalMode.h"
 #include "basic/Optional.h"
 #include "details/AdaptBasicField.h"
-#include "tag.h"
 
 namespace comms
 {
@@ -56,7 +55,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = tag::Optional;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Type of the field.
     using Field = TField;

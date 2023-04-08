@@ -16,7 +16,6 @@
 #include "details/AdaptBasicField.h"
 #include "comms/details/macro_common.h"
 #include "comms/details/variant_access.h"
-#include "tag.h"
 
 namespace comms
 {
@@ -91,7 +90,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = tag::Variant;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Value type.
     /// @details Type of the internal buffer used to store contained field,

@@ -1225,6 +1225,12 @@ struct MissingOnReadFail {};
 /// @headerfile comms/options.h
 struct MissingOnInvalid {};
 
+/// @brief Avoid invocation of built-in @ref comms::field::Variant::reset() "reset()"
+///     member function on destruction of the @ref comms::field::Variant field.
+/// @details Use this option when the extending class invokes more optimised
+///     @b reset() member function in its destructor. 
+struct VariantHasCustomResetOnDestruct {};
+
 } // namespace def
 
 namespace app

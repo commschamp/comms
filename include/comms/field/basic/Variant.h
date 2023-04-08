@@ -18,6 +18,7 @@
 #include "comms/field/details/VersionStorage.h"
 #include "comms/field/details/FieldOpHelpers.h"
 #include "comms/details/tag.h"
+#include "comms/field/tag.h"
 #include "CommonFuncs.h"
 
 namespace comms
@@ -416,6 +417,7 @@ public:
     using Members = std::tuple<TMembers...>;
     using ValueType = comms::util::TupleAsAlignedUnionT<Members>;
     using VersionType = typename BaseImpl::VersionType;
+    using CommsTag = comms::field::tag::Variant;
 
     static const std::size_t MembersCount = std::tuple_size<Members>::value;
     static_assert(0U < MembersCount, "ValueType must be non-empty tuple");
@@ -450,7 +452,7 @@ public:
 
     ~Variant() noexcept
     {
-        checkDestruct();
+        COMMS_ASSERT(!currentFieldValid());
     }
 
     Variant& operator=(const Variant& other)

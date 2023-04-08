@@ -16,7 +16,6 @@
 #include "details/OptionsParser.h"
 #include "basic/EnumValue.h"
 #include "details/AdaptBasicField.h"
-#include "tag.h"
 
 namespace comms
 {
@@ -89,7 +88,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = tag::Enum;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Type of underlying enum value.
     /// @details Same as template parameter TEnum to this class.

@@ -13,6 +13,8 @@
 
 #include "comms/options.h"
 #include "comms/CompileControl.h"
+#include "comms/util/type_traits.h"
+#include "comms/field/tag.h"
 #include "adapters.h"
 
 namespace comms
@@ -69,6 +71,7 @@ public:
     static constexpr bool HasFieldType = false;
     static constexpr bool HasMissingOnReadFail = false;
     static constexpr bool HasMissingOnInvalid = false;
+    static constexpr bool HasVariantCustomResetOnDestruct = false;
 
     using UnitsType = void;
     using ScalingRatio = std::ratio<1, 1>;
@@ -174,7 +177,16 @@ public:
     using AdaptMissingOnReadFail = TField; 
 
     template <typename TField>
-    using AdaptMissingOnInvalid = TField;  
+    using AdaptMissingOnInvalid = TField; 
+
+    template <typename TField>
+    using AdaptVariantResetOnDestruct = 
+        typename comms::util::Conditional<
+            std::is_same<typename TField::CommsTag, comms::field::tag::Variant>::value
+        >::template Type<
+            comms::field::adapter::VariantResetOnDestruct<TField>,
+            TField
+        >;
 };
 
 template <typename... TOptions>
@@ -753,6 +765,19 @@ public:
     template <typename TField>
     using AdaptMissingOnInvalid = comms::field::adapter::MissingOnInvalid<TField>;       
 };
+
+template <typename... TOptions>
+class OptionsParser<
+    comms::option::def::VariantHasCustomResetOnDestruct,
+    TOptions...> : public OptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasVariantCustomResetOnDestruct = true;
+
+    template <typename TField>
+    using AdaptVariantResetOnDestruct = TField;    
+};
+
 
 template <typename... TOptions>
 class OptionsParser<

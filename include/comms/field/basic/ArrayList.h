@@ -24,6 +24,7 @@
 #include "comms/details/detect.h"
 #include "comms/details/tag.h"
 #include "comms/field/details/VersionStorage.h"
+#include "comms/field/tag.h"
 #include "CommonFuncs.h"
 
 namespace comms
@@ -111,6 +112,13 @@ public:
     using VersionType = typename BaseImpl::VersionType;
     using ElementType = typename TStorage::value_type;
     using ValueType = TStorage;
+    using CommsTag = 
+        typename comms::util::Conditional<
+            std::is_integral<ElementType>::value
+        >::template Type<
+            comms::field::tag::RawArrayList,
+            comms::field::tag::ArrayList
+        >;    
 
     ArrayList() = default;
 

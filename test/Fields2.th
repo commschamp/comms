@@ -55,6 +55,7 @@ public:
     void test27();
     void test28();
     void test29();
+    void test30();
 
 private:
     template <typename TField>
@@ -1905,6 +1906,112 @@ void FieldsTestSuite2::test29()
         static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
         writeReadField(field, &Buf[0], BufSize);
+    } while (false);
+}
+
+
+using Test30_FieldBase = comms::Field<comms::option::BigEndian>;
+
+class Test30_Mem1 : public
+    comms::field::Bundle<
+        Test30_FieldBase,
+        std::tuple<
+            Test1_IntKeyField<1>,
+            comms::field::IntValue<Test1_FieldBase, std::uint16_t>
+        >
+    >
+{
+    using Base = 
+        comms::field::Bundle<
+            Test30_FieldBase,
+            std::tuple<
+                Test1_IntKeyField<1>,
+                comms::field::IntValue<Test1_FieldBase, std::uint16_t>
+            >
+        >;            
+public:
+    COMMS_FIELD_MEMBERS_NAMES(key, val);
+};
+
+
+class Test30_Mem2 : public
+    comms::field::Bundle<
+        Test30_FieldBase,
+        std::tuple<
+            Test1_IntKeyField<2>,
+            comms::field::IntValue<Test1_FieldBase, std::uint32_t>
+        >
+    >
+{
+    using Base = 
+        comms::field::Bundle<
+            Test30_FieldBase,
+            std::tuple<
+                Test1_IntKeyField<2>,
+                comms::field::IntValue<Test1_FieldBase, std::uint32_t>
+            >
+        >;            
+public:
+    COMMS_FIELD_MEMBERS_NAMES(key, val);
+};
+
+class Test30_Field : public
+    comms::field::Variant<
+        Test30_FieldBase,
+        std::tuple<
+            Test30_Mem1,
+            Test30_Mem2
+        >,
+        comms::option::def::VariantHasCustomResetOnDestruct
+    >
+{
+    using Base = 
+        comms::field::Variant<
+            Test30_FieldBase,
+            std::tuple<
+                Test30_Mem1,
+                Test30_Mem2
+            >,
+            comms::option::def::VariantHasCustomResetOnDestruct
+        >;
+public:
+    ~Test30_Field()
+    {
+        reset();
+    }
+
+    COMMS_VARIANT_MEMBERS_NAMES(mem1, mem2);        
+
+    void reset()
+    {
+        switch (Base::currentField()) {
+        case FieldIdx_mem1: deinitField_mem1(); return;
+        case FieldIdx_mem2: deinitField_mem2(); return;
+        default: break;
+        }
+
+        COMMS_ASSERT(false);
+    }
+};
+
+void FieldsTestSuite2::test30()
+{
+    Test30_Field field;
+    TS_ASSERT_EQUALS(field.currentField(), std::tuple_size<Test30_Field::Members>::value);
+
+    do {
+        static const char Buf1[] = {
+            0x1, 0x2, 0x3, 0x4, 0x5
+        };
+        static const std::size_t Buf1Size = std::extent<decltype(Buf1)>::value;
+
+        auto readIter = &Buf1[0];
+        auto es = field.read(readIter, Buf1Size);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+        TS_ASSERT_EQUALS(field.currentField(), 0U);
+        TS_ASSERT_EQUALS(field.accessField_mem1().field_key().value(), 1U);
+        TS_ASSERT_EQUALS(field.accessField_mem1().field_val().value(), 0x0203);
+        TS_ASSERT_EQUALS(field.length(), 3U);
     } while (false);
 }
 

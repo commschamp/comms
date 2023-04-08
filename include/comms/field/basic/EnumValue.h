@@ -10,6 +10,7 @@
 #include <type_traits>
 
 #include "comms/ErrorStatus.h"
+#include "comms/field/tag.h"
 
 #include "IntValue.h"
 
@@ -45,6 +46,8 @@ public:
     using SerialisedType = typename IntValueField::ValueType;
 
     using ScalingRatio = typename IntValueField::ScalingRatio;
+
+    using CommsTag = comms::field::tag::Enum;
 
     EnumValue() = default;
 

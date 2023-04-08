@@ -20,7 +20,6 @@
 #include "comms/util/type_traits.h"
 #include "basic/IntValue.h"
 #include "details/AdaptBasicField.h"
-#include "tag.h"
 #include "comms/details/tag.h"
 
 COMMS_MSVC_WARNING_PUSH
@@ -87,7 +86,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = tag::Int;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Type of underlying integral value.
     /// @details Same as template parameter T to this class.

@@ -18,8 +18,8 @@
 #include "details/OptionsParser.h"
 #include "comms/details/gen_enum.h"
 #include "comms/details/bits_access.h"
-#include "IntValue.h"
-#include "tag.h"
+#include "comms/field/IntValue.h"
+#include "comms/field/tag.h"
 
 namespace comms
 {

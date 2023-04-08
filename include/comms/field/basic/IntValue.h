@@ -10,6 +10,7 @@
 #include <type_traits>
 
 #include "comms/ErrorStatus.h"
+#include "comms/field/tag.h"
 
 namespace comms
 {
@@ -31,6 +32,7 @@ public:
     using ValueType = T;
     using SerialisedType = ValueType;
     using ScalingRatio = std::ratio<1, 1>;
+    using CommsTag = comms::field::tag::Int;
 
     IntValue() = default;
 

@@ -28,7 +28,6 @@
 #include "comms/field/details/AdaptBasicField.h"
 #include "comms/field/details/OptionsParser.h"
 #include "comms/details/tag.h"
-#include "tag.h"
 
 namespace comms
 {
@@ -173,7 +172,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = tag::String;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Type of underlying value.
     /// @details If @ref comms::option::app::FixedSizeStorage option is NOT used, the

@@ -12,9 +12,8 @@
 
 #include "comms/ErrorStatus.h"
 #include "comms/options.h"
-#include "basic/Bundle.h"
-#include "details/AdaptBasicField.h"
-#include "tag.h"
+#include "comms/field/basic/Bundle.h"
+#include "comms/field/details/AdaptBasicField.h"
 
 namespace comms
 {
@@ -81,7 +80,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = tag::Bundle;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Value type.
     /// @details Same as TMemebers template argument, i.e. it is std::tuple

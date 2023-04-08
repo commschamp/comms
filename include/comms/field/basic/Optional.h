@@ -11,6 +11,7 @@
 #include "comms/ErrorStatus.h"
 #include "comms/Field.h"
 #include "comms/field/OptionalMode.h"
+#include "comms/field/tag.h"
 
 namespace comms
 {
@@ -40,6 +41,7 @@ public:
     using ValueType = TField;
     using Mode = field::OptionalMode;
     using VersionType = typename BaseImpl::VersionType;
+    using CommsTag = comms::field::tag::Optional;
 
     Optional() = default;
 

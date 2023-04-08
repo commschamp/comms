@@ -14,7 +14,6 @@
 #include "comms/options.h"
 #include "basic/Bitfield.h"
 #include "details/AdaptBasicField.h"
-#include "tag.h"
 
 namespace comms
 {
@@ -107,7 +106,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = tag::Bitfield;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Value type.
     /// @details Same as TMemebers template argument, i.e. it is std::tuple

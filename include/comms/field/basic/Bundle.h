@@ -14,6 +14,7 @@
 #include "comms/ErrorStatus.h"
 #include "comms/util/Tuple.h"
 #include "comms/field/details/FieldOpHelpers.h"
+#include "comms/field/tag.h"
 #include "CommonFuncs.h"
 
 namespace comms
@@ -35,6 +36,7 @@ public:
     using ValueType = std::tuple<TMembers...>;
     using Members = ValueType;
     using VersionType = typename TFieldBase::VersionType;
+    using CommsTag = comms::field::tag::Bundle;
 
     Bundle() = default;
     explicit Bundle(const ValueType& val)

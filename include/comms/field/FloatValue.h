@@ -73,7 +73,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = tag::Float;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Type of underlying floating point value.
     /// @details Same as template parameter T to this class.

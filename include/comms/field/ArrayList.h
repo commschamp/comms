@@ -26,7 +26,6 @@
 #include "basic/ArrayList.h"
 #include "details/AdaptBasicField.h"
 #include "details/OptionsParser.h"
-#include "tag.h"
 
 namespace comms
 {
@@ -206,13 +205,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = 
-        typename comms::util::Conditional<
-            std::is_integral<TElement>::value
-        >::template Type<
-            tag::RawArrayList,
-            tag::ArrayList
-        >;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Type of underlying value.
     /// @details If @ref comms::option::app::FixedSizeStorage option is NOT used, the

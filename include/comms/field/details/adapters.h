@@ -36,5 +36,6 @@
 #include "comms/field/adapter/SequenceTrailingFieldSuffix.h"
 #include "comms/field/adapter/SequenceTerminationFieldSuffix.h"
 #include "comms/field/adapter/SerOffset.h"
+#include "comms/field/adapter/VariantResetOnDestruct.h"
 #include "comms/field/adapter/VarLength.h"
 #include "comms/field/adapter/VersionStorage.h"
