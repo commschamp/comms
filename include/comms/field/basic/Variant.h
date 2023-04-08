@@ -673,7 +673,7 @@ public:
     typename std::tuple_element<TIdx, Members>::type& initField(TArgs&&... args)
     {
         static_assert(isIdxValid(TIdx), "Only valid field index can be used");
-        checkDestruct();
+        COMMS_ASSERT(!currentFieldValid());
 
         using FieldType = typename std::tuple_element<TIdx, Members>::type;
         new (&storage_) FieldType(std::forward<TArgs>(args)...);
@@ -681,6 +681,17 @@ public:
         updateVersionInternal(VersionTag<>());
         return reinterpret_cast<FieldType&>(storage_);
     }
+
+    template <std::size_t TIdx>
+    void deinitField()
+    {
+        static_assert(isIdxValid(TIdx), "Only valid field index can be used");
+        COMMS_ASSERT(memIdx_ == TIdx);
+
+        using FieldType = typename std::tuple_element<TIdx, Members>::type;
+        reinterpret_cast<FieldType*>(&storage_)->~FieldType();
+        memIdx_ = MembersCount;
+    }    
 
     template <std::size_t TIdx>
     typename std::tuple_element<TIdx, Members>::type& accessField()

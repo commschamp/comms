@@ -369,16 +369,36 @@ public:
 
     /// @brief Construct and initialise specified contained field in the
     ///     internal buffer.
-    /// @details If the field already contains a valid field of any other
-    ///     field type, the latter will be destructed.
+    /// @details If the field already contains a valid field it must
+    ///     be cleared via explicit @ref comms::field::Variant::deinitField() "deinitField()"
+    ///     or @ref comms::field::Variant::reset() "reset()" calls.
     /// @tparam TIdx Index of the field type witin the @ref Members tuple.
     /// @tparam TArgs Types of the agurments for the field's constructor
     /// @param[in] args Arguments for the constructed field.
+    /// @pre The field must NOT contain any other member field
+    ///     @code
+    ///     assert(!currentFieldValid());
+    ///     @endcode
     /// @return Reference to the constructed field.
     template <std::size_t TIdx, typename... TArgs>
     typename std::tuple_element<TIdx, Members>::type& initField(TArgs&&... args)
     {
         return BaseImpl::template initField<TIdx>(std::forward<TArgs>(args)...);
+    }
+
+    /// @brief Destruct previously initialised (via @ref comms::field::Variant::initField() "initField()")
+    ///     contained field.
+    /// @tparam TIdx Index of the field type witin the @ref Members tuple.
+    /// @tparam TArgs Types of the agurments for the field's constructor
+    /// @param[in] args Arguments for the constructed field.
+    /// @pre The field must contain an expected member field
+    ///     @code
+    ///     assert(currentField() == TIdx);
+    ///     @endcode
+    template <std::size_t TIdx>
+    void deinitField()
+    {
+        BaseImpl::template deinitField<TIdx>();
     }
 
     /// @brief Access already constructed field at specifed index (known at compile time).
@@ -676,7 +696,7 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 
 /// @brief Add convenience access enum and functions to the members of
 ///     @ref comms::field::Variant field.
-/// @details Very similar to @ref COMMS_FIELD_MEMBERS_NAMES(), but does @b NOT
+/// @details Very similar to @ref COMMS_VARIANT_MEMBERS_NAMES(), but does @b NOT
 ///     require definition of @b Base inner member type (for some compilers) and does @b NOT
 ///     define inner @b Field_* types for used member fields.
 /// @param[in] ... List of fields' names.
@@ -774,6 +794,7 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 ///     {
 ///         // (Re)definition of the base class as inner Base type is
 ///         // the required of COMMS_VARIANT_MEMBERS_NAMES() macro.
+///         using Base = comms::field::Variant<...>;
 ///     public:
 ///         COMMS_FIELD_MEMBERS_NAMES(member1, member2, member3);
 ///     }
@@ -803,6 +824,12 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 ///             rerturn initField<FieldIdx_member1>(std::forward<TArgs>(args)...);
 ///         }
 ///
+///         // De-initialise first member (Field1)
+///         void deinitField_member1()
+///         {
+///             rerturn deinitField<FieldIdx_member1>();
+///         }
+///
 ///         // Accessor to the stored field as first member (Field1)
 ///         Field1& accessField_member1()
 ///         {
@@ -822,6 +849,12 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 ///             rerturn initField<FieldIdx_member2>(std::forward<TArgs>(args)...);
 ///         }
 ///
+///         // De-initialise second member (Field2)
+///         void deinitField_member2()
+///         {
+///             rerturn deinitField<FieldIdx_member2>();
+///         }
+///
 ///         // Accessor to the stored field as second member (Field2)
 ///         Field2& accessField_member2()
 ///         {
@@ -839,6 +872,12 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 ///         Field3& initField_member3(TArgs&&... args)
 ///         {
 ///             rerturn initField<FieldIdx_member3>(std::forward<TArgs>(args)...);
+///         }
+///
+///         // De-initialise third member (Field3)
+///         void deinitField_member3()
+///         {
+///             rerturn deinitField<FieldIdx_member3>();
 ///         }
 ///
 ///         // Accessor to the stored field as third member (Field3)
@@ -864,6 +903,7 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 ///     @li @b FieldIdx enum. The names are prefixed with @b FieldIdx_. The
 ///         @b FieldIdx_nameOfValues value is automatically added at the end.
 ///     @li Initialisation functions prefixed with @b initField_
+///     @li De-initialisation functions prefixed with @b deinitField_
 ///     @li Accessor functions prefixed with @b accessField_
 ///     @li Types of fields prefixed with @b Field_*
 ///

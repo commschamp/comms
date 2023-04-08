@@ -3628,6 +3628,7 @@ void FieldsTestSuite::test70()
     Field field3(std::move(field2));
     TS_ASSERT_EQUALS(field3, field);
 
+    field.deinitField_mem1();
     auto& mem2 = field.initField_mem2();
     std::get<1>(field.accessField_mem2().value()).value() = 0x0c0c0c0c;
     TS_ASSERT_EQUALS(std::get<1>(mem2.value()).value(), 0x0c0c0c0c);
@@ -3681,6 +3682,7 @@ void FieldsTestSuite::test70()
     static_cast<const Field&>(field).currentFieldExec(Test70_LengthRetriever(len3));
     TS_ASSERT_EQUALS(len3, len1);
 
+    field.reset();
     field.initField_mem1();
     std::get<1>(field.accessField_mem1().value()).value() = 0x0a0b;
     TS_ASSERT_EQUALS(field3, field);
@@ -3691,6 +3693,7 @@ void FieldsTestSuite::test70()
     TS_ASSERT_EQUALS(iniField.length(), 3U);
     TS_ASSERT_EQUALS(iniField.currentField(), 0);
 
+    iniField.reset();
     auto& iniMem1 = iniField.initField_mem1();
     TS_ASSERT_EQUALS(std::get<0>(iniMem1.value()).value(), 1U);
     TS_ASSERT_EQUALS(std::get<1>(iniMem1.value()).value(), 0U);
@@ -3708,11 +3711,13 @@ void FieldsTestSuite::test70()
     vec[0].initField_mem1();
     vec[1].initField_mem1();
     TS_ASSERT_EQUALS(vec[0], vec[1]);
+    vec[0].reset();
     vec[0].initField_mem2();
     TS_ASSERT_LESS_THAN(vec[1], vec[0]);
     vec[0].accessField_mem2().field_value().setValue(5);
     std::sort(vec.begin(), vec.end());
     TS_ASSERT_EQUALS(vec[1].accessField_mem2().field_value().getValue(), 5U);
+    vec[0].reset();
     vec[0].initField_mem2().field_value().setValue(10);
     std::sort(vec.begin(), vec.end());
     TS_ASSERT_EQUALS(vec[1].accessField_mem2().field_value().getValue(), 10U);
@@ -4151,6 +4156,7 @@ void FieldsTestSuite::test78()
     auto& mem1_2 = field.accessField_mem1();
     static_cast<void>(mem1_2);
 
+    field.reset();
     auto& mem2_1 = field.initField_mem2();
     static_cast<void>(mem2_1);
     auto& mem2_2 = field.accessField_mem2();

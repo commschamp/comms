@@ -1808,6 +1808,7 @@
 /// MyVariant var;
 /// auto& prop1 = var.initField_prop1(); // Initialize as Property1 (1 byte integral value)
 /// assert(prop1.field_length().value() == 1U);
+/// prop1.deinitField_prop1(); // Must be de-initialized before re-initialization as something else
 /// auto& prop3 = var.initField_prop3(); // Re-initialize as Property3 (empty string)
 /// assert(prop3.field_length().value() == 0U); // Remaining length of empty string
 /// @endcode
