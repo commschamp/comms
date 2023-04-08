@@ -57,7 +57,10 @@ namespace field
 ///         refresh functionality.
 ///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
 ///     @li @ref comms::option::def::VersionStorage - Add version storage.
-///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::FieldType - Set actual field type
+///     @li @ref comms::option::def::VariantHasCustomResetOnDestruct - avoid calling
+///         default @ref comms::field::Variant::reset() "reset()" on destruction, assume
+///         it is called by the extending class destructor.
 /// @extends comms::Field
 /// @headerfile comms/field/Variant.h
 /// @see COMMS_VARIANT_MEMBERS_NAMES()
@@ -625,10 +628,9 @@ bool operator!=(
     return !(field1 == field2);
 }
 
-/// @brief Non-equality comparison operator.
+/// @brief Order comparison operator.
 /// @param[in] field1 First field.
 /// @param[in] field2 Second field.
-/// @return true in case fields are NOT equal, false otherwise.
 /// @related Variant
 template <typename TFieldBase, typename TMembers, typename... TOptions>
 bool operator<(
