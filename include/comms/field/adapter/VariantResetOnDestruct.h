@@ -36,6 +36,14 @@ public:
     VariantResetOnDestruct(VariantResetOnDestruct&&) = default;
     VariantResetOnDestruct& operator=(const VariantResetOnDestruct&) = default;
     VariantResetOnDestruct& operator=(VariantResetOnDestruct&&) = default;
+
+    template <typename TIter>
+    ErrorStatus read(TIter& iter, std::size_t len)
+    {
+        BaseImpl::reset();
+        return BaseImpl::read(iter, len);
+    }
+
 };
 
 }  // namespace adapter

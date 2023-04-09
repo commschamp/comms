@@ -1984,6 +1984,10 @@ public:
 
     void reset()
     {
+        if (!Base::currentFieldValid()) {
+            return;
+        }
+        
         switch (Base::currentField()) {
         case FieldIdx_mem1: deinitField_mem1(); return;
         case FieldIdx_mem2: deinitField_mem2(); return;
@@ -1992,6 +1996,13 @@ public:
 
         COMMS_ASSERT(false);
     }
+
+    template <typename TIter>
+    comms::ErrorStatus read(TIter& iter, std::size_t len)
+    {
+        reset();
+        return Base::read(iter, len);
+    }    
 };
 
 void FieldsTestSuite2::test30()
