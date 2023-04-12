@@ -847,7 +847,8 @@ class Test10_Field : public
         Test10_FieldBase,
         std::tuple<
             Test10_Mem1
-        >
+        >, 
+        comms::option::def::HasVersionDependentMembers<false>
     >
 {
     using Base = 
@@ -855,7 +856,8 @@ class Test10_Field : public
             Test10_FieldBase,
             std::tuple<
                 Test10_Mem1
-            >
+            >,
+            comms::option::def::HasVersionDependentMembers<false>
         >;
 public:
     COMMS_VARIANT_MEMBERS_NAMES(mem1);        

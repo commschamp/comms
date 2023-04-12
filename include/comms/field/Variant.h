@@ -61,6 +61,7 @@ namespace field
 ///     @li @ref comms::option::def::VariantHasCustomResetOnDestruct - avoid calling
 ///         default @ref comms::field::Variant::reset() "reset()" on destruction, assume
 ///         it is called by the extending class destructor.
+///     @li @ref comms::option::def::HasVersionDependentMembers
 /// @extends comms::Field
 /// @headerfile comms/field/Variant.h
 /// @see COMMS_VARIANT_MEMBERS_NAMES()
@@ -68,9 +69,22 @@ namespace field
 /// @see COMMS_VARIANT_MEMBERS_ACCESS_NOTEMPLATE()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
 class Variant : public
-        details::AdaptBasicFieldT<basic::Variant<TFieldBase, TMembers>, TOptions...>
+    details::AdaptBasicFieldT<
+        basic::Variant<
+            TFieldBase, 
+            details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+            TMembers
+        >, 
+        TOptions...>
 {
-    using BaseImpl = details::AdaptBasicFieldT<basic::Variant<TFieldBase, TMembers>, TOptions...>;
+    using BaseImpl = 
+        details::AdaptBasicFieldT<
+        basic::Variant<
+            TFieldBase, 
+            details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+            TMembers
+        >, 
+        TOptions...>;
 
     static_assert(comms::util::IsTuple<TMembers>::Value,
         "TMembers is expected to be a tuple of std::tuple<...>");

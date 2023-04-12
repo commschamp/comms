@@ -49,6 +49,7 @@ namespace field
 ///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
 ///     @li @ref comms::option::def::VersionStorage - Add version storage.
 ///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::HasVersionDependentMembers
 /// @extends comms::Field
 /// @headerfile comms/field/Bundle.h
 /// @see @ref COMMS_FIELD_MEMBERS_NAMES()
@@ -56,9 +57,23 @@ namespace field
 /// @see @ref COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE()
 /// @see @ref COMMS_FIELD_ALIAS()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
-class Bundle : public details::AdaptBasicFieldT<basic::Bundle<TFieldBase, TMembers>, TOptions...>
+class Bundle : public 
+    details::AdaptBasicFieldT<
+        basic::Bundle<
+            TFieldBase, 
+            details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+            TMembers>, 
+        TOptions...
+    >
 {
-    using BaseImpl = details::AdaptBasicFieldT<basic::Bundle<TFieldBase, TMembers>, TOptions...>;
+    using BaseImpl = 
+        details::AdaptBasicFieldT<
+            basic::Bundle<
+                TFieldBase, 
+                details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+                TMembers>, 
+            TOptions...
+        >;    
     static_assert(comms::util::IsTuple<TMembers>::Value,
         "TMembers is expected to be a tuple of std::tuple<...>");
 

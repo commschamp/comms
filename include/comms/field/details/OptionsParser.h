@@ -15,7 +15,8 @@
 #include "comms/CompileControl.h"
 #include "comms/util/type_traits.h"
 #include "comms/field/tag.h"
-#include "adapters.h"
+#include "comms/field/details/adapters.h"
+#include "comms/field/details/MembersVersionDependency.h"
 
 namespace comms
 {
@@ -72,6 +73,7 @@ public:
     static constexpr bool HasMissingOnReadFail = false;
     static constexpr bool HasMissingOnInvalid = false;
     static constexpr bool HasVariantCustomResetOnDestruct = false;
+    static constexpr bool HasVersionDependentMembersForced = false;
 
     using UnitsType = void;
     using ScalingRatio = std::ratio<1, 1>;
@@ -85,6 +87,7 @@ public:
     using SequenceElemFixedSerLengthFieldPrefix = void;
 
     static constexpr std::size_t SequenceFixedSize = std::numeric_limits<std::size_t>::max();
+    static constexpr MembersVersionDependency ForcedMembersVersionDependency = MembersVersionDependency_NotSpecified;
 
     template <typename TField>
     using AdaptInvalidByDefault = TField;
@@ -776,6 +779,17 @@ public:
 
     template <typename TField>
     using AdaptVariantResetOnDestruct = TField;    
+};
+
+template <bool TVersionDependent, typename... TOptions>
+class OptionsParser<
+    comms::option::def::HasVersionDependentMembers<TVersionDependent>,
+    TOptions...> : public OptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasVersionDependentMembersForced = true;
+    static constexpr MembersVersionDependency ForcedMembersVersionDependency = 
+        TVersionDependent ? MembersVersionDependency_Dependent : MembersVersionDependency_Independent;
 };
 
 

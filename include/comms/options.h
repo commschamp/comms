@@ -1231,6 +1231,15 @@ struct MissingOnInvalid {};
 ///     @b reset() member function in its destructor. 
 struct VariantHasCustomResetOnDestruct {};
 
+/// @brief Mark complex fields like @ref comms::field::Bundle or @ref comms::field::Variant
+///     that their members are or are not version dependent.
+/// @details Usage of this options eliminates compile time checks of whether the members
+///     are version dependent significantly reducing compilation times for fields with
+///     a long list of members.
+/// @tparam TVersionDependent - @b true in case members are version dependent, @b false otherwise.
+template <bool TVersionDependent>
+struct HasVersionDependentMembers {};
+
 } // namespace def
 
 namespace app

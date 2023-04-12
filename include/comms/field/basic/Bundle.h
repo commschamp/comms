@@ -14,6 +14,7 @@
 #include "comms/ErrorStatus.h"
 #include "comms/util/Tuple.h"
 #include "comms/field/details/FieldOpHelpers.h"
+#include "comms/field/details/MembersVersionDependency.h"
 #include "comms/field/tag.h"
 #include "CommonFuncs.h"
 
@@ -26,11 +27,38 @@ namespace field
 namespace basic
 {
 
-template <typename TFieldBase, typename TMembers>
+namespace details
+{
+
+template <comms::field::details::MembersVersionDependency TVersionDependency, typename... TMembers>
+struct BundleVersionDependencyDetectHelper;
+
+template <typename... TMembers>
+struct BundleVersionDependencyDetectHelper<comms::field::details::MembersVersionDependency_NotSpecified, TMembers...>
+{
+    static constexpr bool Value = CommonFuncs::IsAnyFieldVersionDependentBoolType<TMembers...>::value;
+};
+
+template <typename... TMembers>
+struct BundleVersionDependencyDetectHelper<comms::field::details::MembersVersionDependency_Independent, TMembers...>
+{
+    static constexpr bool Value = false;
+};
+
+template <typename... TMembers>
+struct BundleVersionDependencyDetectHelper<comms::field::details::MembersVersionDependency_Dependent, TMembers...>
+{
+    static constexpr bool Value = true;
+};
+
+} // namespace details
+    
+
+template <typename TFieldBase, comms::field::details::MembersVersionDependency TVersionDependency, typename TMembers>
 class Bundle;    
 
-template <typename TFieldBase, typename... TMembers>
-class Bundle<TFieldBase, std::tuple<TMembers...> > : public TFieldBase
+template <typename TFieldBase, comms::field::details::MembersVersionDependency TVersionDependency, typename... TMembers>
+class Bundle<TFieldBase, TVersionDependency, std::tuple<TMembers...> > : public TFieldBase
 {
 public:
     using ValueType = std::tuple<TMembers...>;
@@ -334,7 +362,7 @@ public:
 
     static constexpr bool isVersionDependent()
     {
-        return CommonFuncs::IsAnyFieldVersionDependentBoolType<TMembers...>::value;
+        return details::BundleVersionDependencyDetectHelper<TVersionDependency, TMembers...>::Value;
     }
 
     static constexpr bool hasNonDefaultRefresh()
