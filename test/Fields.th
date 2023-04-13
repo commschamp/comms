@@ -4232,7 +4232,8 @@ void FieldsTestSuite::test80()
                 comms::option::ValidNumValueRange<0, Enum1_NumOfValues - 1>,
                 comms::option::DefaultNumValue<Enum1_Value2>
             >
-        >
+        >,
+        comms::option::def::HasVersionDependentMembers<false>
     > Field;
 
     static_assert(!Field::isVersionDependent(),

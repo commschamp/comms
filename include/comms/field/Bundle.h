@@ -35,19 +35,12 @@ namespace field
 /// @tparam TOptions Zero or more options that modify/refine default behaviour
 ///     of the field.@n
 ///     Supported options are:
-///     @li @ref comms::option::def::DefaultValueInitialiser - All wrapped fields may
-///         specify their independent default value initialisers. It is
-///         also possible to provide initialiser for the Bundle field which
-///         will set appropriate values to the fields based on some
-///         internal logic.
-///     @li @ref comms::option::def::RemLengthMemberField - Specify index of member field
-///         that contains remaining length information for all the subsequent fields.
-///     @li @ref comms::option::def::HasCustomRead - Mark field to have custom read
-///         functionality
-///     @li @ref comms::option::def::HasCustomRefresh - Mark field to have custom
-///         refresh functionality.
-///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
-///     @li @ref comms::option::def::VersionStorage - Add version storage.
+///     @li @ref comms::option::def::DefaultValueInitialiser
+///     @li @ref comms::option::def::RemLengthMemberField
+///     @li @ref comms::option::def::HasCustomRead
+///     @li @ref comms::option::def::HasCustomRefresh
+///     @li @ref comms::option::def::EmptySerialization
+///     @li @ref comms::option::def::VersionStorage
 ///     @li @ref comms::option::def::FieldType
 ///     @li @ref comms::option::def::HasVersionDependentMembers
 /// @extends comms::Field

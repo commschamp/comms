@@ -70,13 +70,12 @@ namespace field
 /// @tparam TOptions Zero or more options that modify/refine default behaviour
 ///     of the field.@n
 ///     Supported options are:
-///     @li @ref comms::option::def::HasCustomRead - Mark field to have custom read
-///         functionality
-///     @li @ref comms::option::def::HasCustomRefresh - Mark field to have custom
-///         refresh functionality.
-///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
-///     @li @ref comms::option::def::VersionStorage - Add version storage.
+///     @li @ref comms::option::def::HasCustomRead
+///     @li @ref comms::option::def::HasCustomRefresh
+///     @li @ref comms::option::def::EmptySerialization
+///     @li @ref comms::option::def::VersionStorage
 ///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::HasVersionDependentMembers
 /// @pre TMember is a variant of std::tuple, that contains other fields.
 /// @pre Every field member specifies its length in bits using
 ///     @ref comms::option::def::FixedBitLength option.
@@ -88,9 +87,24 @@ namespace field
 /// @see @ref COMMS_FIELD_ALIAS()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
 class Bitfield : public
-        details::AdaptBasicFieldT<basic::Bitfield<TFieldBase, TMembers>, TOptions...>
+    details::AdaptBasicFieldT<
+        basic::Bitfield<
+            TFieldBase, 
+            details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+            TMembers
+        >, 
+        TOptions...
+    >
 {
-    using BaseImpl = details::AdaptBasicFieldT<basic::Bitfield<TFieldBase, TMembers>, TOptions...>;
+    using BaseImpl = 
+        details::AdaptBasicFieldT<
+            basic::Bitfield<
+                TFieldBase, 
+                details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+                TMembers
+            >, 
+            TOptions...
+        >;    
 
 public:
     /// @brief Base class provided in the first template parameter.
