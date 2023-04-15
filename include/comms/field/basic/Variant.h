@@ -823,7 +823,7 @@ private:
     }
 
     template <typename TIter, typename TVerBase>
-    details::VariantReadHelper<TIter, TVerBase, CommonFuncs::IsAnyFieldVersionDependentBoolType<TMembers...>::value> 
+    details::VariantReadHelper<TIter, TVerBase, details::VariantVersionDependencyDetectHelper<TVersionDependency, TMembers...>::Value> 
     makeReadHelper(
         comms::ErrorStatus& es,
         TIter& iter,
