@@ -12,9 +12,8 @@
 
 #include "comms/ErrorStatus.h"
 #include "comms/options.h"
-#include "basic/Bundle.h"
-#include "details/AdaptBasicField.h"
-#include "tag.h"
+#include "comms/field/basic/Bundle.h"
+#include "comms/field/details/AdaptBasicField.h"
 
 namespace comms
 {
@@ -36,20 +35,14 @@ namespace field
 /// @tparam TOptions Zero or more options that modify/refine default behaviour
 ///     of the field.@n
 ///     Supported options are:
-///     @li @ref comms::option::def::DefaultValueInitialiser - All wrapped fields may
-///         specify their independent default value initialisers. It is
-///         also possible to provide initialiser for the Bundle field which
-///         will set appropriate values to the fields based on some
-///         internal logic.
-///     @li @ref comms::option::def::RemLengthMemberField - Specify index of member field
-///         that contains remaining length information for all the subsequent fields.
-///     @li @ref comms::option::def::HasCustomRead - Mark field to have custom read
-///         functionality
-///     @li @ref comms::option::def::HasCustomRefresh - Mark field to have custom
-///         refresh functionality.
-///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
-///     @li @ref comms::option::def::VersionStorage - Add version storage.
+///     @li @ref comms::option::def::DefaultValueInitialiser
+///     @li @ref comms::option::def::RemLengthMemberField
+///     @li @ref comms::option::def::HasCustomRead
+///     @li @ref comms::option::def::HasCustomRefresh
+///     @li @ref comms::option::def::EmptySerialization
+///     @li @ref comms::option::def::VersionStorage
 ///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::HasVersionDependentMembers
 /// @extends comms::Field
 /// @headerfile comms/field/Bundle.h
 /// @see @ref COMMS_FIELD_MEMBERS_NAMES()
@@ -57,9 +50,23 @@ namespace field
 /// @see @ref COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE()
 /// @see @ref COMMS_FIELD_ALIAS()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
-class Bundle : public details::AdaptBasicFieldT<basic::Bundle<TFieldBase, TMembers>, TOptions...>
+class Bundle : public 
+    details::AdaptBasicFieldT<
+        basic::Bundle<
+            TFieldBase, 
+            details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+            TMembers>, 
+        TOptions...
+    >
 {
-    using BaseImpl = details::AdaptBasicFieldT<basic::Bundle<TFieldBase, TMembers>, TOptions...>;
+    using BaseImpl = 
+        details::AdaptBasicFieldT<
+            basic::Bundle<
+                TFieldBase, 
+                details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+                TMembers>, 
+            TOptions...
+        >;    
     static_assert(comms::util::IsTuple<TMembers>::Value,
         "TMembers is expected to be a tuple of std::tuple<...>");
 
@@ -81,12 +88,17 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = tag::Bundle;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Value type.
     /// @details Same as TMemebers template argument, i.e. it is std::tuple
     ///     of all the wrapped fields.
     using ValueType = typename BaseImpl::ValueType;
+
+    /// @brief Type of actual extending field specified via 
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;    
 
     /// @brief Default constructor
     /// @details Invokes default constructor of every wrapped field
@@ -103,6 +115,34 @@ public:
       : BaseImpl(std::move(val))
     {
     }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FailOnInvalid option
+    ///     has been used.
+    static constexpr bool hasFailOnInvalid()
+    {
+        return ParsedOptions::HasFailOnInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::IgnoreInvalid option
+    ///     has been used.
+    static constexpr bool hasIgnoreInvalid()
+    {
+        return ParsedOptions::HasIgnoreInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::EmptySerialization option
+    ///     has been used.
+    static constexpr bool hasEmptySerialization()
+    {
+        return ParsedOptions::HasEmptySerialization;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }    
 
     /// @brief Get access to the stored tuple of fields.
     ValueType& value()

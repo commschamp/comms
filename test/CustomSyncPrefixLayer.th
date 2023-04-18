@@ -195,7 +195,7 @@ private:
                 comms::protocol::MsgIdLayer<
                     TIdField,
                     TMessage,
-                    AllMessages<TMessage>,
+                    AllTestMessages<TMessage>,
                     comms::protocol::MsgDataLayer<>
                 >
             >

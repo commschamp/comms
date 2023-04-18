@@ -55,6 +55,10 @@ namespace protocol
 ///     @li @ref comms::option::def::ExtendingClass - Use this option to provide a class
 ///         name of the extending class, which can be used to extend existing functionality.
 ///         See also @ref page_custom_id_layer tutorial page.
+///     @li @ref comms::option::app::MsgFactory - Override default message factory class.
+///         The overriding class is expected to have the same public interface as @ref comms::MsgFactory.
+///     @li @ref comms::option::app::MsgFactoryTempl - Override default message factory class.
+///         The overriding class is expected to have the same public interface as @ref comms::MsgFactory.
 ///     @li All the options supported by the @ref comms::MsgFactory. All the options
 ///         except ones listed above will be forwarded to the definition of the
 ///         inner instance of @ref comms::MsgFactory.
@@ -87,30 +91,27 @@ class MsgIdLayer : public
             >
         >;
 
-    /// @brief Parsed options
-    using ParsedOptionsInternal = details::MsgIdLayerOptionsParser<TOptions...>;
-    using FactoryOptions = typename ParsedOptionsInternal::FactoryOptions;
-    using Factory = comms::MsgFactory<TMessage, TAllMessages, FactoryOptions>;
-
-    static_assert(TMessage::InterfaceOptions::HasMsgIdType,
+    static_assert(TMessage::hasMsgIdType(),
         "Usage of MsgIdLayer requires support for ID type. "
         "Use comms::option::def::MsgIdType option in message interface type definition.");
 
+    using ParsedOptionsInternal =  details::MsgIdLayerOptionsParser<TOptions...>;
+
 public:
+    // @brief Message factory class
+    using MsgFactory = typename ParsedOptionsInternal::template MsgFactory<TMessage, TAllMessages>;
 
-    /// @brief Parsed options
-    using ParsedOptions = ParsedOptionsInternal;
-
-    /// @brief Parsed options of the message Factory
-    using FactoryParsedOptions = typename Factory::ParsedOptions;
+    /// @brief Type of real extending class
+    /// @details Updated when @ref comms::option::ExtendingClass extension option us used,
+    ///    aliasing @b void if the options is not used.
+    using ExtendingClass = typename ParsedOptionsInternal::ExtendingClass;    
 
     /// @brief All supported message types bundled in std::tuple.
-    /// @see comms::MsgFactory::AllMessages.
-    using AllMessages = typename Factory::AllMessages;
+    using AllMessages = TAllMessages;
 
     /// @brief Type of smart pointer that will hold allocated message object.
     /// @details Same as comms::MsgFactory::MsgPtr.
-    using MsgPtr = typename Factory::MsgPtr;
+    using MsgPtr = typename MsgFactory::MsgPtr;
 
     /// @brief Type of the @b input message interface.
     using Message = TMessage;
@@ -125,7 +126,7 @@ public:
     using Field = typename BaseImpl::Field;
 
     /// @brief Reason for message creation failure
-    using CreateFailureReason = typename Factory::CreateFailureReason;
+    using CreateFailureReason = typename MsgFactory::CreateFailureReason;
 
     /// @brief Default constructor.
     explicit MsgIdLayer() = default;
@@ -144,6 +145,23 @@ public:
 
     /// @brief Destructor
     ~MsgIdLayer() noexcept = default;
+
+    /// @brief Compile time inquiry of whether this class was extended via 
+    ///    @ref comms::option::ExtendingClass option.
+    /// @details If @b true is returned, the @ref SyncPrefixLayer::ExtendingClass "ExtendingClass"
+    ///     type aliasing the real layer type.
+    static constexpr bool hasExtendingClass()
+    {
+        return ParsedOptionsInternal::HasExtendingClass;
+    }     
+
+    /// @brief Compile time inquiry of whether custom message factory class has been
+    ///   provided via @ref comms::option::app::MsgFactory or @ref comms::option::app::MsgFactoryTempl
+    ///   options.
+    static constexpr bool hasMsgFactory()
+    {
+        return ParsedOptionsInternal::HasMsgFactory;
+    }   
 
     /// @brief Customized read functionality, invoked by @ref read().
     /// @details The function will read message ID from the data sequence first,
@@ -303,21 +321,21 @@ public:
     ///     generated internally to map message ID to actual type.
     static constexpr bool isDispatchPolymorphic()
     {
-        return Factory::isDispatchPolymorphic();
+        return MsgFactory::isDispatchPolymorphic();
     }
 
     /// @brief Compile time inquiry whether static binary search dispatch is 
     ///     generated internally to map message ID to actual type.
     static constexpr bool isDispatchStaticBinSearch()
     {
-        return Factory::isDispatchStaticBinSearch();
+        return MsgFactory::isDispatchStaticBinSearch();
     }
 
     /// @brief Compile time inquiry whether linear switch dispatch is 
     ///     generated internally to map message ID to actual type.
     static constexpr bool isDispatchLinearSwitch()
     {
-        return Factory::isDispatchLinearSwitch();
+        return MsgFactory::isDispatchLinearSwitch();
     }
 
 protected:
@@ -587,7 +605,7 @@ private:
         using MsgType = typename std::decay<decltype(msg)>::type;
         static_assert(comms::isMessage<MsgType>(),
             "The message class is expected to inherit from comms::Message");
-        static_assert(MsgType::InterfaceOptions::HasMsgIdInfo,
+        static_assert(MsgType::hasGetId(),
             "The message interface class must expose polymorphic ID retrieval functionality, "
             "use comms::option::app::IdInfoInterface option to define it.");
 
@@ -729,7 +747,7 @@ private:
         COMMS_ASSERT(failureReason == CreateFailureReason::InvalidId);
         using GenericMsgTag = 
             typename comms::util::LazyShallowConditional<
-                Factory::ParsedOptions::HasSupportGenericMessage
+                MsgFactory::hasGenericMessageSupport()
             >::template Type<
                 HasGenericMsgTag,
                 NoGenericMsgTag
@@ -838,7 +856,7 @@ private:
         HasGenericMsgTag<>,
         TExtraValues... extraValues)
     {
-        using GenericMsgType = typename Factory::ParsedOptions::GenericMessage;
+        using GenericMsgType = typename MsgFactory::GenericMessage;
 
         auto& thisObj = BaseImpl::thisLayer();
         auto id = thisObj.getMsgIdFromField(field);
@@ -888,7 +906,7 @@ private:
         DirectOpTag<>,
         TExtraValues... extraValues)
     {
-        using GenericMsgType = typename Factory::ParsedOptions::GenericMessage;
+        using GenericMsgType = typename MsgFactory::GenericMessage;
         auto& castedMsgRef = static_cast<GenericMsgType&>(*msg);
         return nextLayerReader.read(castedMsgRef, iter, size, extraValues...);
     }               
@@ -942,8 +960,7 @@ private:
         return comms::dispatchMsgStaticBinSearch(id, msg, handler);
     }
 
-    Factory factory_;
-
+    MsgFactory factory_;
 };
 
 

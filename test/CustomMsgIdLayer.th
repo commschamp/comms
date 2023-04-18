@@ -160,16 +160,14 @@ private:
             comms::protocol::MsgDataLayer<>
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             CustomMsgIdLayer<
                 TInterface,
                 AllMessages1<TInterface>,
                 comms::protocol::MsgDataLayer<>
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TInterface = Interface>
@@ -181,7 +179,6 @@ private:
             comms::option::SupportGenericMessage<comms::GenericMessage<TInterface> >
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             CustomMsgIdLayer<
                 TInterface,
@@ -189,9 +186,8 @@ private:
                 comms::protocol::MsgDataLayer<>,
                 comms::option::SupportGenericMessage<comms::GenericMessage<TInterface> >
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };    
 
     template <typename TInterface = Interface>
@@ -204,7 +200,6 @@ private:
             comms::option::InPlaceAllocation
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             CustomMsgIdLayer<
                 TInterface,
@@ -213,9 +208,8 @@ private:
                 comms::option::SupportGenericMessage<comms::GenericMessage<TInterface> >,
                 comms::option::InPlaceAllocation
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
     };    
 };
 

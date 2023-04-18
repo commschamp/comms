@@ -37,7 +37,7 @@ public:
         {
             static_assert(comms::isMessageBase<TMsg>(), "Wrong dispatch");
             ++m_detectedCnt;
-            m_lastId = static_cast<decltype(m_lastId)>(TMsg::ImplOptions::MsgId);
+            m_lastId = static_cast<decltype(m_lastId)>(TMsg::staticMsgId());
         }
 
         unsigned detectedCnt() const
@@ -71,7 +71,7 @@ public:
             static_cast<void>(msg);
             static_assert(comms::isMessageBase<TMsg>(), "Wrong dispatch");
             ++m_detectedCnt;
-            m_lastId = static_cast<decltype(m_lastId)>(TMsg::ImplOptions::MsgId);
+            m_lastId = static_cast<decltype(m_lastId)>(TMsg::staticMsgId());
         }
 
         unsigned detectedCnt() const
@@ -106,7 +106,7 @@ public:
             static_cast<void>(msg);
             static_assert(comms::isMessageBase<TMsg>(), "Wrong dispatch");
             ++m_detectedCnt;
-            m_lastId = static_cast<decltype(m_lastId)>(TMsg::ImplOptions::MsgId);
+            m_lastId = static_cast<decltype(m_lastId)>(TMsg::staticMsgId());
         }
 
         void handle(TInterface&)

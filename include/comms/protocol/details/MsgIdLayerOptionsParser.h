@@ -8,6 +8,8 @@
 #pragma once
 
 #include <tuple>
+#include "comms/util/type_traits.h"
+#include "comms/MsgFactory.h"
 #include "comms/options.h"
 
 namespace comms
@@ -28,7 +30,13 @@ class MsgIdLayerOptionsParser<>
 {
 public:
     static const bool HasExtendingClass = false;
+    static const bool HasMsgFactory = false;
+
+    using ExtendingClass = void;
     using FactoryOptions = std::tuple<>;
+
+    template <typename TInterface, typename TAllMessages, typename... TExtraOptions>
+    using MsgFactory = comms::MsgFactory<TInterface, TAllMessages, TExtraOptions...>;
 
     template <typename TLayer>
     using DefineExtendingClass = TLayer;    
@@ -45,6 +53,31 @@ public:
     template <typename TLayer>
     using DefineExtendingClass = ExtendingClass;       
 };
+
+template <typename TFactory, typename... TOptions>
+class MsgIdLayerOptionsParser<comms::option::app::MsgFactory<TFactory>, TOptions...> :
+        public MsgIdLayerOptionsParser<TOptions...>
+{
+public:
+    static const bool HasMsgFactory = true;
+
+    template <typename TInterface, typename TAllMessages, typename... TExtraOptions>
+    using MsgFactory = TFactory;
+};
+
+template <template<typename, typename, typename...> class TFactory, typename... TOptions>
+class MsgIdLayerOptionsParser<comms::option::app::MsgFactoryTempl<TFactory>, TOptions...> :
+        public MsgIdLayerOptionsParser<TOptions...>
+{
+    using BaseImpl = MsgIdLayerOptionsParser<TOptions...>;
+public:
+
+    static const bool HasMsgFactory = true;
+
+    template <typename TInterface, typename TAllMessages, typename... TExtraOptions>
+    using MsgFactory = TFactory<TInterface, TAllMessages, typename BaseImpl::FactoryOptions, TExtraOptions...>;
+};
+
 
 template <typename... TOptions>
 class MsgIdLayerOptionsParser<
@@ -74,6 +107,16 @@ public:
                 )
             )
         >::type;
+
+    // Ignoring all the options if MsgFactory is overriden
+    template <typename TInterface, typename TAllMessages, typename... TExtraOptions>
+    using MsgFactory = 
+        typename comms::util::Conditional<
+            BaseImpl::HasMsgFactory
+        >::template Type<
+            typename BaseImpl::template MsgFactory<TInterface, TAllMessages, FactoryOptions, TExtraOptions...>,
+            comms::MsgFactory<TInterface, TAllMessages, FactoryOptions, TExtraOptions...>  
+        >;
 };
 
 } // namespace details

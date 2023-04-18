@@ -16,7 +16,6 @@
 #include "details/AdaptBasicField.h"
 #include "comms/details/macro_common.h"
 #include "comms/details/variant_access.h"
-#include "tag.h"
 
 namespace comms
 {
@@ -58,7 +57,11 @@ namespace field
 ///         refresh functionality.
 ///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
 ///     @li @ref comms::option::def::VersionStorage - Add version storage.
-///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::FieldType - Set actual field type
+///     @li @ref comms::option::def::VariantHasCustomResetOnDestruct - avoid calling
+///         default @ref comms::field::Variant::reset() "reset()" on destruction, assume
+///         it is called by the extending class destructor.
+///     @li @ref comms::option::def::HasVersionDependentMembers
 /// @extends comms::Field
 /// @headerfile comms/field/Variant.h
 /// @see COMMS_VARIANT_MEMBERS_NAMES()
@@ -66,9 +69,22 @@ namespace field
 /// @see COMMS_VARIANT_MEMBERS_ACCESS_NOTEMPLATE()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
 class Variant : public
-        details::AdaptBasicFieldT<basic::Variant<TFieldBase, TMembers>, TOptions...>
+    details::AdaptBasicFieldT<
+        basic::Variant<
+            TFieldBase, 
+            details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+            TMembers
+        >, 
+        TOptions...>
 {
-    using BaseImpl = details::AdaptBasicFieldT<basic::Variant<TFieldBase, TMembers>, TOptions...>;
+    using BaseImpl = 
+        details::AdaptBasicFieldT<
+        basic::Variant<
+            TFieldBase, 
+            details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+            TMembers
+        >, 
+        TOptions...>;
 
     static_assert(comms::util::IsTuple<TMembers>::Value,
         "TMembers is expected to be a tuple of std::tuple<...>");
@@ -91,7 +107,7 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = tag::Variant;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Value type.
     /// @details Type of the internal buffer used to store contained field,
@@ -102,6 +118,11 @@ public:
     /// @details Same as @b TMemebers template argument, i.e. it is @b std::tuple
     ///     of all the wrapped fields.
     using Members = typename BaseImpl::Members;
+
+    /// @brief Type of actual extending field specified via 
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;    
 
     /// @brief Default constructor
     /// @details Invokes default constructor of every wrapped field
@@ -118,6 +139,34 @@ public:
       : BaseImpl(std::move(val))
     {
     }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FailOnInvalid option
+    ///     has been used.
+    static constexpr bool hasFailOnInvalid()
+    {
+        return ParsedOptions::HasFailOnInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::IgnoreInvalid option
+    ///     has been used.
+    static constexpr bool hasIgnoreInvalid()
+    {
+        return ParsedOptions::HasIgnoreInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::EmptySerialization option
+    ///     has been used.
+    static constexpr bool hasEmptySerialization()
+    {
+        return ParsedOptions::HasEmptySerialization;
+    }    
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }    
 
     /// @brief Get access to the internal storage buffer.
     /// @details Should not be used in normal operation.
@@ -336,16 +385,36 @@ public:
 
     /// @brief Construct and initialise specified contained field in the
     ///     internal buffer.
-    /// @details If the field already contains a valid field of any other
-    ///     field type, the latter will be destructed.
+    /// @details If the field already contains a valid field it must
+    ///     be cleared via explicit @ref comms::field::Variant::deinitField() "deinitField()"
+    ///     or @ref comms::field::Variant::reset() "reset()" calls.
     /// @tparam TIdx Index of the field type witin the @ref Members tuple.
     /// @tparam TArgs Types of the agurments for the field's constructor
     /// @param[in] args Arguments for the constructed field.
+    /// @pre The field must NOT contain any other member field
+    ///     @code
+    ///     assert(!currentFieldValid());
+    ///     @endcode
     /// @return Reference to the constructed field.
     template <std::size_t TIdx, typename... TArgs>
     typename std::tuple_element<TIdx, Members>::type& initField(TArgs&&... args)
     {
         return BaseImpl::template initField<TIdx>(std::forward<TArgs>(args)...);
+    }
+
+    /// @brief Destruct previously initialised (via @ref comms::field::Variant::initField() "initField()")
+    ///     contained field.
+    /// @tparam TIdx Index of the field type witin the @ref Members tuple.
+    /// @tparam TArgs Types of the agurments for the field's constructor
+    /// @param[in] args Arguments for the constructed field.
+    /// @pre The field must contain an expected member field
+    ///     @code
+    ///     assert(currentField() == TIdx);
+    ///     @endcode
+    template <std::size_t TIdx>
+    void deinitField()
+    {
+        BaseImpl::template deinitField<TIdx>();
     }
 
     /// @brief Access already constructed field at specifed index (known at compile time).
@@ -573,10 +642,9 @@ bool operator!=(
     return !(field1 == field2);
 }
 
-/// @brief Non-equality comparison operator.
+/// @brief Order comparison operator.
 /// @param[in] field1 First field.
 /// @param[in] field2 Second field.
-/// @return true in case fields are NOT equal, false otherwise.
 /// @related Variant
 template <typename TFieldBase, typename TMembers, typename... TOptions>
 bool operator<(
@@ -643,7 +711,7 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 
 /// @brief Add convenience access enum and functions to the members of
 ///     @ref comms::field::Variant field.
-/// @details Very similar to @ref COMMS_FIELD_MEMBERS_NAMES(), but does @b NOT
+/// @details Very similar to @ref COMMS_VARIANT_MEMBERS_NAMES(), but does @b NOT
 ///     require definition of @b Base inner member type (for some compilers) and does @b NOT
 ///     define inner @b Field_* types for used member fields.
 /// @param[in] ... List of fields' names.
@@ -741,6 +809,7 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 ///     {
 ///         // (Re)definition of the base class as inner Base type is
 ///         // the required of COMMS_VARIANT_MEMBERS_NAMES() macro.
+///         using Base = comms::field::Variant<...>;
 ///     public:
 ///         COMMS_FIELD_MEMBERS_NAMES(member1, member2, member3);
 ///     }
@@ -770,6 +839,12 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 ///             rerturn initField<FieldIdx_member1>(std::forward<TArgs>(args)...);
 ///         }
 ///
+///         // De-initialise first member (Field1)
+///         void deinitField_member1()
+///         {
+///             rerturn deinitField<FieldIdx_member1>();
+///         }
+///
 ///         // Accessor to the stored field as first member (Field1)
 ///         Field1& accessField_member1()
 ///         {
@@ -789,6 +864,12 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 ///             rerturn initField<FieldIdx_member2>(std::forward<TArgs>(args)...);
 ///         }
 ///
+///         // De-initialise second member (Field2)
+///         void deinitField_member2()
+///         {
+///             rerturn deinitField<FieldIdx_member2>();
+///         }
+///
 ///         // Accessor to the stored field as second member (Field2)
 ///         Field2& accessField_member2()
 ///         {
@@ -806,6 +887,12 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 ///         Field3& initField_member3(TArgs&&... args)
 ///         {
 ///             rerturn initField<FieldIdx_member3>(std::forward<TArgs>(args)...);
+///         }
+///
+///         // De-initialise third member (Field3)
+///         void deinitField_member3()
+///         {
+///             rerturn deinitField<FieldIdx_member3>();
 ///         }
 ///
 ///         // Accessor to the stored field as third member (Field3)
@@ -831,6 +918,7 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 ///     @li @b FieldIdx enum. The names are prefixed with @b FieldIdx_. The
 ///         @b FieldIdx_nameOfValues value is automatically added at the end.
 ///     @li Initialisation functions prefixed with @b initField_
+///     @li De-initialisation functions prefixed with @b deinitField_
 ///     @li Accessor functions prefixed with @b accessField_
 ///     @li Types of fields prefixed with @b Field_*
 ///

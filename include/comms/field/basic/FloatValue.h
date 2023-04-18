@@ -12,6 +12,7 @@
 
 #include "comms/ErrorStatus.h"
 #include "comms/util/SizeToType.h"
+#include "comms/field/tag.h"
 
 namespace comms
 {
@@ -33,6 +34,7 @@ public:
     using ValueType = T;
     using SerialisedType = typename comms::util::SizeToType<sizeof(ValueType), false>::Type;
     using ScalingRatio = std::ratio<1, 1>;
+    using CommsTag = comms::field::tag::Float;
 
     FloatValue() = default;
 

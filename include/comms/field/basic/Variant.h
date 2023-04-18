@@ -17,7 +17,9 @@
 #include "comms/util/type_traits.h"
 #include "comms/field/details/VersionStorage.h"
 #include "comms/field/details/FieldOpHelpers.h"
+#include "comms/field/details/MembersVersionDependency.h"
 #include "comms/details/tag.h"
+#include "comms/field/tag.h"
 #include "CommonFuncs.h"
 
 namespace comms
@@ -256,7 +258,7 @@ public:
         }
 
         auto* field = new (storage_) TField;
-        updateVersion(*field, VersionTag<>());
+        updateMemberVersionInternal(*field, VersionTag<>());
 
         auto iterTmp = iter_;
         auto es = field->read(iterTmp, len_);
@@ -279,13 +281,13 @@ public:
 
 private:
     template <typename TField, typename... TParams>
-    void updateVersion(TField& field, NoVersionDependencyTag<TParams...>)
+    void updateMemberVersionInternal(TField& field, NoVersionDependencyTag<TParams...>)
     {
         static_cast<void>(field);
     }
 
     template <typename TField, typename... TParams>
-    void updateVersion(TField& field, VersionDependentTag<TParams...>)
+    void updateMemberVersionInternal(TField& field, VersionDependentTag<TParams...>)
     {
         field.setVersion(verBase_.getVersion());
     }
@@ -389,33 +391,78 @@ private:
     const void* storage_;
 };
 
+template <typename TFieldBase, comms::field::details::MembersVersionDependency TVersionDependency, typename... TMembers>
+struct VariantVersionStorageBaseHelper;
+
 template <typename TFieldBase, typename... TMembers>
-using VariantVersionStorageBase = 
+struct VariantVersionStorageBaseHelper<TFieldBase, comms::field::details::MembersVersionDependency_NotSpecified, TMembers...>
+{
+    using Type = 
     typename comms::util::LazyShallowConditional<
         CommonFuncs::IsAnyFieldVersionDependentBoolType<TMembers...>::value
     >::template Type<
         comms::field::details::VersionStorage,
         comms::util::EmptyStruct,
         typename TFieldBase::VersionType
-    >;
+    >;    
+};
+
+template <typename TFieldBase, typename... TMembers>
+struct VariantVersionStorageBaseHelper<TFieldBase, comms::field::details::MembersVersionDependency_Independent, TMembers...>
+{
+    using Type = comms::util::EmptyStruct<>;
+};
+
+template <typename TFieldBase, typename... TMembers>
+struct VariantVersionStorageBaseHelper<TFieldBase, comms::field::details::MembersVersionDependency_Dependent, TMembers...>
+{
+    using Type = comms::field::details::VersionStorage<typename TFieldBase::VersionType>;
+};
+
+template <typename TFieldBase, comms::field::details::MembersVersionDependency TVersionDependency, typename... TMembers>
+using VariantVersionStorageBase = 
+    typename VariantVersionStorageBaseHelper<TFieldBase, TVersionDependency, TMembers...>::Type;
+
+template <comms::field::details::MembersVersionDependency TVersionDependency, typename... TMembers>
+struct VariantVersionDependencyDetectHelper;
+
+template <typename... TMembers>
+struct VariantVersionDependencyDetectHelper<comms::field::details::MembersVersionDependency_NotSpecified, TMembers...>
+{
+    static constexpr bool Value = CommonFuncs::IsAnyFieldVersionDependentBoolType<TMembers...>::value;
+};
+
+template <typename... TMembers>
+struct VariantVersionDependencyDetectHelper<comms::field::details::MembersVersionDependency_Independent, TMembers...>
+{
+    static constexpr bool Value = false;
+};
+
+template <typename... TMembers>
+struct VariantVersionDependencyDetectHelper<comms::field::details::MembersVersionDependency_Dependent, TMembers...>
+{
+    static constexpr bool Value = true;
+};
+
 
 } // namespace details
 
-template <typename TFieldBase, typename TMembers>
+template <typename TFieldBase, comms::field::details::MembersVersionDependency TVersionDependency, typename TMembers>
 class Variant;
 
-template <typename TFieldBase, typename... TMembers>
-class Variant<TFieldBase, std::tuple<TMembers...> > :
+template <typename TFieldBase, comms::field::details::MembersVersionDependency TVersionDependency, typename... TMembers>
+class Variant<TFieldBase, TVersionDependency, std::tuple<TMembers...> > :
         public TFieldBase,
-        public details::VariantVersionStorageBase<TFieldBase, TMembers...>
+        public details::VariantVersionStorageBase<TFieldBase, TVersionDependency, TMembers...>
 {
     using BaseImpl = TFieldBase;
-    using VersionBaseImpl = details::VariantVersionStorageBase<TFieldBase, TMembers...>;
+    using VersionBaseImpl = details::VariantVersionStorageBase<TFieldBase, TVersionDependency, TMembers...>;
 
 public:
     using Members = std::tuple<TMembers...>;
     using ValueType = comms::util::TupleAsAlignedUnionT<Members>;
     using VersionType = typename BaseImpl::VersionType;
+    using CommsTag = comms::field::tag::Variant;
 
     static const std::size_t MembersCount = std::tuple_size<Members>::value;
     static_assert(0U < MembersCount, "ValueType must be non-empty tuple");
@@ -450,7 +497,7 @@ public:
 
     ~Variant() noexcept
     {
-        checkDestruct();
+        COMMS_ASSERT(!currentFieldValid());
     }
 
     Variant& operator=(const Variant& other)
@@ -673,7 +720,7 @@ public:
     typename std::tuple_element<TIdx, Members>::type& initField(TArgs&&... args)
     {
         static_assert(isIdxValid(TIdx), "Only valid field index can be used");
-        checkDestruct();
+        COMMS_ASSERT(!currentFieldValid());
 
         using FieldType = typename std::tuple_element<TIdx, Members>::type;
         new (&storage_) FieldType(std::forward<TArgs>(args)...);
@@ -681,6 +728,17 @@ public:
         updateVersionInternal(VersionTag<>());
         return reinterpret_cast<FieldType&>(storage_);
     }
+
+    template <std::size_t TIdx>
+    void deinitField()
+    {
+        static_assert(isIdxValid(TIdx), "Only valid field index can be used");
+        COMMS_ASSERT(memIdx_ == TIdx);
+
+        using FieldType = typename std::tuple_element<TIdx, Members>::type;
+        reinterpret_cast<FieldType*>(&storage_)->~FieldType();
+        memIdx_ = MembersCount;
+    }    
 
     template <std::size_t TIdx>
     typename std::tuple_element<TIdx, Members>::type& accessField()
@@ -715,7 +773,7 @@ public:
 
     static constexpr bool isVersionDependent()
     {
-        return CommonFuncs::IsAnyFieldVersionDependentBoolType<TMembers...>::value;
+        return details::VariantVersionDependencyDetectHelper<TVersionDependency, TMembers...>::Value;
     }
 
     bool setVersion(VersionType version)
@@ -736,14 +794,19 @@ private:
     using NoVersionDependencyTag = comms::details::tag::Tag2<>;
 
     template <typename... TParams>
+    using ForcedVersionDependencyTag = comms::details::tag::Tag3<>;
+
+    template <typename... TParams>
+    using NoForcedVersionDependencyTag = comms::details::tag::Tag4<>;    
+
+    template <typename... TParams>
     using VersionTag =
         typename comms::util::LazyShallowConditional<
-            CommonFuncs::IsAnyFieldVersionDependentBoolType<TMembers...>::value
+            details::VariantVersionDependencyDetectHelper<TVersionDependency, TMembers...>::Value
         >::template Type<
             VersionDependentTag,
             NoVersionDependencyTag
         >;
-
 
     template <typename TFunc>
     auto makeExecHelper(TFunc&& func) -> details::VariantExecHelper<decltype(std::forward<TFunc>(func))>
@@ -760,7 +823,7 @@ private:
     }
 
     template <typename TIter, typename TVerBase>
-    details::VariantReadHelper<TIter, TVerBase, CommonFuncs::IsAnyFieldVersionDependentBoolType<TMembers...>::value> 
+    details::VariantReadHelper<TIter, TVerBase, details::VariantVersionDependencyDetectHelper<TVersionDependency, TMembers...>::Value> 
     makeReadHelper(
         comms::ErrorStatus& es,
         TIter& iter,
@@ -819,6 +882,7 @@ private:
         }
         return updated;
     }
+
 
     template <typename... TParams>
     VersionType getVersionInternal(VersionDependentTag<TParams...>) const

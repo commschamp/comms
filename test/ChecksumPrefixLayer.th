@@ -208,7 +208,7 @@ private:
                     comms::protocol::MsgIdLayer<
                         TIdField,
                         TMessage,
-                        AllMessages<TMessage>,
+                        AllTestMessages<TMessage>,
                         comms::protocol::MsgDataLayer<>
                     >
                 >
@@ -227,7 +227,7 @@ private:
                     comms::protocol::MsgIdLayer<
                         TIdField,
                         TMessage,
-                        AllMessages<TMessage>,
+                        AllTestMessages<TMessage>,
                         comms::protocol::MsgDataLayer<>
                     >
                 >,
@@ -244,7 +244,7 @@ private:
                 comms::protocol::MsgIdLayer<
                     TIdField,
                     TMessage,
-                    AllMessages<TMessage>,
+                    AllTestMessages<TMessage>,
                     comms::protocol::TransportValueLayer<
                         TVersionField,
                         TMessage::TransportFieldIdx_version,
@@ -271,7 +271,7 @@ private:
                     comms::protocol::MsgIdLayer<
                         TIdField,
                         TMessage,
-                        AllMessages<TMessage>,
+                        AllTestMessages<TMessage>,
                         comms::protocol::ChecksumPrefixLayer<
                             TChecksumField,
                             comms::protocol::checksum::BasicSum<>,

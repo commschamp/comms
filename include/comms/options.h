@@ -1225,6 +1225,21 @@ struct MissingOnReadFail {};
 /// @headerfile comms/options.h
 struct MissingOnInvalid {};
 
+/// @brief Avoid invocation of built-in @ref comms::field::Variant::reset() "reset()"
+///     member function on destruction of the @ref comms::field::Variant field.
+/// @details Use this option when the extending class invokes more optimised
+///     @b reset() member function in its destructor. 
+struct VariantHasCustomResetOnDestruct {};
+
+/// @brief Mark complex fields like @ref comms::field::Bundle or @ref comms::field::Variant
+///     that their members are or are not version dependent.
+/// @details Usage of this options eliminates compile time checks of whether the members
+///     are version dependent significantly reducing compilation times for fields with
+///     a long list of members.
+/// @tparam TVersionDependent - @b true in case members are version dependent, @b false otherwise.
+template <bool TVersionDependent>
+struct HasVersionDependentMembers {};
+
 } // namespace def
 
 namespace app
@@ -1399,6 +1414,20 @@ using ForceDispatchStaticBinSearch = ForceDispatch<comms::traits::dispatch::Stat
 /// @brief Force generation of linear switch statmenets for dispatch logic of
 ///     message object and/or message object type
 using ForceDispatchLinearSwitch = ForceDispatch<comms::traits::dispatch::LinearSwitch>;
+
+/// @brief Force usage of the provide message factory.
+/// @details Applicable to @ref comms::protocol::MsgIdLayer.
+/// @tparam TFactory Factory class, expected to expose the same interface as @ref comms::MsgFactory
+template <typename TFactory>
+struct MsgFactory {};
+
+/// @brief Force usage of the provide message factory.
+/// @details Similar to @ref comms::option::app::MsgFactory, but the template
+///     parameter is template template class with the same template arguments as @ref comms::MsgFactory>.
+/// @tparam TFactory Factory template, expected to have the same template parameters and expose 
+///     the same interface as @ref comms::MsgFactory.
+template <template<typename, typename, typename...> class TFactory>
+struct MsgFactoryTempl {};
 
 } // namespace app
 

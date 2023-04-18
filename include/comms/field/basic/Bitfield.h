@@ -15,6 +15,8 @@
 #include "comms/util/access.h"
 #include "comms/util/type_traits.h"
 #include "comms/field/details/FieldOpHelpers.h"
+#include "comms/field/details/MembersVersionDependency.h"
+#include "comms/field/tag.h"
 #include "comms/Assert.h"
 #include "comms/ErrorStatus.h"
 
@@ -220,13 +222,34 @@ private:
     std::size_t pos_ = 0U;
 };
 
+template <comms::field::details::MembersVersionDependency TVersionDependency, typename... TMembers>
+struct BitfieldVersionDependencyDetectHelper;
+
+template <typename... TMembers>
+struct BitfieldVersionDependencyDetectHelper<comms::field::details::MembersVersionDependency_NotSpecified, TMembers...>
+{
+    static constexpr bool Value = CommonFuncs::IsAnyFieldVersionDependentBoolType<TMembers...>::value;
+};
+
+template <typename... TMembers>
+struct BitfieldVersionDependencyDetectHelper<comms::field::details::MembersVersionDependency_Independent, TMembers...>
+{
+    static constexpr bool Value = false;
+};
+
+template <typename... TMembers>
+struct BitfieldVersionDependencyDetectHelper<comms::field::details::MembersVersionDependency_Dependent, TMembers...>
+{
+    static constexpr bool Value = true;
+};
+
 }  // namespace details
 
-template <typename TFieldBase, typename TMembers>
+template <typename TFieldBase, comms::field::details::MembersVersionDependency TVersionDependency, typename TMembers>
 class Bitfield;
 
-template <typename TFieldBase, typename... TMembers>
-class Bitfield<TFieldBase, std::tuple<TMembers...> > : public TFieldBase
+template <typename TFieldBase, comms::field::details::MembersVersionDependency TVersionDependency, typename... TMembers>
+class Bitfield<TFieldBase, TVersionDependency, std::tuple<TMembers...> > : public TFieldBase
 {
     using BaseImpl = TFieldBase;
     using Members = std::tuple<TMembers...>;
@@ -271,6 +294,7 @@ public:
     using Endian = typename BaseImpl::Endian;
     using VersionType = typename BaseImpl::VersionType;
     using ValueType = Members;
+    using CommsTag = comms::field::tag::Bitfield;
 
     Bitfield() = default;
     explicit Bitfield(const ValueType& val)
@@ -408,7 +432,7 @@ public:
 
     static constexpr bool isVersionDependent()
     {
-        return CommonFuncs::IsAnyFieldVersionDependentBoolType<TMembers...>::value;
+        return details::BitfieldVersionDependencyDetectHelper<TVersionDependency, TMembers...>::Value;
     }
 
     static constexpr bool hasNonDefaultRefresh()

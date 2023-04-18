@@ -14,6 +14,7 @@
 #include <algorithm>
 
 #include "comms/Assert.h"
+#include "comms/MsgFactoryCreateFailureReason.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/alloc.h"
 #include "details/MsgFactoryOptionsParser.h"
@@ -85,7 +86,7 @@ template <typename TMsgBase, typename TAllMessages, typename... TOptions>
 class MsgFactory : private details::MsgFactoryBase<TMsgBase, TAllMessages, TOptions...>
 {
     using Base = details::MsgFactoryBase<TMsgBase, TAllMessages, TOptions...>;
-    static_assert(TMsgBase::InterfaceOptions::HasMsgIdType,
+    static_assert(TMsgBase::hasMsgIdType(),
         "Usage of MsgFactory requires Message interface to provide ID type. "
         "Use comms::option::def::MsgIdType option in message interface type definition.");
 
@@ -110,18 +111,12 @@ public:
     /// @brief All messages provided as template parameter to this class.
     using AllMessages = typename Base::AllMessages;
 
-#ifdef FOR_DOXYGEN_DOC_ONLY
-    // @brief Reason for message creation failure
-    enum class CreateFailureReason
-    {
-        None, ///< No reason
-        InvalidId, ///< Invalid message id
-        AllocFailure, ///< Allocation of the object has failied
-        NumOfValues ///< Number of available values, must be last
-    };
-#else // #ifdef FOR_DOXYGEN_DOC_ONLY
-    using CreateFailureReason = typename Base::CreateFailureReason;
-#endif // #ifdef FOR_DOXYGEN_DOC_ONLY
+    /// @brief Reason for message creation failure
+    using CreateFailureReason = MsgFactoryCreateFailureReason;
+
+    /// @brief type of generic message.
+    /// @details If supported a variant of @ref comms::GenericMessage, @b void otherwise
+    using GenericMessage = typename ParsedOptions::GenericMessage;
 
     /// @brief Create message object given the ID of the message.
     /// @details The id to mapping is performed using the chosen (or default) 
@@ -167,6 +162,7 @@ public:
     {
         return Base::canAllocate();
     }
+
     /// @brief Get number of message types from @ref AllMessages, that have the specified ID.
     /// @param id ID of the message.
     /// @return Number of message classes that report same ID.
@@ -212,6 +208,24 @@ public:
         return Base::isDispatchLinearSwitch();
     }
 
+    /// @brief Compile time inquiry whether factory supports in-place allocation
+    /// @return @b true in case of in-place allocation, @b false in case of dynamic memory use.
+    static constexpr bool hasInPlaceAllocation()
+    {
+        return ParsedOptions::HasInPlaceAllocation;
+    }
+
+    /// @brief Compile time inquiry whether factory supports @ref comms::GenericMessage allocation
+    static constexpr bool hasGenericMessageSupport()
+    {
+        return ParsedOptions::HasSupportGenericMessage;
+    }
+
+    /// @brief Compile time inquiry whether factory has forced dispatch method
+    static constexpr bool hasForcedDispatch()
+    {
+        return ParsedOptions::HasForcedDispatch;
+    }    
 };
 
 

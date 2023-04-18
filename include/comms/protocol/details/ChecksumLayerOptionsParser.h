@@ -29,6 +29,8 @@ public:
     static constexpr bool HasVerifyBeforeRead = false;
     static constexpr bool HasExtendingClass = false;
 
+    using ExtendingClass = void;
+
     template <typename TLayer>
     using DefineExtendingClass = TLayer;
 

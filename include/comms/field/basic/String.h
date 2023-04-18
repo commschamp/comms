@@ -22,6 +22,7 @@
 #include "comms/util/detect.h"
 #include "comms/util/type_traits.h"
 #include "comms/details/tag.h"
+#include "comms/field/tag.h"
 #include "CommonFuncs.h"
 
 COMMS_MSVC_WARNING_PUSH
@@ -62,6 +63,7 @@ public:
 
     using ValueType = TStorage;
     using ElementType = typename TStorage::value_type;
+    using CommsTag = comms::field::tag::String;
 
     static_assert(std::is_integral<ElementType>::value, "String of characters only supported");
     static_assert(sizeof(ElementType) == sizeof(char), "Single byte charactes only supported");

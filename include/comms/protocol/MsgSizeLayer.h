@@ -83,9 +83,16 @@ class MsgSizeLayer : public
             >,
             comms::option::ProtocolLayerDisallowReadUntilDataSplit
         >;
+
+    using ParsedOptionsInternal = details::MsgSizeLayerOptionsParser<TOptions...>;
 public:
     /// @brief Type of the field object used to read/write remaining size value.
     using Field = typename BaseImpl::Field;
+
+    /// @brief Type of real extending class
+    /// @details Updated when @ref comms::option::ExtendingClass extension option us used,
+    ///    aliasing @b void if the options is not used.
+    using ExtendingClass = typename ParsedOptionsInternal::ExtendingClass;    
 
     /// @brief Default constructor
     explicit MsgSizeLayer() = default;
@@ -104,6 +111,15 @@ public:
 
     /// @brief Move assignment.
     MsgSizeLayer& operator=(MsgSizeLayer&&) = default;
+
+    /// @brief Compile time inquiry of whether this class was extended via 
+    ///    @ref comms::option::ExtendingClass option.
+    /// @details If @b true is returned, the @ref SyncPrefixLayer::ExtendingClass "ExtendingClass"
+    ///     type aliasing the real layer type.
+    static constexpr bool hasExtendingClass()
+    {
+        return ParsedOptionsInternal::HasExtendingClass;
+    }    
 
     /// @cond SKIP_DOC
 
@@ -350,7 +366,7 @@ private:
     template<typename TMsg>
     using MsgLengthTag =
         typename comms::util::LazyShallowConditional<
-            details::ProtocolLayerHasFieldsImpl<TMsg>::Value || TMsg::InterfaceOptions::HasLength
+            details::ProtocolLayerHasFieldsImpl<TMsg>::Value || TMsg::hasLength()
         >::template Type<
             MsgHasLengthTag,
             MsgNoLengthTag

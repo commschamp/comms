@@ -254,7 +254,7 @@ class MessageCheckHasStaticId
 {
 public:
     template <typename TMessage>
-    using Type = std::integral_constant<bool, TMessage::ImplOptions::HasStaticMsgId>;
+    using Type = std::integral_constant<bool, TMessage::hasStaticMsgId()>;
 };
 
 template <typename...>

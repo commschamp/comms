@@ -14,7 +14,6 @@
 #include "comms/options.h"
 #include "basic/Bitfield.h"
 #include "details/AdaptBasicField.h"
-#include "tag.h"
 
 namespace comms
 {
@@ -71,13 +70,12 @@ namespace field
 /// @tparam TOptions Zero or more options that modify/refine default behaviour
 ///     of the field.@n
 ///     Supported options are:
-///     @li @ref comms::option::def::HasCustomRead - Mark field to have custom read
-///         functionality
-///     @li @ref comms::option::def::HasCustomRefresh - Mark field to have custom
-///         refresh functionality.
-///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
-///     @li @ref comms::option::def::VersionStorage - Add version storage.
+///     @li @ref comms::option::def::HasCustomRead
+///     @li @ref comms::option::def::HasCustomRefresh
+///     @li @ref comms::option::def::EmptySerialization
+///     @li @ref comms::option::def::VersionStorage
 ///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::HasVersionDependentMembers
 /// @pre TMember is a variant of std::tuple, that contains other fields.
 /// @pre Every field member specifies its length in bits using
 ///     @ref comms::option::def::FixedBitLength option.
@@ -89,9 +87,24 @@ namespace field
 /// @see @ref COMMS_FIELD_ALIAS()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
 class Bitfield : public
-        details::AdaptBasicFieldT<basic::Bitfield<TFieldBase, TMembers>, TOptions...>
+    details::AdaptBasicFieldT<
+        basic::Bitfield<
+            TFieldBase, 
+            details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+            TMembers
+        >, 
+        TOptions...
+    >
 {
-    using BaseImpl = details::AdaptBasicFieldT<basic::Bitfield<TFieldBase, TMembers>, TOptions...>;
+    using BaseImpl = 
+        details::AdaptBasicFieldT<
+            basic::Bitfield<
+                TFieldBase, 
+                details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+                TMembers
+            >, 
+            TOptions...
+        >;    
 
 public:
     /// @brief Base class provided in the first template parameter.
@@ -107,12 +120,17 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = tag::Bitfield;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Value type.
     /// @details Same as TMemebers template argument, i.e. it is std::tuple
     ///     of all the member fields.
     using ValueType = typename BaseImpl::ValueType;
+
+    /// @brief Type of actual extending field specified via 
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;    
 
     /// @brief Default constructor
     /// @details All field members are initialised using their default constructors.
@@ -131,6 +149,34 @@ public:
       : BaseImpl(std::move(val))
     {
     }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FailOnInvalid option
+    ///     has been used.
+    static constexpr bool hasFailOnInvalid()
+    {
+        return ParsedOptions::HasFailOnInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::IgnoreInvalid option
+    ///     has been used.
+    static constexpr bool hasIgnoreInvalid()
+    {
+        return ParsedOptions::HasIgnoreInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::EmptySerialization option
+    ///     has been used.
+    static constexpr bool hasEmptySerialization()
+    {
+        return ParsedOptions::HasEmptySerialization;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }    
 
     /// @brief Retrieve number of bits specified member field consumes.
     /// @tparam TIdx Index of the member field.

@@ -9,7 +9,7 @@ of available options and other input parameters.
 
 ## Choosing C++ Standard
 
-Since CMake v3.1 it became possible to set version of C++ standard by setting
+Since CMake **v3.1** it became possible to set version of C++ standard by setting
 **CMAKE_CXX_STANDARD** variable. If no value of this variable is set in command
 line arguments, default value **11** will be assigned to it. In order to use
 c++14 standard in compilation, set the variable value to **14**. 
@@ -29,26 +29,24 @@ generate Makefile-s on Windows by providing additional **-G "NMake Makefiles"** 
 to **cmake**. In this case use **nmake** utility instead of **make**.
 
 Please review the examples below and use appropriate option that suites your
-needs. Remember to add **-DCMAKE_BUILD_TYPE=Release** option for release
-builds.
+needs. 
 
-### Complete Build Linux Example
+### Install Headers of the **COMMS** Library Linux Example
+
 ```
 $> cd /path/to/comms
 $> mkdir build && cd build
-$> cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/some/install/dir 
+$> cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/some/install/dir 
 $> make install 
 ```
 
-### Install Only Headers-only **COMMS** Library Linux Example
-This example will skip build of any tool available, it will just install 
-the **COMMS** library headers in **install/include** subdirectory.
+### Build Unittests in Debug Mode Linux Example
 
 ```
 $> cd /path/to/comms
 $> mkdir build && cd build
-$> cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/some/install/dir \
-    -DCC_COMMS_BUILD_UNIT_TESTS=OFF 
+$> cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/some/install/dir \
+    -DCC_COMMS_BUILD_UNIT_TESTS=ON 
 $> make install 
 ```
 ### Windows + Visual Studio Build Example
@@ -57,8 +55,8 @@ Generate Makefile-s with **cmake** and use Visual Studio compiler to build.
 ```
 $> cd /path/to/comms
 $> mkdir build && cd build
-$> cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/some/install/dir \
-    -G "NMake Makefiles" ..
+$> cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/some/install/dir \
+    -G "NMake Makefiles"
 $> nmake install 
 ```
 

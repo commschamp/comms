@@ -97,7 +97,7 @@ public:
     template <typename TMsg1, typename TMsg2, typename... TRest>
     using Type = 
         typename comms::util::Conditional<
-            (TMsg1::ImplOptions::MsgId < TMsg2::ImplOptions::MsgId)
+            (TMsg1::staticMsgId() < TMsg2::staticMsgId())
         >::template Type<
             typename AllMessagesStrongSortedCheckHelper<true, (0U < sizeof...(TRest))>::template Type<TMsg2, TRest...>,
             std::false_type
@@ -130,7 +130,7 @@ public:
     template <typename TMsg1, typename TMsg2, typename... TRest>
     using Type = 
         typename comms::util::Conditional<
-            (TMsg1::ImplOptions::MsgId <= TMsg2::ImplOptions::MsgId)
+            (TMsg1::staticMsgId() <= TMsg2::staticMsgId())
         >::template Type<
             typename AllMessagesWeakSortedCheckHelper<true, (0U < sizeof...(TRest))>::template Type<TMsg2, TRest...>,
             std::false_type

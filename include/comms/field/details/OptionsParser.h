@@ -7,11 +7,16 @@
 
 #pragma once
 
-#include <tuple>
+#include <limits>
 #include <ratio>
+#include <tuple>
+
 #include "comms/options.h"
 #include "comms/CompileControl.h"
-#include "adapters.h"
+#include "comms/util/type_traits.h"
+#include "comms/field/tag.h"
+#include "comms/field/details/adapters.h"
+#include "comms/field/details/MembersVersionDependency.h"
 
 namespace comms
 {
@@ -67,10 +72,22 @@ public:
     static constexpr bool HasFieldType = false;
     static constexpr bool HasMissingOnReadFail = false;
     static constexpr bool HasMissingOnInvalid = false;
+    static constexpr bool HasVariantCustomResetOnDestruct = false;
+    static constexpr bool HasVersionDependentMembersForced = false;
 
     using UnitsType = void;
     using ScalingRatio = std::ratio<1, 1>;
     using UnitsRatio = std::ratio<1, 1>;
+    using FieldType = void;
+    using SequenceSizeFieldPrefix = void;
+    using SequenceSerLengthFieldPrefix = void;
+    using SequenceTerminationFieldSuffix = void;
+    using SequenceTrailingFieldSuffix = void;
+    using SequenceElemSerLengthFieldPrefix = void;
+    using SequenceElemFixedSerLengthFieldPrefix = void;
+
+    static constexpr std::size_t SequenceFixedSize = std::numeric_limits<std::size_t>::max();
+    static constexpr MembersVersionDependency ForcedMembersVersionDependency = MembersVersionDependency_NotSpecified;
 
     template <typename TField>
     using AdaptInvalidByDefault = TField;
@@ -163,7 +180,16 @@ public:
     using AdaptMissingOnReadFail = TField; 
 
     template <typename TField>
-    using AdaptMissingOnInvalid = TField;  
+    using AdaptMissingOnInvalid = TField; 
+
+    template <typename TField>
+    using AdaptVariantResetOnDestruct = 
+        typename comms::util::Conditional<
+            std::is_same<typename TField::CommsTag, comms::field::tag::Variant>::value
+        >::template Type<
+            comms::field::adapter::VariantResetOnDestruct<TField>,
+            TField
+        >;
 };
 
 template <typename... TOptions>
@@ -713,6 +739,7 @@ class OptionsParser<
 {
 public:
     static constexpr bool HasFieldType = true;
+    using FieldType = TActField;
 
     template <typename TField>
     using AdaptFieldType = comms::field::adapter::FieldType<TActField, TField>;
@@ -741,6 +768,30 @@ public:
     template <typename TField>
     using AdaptMissingOnInvalid = comms::field::adapter::MissingOnInvalid<TField>;       
 };
+
+template <typename... TOptions>
+class OptionsParser<
+    comms::option::def::VariantHasCustomResetOnDestruct,
+    TOptions...> : public OptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasVariantCustomResetOnDestruct = true;
+
+    template <typename TField>
+    using AdaptVariantResetOnDestruct = TField;    
+};
+
+template <bool TVersionDependent, typename... TOptions>
+class OptionsParser<
+    comms::option::def::HasVersionDependentMembers<TVersionDependent>,
+    TOptions...> : public OptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasVersionDependentMembersForced = true;
+    static constexpr MembersVersionDependency ForcedMembersVersionDependency = 
+        TVersionDependent ? MembersVersionDependency_Dependent : MembersVersionDependency_Independent;
+};
+
 
 template <typename... TOptions>
 class OptionsParser<

@@ -73,11 +73,24 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = tag::Float;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Type of underlying floating point value.
     /// @details Same as template parameter T to this class.
     using ValueType = typename BaseImpl::ValueType;
+
+    /// @brief Units type defined by any of the @b comms::option::def::Units* option
+    /// @details Aliased to @b void if no relevant options is used.
+    using UnitsType = typename ParsedOptions::UnitsType;
+
+    /// @brief Scaling ratio determined by the forced units via the @b comms::option::def::Units* option.
+    /// @details Equals to <b>std::ratio&lt;1, 1&gt;</b> if the option hasn't been used.
+    using UnitsRatio = typename ParsedOptions::UnitsRatio;    
+
+    /// @brief Type of actual extending field specified via 
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;    
 
     /// @brief Default constructor
     /// @details Initialises internal value to 0.
@@ -88,6 +101,41 @@ public:
       : BaseImpl(val)
     {
     }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FailOnInvalid option
+    ///     has been used.
+    static constexpr bool hasFailOnInvalid()
+    {
+        return ParsedOptions::HasFailOnInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::IgnoreInvalid option
+    ///     has been used.
+    static constexpr bool hasIgnoreInvalid()
+    {
+        return ParsedOptions::HasIgnoreInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::EmptySerialization option
+    ///     has been used.
+    static constexpr bool hasEmptySerialization()
+    {
+        return ParsedOptions::HasEmptySerialization;
+    }    
+
+    /// @brief Compile type inquiry of whether units have been set via any of the
+    ///     @b comms::option::def::Units* options.
+    static constexpr bool hasUnits()
+    {
+        return ParsedOptions::HasUnits;
+    }        
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }    
 
     /// @brief Get access to floating point value storage.
     const ValueType& value() const

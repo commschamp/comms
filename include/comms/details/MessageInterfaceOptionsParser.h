@@ -8,6 +8,7 @@
 #pragma once
 
 #include <cstdint>
+#include <limits>
 #include <tuple>
 
 #include "comms/options.h"
@@ -40,6 +41,8 @@ public:
     static constexpr bool HasRefresh = false;
     static constexpr bool HasName = false;
     static constexpr bool HasNoVirtualDestructor = false;
+
+    static constexpr std::size_t VersionInExtraTransportFields = std::numeric_limits<std::size_t>::max();
 
     template <typename TBase = MessageInterfaceEmptyBase>
     using BuildEndian = TBase;

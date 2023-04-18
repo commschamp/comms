@@ -18,8 +18,8 @@
 #include "details/OptionsParser.h"
 #include "comms/details/gen_enum.h"
 #include "comms/details/bits_access.h"
-#include "IntValue.h"
-#include "tag.h"
+#include "comms/field/IntValue.h"
+#include "comms/field/tag.h"
 
 namespace comms
 {
@@ -135,6 +135,11 @@ public:
     ///     mask determined by the @ref comms::option::def::FixedLength option.
     using ValueType = typename IntValueField::ValueType;
 
+    /// @brief Type of actual extending field specified via 
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;    
+
     /// @brief Default constructor.
     /// @brief Initial bitmask has all bits cleared (equals 0)
     BitmaskValue() = default;
@@ -154,6 +159,34 @@ public:
 
     /// @brief Copy assignment
     BitmaskValue& operator=(const BitmaskValue&) = default;
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FailOnInvalid option
+    ///     has been used.
+    static constexpr bool hasFailOnInvalid()
+    {
+        return ParsedOptions::HasFailOnInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::IgnoreInvalid option
+    ///     has been used.
+    static constexpr bool hasIgnoreInvalid()
+    {
+        return ParsedOptions::HasIgnoreInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::EmptySerialization option
+    ///     has been used.
+    static constexpr bool hasEmptySerialization()
+    {
+        return ParsedOptions::HasEmptySerialization;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }    
 
     /// @brief Get access to underlying mask value storage.
     /// @return Const reference to the underlying stored value.

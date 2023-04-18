@@ -436,7 +436,7 @@ private:
                     comms::protocol::MsgIdLayer<
                         TIdField,
                         TMessage,
-                        AllMessages<TMessage>,
+                        AllTestMessages<TMessage>,
                         comms::protocol::TransportValueLayer<
                             TChecksumTypeField,
                             0,
@@ -447,7 +447,6 @@ private:
             >
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             comms::protocol::SyncPrefixLayer<
                 TSyncField,
@@ -458,7 +457,7 @@ private:
                         comms::protocol::MsgIdLayer<
                             TIdField,
                             TMessage,
-                            AllMessages<TMessage>,
+                            AllTestMessages<TMessage>,
                             comms::protocol::TransportValueLayer<
                                 TChecksumTypeField,
                                 0,
@@ -468,9 +467,8 @@ private:
                     >
                 >
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(sync, checksum, size, id, checksumType, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(sync, checksum, size, id, checksumType, payload);
     };
 
     template <
@@ -488,7 +486,7 @@ private:
                 comms::protocol::MsgIdLayer<
                     TIdField,
                     TMessage,
-                    AllMessages<TMessage>,
+                    AllTestMessages<TMessage>,
                     comms::protocol::TransportValueLayer<
                         TChecksumFlagsField,
                         0,
@@ -501,30 +499,28 @@ private:
             >
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
-        comms::protocol::SyncPrefixLayer<
-            TSyncField,
-            comms::protocol::MsgSizeLayer<
-                TSizeField,
-                comms::protocol::MsgIdLayer<
-                    TIdField,
-                    TMessage,
-                    AllMessages<TMessage>,
-                    comms::protocol::TransportValueLayer<
-                        TChecksumFlagsField,
-                        0,
-                        OptionalChecksumLayer<
-                            TChecksumField,
-                            comms::protocol::MsgDataLayer<>
+            comms::protocol::SyncPrefixLayer<
+                TSyncField,
+                comms::protocol::MsgSizeLayer<
+                    TSizeField,
+                    comms::protocol::MsgIdLayer<
+                        TIdField,
+                        TMessage,
+                        AllTestMessages<TMessage>,
+                        comms::protocol::TransportValueLayer<
+                            TChecksumFlagsField,
+                            0,
+                            OptionalChecksumLayer<
+                                TChecksumField,
+                                comms::protocol::MsgDataLayer<>
+                            >
                         >
                     >
                 >
-            >
-        >;
-#endif
+            >;
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(sync, size, id, checksumFlags, checksum, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(sync, size, id, checksumFlags, checksum, payload);
     };    
 };
 

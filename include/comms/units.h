@@ -32,14 +32,14 @@ namespace details
 {
 
 template <typename TField>
-using ScalingRatioOf = typename TField::ParsedOptions::ScalingRatio;
+using ScalingRatioOf = typename TField::ScalingRatio;
 
 template <typename TField, typename TConvRatio>
 using FullUnitsRatioOf =
     typename std::ratio_divide<
         typename std::ratio_multiply<
             ScalingRatioOf<TField>,
-            typename TField::ParsedOptions::UnitsRatio
+            typename TField::UnitsRatio
         >::type,
         TConvRatio
     >::type;
@@ -233,7 +233,7 @@ private:
 template <typename TField, typename TType>
 constexpr bool hasExpectedUnits()
 {
-    return std::is_same<typename TField::ParsedOptions::UnitsType, TType>::value;
+    return std::is_same<typename TField::UnitsType, TType>::value;
 }
 
 template <typename TRet, typename TConvRatio, typename TField>
@@ -362,7 +362,7 @@ private:
     template <typename TField, typename TConvRatio>
     using GetTag = 
         typename comms::util::LazyShallowConditional<
-            std::is_same<TConvRatio, typename TField::ParsedOptions::UnitsRatio>::value
+            std::is_same<TConvRatio, typename TField::UnitsRatio>::value
         >::template Type<
             SameUnitsTag,
             GetUnitsTag,
@@ -372,7 +372,7 @@ private:
     template <typename TField, typename TConvRatio>
     using SetTag = 
         typename comms::util::LazyShallowConditional<
-            std::is_same<TConvRatio, typename TField::ParsedOptions::UnitsRatio>::value
+            std::is_same<TConvRatio, typename TField::UnitsRatio>::value
         >::template Type<
             SameUnitsTag,
             SetUnitsTag,
@@ -389,7 +389,7 @@ private:
     static TRet getValueInternal(const TField& field, DegreesToRadiansTag<TParams...>)
     {
         using FieldType = typename std::decay<decltype(field)>::type;
-        static_assert(std::is_same<typename FieldType::ParsedOptions::UnitsRatio, comms::traits::units::DegreesRatio>::value,
+        static_assert(std::is_same<typename FieldType::UnitsRatio, comms::traits::units::DegreesRatio>::value,
              "The field is expected to contain degrees.");
 
         return PI<TRet>::Value * UnitsValueConverter<>::getValue<TRet, TConvRatio>(field);
@@ -399,7 +399,7 @@ private:
     static TRet getValueInternal(const TField& field, RadiansToDegreesTag<TParams...>)
     {
         using FieldType = typename std::decay<decltype(field)>::type;
-        static_assert(std::is_same<typename FieldType::ParsedOptions::UnitsRatio, comms::traits::units::RadiansRatio>::value,
+        static_assert(std::is_same<typename FieldType::UnitsRatio, comms::traits::units::RadiansRatio>::value,
              "The field is expected to contain radians.");
 
         return UnitsValueConverter<>::getValue<TRet, TConvRatio>(field) / PI<TRet>::Value;
@@ -415,7 +415,7 @@ private:
     static void setValueInternal(TField& field, TVal&& val, DegreesToRadiansTag<TParams...>)
     {
         using FieldType = typename std::decay<decltype(field)>::type;
-        static_assert(std::is_same<typename FieldType::ParsedOptions::UnitsRatio, comms::traits::units::RadiansRatio>::value,
+        static_assert(std::is_same<typename FieldType::UnitsRatio, comms::traits::units::RadiansRatio>::value,
              "The field is expected to contain radians.");
 
         using ValueType = typename std::decay<decltype(val)>::type;
@@ -434,7 +434,7 @@ private:
     static void setValueInternal(TField& field, TVal&& val, RadiansToDegreesTag<TParams...>)
     {
         using FieldType = typename std::decay<decltype(field)>::type;
-        static_assert(std::is_same<typename FieldType::ParsedOptions::UnitsRatio, comms::traits::units::DegreesRatio>::value,
+        static_assert(std::is_same<typename FieldType::UnitsRatio, comms::traits::units::DegreesRatio>::value,
              "The field is expected to contain degrees.");
 
         using ValueType = typename std::decay<decltype(val)>::type;
@@ -550,9 +550,9 @@ template <typename TField>
 constexpr bool isNanoseconds()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Time>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::NanosecondsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Time>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::NanosecondsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds nanoseconds.
@@ -603,9 +603,9 @@ template <typename TField>
 constexpr bool isMicroseconds()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Time>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MicrosecondsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Time>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MicrosecondsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds microseconds.
@@ -656,9 +656,9 @@ template <typename TField>
 constexpr bool isMilliseconds()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Time>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MillisecondsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Time>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MillisecondsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds milliseconds.
@@ -709,9 +709,9 @@ template <typename TField>
 constexpr bool isSeconds()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Time>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::SecondsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Time>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::SecondsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds seconds.
@@ -762,9 +762,9 @@ template <typename TField>
 constexpr bool isMinutes()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Time>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MinutesRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Time>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MinutesRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds minutes.
@@ -815,9 +815,9 @@ template <typename TField>
 constexpr bool isHours()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Time>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::HoursRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Time>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::HoursRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds hours.
@@ -868,9 +868,9 @@ template <typename TField>
 constexpr bool isDays()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Time>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::DaysRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Time>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::DaysRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds days.
@@ -921,9 +921,9 @@ template <typename TField>
 constexpr bool isWeeks()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Time>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::WeeksRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Time>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::WeeksRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds weeks.
@@ -974,9 +974,9 @@ template <typename TField>
 constexpr bool isNanometers()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Distance>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::NanometersRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Distance>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::NanometersRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds nanometers.
@@ -1027,9 +1027,9 @@ template <typename TField>
 constexpr bool isMicrometers()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Distance>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MicrometersRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Distance>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MicrometersRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds micrometers.
@@ -1080,9 +1080,9 @@ template <typename TField>
 constexpr bool isMillimeters()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Distance>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MillimetersRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Distance>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MillimetersRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds millimeters.
@@ -1133,9 +1133,9 @@ template <typename TField>
 constexpr bool isCentimeters()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Distance>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::CentimetersRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Distance>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::CentimetersRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds centimeters.
@@ -1186,9 +1186,9 @@ template <typename TField>
 constexpr bool isMeters()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Distance>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MetersRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Distance>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MetersRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds meters.
@@ -1239,9 +1239,9 @@ template <typename TField>
 constexpr bool isKilometers()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Distance>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::KilometersRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Distance>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::KilometersRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds kilometers.
@@ -1292,9 +1292,9 @@ template <typename TField>
 constexpr bool isNanometersPerSecond()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Speed>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::NanometersPerSecondRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Speed>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::NanometersPerSecondRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds nanometers per second.
@@ -1345,9 +1345,9 @@ template <typename TField>
 constexpr bool isMicrometersPerSecond()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Speed>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MicrometersPerSecondRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Speed>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MicrometersPerSecondRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds micrometers per second.
@@ -1398,9 +1398,9 @@ template <typename TField>
 constexpr bool isMillimetersPerSecond()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Speed>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MillimetersPerSecondRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Speed>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MillimetersPerSecondRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds millimeters per second.
@@ -1451,9 +1451,9 @@ template <typename TField>
 constexpr bool isCentimetersPerSecond()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Speed>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::CentimetersPerSecondRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Speed>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::CentimetersPerSecondRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds centimeters per second.
@@ -1504,9 +1504,9 @@ template <typename TField>
 constexpr bool isMetersPerSecond()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Speed>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MetersPerSecondRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Speed>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MetersPerSecondRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds meters per second.
@@ -1557,9 +1557,9 @@ template <typename TField>
 constexpr bool isKilometersPerSecond()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Speed>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::KilometersPerSecondRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Speed>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::KilometersPerSecondRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds kilometers per second.
@@ -1610,9 +1610,9 @@ template <typename TField>
 constexpr bool isKilometersPerHour()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Speed>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::KilometersPerHourRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Speed>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::KilometersPerHourRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds kilometers per hour.
@@ -1663,9 +1663,9 @@ template <typename TField>
 constexpr bool isHertz()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Frequency>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::HzRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Frequency>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::HzRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds hertz.
@@ -1716,9 +1716,9 @@ template <typename TField>
 constexpr bool isKilohertz()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Frequency>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::KiloHzRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Frequency>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::KiloHzRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds kilohertz.
@@ -1769,9 +1769,9 @@ template <typename TField>
 constexpr bool isMegahertz()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Frequency>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MegaHzRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Frequency>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MegaHzRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds megahertz.
@@ -1822,9 +1822,9 @@ template <typename TField>
 constexpr bool isGigahertz()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Frequency>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::GigaHzRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Frequency>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::GigaHzRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds gigahertz.
@@ -1875,9 +1875,9 @@ template <typename TField>
 constexpr bool isDegrees()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Angle>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::DegreesRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Angle>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::DegreesRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds degrees.
@@ -1928,9 +1928,9 @@ template <typename TField>
 constexpr bool isRadians()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Angle>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::RadiansRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Angle>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::RadiansRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds radia s.
@@ -1981,9 +1981,9 @@ template <typename TField>
 constexpr bool isNanoamps()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Current>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::NanoampsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Current>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::NanoampsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds nanoamps.
@@ -2034,9 +2034,9 @@ template <typename TField>
 constexpr bool isMicroamps()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Current>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MicroampsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Current>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MicroampsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds microamps.
@@ -2088,9 +2088,9 @@ template <typename TField>
 constexpr bool isMilliamps()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Current>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MilliampsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Current>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MilliampsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds milliamps.
@@ -2141,9 +2141,9 @@ template <typename TField>
 constexpr bool isAmps()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Current>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::AmpsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Current>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::AmpsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds amps.
@@ -2194,9 +2194,9 @@ template <typename TField>
 constexpr bool isKiloamps()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Current>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::KiloampsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Current>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::KiloampsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds kiloamps.
@@ -2247,9 +2247,9 @@ template <typename TField>
 constexpr bool isNanovolts()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Voltage>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::NanovoltsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Voltage>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::NanovoltsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds nanovolts.
@@ -2300,9 +2300,9 @@ template <typename TField>
 constexpr bool isMicrovolts()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Voltage>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MicrovoltsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Voltage>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MicrovoltsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds microvolts.
@@ -2353,9 +2353,9 @@ template <typename TField>
 constexpr bool isMillivolts()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Voltage>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MillivoltsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Voltage>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MillivoltsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds millivolts.
@@ -2406,9 +2406,9 @@ template <typename TField>
 constexpr bool isVolts()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Voltage>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::VoltsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Voltage>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::VoltsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds volts.
@@ -2459,9 +2459,9 @@ template <typename TField>
 constexpr bool isKilovolts()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Voltage>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::KilovoltsRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Voltage>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::KilovoltsRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds kilovolts.
@@ -2512,9 +2512,9 @@ template <typename TField>
 constexpr bool isBytes()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Memory>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::BytesRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Memory>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::BytesRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds bytes.
@@ -2565,9 +2565,9 @@ template <typename TField>
 constexpr bool isKilobytes()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Memory>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::KilobytesRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Memory>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::KilobytesRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds kilobytes.
@@ -2618,9 +2618,9 @@ template <typename TField>
 constexpr bool isMegabytes()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Memory>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::MegabytesRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Memory>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::MegabytesRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds megabytes.
@@ -2672,9 +2672,9 @@ template <typename TField>
 constexpr bool isGigabytes()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Memory>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::GigabytesRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Memory>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::GigabytesRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds gigabytes.
@@ -2725,9 +2725,9 @@ template <typename TField>
 constexpr bool isTerabytes()
 {
     return
-        TField::ParsedOptions::HasUnits &&
-        std::is_same<typename TField::ParsedOptions::UnitsType, comms::traits::units::Memory>::value &&
-        std::is_same<typename TField::ParsedOptions::UnitsRatio, comms::traits::units::TerabytesRatio>::value;
+        TField::hasUnits() &&
+        std::is_same<typename TField::UnitsType, comms::traits::units::Memory>::value &&
+        std::is_same<typename TField::UnitsRatio, comms::traits::units::TerabytesRatio>::value;
 }
 
 /// @brief Compile time check whether the field type holds terabytes.

@@ -284,25 +284,23 @@ private:
             comms::protocol::MsgIdLayer<
                 TIdField,
                 TMessage,
-                AllMessages<TMessage>,
+                AllTestMessages<TMessage>,
                 comms::protocol::MsgDataLayer<>
             >
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             comms::protocol::MsgSizeLayer<
                 TSizeField,
                 comms::protocol::MsgIdLayer<
                     TIdField,
                     TMessage,
-                    AllMessages<TMessage>,
+                    AllTestMessages<TMessage>,
                     comms::protocol::MsgDataLayer<>
                 >
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_INNER(payload, id, size);
+        COMMS_PROTOCOL_LAYERS_NAMES_INNER(payload, id, size);
     };
 
     template <typename TIdField, typename TSizeField, typename TMessage>
@@ -310,27 +308,25 @@ private:
         comms::protocol::MsgIdLayer<
             TIdField,
             TMessage,
-            AllMessages<TMessage>,
+            AllTestMessages<TMessage>,
             comms::protocol::MsgSizeLayer<
                 TSizeField,
                 comms::protocol::MsgDataLayer<>
             >
         >
     {
-#ifdef COMMS_MUST_DEFINE_BASE
         using Base =
             comms::protocol::MsgIdLayer<
                 TIdField,
                 TMessage,
-                AllMessages<TMessage>,
+                AllTestMessages<TMessage>,
                 comms::protocol::MsgSizeLayer<
                     TSizeField,
                     comms::protocol::MsgDataLayer<>
                 >
             >;
-#endif
     public:
-        COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, size, payload);
+        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, size, payload);
     };
 
     template <typename TSizeField, typename TIdField, typename TMessage>
@@ -340,7 +336,7 @@ private:
             comms::protocol::MsgIdLayer<
                 TIdField,
                 TMessage,
-                AllMessages<TMessage>,
+                AllTestMessages<TMessage>,
                 comms::protocol::MsgDataLayer<>,
                 comms::option::InPlaceAllocation
             >
@@ -370,7 +366,7 @@ private:
             comms::protocol::MsgIdLayer<
                 TIdField,
                 TMessage,
-                AllMessages<TMessage>,
+                AllTestMessages<TMessage>,
                 comms::protocol::MsgDataLayer<>,
                 comms::option::SupportGenericMessage<GenericMsg<TMessage> >
             >

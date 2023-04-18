@@ -82,6 +82,7 @@ class Message : public details::MessageInterfaceBuilderT<TOptions...>
 public:
 
     /// @brief All the options bundled into struct.
+    /// @details For internal use only.
     using InterfaceOptions = details::MessageInterfaceOptionsParser<TOptions...>;
 
     /// @brief Destructor.
@@ -170,6 +171,14 @@ public:
     static constexpr bool hasVersionInTransportFields()
     {
         return InterfaceOptions::HasVersionInExtraTransportFields;
+    }
+
+    /// @brief Compile type inquiry of version field index in transport field.
+    /// @details If @ref comms::option::def::VersionInExtraTransportFields option
+    ///     hasn't been used, the @b std::numeric_limits<std::size_t>::max() is returned. 
+    static constexpr std::size_t versionIdxInTransportFields()
+    {
+        return InterfaceOptions::VersionInExtraTransportFields;
     }
 
     /// @brief Compile type inquiry whether message interface class defines

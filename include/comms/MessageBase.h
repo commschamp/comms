@@ -66,6 +66,8 @@ namespace comms
 ///     @li @ref comms::option::def::HasDoGetId - Enable implementation of getIdImpl() even if
 ///         @ref comms::option::def::StaticNumIdImpl option wasn't used. Must be paired with
 ///         @ref comms::option::def::MsgType.
+///     @li @ref comms::option::def::HasName - Notify @ref comms::MessageBase that
+///             there is custom doName() member function in the message definition class.
 ///     @li @ref comms::option::def::FailOnInvalid - Fail the read operation if the contents are invalid.
 ///     @li @ref comms::option::app::NoReadImpl - Inhibit the implementation of readImpl().
 ///     @li @ref comms::option::app::NoWriteImpl - Inhibit the implementation of writeImpl().
@@ -82,7 +84,107 @@ class MessageBase : public details::MessageImplBuilderT<TMessage, TOptions...>
     using BaseImpl = details::MessageImplBuilderT<TMessage, TOptions...>;
 public:
     /// @brief All the options provided to this class bundled into struct.
+    /// @details For internal use only
     using ImplOptions = details::MessageImplOptionsParser<TOptions...>;
+
+    /// @brief Type of the actual message provided via 
+    ///     @ref comms::option::def::MsgType.
+    /// @details If @ref comms::option::def::MsgType hasn't been used
+    ///     equals to @b void.
+    using MsgType = typename ImplOptions::MsgType;
+
+    /// @brief Compile type inquiry whether static numeric id has been provided via
+    ///     @ref comms::option::def::StaticNumIdImpl.
+    static constexpr bool hasStaticMsgId()
+    {
+        return ImplOptions::HasStaticMsgId;
+    }    
+
+    /// @brief Compile time retrieval of the message id provided via 
+    ///    @ref comms::option::def::StaticNumIdImpl
+    /// @details If comms::option::def::StaticNumIdImpl hasn't been used,
+    ///     @b std::numeric_limits<std::intmax_t>::max() is returned.
+    static constexpr std::intmax_t staticMsgId()
+    {
+        return ImplOptions::MsgId;
+    }
+
+    /// @brief Compile type inquiry whether fields have been provided via
+    ///     @ref comms::option::def::FieldsImpl.
+    static constexpr bool hasFields()
+    {
+        return ImplOptions::HasFieldsImpl;
+    }
+
+    /// @brief Compile time inquiry of whether fail on invalid has been requested
+    ///     @ref comms::option::def::FailOnInvalid option.
+    static constexpr bool hasFailOnInvalid()
+    {
+        return ImplOptions::HasFailOnInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether the actual message type has
+    ///     been provided via @ref comms::option::def::MsgType.
+    static constexpr bool hasMsgType()
+    {
+        return ImplOptions::HasMsgType;
+    }
+
+    /// @brief Compile time inquiry of whether polymoriphic read has been
+    ///     requested via interface options and hasn't been inhibited by
+    ///     the @ref comms::option::app::NoReadImpl.
+    static constexpr bool hasPolymorphicRead()
+    {
+        return BaseImpl::hasRead() && (!ImplOptions::HasNoReadImpl);
+    }
+
+    /// @brief Compile time inquiry of whether polymoriphic write has been
+    ///     requested via interface options and hasn't been inhibited by
+    ///     the @ref comms::option::app::NoWriteImpl.
+    static constexpr bool hasPolymorphicWrite()
+    {
+        return BaseImpl::hasWrite() && (!ImplOptions::HasNoWriteImpl);
+    }    
+
+    /// @brief Compile time inquiry of whether polymoriphic validity check has been
+    ///     requested via interface options and hasn't been inhibited by
+    ///     the @ref comms::option::app::NoValidImpl.
+    static constexpr bool hasPolymorphicValid()
+    {
+        return BaseImpl::hasValid() && (!ImplOptions::HasNoValidImpl);
+    }
+
+    /// @brief Compile time inquiry of whether polymoriphic length has been
+    ///     requested via interface options and hasn't been inhibited by
+    ///     the @ref comms::option::app::NoLengthImpl.
+    static constexpr bool hasPolymorphicLength()
+    {
+        return BaseImpl::hasLength() && (!ImplOptions::HasNoLengthImpl);
+    }
+
+    /// @brief Compile time inquiry of whether polymoriphic dispatch has been
+    ///     requested via interface options and hasn't been inhibited by
+    ///     the @ref comms::option::app::NoDispatchImpl.
+    static constexpr bool hasPolymorphicDispatch()
+    {
+        return BaseImpl::hasDispatch() && (!ImplOptions::HasNoDispatchImpl);
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::MessageBase has
+    ///    notified about custom refresh functionality in the derived class
+    ///    via @ref comms::option::def::HasCustomRefresh.
+    static constexpr bool hasCustomRefresh()
+    {
+        return ImplOptions::HasCustomRefresh;
+    }    
+
+    /// @brief Compile time inquiry of whether @ref comms::MessageBase has
+    ///    notified about custom name retrieval function in the derived class
+    ///    via @ref comms::option::def::HasName.
+    static constexpr bool hasCustomName()
+    {
+        return ImplOptions::HasName;
+    }     
 
 #ifdef FOR_DOXYGEN_DOC_ONLY
 

@@ -212,16 +212,19 @@ class AdaptBasicField
         typename ParsedOptions::template AdaptCustomRefresh<CustomReadWrapAdapted>;
 
     using CustomWriteWrapAdapted = 
-            typename ParsedOptions::template AdaptCustomWrite<CustomRefreshWrapAdapted>;
+        typename ParsedOptions::template AdaptCustomWrite<CustomRefreshWrapAdapted>;
 
     using MissingOnInvalidAdapted = 
-            typename ParsedOptions::template AdaptMissingOnInvalid<CustomWriteWrapAdapted>;
+        typename ParsedOptions::template AdaptMissingOnInvalid<CustomWriteWrapAdapted>;
 
     using MissingOnReadFailAdapted = 
-            typename ParsedOptions::template AdaptMissingOnReadFail<MissingOnInvalidAdapted>;
+        typename ParsedOptions::template AdaptMissingOnReadFail<MissingOnInvalidAdapted>;
+
+    using VariantResetOnDestructAdapted = 
+        typename ParsedOptions::template AdaptVariantResetOnDestruct<MissingOnReadFailAdapted>;
 
 public:
-    using Type = MissingOnReadFailAdapted;
+    using Type = VariantResetOnDestructAdapted;
 };
 
 template <typename TBasic, typename... TOptions>

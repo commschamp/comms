@@ -69,6 +69,14 @@ public:
     /// @brief All fields of the remaining transport layers, contains only @ref Field.
     using AllFields = std::tuple<Field>;
 
+    /// @brief Default value of AllMessages type.
+    /// @details Defined as @b void.
+    using AllMessages = void;
+
+    /// @brief Default value of MsgFactory type
+    /// @details Defined as @b void.
+    using MsgFactory = void;
+
     /// @brief Static constant indicating amount of transport layers used.
     static const std::size_t NumOfLayers = 1;
 
@@ -616,7 +624,7 @@ private:
     static std::size_t getMsgLength(const TMsg& msg, MsgHasLengthTag<TParams...>)
     {
         using MsgType = typename std::decay<decltype(msg)>::type;
-        static_assert(MsgType::InterfaceOptions::HasLength, "Message interface must define length()");
+        static_assert(MsgType::hasLength(), "Message interface must define length()");
         return msg.length();
     }
 
@@ -624,7 +632,7 @@ private:
     static constexpr std::size_t getMsgLength(const TMsg& msg, MsgDirectLengthTag<TParams...>)
     {
         using MsgType = typename std::decay<decltype(msg)>::type;
-        static_assert(MsgType::ImplOptions::HasFieldsImpl, "FieldsImpl option hasn't been used");
+        static_assert(MsgType::hasFields(), "FieldsImpl option hasn't been used");
         return msg.doLength();
     }
 
@@ -662,7 +670,7 @@ private:
             missingSizeRequiredInternal(extraValues...)) {
             using Tag = 
                 typename comms::util::LazyShallowConditional<
-                    MsgType::InterfaceOptions::HasLength
+                    MsgType::hasLength()
                 >::template Type<
                     MsgHasLengthTag,
                     MsgNoLengthTag

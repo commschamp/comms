@@ -122,7 +122,7 @@ private:
                 comms::protocol::MsgIdLayer<
                     IdField,
                     TMessage,
-                    AllMessages<TMessage>,
+                    AllTestMessages<TMessage>,
                     comms::protocol::MsgDataLayer<>
                 >
             >
@@ -135,7 +135,7 @@ private:
             comms::protocol::MsgIdLayer<
                 IdField,
                 TMessage,
-                AllMessages<TMessage>,
+                AllTestMessages<TMessage>,
                 comms::protocol::MsgDataLayer<>
             >
         >;
@@ -147,7 +147,7 @@ private:
             comms::protocol::MsgIdLayer<
                 IdField,
                 TMessage,
-                AllMessages<TMessage>,
+                AllTestMessages<TMessage>,
                 comms::protocol::TransportValueLayer<
                     VersionField,
                     ExtraTransportMessageBase<>::TransportFieldIdx_version,
@@ -167,7 +167,7 @@ private:
                 comms::protocol::MsgIdLayer<
                     IdField,
                     TMessage,
-                    AllMessages<TMessage>,
+                    AllTestMessages<TMessage>,
                     comms::protocol::TransportValueLayer<
                         VersionField,
                         ExtraTransportMessageBase<>::TransportFieldIdx_version,

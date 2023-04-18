@@ -16,7 +16,6 @@
 #include "details/OptionsParser.h"
 #include "basic/EnumValue.h"
 #include "details/AdaptBasicField.h"
-#include "tag.h"
 
 namespace comms
 {
@@ -89,11 +88,16 @@ public:
     using ParsedOptions = details::OptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
-    using CommsTag = tag::Enum;
+    using CommsTag = typename BaseImpl::CommsTag;
 
     /// @brief Type of underlying enum value.
     /// @details Same as template parameter TEnum to this class.
     using ValueType = typename BaseImpl::ValueType;
+
+    /// @brief Type of actual extending field specified via 
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;    
 
     /// @brief Default constructor.
     EnumValue() = default;
@@ -112,6 +116,34 @@ public:
 
     /// @brief Copy assignment
     EnumValue& operator=(const EnumValue&) = default;
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FailOnInvalid option
+    ///     has been used.
+    static constexpr bool hasFailOnInvalid()
+    {
+        return ParsedOptions::HasFailOnInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::IgnoreInvalid option
+    ///     has been used.
+    static constexpr bool hasIgnoreInvalid()
+    {
+        return ParsedOptions::HasIgnoreInvalid;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::EmptySerialization option
+    ///     has been used.
+    static constexpr bool hasEmptySerialization()
+    {
+        return ParsedOptions::HasEmptySerialization;
+    }    
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }    
 
     /// @brief Get access to enum value storage.
     const ValueType& value() const

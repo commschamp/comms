@@ -228,7 +228,7 @@ private:
                 comms::protocol::MsgIdLayer<
                     IdField,
                     TMessage,
-                    AllMessages<TMessage>,
+                    AllTestMessages<TMessage>,
                     comms::protocol::MsgDataLayer<>
                 >            
             >
@@ -242,7 +242,7 @@ private:
             comms::protocol::MsgIdLayer<
                 IdField,
                 TMessage,
-                AllMessages<TMessage>,
+                AllTestMessages<TMessage>,
                 CustomTransportValueLayer<
                     comms::protocol::MsgDataLayer<>,
                     TOpt...
@@ -258,7 +258,7 @@ private:
                 comms::protocol::MsgIdLayer<
                     IdField,
                     TMessage,
-                    AllMessages<TMessage>,
+                    AllTestMessages<TMessage>,
                     CustomTransportValueLayer<
                         comms::protocol::ChecksumLayer<
                             ChcecksumField,

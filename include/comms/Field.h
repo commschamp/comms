@@ -86,6 +86,14 @@ public:
         return true;
     }
 
+    /// @brief Default check of whether the field has variable length definition
+    ///     via @ref comms::option::def::VarLength option.
+    /// @return Always @b false.
+    static constexpr bool hasVarLength()
+    {
+        return false;
+    }         
+
     /// @brief Default check of whether the field has a consistent value
     ///     for writing.
     /// @return Always @b true.

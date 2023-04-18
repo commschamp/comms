@@ -40,12 +40,15 @@
     COMMS_VARIANT_INIT_FIELD_FUNC(v_, n_) {\
         return v_.template initField<COMMS_CONCATENATE(FieldIdx_, n_)>(std::forward<TArgs>(args)...); \
     } \
+    void COMMS_CONCATENATE(deinitField_, n_)() {\
+        v_.template deinitField<COMMS_CONCATENATE(FieldIdx_, n_)>(); \
+    } \
     COMMS_VARIANT_ACCESS_FIELD_FUNC(v_, n_) { \
         return v_.template accessField<COMMS_CONCATENATE(FieldIdx_, n_)>(); \
     } \
     COMMS_VARIANT_ACCESS_FIELD_CONST_FUNC(v_, n_) { \
         return v_.template accessField<COMMS_CONCATENATE(FieldIdx_, n_)>(); \
-    }
+    } 
 
 #define COMMS_VARIANT_MEM_ACC_FUNC_1(v_, n_) COMMS_VARIANT_MEM_ACC_FUNC(v_, n_)
 #define COMMS_VARIANT_MEM_ACC_FUNC_2(v_, n_, ...) \

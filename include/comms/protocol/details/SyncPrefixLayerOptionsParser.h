@@ -28,6 +28,8 @@ class SyncPrefixLayerOptionsParser<>
 public:
     static constexpr bool HasExtendingClass = false;
 
+    using ExtendingClass = void;
+
     template <typename TLayer>
     using DefineExtendingClass = TLayer;
 };

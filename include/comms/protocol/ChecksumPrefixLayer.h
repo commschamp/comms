@@ -87,15 +87,20 @@ class ChecksumPrefixLayer : public
             >
         >;
 
+    using ParsedOptionsInternal = details::ChecksumLayerOptionsParser<TOptions...>;
+
 public:
-    /// @brief Parsed options
-    using ParsedOptions = details::ChecksumLayerOptionsParser<TOptions...>;
 
     /// @brief Type of the field object used to read/write checksum value.
     using Field = typename BaseImpl::Field;
 
     /// @brief Provided checksum calculation algorithm
     using ChecksumCalc = TCalc;    
+
+    /// @brief Type of real extending class
+    /// @details Updated when @ref comms::option::ExtendingClass extension option us used,
+    ///    aliasing @b void if the options is not used.
+    using ExtendingClass = typename ParsedOptionsInternal::ExtendingClass;    
 
     /// @brief Default constructor.
     ChecksumPrefixLayer() = default;
@@ -114,6 +119,22 @@ public:
 
     /// @brief Move assignment
     ChecksumPrefixLayer& operator=(ChecksumPrefixLayer&&) = default;
+
+    /// @brief Compile time inquiry of whether this class was extended via 
+    ///    @ref comms::option::ExtendingClass option.
+    /// @details If @b true is returned, the @ref SyncPrefixLayer::ExtendingClass "ExtendingClass"
+    ///     type aliasing the real layer type.
+    static constexpr bool hasExtendingClass()
+    {
+        return ParsedOptionsInternal::HasExtendingClass;
+    }   
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::ChecksumLayerVerifyBeforeRead
+    ///     options has been used.
+    static constexpr bool hasVerifyBeforeRead()
+    {
+        return ParsedOptionsInternal::HasVerifyBeforeRead;
+    }           
 
     /// @brief Customized read functionality, invoked by @ref read().
     /// @details First, reads the expected checksum value field, then
@@ -172,7 +193,7 @@ public:
 
         using VerifyTag = 
             typename comms::util::LazyShallowConditional<
-                ParsedOptions::HasVerifyBeforeRead
+                ParsedOptionsInternal::HasVerifyBeforeRead
             >::template Type<
                 VerifyBeforeReadTag,
                 VerifyAfterReadTag
