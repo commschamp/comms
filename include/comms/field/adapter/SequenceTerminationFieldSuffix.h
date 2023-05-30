@@ -129,8 +129,7 @@ private:
         while (true) {
             auto iterCpy = iter;
             auto es = termField.read(iterCpy, len);
-            if ((es == comms::ErrorStatus::Success) &&
-                (termField == TermField())){
+            if (es == comms::ErrorStatus::Success) {
                 std::advance(iter, std::distance(iter, iterCpy));
                 return es;
             }
@@ -155,8 +154,7 @@ private:
         while (consumed < len) {
             auto iterCpy = iter + consumed;
             auto es = termField.read(iterCpy, len - consumed);
-            if ((es == comms::ErrorStatus::Success) &&
-                (termField == TermField())){
+            if (es == comms::ErrorStatus::Success) {
                 termFieldLen = static_cast<std::size_t>(std::distance(iter + consumed, iterCpy));
                 break;
             }

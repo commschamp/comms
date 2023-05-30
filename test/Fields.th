@@ -1919,7 +1919,8 @@ void FieldsTestSuite::test41()
     typedef comms::field::IntValue<
         comms::Field<BigEndianOpt>,
         std::uint8_t,
-        comms::option::ValidNumValueRange<0, 0>
+        comms::option::ValidNumValueRange<0, 0>,
+        comms::option::FailOnInvalid<>
     > TermField;
 
     static_assert(!TermField::isVersionDependent(),
@@ -3872,7 +3873,8 @@ void FieldsTestSuite::test73()
     typedef comms::field::IntValue<
         comms::Field<BigEndianOpt>,
         std::uint8_t,
-        comms::option::ValidNumValueRange<0, 0>
+        comms::option::ValidNumValueRange<0, 0>,
+        comms::option::FailOnInvalid<>
     > TermField;
 
     static_assert(!TermField::isVersionDependent(),
@@ -5436,7 +5438,8 @@ void FieldsTestSuite::test104()
     typedef comms::field::IntValue<
         comms::Field<BigEndianOpt>,
         std::uint8_t,
-        comms::option::ValidNumValueRange<0, 0>
+        comms::option::ValidNumValueRange<0, 0>,
+        comms::option::FailOnInvalid<>
     > TermField;
 
     static_assert(!TermField::isVersionDependent(),

@@ -1656,7 +1656,8 @@ void FieldsTestSuite2::test22()
         comms::field::IntValue<
             BeFieldBase,
             std::uint16_t,
-            comms::option::ValidNumValueRange<0, 0>
+            comms::option::ValidNumValueRange<0, 0>,
+            comms::option::FailOnInvalid<>
         >;
 
     using Field = 
