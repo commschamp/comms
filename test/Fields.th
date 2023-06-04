@@ -1959,6 +1959,7 @@ void FieldsTestSuite::test41()
     TS_ASSERT_EQUALS(field.value(), "foo");
     TS_ASSERT_EQUALS(field.value().size(), 3U);
     TS_ASSERT_EQUALS(std::distance(&InputBuf[0], readIter), 4);
+    TS_ASSERT_EQUALS(field.terminationFieldSuffix().value(), 0U);
 }
 
 void FieldsTestSuite::test42()

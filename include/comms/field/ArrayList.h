@@ -580,6 +580,29 @@ public:
         return BaseImpl::setVersion(version);
     }
 
+#ifdef FOR_DOXYGEN_DOC_ONLY
+    /// @brief Access list termination field 
+    /// @details Exists only if @ref comms::option::def::SequenceTerminationFieldSuffix option has been
+    ///     used. The function can be used to access the termination field value after
+    ///     the @b read and/or before the @b write operations.
+    /// @pre @ref hasTerminationFieldSuffix() returns true.
+    auto terminationFieldSuffix() -> decltype(BaseImpl::terminationFieldSuffix())
+    {
+        return BaseImpl::terminationFieldSuffix();
+    }    
+
+    /// @brief Access list termination field (const variant)
+    /// @details Exists only if @ref comms::option::def::SequenceTerminationFieldSuffix option has been
+    ///     used. The function can be used to access the termination field value after
+    ///     the @b read and/or before the @b write operations.
+    /// @pre @ref hasTerminationFieldSuffix() returns true.
+    auto terminationFieldSuffix() const -> decltype(BaseImpl::terminationFieldSuffix())
+    {
+        return BaseImpl::terminationFieldSuffix();
+    }     
+
+#endif // #ifdef FOR_DOXYGEN_DOC_ONLY    
+
 protected:
     using BaseImpl::readData;
     using BaseImpl::writeData;
