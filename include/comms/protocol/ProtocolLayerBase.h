@@ -1117,7 +1117,7 @@ protected:
     {
     public:
         NextLayerCachedFieldsWriter(
-            const NextLayer nextLayer,
+            const NextLayer& nextLayer,
             TAllFields& allFields)
           : nextLayer_(nextLayer),
             allFields_(allFields)
@@ -1165,7 +1165,7 @@ protected:
     {
     public:
         NextLayerCachedFieldsUpdater(
-            const NextLayer nextLayer,
+            const NextLayer& nextLayer,
             TAllFields& allFields)
           : nextLayer_(nextLayer),
             allFields_(allFields)
