@@ -263,13 +263,14 @@ public:
 
         Field field;
         auto& derivedObj = static_cast<TDerived&>(*this);
+        auto reader = createNextLayerUntilDataReader();
         return
             derivedObj.doRead(
                 field,
                 msg,
                 iter,
                 size,
-                createNextLayerUntilDataReader(),
+                reader,
                 extraValues...);
     }
 
@@ -345,13 +346,14 @@ public:
                                 std::tuple_size<AllFields>::value;
         auto& field = getField<Idx>(allFields);
         auto& derivedObj = static_cast<TDerived&>(*this);
+        auto reader = createNextLayerCachedFieldsReader(allFields);
         return
             derivedObj.doRead(
                 field,
                 msg,
                 iter,
                 size,
-                createNextLayerCachedFieldsReader(allFields),
+                reader,
                 extraValues...);
     }
 
@@ -396,13 +398,14 @@ public:
 
         auto& field = getField<Idx>(allFields);
         auto& derivedObj = static_cast<TDerived&>(*this);
+        auto reader = createNextLayerCachedFieldsUntilDataReader(allFields);
         return
             derivedObj.doRead(
                 field,
                 msg,
                 iter,
                 size,
-                createNextLayerCachedFieldsUntilDataReader(allFields),
+                reader,
                 extraValues...);
     }
 
@@ -487,7 +490,8 @@ public:
     {
         Field field;
         auto& derivedObj = static_cast<const TDerived&>(*this);
-        return derivedObj.doWrite(field, msg, iter, size, createNextLayerWriter());
+        auto writer = createNextLayerWriter();
+        return derivedObj.doWrite(field, msg, iter, size, writer);
     }
 
     /// @brief Serialise message into output data sequence while caching the written transport
@@ -522,7 +526,8 @@ public:
 
         auto& field = getField<Idx>(allFields);
         auto& derivedObj = static_cast<const TDerived&>(*this);
-        return derivedObj.doWrite(field, msg, iter, size, createNextLayerCachedFieldsWriter(allFields));
+        auto writer = createNextLayerCachedFieldsWriter(allFields);
+        return derivedObj.doWrite(field, msg, iter, size, writer);
     }
 
     /// @brief Get remaining length of wrapping transport information.
@@ -597,7 +602,8 @@ public:
     {
         Field field;
         auto& derivedObj = static_cast<const TDerived&>(*this);
-        return derivedObj.doUpdate(field, iter, size, createNextLayerUpdater());
+        auto updater = createNextLayerUpdater();
+        return derivedObj.doUpdate(field, iter, size, updater);
     }
 
     /// @brief Update recently written (using write()) message contents data.
@@ -612,7 +618,8 @@ public:
     {
         Field field;
         auto& derivedObj = static_cast<const TDerived&>(*this);
-        return derivedObj.doUpdate(msg, field, iter, size, createNextLayerUpdater());
+        auto updater = createNextLayerUpdater();
+        return derivedObj.doUpdate(msg, field, iter, size, updater);
     }
 
     /// @brief Update recently written (using writeFieldsCached()) message data as
@@ -644,7 +651,8 @@ public:
 
         auto& field = getField<Idx>(allFields);
         auto& derivedObj = static_cast<const TDerived&>(*this);
-        return derivedObj.doUpdate(field, iter, size, createNextLayerCachedFieldsUpdater(allFields));
+        auto updater = createNextLayerCachedFieldsUpdater(allFields);
+        return derivedObj.doUpdate(field, iter, size, updater);
     }
 
     /// @brief Update recently written (using writeFieldsCached()) message data as
@@ -679,7 +687,8 @@ public:
 
         auto& field = getField<Idx>(allFields);
         auto& derivedObj = static_cast<const TDerived&>(*this);
-        return derivedObj.doUpdate(msg, field, iter, size, createNextLayerCachedFieldsUpdater(allFields));
+        auto updater = createNextLayerCachedFieldsUpdater(allFields);
+        return derivedObj.doUpdate(msg, field, iter, size, updater);
     }
 
     /// @brief Default implementation of the "update" functaionality.
@@ -1108,7 +1117,7 @@ protected:
     {
     public:
         NextLayerCachedFieldsWriter(
-            const NextLayer nextLayer,
+            const NextLayer& nextLayer,
             TAllFields& allFields)
           : nextLayer_(nextLayer),
             allFields_(allFields)
@@ -1156,7 +1165,7 @@ protected:
     {
     public:
         NextLayerCachedFieldsUpdater(
-            const NextLayer nextLayer,
+            const NextLayer& nextLayer,
             TAllFields& allFields)
           : nextLayer_(nextLayer),
             allFields_(allFields)
@@ -1247,7 +1256,8 @@ private:
     {
         Field field;
         auto& derivedObj = static_cast<TDerived&>(*this);
-        return derivedObj.doRead(field, msg, iter, size, createNextLayerReader(), extraValues...);
+        auto reader = createNextLayerReader();
+        return derivedObj.doRead(field, msg, iter, size, reader, extraValues...);
     }
 
     template <typename TMsgPtr, typename TIter, typename... TExtraValues>

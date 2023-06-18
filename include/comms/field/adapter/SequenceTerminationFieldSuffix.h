@@ -53,7 +53,7 @@ public:
 
     constexpr std::size_t length() const
     {
-        return TermField().length() + BaseImpl::length();
+        return m_termField.length() + BaseImpl::length();
     }
 
     static constexpr std::size_t minLength()
@@ -96,23 +96,31 @@ public:
     template <typename TIter>
     comms::ErrorStatus write(TIter& iter, std::size_t len) const
     {
-        TermField termField;
-        auto trailLen = termField.length();
+        auto trailLen = m_termField.length();
         auto es = BaseImpl::write(iter, len - trailLen);
         if (es != comms::ErrorStatus::Success) {
             return es;
         }
 
-        return termField.write(iter, trailLen);
+        return m_termField.write(iter, trailLen);
     }
 
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        TermField termField;
         BaseImpl::writeNoStatus(iter);
-        termField.writeNoStatus(iter);
+        m_termField.writeNoStatus(iter);
     }
+
+    TermField& terminationFieldSuffix()
+    {
+        return m_termField;
+    }
+
+    const TermField& terminationFieldSuffix() const
+    {
+        return m_termField;
+    }    
 
 private:
     template <typename... TParams>
@@ -125,12 +133,10 @@ private:
     comms::ErrorStatus readInternal(TIter& iter, std::size_t len, FieldTag<TParams...>)
     {
         BaseImpl::clear();
-        TermField termField;
         while (true) {
             auto iterCpy = iter;
-            auto es = termField.read(iterCpy, len);
-            if ((es == comms::ErrorStatus::Success) &&
-                (termField == TermField())){
+            auto es = m_termField.read(iterCpy, len);
+            if (es == comms::ErrorStatus::Success) {
                 std::advance(iter, std::distance(iter, iterCpy));
                 return es;
             }
@@ -149,14 +155,12 @@ private:
     template <typename TIter, typename... TParams>
     comms::ErrorStatus readInternal(TIter& iter, std::size_t len, RawDataTag<TParams...>)
     {
-        TermField termField;
         std::size_t consumed = 0U;
         std::size_t termFieldLen = 0U;
         while (consumed < len) {
             auto iterCpy = iter + consumed;
-            auto es = termField.read(iterCpy, len - consumed);
-            if ((es == comms::ErrorStatus::Success) &&
-                (termField == TermField())){
+            auto es = m_termField.read(iterCpy, len - consumed);
+            if (es == comms::ErrorStatus::Success) {
                 termFieldLen = static_cast<std::size_t>(std::distance(iter + consumed, iterCpy));
                 break;
             }
@@ -180,6 +184,7 @@ private:
         return comms::ErrorStatus::Success;
     }
 
+    TermField m_termField;
 };
 
 }  // namespace adapter

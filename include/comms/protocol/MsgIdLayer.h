@@ -438,7 +438,7 @@ private:
             TExtraValues... extraValues)
           : m_iter(iter),
             m_size(size),
-            m_nextLayerReader(std::move(nextLayerReader)),
+            m_nextLayerReader(std::forward<TNextLayerReader>(nextLayerReader)),
             m_extraValues(extraValues...)
         {
         }
@@ -549,7 +549,7 @@ private:
         TNextLayerReader&& nextLayerReader,
         TExtraValues... extraValues)
     {
-        return ReadRedirectionHandler<TIter, TNextLayerReader, TExtraValues...>(iter, size, std::move(nextLayerReader), extraValues...);
+        return ReadRedirectionHandler<TIter, TNextLayerReader, TExtraValues...>(iter, size, std::forward<TNextLayerReader>(nextLayerReader), extraValues...);
     }
 
     template <typename TIter, typename TNextLayerWriter>
@@ -564,7 +564,7 @@ private:
             TNextLayerWriter&& nextLayerWriter)
           : m_iter(iter),
             m_size(size),
-            m_nextLayerWriter(std::move(nextLayerWriter))
+            m_nextLayerWriter(std::forward<TNextLayerWriter>(nextLayerWriter))
         {
         }
 
@@ -596,7 +596,7 @@ private:
         std::size_t size,
         TNextLayerWriter&& nextLayerWriter)
     {
-        return WriteRedirectionHandler<TIter, TNextLayerWriter>(iter, size, std::move(nextLayerWriter));
+        return WriteRedirectionHandler<TIter, TNextLayerWriter>(iter, size, std::forward<TNextLayerWriter>(nextLayerWriter));
     }
 
     template <typename TMsg, typename... TParams>
