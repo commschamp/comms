@@ -87,18 +87,17 @@ void UtilTestSuite::test1()
     };
     static const auto InsData2Size = std::extent<decltype(InsData2)>::value;
 
-#if COMMS_IS_GCC_11
-    COMMS_GNU_WARNING_PUSH
-    COMMS_GNU_WARNING_DISABLE("-Wstringop-overread") 
-
     iter = vec.insert(vec.begin() + DataSize, std::begin(InsData2), std::end(InsData2));
     TS_ASSERT_EQUALS(iter, vec.begin() + DataSize);
     TS_ASSERT_EQUALS(vec.size(), DataSize + InsData1Size + InsData2Size);
     TS_ASSERT(std::equal(std::begin(Data), std::end(Data), vec.begin()));
     TS_ASSERT(std::equal(std::begin(InsData2), std::end(InsData2), vec.begin() + DataSize));
-    TS_ASSERT(std::equal(std::begin(InsData1), std::end(InsData1), vec.begin() + DataSize + InsData2Size));
-    COMMS_GNU_WARNING_POP
+    COMMS_GNU_WARNING_PUSH
+#if COMMS_IS_GCC_11
+    COMMS_GNU_WARNING_DISABLE("-Wstringop-overread")     
 #endif // #if COMMS_IS_GCC_11    
+    TS_ASSERT(std::equal(std::begin(InsData1), std::end(InsData1), vec.begin() + DataSize + InsData2Size)); 
+    COMMS_GNU_WARNING_POP
 
     iter = vec.erase(vec.begin() + DataSize, vec.begin() + DataSize + InsData2Size);
     TS_ASSERT_EQUALS(iter, vec.begin() + DataSize);

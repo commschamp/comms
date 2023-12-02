@@ -1931,7 +1931,7 @@ bool operator>(const TChar* str1, const StaticString<TSize1, TChar>& str2)
 template <std::size_t TSize1, typename TChar>
 bool operator>(const StaticString<TSize1, TChar>& str1, const TChar* str2)
 {
-    return str1.operator<(str1);
+    return str1.operator<(str2);
 }
 
 /// @brief Lexicographical compare between the strings.
