@@ -12,6 +12,7 @@
 #include <string>
 #include <initializer_list>
 
+#include "comms/CompileControl.h"
 #include "comms/Assert.h"
 #include "StaticVector.h"
 
@@ -348,12 +349,17 @@ protected:
         auto begIter = begin() + std::distance(cbegin(), first);
         auto endIter = begin() + std::distance(cbegin(), last);
         for (auto iter = begIter; iter != endIter; ++iter) {
-            if (first2 == last2) {
+            if (last2 <= first2) {
                 vec_.erase(iter, endIter);
                 return;
             }
 
-            *iter = static_cast<TChar>(*first2);
+            COMMS_GNU_WARNING_PUSH
+#if COMMS_IS_GCC_12            
+            COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow") 
+#endif // #if COMMS_IS_GCC_12            
+            *iter = static_cast<TChar>(*first2); // Wrong warning reported by gcc-12
+            COMMS_GNU_WARNING_POP
             ++first2;
         }
 

@@ -812,6 +812,8 @@ void MessageTestSuite::test12()
     static const std::size_t BufSize =
         std::extent<decltype(Buf)>::value;
 
+    static_assert(BufSize == 3U, "Invalid assumption");
+
     auto readIter = comms::readIteratorFor(interface, Buf);
     auto es = interface.read(readIter, BufSize);
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
@@ -823,8 +825,7 @@ void MessageTestSuite::test12()
             std::begin(Buf), std::end(Buf), msg.field_data().value().begin());
     TS_ASSERT(equal);
 
-    std::vector<std::uint8_t> outBuf;
-    outBuf.resize(BufSize);
+    std::vector<std::uint8_t> outBuf(BufSize, 0U);
     auto writeIter = comms::writeIteratorFor<BeMessageBase>(&outBuf[0]);
     es = interface.write(writeIter, outBuf.size());
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
