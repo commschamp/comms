@@ -147,6 +147,10 @@ public:
 
     T* begin()
     {
+        if (size() == 0U) {
+            return nullptr;
+        }
+        
         return &(elem(0));
     }
 
@@ -157,6 +161,10 @@ public:
 
     const T* cbegin() const
     {
+        if (size() == 0U) {
+            return nullptr;
+        }
+
         return &(elem(0));
     }
 
@@ -199,11 +207,19 @@ public:
 
     T* data()
     {
+        if (size() == 0U) {
+            return nullptr;
+        }
+
         return &(elem(0));
     }
 
     const T* data() const
     {
+        if (size() == 0U) {
+            return nullptr;
+        }
+                
         return &(elem(0));
     }
 
