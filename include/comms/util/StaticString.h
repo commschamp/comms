@@ -355,7 +355,7 @@ protected:
             }
 
             COMMS_GNU_WARNING_PUSH
-#if COMMS_IS_GCC_12            
+#if COMMS_IS_GCC_11_OR_ABOVE            
             COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow") 
 #endif // #if COMMS_IS_GCC_12            
             *iter = static_cast<TChar>(*first2); // Wrong warning reported by gcc-12
