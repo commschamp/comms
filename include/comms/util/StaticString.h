@@ -1972,6 +1972,15 @@ bool operator!=(const TChar* str1, const StaticString<TSize1, TChar>& str2)
     return !(str2 == str1);
 }
 
+/// @brief Inequality compare between the strings.
+/// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
+/// @related StaticString
+template <std::size_t TSize1, std::size_t TSize2, typename TChar>
+bool operator!=(const StaticString<TSize1, TChar>& str1, const StaticString<TSize2, TChar>& str2)
+{
+    return !(str1 == str2);
+}
+
 namespace details
 {
 
