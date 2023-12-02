@@ -1874,6 +1874,15 @@ bool operator<(const TChar* str1, const StaticString<TSize1, TChar>& str2)
 /// @brief Lexicographical compare between the strings.
 /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
 /// @related StaticString
+template <std::size_t TSize1, typename TChar>
+bool operator<(const StaticString<TSize1, TChar>& str1, const TChar* str2)
+{
+    return str1.operator<(str2);
+}
+
+/// @brief Lexicographical compare between the strings.
+/// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
+/// @related StaticString
 template <std::size_t TSize1, std::size_t TSize2, typename TChar>
 bool operator<=(const StaticString<TSize1, TChar>& str1, const StaticString<TSize2, TChar>& str2)
 {
@@ -1914,6 +1923,15 @@ template <std::size_t TSize1, typename TChar>
 bool operator>(const TChar* str1, const StaticString<TSize1, TChar>& str2)
 {
     return (str2 < str1);
+}
+
+/// @brief Lexicographical compare between the strings.
+/// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
+/// @related StaticString
+template <std::size_t TSize1, typename TChar>
+bool operator>(const StaticString<TSize1, TChar>& str1, const TChar* str2)
+{
+    return str1.operator<(str1);
 }
 
 /// @brief Lexicographical compare between the strings.
@@ -1960,7 +1978,25 @@ bool operator==(const StaticString<TSize1, TChar>& str1, const StaticString<TSiz
 template <std::size_t TSize1, typename TChar>
 bool operator==(const TChar* str1, const StaticString<TSize1, TChar>& str2)
 {
-    return str2 == str1;
+    return str2.operator==(str1);
+}
+
+/// @brief Equality compare between the strings.
+/// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
+/// @related StaticString
+template <std::size_t TSize1, typename TChar>
+bool operator==(const StaticString<TSize1, TChar>& str1, const TChar* str2)
+{
+    return str1.operator==(str2);
+}
+
+/// @brief Inequality compare between the strings.
+/// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
+/// @related StaticString
+template <std::size_t TSize1, std::size_t TSize2, typename TChar>
+bool operator!=(const StaticString<TSize1, TChar>& str1, const StaticString<TSize2, TChar>& str2)
+{
+    return !(str1 == str2);
 }
 
 /// @brief Inequality compare between the strings.
@@ -1975,8 +2011,8 @@ bool operator!=(const TChar* str1, const StaticString<TSize1, TChar>& str2)
 /// @brief Inequality compare between the strings.
 /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
 /// @related StaticString
-template <std::size_t TSize1, std::size_t TSize2, typename TChar>
-bool operator!=(const StaticString<TSize1, TChar>& str1, const StaticString<TSize2, TChar>& str2)
+template <std::size_t TSize1, typename TChar>
+bool operator!=(const StaticString<TSize1, TChar>& str1, const TChar* str2)
 {
     return !(str1 == str2);
 }
