@@ -811,14 +811,14 @@ public:
     /// @brief Default constructor
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString()
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
     }
 
     /// @brief Constructor variant
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(size_type count, value_type ch)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(count, ch);
     }
@@ -831,7 +831,7 @@ public:
         const StaticString<TOtherSize, TChar>& other,
         size_type pos,
         size_type count = npos)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(other, pos, count);
     }
@@ -839,7 +839,7 @@ public:
     /// @brief Constructor variant.
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(const_pointer str, size_type count)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(str, count);
     }
@@ -847,7 +847,7 @@ public:
     /// @brief Constructor variant.
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(const_pointer str)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(str);
     }
@@ -856,7 +856,7 @@ public:
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     template <typename TIter>
     StaticString(TIter first, TIter last)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(first, last);
     }
@@ -864,7 +864,7 @@ public:
     /// @brief Copy constructor.
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(const StaticString& other)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(other);
     }
@@ -873,7 +873,7 @@ public:
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     template <std::size_t TOtherSize>
     explicit StaticString(const StaticString<TOtherSize, TChar>& other)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(other);
     }
@@ -881,7 +881,7 @@ public:
     /// @brief Constructor variant.
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(std::initializer_list<value_type> init)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(init.begin(), init.end());
     }

@@ -557,18 +557,18 @@ public:
     using const_reverse_iterator = typename Base::const_reverse_iterator;
 
     StaticVectorGeneric()
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
     }
 
     StaticVectorGeneric(size_type count, const T& value)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(count, value);
     }
 
     explicit StaticVectorGeneric(size_type count)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         COMMS_ASSERT(count < Base::capacity());
         while (0 < count) {
@@ -579,26 +579,26 @@ public:
 
     template <typename TIter>
     StaticVectorGeneric(TIter from, TIter to)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(from, to);
     }
 
     template <std::size_t TOtherSize>
     StaticVectorGeneric(const StaticVectorGeneric<T, TOtherSize>& other)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(other.begin(), other.end());
     }
 
     StaticVectorGeneric(const StaticVectorGeneric& other)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(other.begin(), other.end());
     }
 
     StaticVectorGeneric(std::initializer_list<value_type> init)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(init.begin(), init.end());
     }
