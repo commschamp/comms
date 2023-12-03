@@ -5,6 +5,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// @file
+/// @brief Contains definition of the "Scope Guard" idiom, see @ref comms::util::ScopeGuard.
+
 #pragma once
 
 #include <memory>
@@ -159,8 +162,6 @@ ScopeGuard<decltype(std::bind(std::forward<TFunc>(func),
     auto bindObj = std::bind(std::forward<TFunc>(func), std::forward<TParams>(args)...);
     return ScopeGuard<decltype(bindObj)>(std::move(bindObj));
 }
-
-// Class implementation part
 
 }  // namespace util
 
