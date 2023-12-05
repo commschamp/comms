@@ -19,6 +19,15 @@
 #include "comms/CompileControl.h"
 #include "comms/Assert.h"
 
+COMMS_GNU_WARNING_PUSH
+
+#if COMMS_IS_GCC_12 && defined(NDEBUG)
+// Release compilation with gcc-12
+// assumes size / capacity of the StaticVectorBase is 0 and generates
+// unjustified warnings.
+COMMS_GNU_WARNING_DISABLE("-Warray-bounds")
+#endif
+
 namespace comms
 {
 
@@ -272,16 +281,14 @@ public:
             auto moveEndIter = moveBegIter + (tailCount - count);
             COMMS_ASSERT(moveEndIter < pushEndIter);
 
+            COMMS_GNU_WARNING_PUSH
 #if COMMS_IS_GCC_12 && defined(NDEBUG)
-            // For some reason RELEASE compilation with gcc-12
+            // Release compilation with gcc-12
             // gives a warning here, while any debug build works fine.
-            COMMS_GNU_WARNING_PUSH    
             COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow")
+#endif                  
             std::move_backward(moveBegIter, moveEndIter, pushEndIter);
-            COMMS_GNU_WARNING_POP
-#else
-            std::move_backward(moveBegIter, moveEndIter, pushEndIter);            
-#endif                 
+            COMMS_GNU_WARNING_POP           
 
             auto* assignBegIter = posIter;
             auto* assignEndIter = assignBegIter + count;
@@ -2012,3 +2019,5 @@ void swap(comms::util::StaticVector<T, TSize1>& v1, comms::util::StaticVector<T,
 }
 
 }
+
+COMMS_GNU_WARNING_POP
