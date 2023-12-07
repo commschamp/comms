@@ -17,6 +17,7 @@
 #include "comms/ErrorStatus.h"
 #include "comms/util/access.h"
 #include "comms/util/assign.h"
+#include "comms/util/MaxSizeOf.h"
 #include "comms/util/StaticVector.h"
 #include "comms/util/StaticString.h"
 #include "comms/util/detect.h"
@@ -161,6 +162,7 @@ public:
 
     ElementType& createBack()
     {
+        COMMS_ASSERT(value_.size() < value_.max_size());
         value_.emplace_back();
         updateElemVersion(value_.back(), VersionTag<>());
         return value_.back();
@@ -654,10 +656,8 @@ private:
         value_.clear();
         auto remLen = len;
         while (0 < remLen) {
-            ElementType& elem = createBack();
-            auto es = readElement(elem, iter, remLen);
+            auto es = createAndReadNextElementInternal(iter, remLen);
             if (es != ErrorStatus::Success) {
-                value_.pop_back();
                 return es;
             }
         }
@@ -668,7 +668,7 @@ private:
     template <typename TIter, typename... TParams>
     ErrorStatus readInternal(TIter& iter, std::size_t len, RawDataTag<TParams...>)
     {
-        comms::util::assign(value(), iter, iter + len);
+        comms::util::assign(value(), iter, iter + std::min(len, comms::util::maxSizeOf(value())));
         std::advance(iter, len);
         return ErrorStatus::Success;
     }
@@ -678,10 +678,8 @@ private:
     {
         clear();
         while (0 < count) {
-            auto& elem = createBack();
-            auto es = readElement(elem, iter, len);
+            auto es = createAndReadNextElementInternal(iter, len);
             if (es != ErrorStatus::Success) {
-                value_.pop_back();
                 return es;
             }
 
@@ -706,8 +704,14 @@ private:
     {
         clear();
         while (0 < count) {
-            auto& elem = createBack();
-            readElementNoStatus(elem, iter);
+            if (value_.size() < value_.max_size()) {
+                auto& elem = createBack();
+                readElementNoStatus(elem, iter);
+            }
+            else {
+                ElementType elem;
+                readElementNoStatus(elem, iter);
+            }
             --count;
         }
     }
@@ -771,6 +775,23 @@ private:
     static constexpr bool hasWriteNoStatusInternal(IntegralElemTag<TParams...>)
     {
         return true;
+    }
+
+    template <typename TIter>
+    comms::ErrorStatus createAndReadNextElementInternal(TIter& iter, std::size_t& len)
+    {
+        if (value_.size() < value_.max_size()) {
+            auto& elem = createBack();
+            auto es = readElement(elem, iter, len);
+            if (es != ErrorStatus::Success) {
+                value_.pop_back();
+            }
+
+            return es;
+        }
+        
+        ElementType elem;
+        return readElement(elem, iter, len);
     }
 
     ValueType value_;

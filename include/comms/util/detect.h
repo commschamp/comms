@@ -100,6 +100,17 @@ constexpr bool isStdSpan()
     return details::IsStdSpan<T>::Value;
 }
 
+/// @brief Detect whether provided type has @b max_size() member function
+/// @details
+///     @code
+///         static_assert(comms::util::detect::hasMaxSizeFunc<std::string>(), "std::string is expected to have max_size() member function.");
+///     @endcode
+template <typename T>
+constexpr bool hasMaxSizeFunc()
+{
+    return details::HasMaxSizeFunc<T>::Value;
+}
+
 } // namespace detect
 
 } // namespace util
