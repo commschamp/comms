@@ -73,6 +73,8 @@
 #define COMMS_IS_GCC_10 (COMMS_IS_GCC && (__GNUC__ == 10))
 #define COMMS_IS_GCC_10_OR_ABOVE (COMMS_IS_GCC && (__GNUC__ >= 10))
 #define COMMS_IS_GCC_10_OR_BELOW (COMMS_IS_GCC && (__GNUC__ <= 10))
+#define COMMS_IS_GCC_11 (COMMS_IS_GCC && (__GNUC__ == 11))
+#define COMMS_IS_GCC_11_OR_ABOVE (COMMS_IS_GCC && (__GNUC__ >= 11))
 #define COMMS_IS_GCC_12 (COMMS_IS_GCC && (__GNUC__ == 12))
 #define COMMS_IS_CLANG_7_OR_ABOVE (COMMS_IS_CLANG && (__clang_major__ >= 7))
 #define COMMS_IS_CLANG_8 (COMMS_IS_CLANG && (__clang_major__ == 8))

@@ -5,6 +5,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// @file
+/// @brief Contains comms::util::StaticString class.
+
 #pragma once
 
 #include <algorithm>
@@ -12,6 +15,7 @@
 #include <string>
 #include <initializer_list>
 
+#include "comms/CompileControl.h"
 #include "comms/Assert.h"
 #include "StaticVector.h"
 
@@ -348,12 +352,17 @@ protected:
         auto begIter = begin() + std::distance(cbegin(), first);
         auto endIter = begin() + std::distance(cbegin(), last);
         for (auto iter = begIter; iter != endIter; ++iter) {
-            if (first2 == last2) {
+            if (last2 <= first2) {
                 vec_.erase(iter, endIter);
                 return;
             }
 
-            *iter = static_cast<TChar>(*first2);
+            COMMS_GNU_WARNING_PUSH
+#if COMMS_IS_GCC_11_OR_ABOVE            
+            COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow") 
+#endif // #if COMMS_IS_GCC_12            
+            *iter = static_cast<TChar>(*first2); // Wrong warning reported by gcc-12
+            COMMS_GNU_WARNING_POP
             ++first2;
         }
 
@@ -811,14 +820,14 @@ public:
     /// @brief Default constructor
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString()
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
     }
 
     /// @brief Constructor variant
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(size_type count, value_type ch)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(count, ch);
     }
@@ -831,7 +840,7 @@ public:
         const StaticString<TOtherSize, TChar>& other,
         size_type pos,
         size_type count = npos)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(other, pos, count);
     }
@@ -839,7 +848,7 @@ public:
     /// @brief Constructor variant.
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(const_pointer str, size_type count)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(str, count);
     }
@@ -847,7 +856,7 @@ public:
     /// @brief Constructor variant.
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(const_pointer str)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(str);
     }
@@ -856,7 +865,7 @@ public:
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     template <typename TIter>
     StaticString(TIter first, TIter last)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(first, last);
     }
@@ -864,7 +873,7 @@ public:
     /// @brief Copy constructor.
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(const StaticString& other)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(other);
     }
@@ -873,7 +882,7 @@ public:
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     template <std::size_t TOtherSize>
     explicit StaticString(const StaticString<TOtherSize, TChar>& other)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(other);
     }
@@ -881,7 +890,7 @@ public:
     /// @brief Constructor variant.
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(std::initializer_list<value_type> init)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(init.begin(), init.end());
     }
@@ -1868,6 +1877,15 @@ bool operator<(const TChar* str1, const StaticString<TSize1, TChar>& str2)
 /// @brief Lexicographical compare between the strings.
 /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
 /// @related StaticString
+template <std::size_t TSize1, typename TChar>
+bool operator<(const StaticString<TSize1, TChar>& str1, const TChar* str2)
+{
+    return str1.operator<(str2);
+}
+
+/// @brief Lexicographical compare between the strings.
+/// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
+/// @related StaticString
 template <std::size_t TSize1, std::size_t TSize2, typename TChar>
 bool operator<=(const StaticString<TSize1, TChar>& str1, const StaticString<TSize2, TChar>& str2)
 {
@@ -1908,6 +1926,15 @@ template <std::size_t TSize1, typename TChar>
 bool operator>(const TChar* str1, const StaticString<TSize1, TChar>& str2)
 {
     return (str2 < str1);
+}
+
+/// @brief Lexicographical compare between the strings.
+/// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
+/// @related StaticString
+template <std::size_t TSize1, typename TChar>
+bool operator>(const StaticString<TSize1, TChar>& str1, const TChar* str2)
+{
+    return str1.operator<(str2);
 }
 
 /// @brief Lexicographical compare between the strings.
@@ -1954,7 +1981,25 @@ bool operator==(const StaticString<TSize1, TChar>& str1, const StaticString<TSiz
 template <std::size_t TSize1, typename TChar>
 bool operator==(const TChar* str1, const StaticString<TSize1, TChar>& str2)
 {
-    return str2 == str1;
+    return str2.operator==(str1);
+}
+
+/// @brief Equality compare between the strings.
+/// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
+/// @related StaticString
+template <std::size_t TSize1, typename TChar>
+bool operator==(const StaticString<TSize1, TChar>& str1, const TChar* str2)
+{
+    return str1.operator==(str2);
+}
+
+/// @brief Inequality compare between the strings.
+/// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
+/// @related StaticString
+template <std::size_t TSize1, std::size_t TSize2, typename TChar>
+bool operator!=(const StaticString<TSize1, TChar>& str1, const StaticString<TSize2, TChar>& str2)
+{
+    return !(str1 == str2);
 }
 
 /// @brief Inequality compare between the strings.
@@ -1964,6 +2009,15 @@ template <std::size_t TSize1, typename TChar>
 bool operator!=(const TChar* str1, const StaticString<TSize1, TChar>& str2)
 {
     return !(str2 == str1);
+}
+
+/// @brief Inequality compare between the strings.
+/// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
+/// @related StaticString
+template <std::size_t TSize1, typename TChar>
+bool operator!=(const StaticString<TSize1, TChar>& str1, const TChar* str2)
+{
+    return !(str1 == str2);
 }
 
 namespace details

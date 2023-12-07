@@ -6,8 +6,8 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file comms/util/StaticQueue.h
-/// This file contains the definition and implementation of the static queue,
-/// which also can be used as circular buffer.
+/// @brief This file contains the definition and implementation of the static queue,
+///     which also can be used as circular buffer.
 
 #pragma once
 

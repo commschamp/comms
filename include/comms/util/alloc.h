@@ -6,8 +6,8 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file comms/util/alloc.h
-/// This file contains various generic allocator classes that may be used
-/// to allocate objects using dynamic memory or "in-place" allocations.
+/// @brief This file contains various generic allocator classes that may be used
+///     to allocate objects using dynamic memory or "in-place" allocations.
 
 
 #pragma once

@@ -5,6 +5,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// @file
+/// @brief Contains comms::util::StaticVector class.
+
 #pragma once
 
 #include <cstddef>
@@ -15,6 +18,15 @@
 
 #include "comms/CompileControl.h"
 #include "comms/Assert.h"
+
+COMMS_GNU_WARNING_PUSH
+
+#if COMMS_IS_GCC_12 && defined(NDEBUG)
+// Release compilation with gcc-12
+// assumes size / capacity of the StaticVectorBase is 0 and generates
+// unjustified warnings.
+COMMS_GNU_WARNING_DISABLE("-Warray-bounds")
+#endif
 
 namespace comms
 {
@@ -147,6 +159,10 @@ public:
 
     T* begin()
     {
+        if (size() == 0U) {
+            return nullptr;
+        }
+        
         return &(elem(0));
     }
 
@@ -157,6 +173,10 @@ public:
 
     const T* cbegin() const
     {
+        if (size() == 0U) {
+            return nullptr;
+        }
+
         return &(elem(0));
     }
 
@@ -199,11 +219,19 @@ public:
 
     T* data()
     {
+        if (size() == 0U) {
+            return nullptr;
+        }
+
         return &(elem(0));
     }
 
     const T* data() const
     {
+        if (size() == 0U) {
+            return nullptr;
+        }
+                
         return &(elem(0));
     }
 
@@ -253,16 +281,14 @@ public:
             auto moveEndIter = moveBegIter + (tailCount - count);
             COMMS_ASSERT(moveEndIter < pushEndIter);
 
+            COMMS_GNU_WARNING_PUSH
 #if COMMS_IS_GCC_12 && defined(NDEBUG)
-            // For some reason RELEASE compilation with gcc-12
+            // Release compilation with gcc-12
             // gives a warning here, while any debug build works fine.
-            COMMS_GNU_WARNING_PUSH    
             COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow")
+#endif                  
             std::move_backward(moveBegIter, moveEndIter, pushEndIter);
-            COMMS_GNU_WARNING_POP
-#else
-            std::move_backward(moveBegIter, moveEndIter, pushEndIter);            
-#endif                 
+            COMMS_GNU_WARNING_POP           
 
             auto* assignBegIter = posIter;
             auto* assignEndIter = assignBegIter + count;
@@ -557,18 +583,18 @@ public:
     using const_reverse_iterator = typename Base::const_reverse_iterator;
 
     StaticVectorGeneric()
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
     }
 
     StaticVectorGeneric(size_type count, const T& value)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(count, value);
     }
 
     explicit StaticVectorGeneric(size_type count)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         COMMS_ASSERT(count < Base::capacity());
         while (0 < count) {
@@ -579,26 +605,26 @@ public:
 
     template <typename TIter>
     StaticVectorGeneric(TIter from, TIter to)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(from, to);
     }
 
     template <std::size_t TOtherSize>
     StaticVectorGeneric(const StaticVectorGeneric<T, TOtherSize>& other)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(other.begin(), other.end());
     }
 
     StaticVectorGeneric(const StaticVectorGeneric& other)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(other.begin(), other.end());
     }
 
     StaticVectorGeneric(std::initializer_list<value_type> init)
-      : Base(&StorageBase::data_[0], StorageBase::data_.size())
+      : Base(StorageBase::data_.data(), StorageBase::data_.size())
     {
         assign(init.begin(), init.end());
     }
@@ -1409,6 +1435,490 @@ public:
     }
 };
 
+// Template specialization for zero sized vectors
+template <typename T>
+class StaticVector<T, 0U>
+{
+    using StorageType = std::array<T, 0U>;
+
+    template <typename U, std::size_t TOtherSize>
+    friend class StaticVector;
+
+public:
+    using value_type = typename StorageType::value_type;
+    using size_type = typename StorageType::size_type;
+    using difference_type = typename StorageType::difference_type;
+    using reference = typename StorageType::reference;
+    using const_reference = typename StorageType::const_reference;
+    using pointer = typename StorageType::pointer;
+    using const_pointer = typename StorageType::const_pointer;
+    using iterator = typename StorageType::iterator;
+    using const_iterator = typename StorageType::const_iterator;
+    using reverse_iterator = typename StorageType::reverse_iterator;
+    using const_reverse_iterator = typename StorageType::const_reverse_iterator;
+
+    StaticVector() = default;
+
+    StaticVector(size_type count, const T& value)
+    {
+        static_cast<void>(value);
+        if (count == 0U) {
+            return;
+        }
+
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);
+    }
+
+    explicit StaticVector(size_type count)
+    {
+        if (count == 0U) {
+            return;
+        }
+
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+    }
+
+    template <typename TIter>
+    StaticVector(TIter from, TIter to)
+    {
+        if (from == to) {
+            return;
+        }
+
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+    }
+
+    template <std::size_t TOtherSize>
+    StaticVector(const StaticVector<T, TOtherSize>& other)
+    {
+        static_cast<void>(other);
+        if (TOtherSize == 0U) {
+            return;
+        }
+
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+    }
+
+    StaticVector(const StaticVector& other)
+    {
+        static_cast<void>(other);
+    }
+
+    StaticVector(std::initializer_list<value_type> init)
+    {
+        if (std::begin(init) == std::end(init)) {
+            return;
+        }
+
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+    }
+
+    ~StaticVector() noexcept = default;
+
+    StaticVector& operator=(const StaticVector&) = default;
+
+    template <std::size_t TOtherSize>
+    StaticVector& operator=(const StaticVector<T, TOtherSize>& other)
+    {
+        static_cast<void>(other);
+        if (TOtherSize == 0U) {
+            return *this;
+        }
+
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);
+        return *this;
+    }
+
+    StaticVector& operator=(std::initializer_list<value_type> init)
+    {
+        if (std::begin(init) == std::end(init)) {
+            return *this;
+        }
+
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);
+        return *this;
+    }
+
+    void assign(size_type count, const T& value)
+    {
+        static_cast<void>(value);
+        if (count == 0U) {
+            return;
+        }
+
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);
+    }
+
+    template <typename TIter>
+    void assign(TIter from, TIter to)
+    {
+        if (from == to) {
+            return;
+        }
+
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);
+    }
+
+    void assign(std::initializer_list<value_type> init)
+    {
+        if (std::begin(init) == std::end(init)) {
+            return;
+        }
+
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);
+    }
+
+    reference at(size_type pos)
+    {
+        static_cast<void>(pos);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+        return m_data[pos];
+    }
+
+    const_reference at(size_type pos) const
+    {
+        static_cast<void>(pos);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+        return m_data[pos];
+    }
+
+    reference operator[](size_type pos)
+    {
+        static_cast<void>(pos);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+        return m_data[pos];
+    }
+
+    const_reference operator[](size_type pos) const
+    {
+        static_cast<void>(pos);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+        return m_data[pos];
+    }
+
+    reference front()
+    {
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+        return m_data.front();
+    }
+
+    const_reference front() const
+    {
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+        return m_data.front();
+    }
+
+    reference back()
+    {
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+        return m_data.back();
+    }
+
+    const_reference back() const
+    {
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+        return m_data.back();
+    }
+
+    pointer data()
+    {
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+        return m_data.data();
+    }
+
+    const_pointer data() const
+    {
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);        
+        return m_data.data();
+    }
+
+    iterator begin()
+    {
+        return m_data.begin();
+    }
+
+    const_iterator begin() const
+    {
+        return m_data.begin();
+    }
+
+    const_iterator cbegin() const
+    {
+        return m_data.cbegin();
+    }
+
+    iterator end()
+    {
+        return m_data.end();
+    }
+
+    const_iterator end() const
+    {
+        return m_data.end();
+    }
+
+    const_iterator cend() const
+    {
+        return m_data.cend();
+    }
+
+    reverse_iterator rbegin()
+    {
+        return m_data.rbegin();
+    }
+
+    const_reverse_iterator rbegin() const
+    {
+        return m_data.rbegin();
+    }
+
+    const_reverse_iterator crbegin() const
+    {
+        return m_data.crbegin();
+    }
+
+    reverse_iterator rend()
+    {
+        return m_data.rend();
+    }
+
+    const_reverse_iterator rend() const
+    {
+        return m_data.rend();
+    }
+
+    const_reverse_iterator crend() const
+    {
+        return m_data.crend();
+    }
+
+    bool empty() const
+    {
+        return m_data.empty();
+    }
+
+    size_type size() const
+    {
+        return m_data.size();
+    }
+
+    size_type max_size() const
+    {
+        return m_data.max_size();
+    }
+
+    void reserve(size_type new_cap)
+    {
+        static_cast<void>(new_cap);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);           
+    }
+
+    size_type capacity() const
+    {
+        return max_size();
+    }
+
+    void shrink_to_fit()
+    {
+    }
+
+    void clear()
+    {
+    }
+
+    iterator insert(const_iterator iter, const T& value)
+    {
+        static_cast<void>(iter);
+        static_cast<void>(value);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);           
+        return m_data.end();
+    }
+
+    iterator insert(const_iterator iter, T&& value)
+    {
+        static_cast<void>(iter);
+        static_cast<void>(value);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);           
+        return m_data.end();
+    }
+
+    iterator insert(const_iterator iter, size_type count, const T& value)
+    {
+        static_cast<void>(iter);
+        static_cast<void>(count);
+        static_cast<void>(value);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);           
+        return m_data.end();
+    }
+
+    template <typename TIter>
+    iterator insert(const_iterator iter, TIter from, TIter to)
+    {
+        static_cast<void>(iter);
+        static_cast<void>(from);
+        static_cast<void>(to);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);           
+        return m_data.end();
+    }
+
+    iterator insert(const_iterator iter, std::initializer_list<value_type> init)
+    {
+        static_cast<void>(iter);
+        static_cast<void>(init);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);           
+        return m_data.end();
+    }
+
+    template <typename... TArgs>
+    iterator emplace(const_iterator iter, TArgs&&...)
+    {
+        static_cast<void>(iter);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);           
+        return m_data.end();
+    }
+
+    iterator erase(const_iterator iter)
+    {
+        static_cast<void>(iter);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);           
+        return m_data.end();
+    }
+
+    iterator erase(const_iterator from, const_iterator to)
+    {
+        if (from != to) {
+            static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+            static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+            COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);           
+        }
+        return m_data.end();        
+    }
+
+    void push_back(const T& value)
+    {
+        static_cast<void>(value);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);          
+    }
+
+    void push_back(T&& value)
+    {
+        static_cast<void>(value);
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);  
+    }
+
+    template <typename... TArgs>
+    void emplace_back(TArgs&&...)
+    {
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector); 
+    }
+
+    void pop_back()
+    {
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector); 
+    }
+
+    void resize(size_type count)
+    {
+        if (count == 0U) {
+            return;
+        }
+
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);         
+    }
+
+    void resize(size_type count, const value_type& value)
+    {
+        static_cast<void>(value);
+        if (count == 0U) {
+            return;
+        }
+
+        static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+        static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+        COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector); 
+    }
+
+    template <std::size_t TOtherSize>
+    void swap(StaticVector<T, TOtherSize>& other)
+    {
+        static_cast<void>(other);
+        if (TOtherSize != 0U) {
+            static constexpr bool Must_not_be_called_for_zero_sized_vector = false;
+            static_cast<void>(Must_not_be_called_for_zero_sized_vector);
+            COMMS_ASSERT(Must_not_be_called_for_zero_sized_vector);             
+        }
+    }
+
+private:
+    StorageType m_data;    
+};
+
 /// @brief Lexicographically compares the values in the vector.
 /// @see <a href="http://en.cppreference.com/w/cpp/container/vector/operator_cmp">Reference</a>
 /// @related StaticVector
@@ -1509,3 +2019,5 @@ void swap(comms::util::StaticVector<T, TSize1>& v1, comms::util::StaticVector<T,
 }
 
 }
+
+COMMS_GNU_WARNING_POP

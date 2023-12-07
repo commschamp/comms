@@ -17,6 +17,7 @@
 #include "comms/ErrorStatus.h"
 #include "comms/util/access.h"
 #include "comms/util/assign.h"
+#include "comms/util/MaxSizeOf.h"
 #include "comms/util/StaticVector.h"
 #include "comms/util/StaticString.h"
 #include "comms/util/detect.h"
@@ -186,9 +187,10 @@ public:
 
         using ConstPointer = typename ValueType::const_pointer;
         auto* str = reinterpret_cast<ConstPointer>(&(*iter));
-        std::advance(iter, len);
-        auto* endStr = reinterpret_cast<ConstPointer>(&(*iter));
+        auto endStr = str;
+        std::advance(endStr, std::min(len, comms::util::maxSizeOf(value_)));
         comms::util::assign(value_, str, endStr);
+        std::advance(iter, len);
         return ErrorStatus::Success;
     }
 

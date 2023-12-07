@@ -56,6 +56,12 @@ public:
     void test28();
     void test29();
     void test30();
+    void test31();
+    void test32();
+    void test33();
+    void test34();
+    void test35();
+    void test36();
 
 private:
     template <typename TField>
@@ -2027,6 +2033,190 @@ void FieldsTestSuite2::test30()
         TS_ASSERT_EQUALS(field.accessField_mem1().field_val().value(), 0x0203);
         TS_ASSERT_EQUALS(field.length(), 3U);
     } while (false);
+}
+
+void FieldsTestSuite2::test31()
+{
+    typedef comms::field::ArrayList<
+        comms::Field<BigEndianOpt>,
+        comms::field::IntValue<
+            comms::Field<BigEndianOpt>,
+            std::uint16_t
+        >,
+        comms::option::SequenceSizeFieldPrefix<
+            comms::field::IntValue<
+                comms::Field<BigEndianOpt>,
+                std::uint8_t
+            >
+        >,
+        comms::option::app::FixedSizeStorage<2>
+    > Field;
+
+    Field field;
+
+    const char Buf[] = {
+        0x3, // count
+        0x1, 0x2, // elem 0
+        0x3, 0x4, // elem 1
+        0x5, 0x6  // elem 2
+    };
+    const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    auto readIter = &Buf[0];
+    auto es = field.read(readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS(field.value().size(), field.value().max_size());
+    TS_ASSERT_EQUALS(static_cast<std::size_t>(std::distance(&Buf[0], readIter)), BufSize)
+}
+
+void FieldsTestSuite2::test32()
+{
+    typedef comms::field::ArrayList<
+        comms::Field<BigEndianOpt>,
+        comms::field::IntValue<
+            comms::Field<BigEndianOpt>,
+            std::uint16_t
+        >,
+        comms::option::SequenceSerLengthFieldPrefix<
+            comms::field::IntValue<
+                comms::Field<BigEndianOpt>,
+                std::uint8_t
+            >
+        >,
+        comms::option::app::FixedSizeStorage<2>
+    > Field;
+
+    Field field;
+
+    const char Buf[] = {
+        0x6, // length
+        0x1, 0x2, // elem 0
+        0x3, 0x4, // elem 1
+        0x5, 0x6  // elem 2
+    };
+    const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    auto readIter = &Buf[0];
+    auto es = field.read(readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS(field.value().size(), field.value().max_size());
+    TS_ASSERT_EQUALS(static_cast<std::size_t>(std::distance(&Buf[0], readIter)), BufSize)
+}
+
+void FieldsTestSuite2::test33()
+{
+    typedef comms::field::ArrayList<
+        comms::Field<BigEndianOpt>,
+        std::uint8_t,
+        comms::option::SequenceSizeFieldPrefix<
+            comms::field::IntValue<
+                comms::Field<BigEndianOpt>,
+                std::uint8_t
+            >
+        >,
+        comms::option::app::FixedSizeStorage<2>
+    > Field;
+
+    Field field;
+
+    const char Buf[] = {
+        0x3, // count
+        0x1, 0x2, 0x3
+    };
+    const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    auto readIter = &Buf[0];
+    auto es = field.read(readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS(field.value().size(), field.value().max_size());
+    TS_ASSERT_EQUALS(static_cast<std::size_t>(std::distance(&Buf[0], readIter)), BufSize)
+}
+
+void FieldsTestSuite2::test34()
+{
+    typedef comms::field::ArrayList<
+        comms::Field<BigEndianOpt>,
+        std::uint8_t,
+        comms::option::SequenceSerLengthFieldPrefix<
+            comms::field::IntValue<
+                comms::Field<BigEndianOpt>,
+                std::uint8_t
+            >
+        >,
+        comms::option::app::FixedSizeStorage<2>
+    > Field;
+
+    Field field;
+
+    const char Buf[] = {
+        0x3, // length
+        0x1, 0x2, 0x3
+    };
+    const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    auto readIter = &Buf[0];
+    auto es = field.read(readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS(field.value().size(), field.value().max_size());
+    TS_ASSERT_EQUALS(static_cast<std::size_t>(std::distance(&Buf[0], readIter)), BufSize)
+}
+
+void FieldsTestSuite2::test35()
+{
+    typedef comms::field::String<
+        comms::Field<BigEndianOpt>,
+        comms::option::SequenceSerLengthFieldPrefix<
+            comms::field::IntValue<
+                comms::Field<BigEndianOpt>,
+                std::uint8_t
+            >
+        >,
+        comms::option::app::FixedSizeStorage<2>
+    > Field;
+
+    Field field;
+
+    const char Buf[] = {
+        0x5, // length
+        'h', 'e', 'l', 'l', '0'
+    };
+    const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    auto readIter = &Buf[0];
+    auto es = field.read(readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS(field.value().size(), field.value().max_size());
+    TS_ASSERT_EQUALS(field.value(), "he");
+    TS_ASSERT_EQUALS(static_cast<std::size_t>(std::distance(&Buf[0], readIter)), BufSize)
+}
+
+void FieldsTestSuite2::test36()
+{
+    typedef comms::field::String<
+        comms::Field<BigEndianOpt>,
+        comms::option::SequenceSizeFieldPrefix<
+            comms::field::IntValue<
+                comms::Field<BigEndianOpt>,
+                std::uint8_t
+            >
+        >,
+        comms::option::app::FixedSizeStorage<2>
+    > Field;
+
+    Field field;
+
+    const char Buf[] = {
+        0x5, // count
+        'h', 'e', 'l', 'l', '0'
+    };
+    const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    auto readIter = &Buf[0];
+    auto es = field.read(readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS(field.value().size(), field.value().max_size());
+    TS_ASSERT_EQUALS(field.value(), "he");
+    TS_ASSERT_EQUALS(static_cast<std::size_t>(std::distance(&Buf[0], readIter)), BufSize)
 }
 
 template <typename TField>
