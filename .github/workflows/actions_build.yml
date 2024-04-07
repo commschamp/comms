@@ -304,6 +304,7 @@ jobs:
       fail-fast: false
       matrix:
         type: [Debug, Release, MinSizeRel]
+        arch: [Win32, x64]
         cpp: [11, 14, 17]
 
     steps:
@@ -315,7 +316,7 @@ jobs:
     - name: Configure CMake
       working-directory: ${{runner.workspace}}/build
       run: |
-        cmake %GITHUB_WORKSPACE% -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON
+        cmake %GITHUB_WORKSPACE% -A ${{matrix.arch}} -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
@@ -335,6 +336,7 @@ jobs:
       fail-fast: false
       matrix:
         type: [Debug, Release, MinSizeRel]
+        arch: [Win32, x64]
         cpp: [11, 14, 17, 20]
 
     steps:
@@ -346,7 +348,7 @@ jobs:
     - name: Configure CMake
       working-directory: ${{runner.workspace}}/build
       run: |
-        cmake %GITHUB_WORKSPACE% -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON
+        cmake %GITHUB_WORKSPACE% -A ${{matrix.arch}} -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
