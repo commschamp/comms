@@ -1233,7 +1233,7 @@ public:
     /// @see <a href="http://en.cppreference.com/w/cpp/container/vector/rbegin">Reference</a>
     const_reverse_iterator rbegin() const
     {
-        return rbegin();
+        return crbegin();
     }
 
     /// @brief Returns a reverse iterator to the beginning.
