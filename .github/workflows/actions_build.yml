@@ -311,23 +311,25 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Create Build Environment
+      shell: cmd
       run: cmake -E make_directory ${{runner.workspace}}/build
 
     - name: Configure CMake
       working-directory: ${{runner.workspace}}/build
+      shell: cmd
       run: |
         cmake %GITHUB_WORKSPACE% -A ${{matrix.arch}} -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
-      shell: bash
+      shell: cmd
       run: cmake --build . --config ${{matrix.type}} --target install
       env:
         VERBOSE: 1 
 
     - name: Test
       working-directory: ${{runner.workspace}}/build
-      shell: bash
+      shell: cmd
       run: ctest -V 
 
   build_msvc_2022:
@@ -343,22 +345,24 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Create Build Environment
+      shell: cmd
       run: cmake -E make_directory ${{runner.workspace}}/build
 
     - name: Configure CMake
       working-directory: ${{runner.workspace}}/build
+      shell: cmd
       run: |
         cmake %GITHUB_WORKSPACE% -A ${{matrix.arch}} -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
-      shell: bash
+      shell: cmd
       run: cmake --build . --config ${{matrix.type}} --target install
       env:
         VERBOSE: 1 
 
     - name: Test
       working-directory: ${{runner.workspace}}/build
-      shell: bash
+      shell: cmd
       run: ctest -V 
 
