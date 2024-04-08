@@ -17,7 +17,7 @@ jobs:
             cpp: 14
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Add repositories
       run: |
@@ -68,7 +68,7 @@ jobs:
             cpp: 20
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     
     - name: Prepare Install
       run: sudo apt-get update --fix-missing    
@@ -114,7 +114,7 @@ jobs:
         cpp: [11, 14, 17, 20]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     
     - name: Prepare Install
       run: sudo apt-get update --fix-missing    
@@ -163,7 +163,7 @@ jobs:
             cpp: 17
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Add repositories
       run: |
@@ -216,7 +216,7 @@ jobs:
             cpp: 20        
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     
     - name: Prepare Install
       run: sudo apt-get update --fix-missing
@@ -262,7 +262,7 @@ jobs:
         cpp: [11, 14, 17, 20]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     
     - name: Prepare Install
       run: sudo apt-get update --fix-missing
@@ -297,4 +297,72 @@ jobs:
       working-directory: ${{runner.workspace}}/build
       shell: bash
       run: make doc_comms             
+
+  build_msvc_2019:
+    runs-on: windows-2019
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [Debug, Release, MinSizeRel]
+        arch: [Win32, x64]
+        cpp: [11, 14, 17]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Create Build Environment
+      shell: cmd
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Configure CMake
+      working-directory: ${{runner.workspace}}/build
+      shell: cmd
+      run: |
+        cmake %GITHUB_WORKSPACE% -A ${{matrix.arch}} -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON
+
+    - name: Build
+      working-directory: ${{runner.workspace}}/build
+      shell: cmd
+      run: cmake --build . --config ${{matrix.type}} --target install
+      env:
+        VERBOSE: 1 
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/build
+      shell: cmd
+      run: ctest -V 
+
+  build_msvc_2022:
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [Debug, Release, MinSizeRel]
+        arch: [Win32, x64]
+        cpp: [11, 14, 17, 20]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Create Build Environment
+      shell: cmd
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Configure CMake
+      working-directory: ${{runner.workspace}}/build
+      shell: cmd
+      run: |
+        cmake %GITHUB_WORKSPACE% -A ${{matrix.arch}} -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON
+
+    - name: Build
+      working-directory: ${{runner.workspace}}/build
+      shell: cmd
+      run: cmake --build . --config ${{matrix.type}} --target install
+      env:
+        VERBOSE: 1 
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/build
+      shell: cmd
+      run: ctest -V 
 

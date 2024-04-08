@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2023 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2024 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -1233,7 +1233,7 @@ public:
     /// @see <a href="http://en.cppreference.com/w/cpp/container/vector/rbegin">Reference</a>
     const_reverse_iterator rbegin() const
     {
-        return rbegin();
+        return crbegin();
     }
 
     /// @brief Returns a reverse iterator to the beginning.
