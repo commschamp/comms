@@ -6,9 +6,4 @@ if [ -z "${CC}" -o -z "${CXX}" ]; then
 fi
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-ROOT_DIR=$( dirname ${SCRIPT_DIR} )
-BUILD_DIR="${ROOT_DIR}/build.${CC}"
-mkdir -p ${BUILD_DIR}
-cd ${BUILD_DIR}
-
-cmake .. -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release -DCC_COMMS_BUILD_UNIT_TESTS=ON "$@"
+source ${SCRIPT_DIR}/env_dev.sh -DCMAKE_BUILD_TYPE=Release "$@"

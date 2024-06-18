@@ -7,7 +7,7 @@ option (CC_COMMS_BUILD_UNIT_TESTS "Build unittests." OFF)
 option (CC_COMMS_UNIT_TESTS_USE_SANITIZERS "Use sanitizers during unittests. Applicable when unittest are enabled." ${CC_COMMS_BUILD_UNIT_TESTS})
 option (CC_COMMS_UNIT_TESTS_USE_VALGRIND "Use valgrind to do extra testing. Applicable when unittest are enabled." OFF)
 option (CC_COMMS_WARN_AS_ERR "Treat warning as error" ON)
-option (CC_COMMS_USE_CCACHE "Use ccache on UNIX systems if it's available" ON)
+option (CC_COMMS_USE_CCACHE "Use ccache on UNIX systems if it's available" OFF)
 option (CC_COMMS_SKIP_CXX_STANDARD_FORCING "Do NOT force C++ standard to C++11, use compiler's default one." ON)
 option (CC_COMMS_EXTALL_EXTRA_CONFIGS "Install extra \"comms\" and \"cc_comms\" cmake configs in addition to \"LibComms\"" OFF)
 
