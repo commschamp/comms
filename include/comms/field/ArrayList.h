@@ -356,7 +356,7 @@ public:
     /// @brief Compile time inquiry of fixed size provided via @ref comms::option::def::SequenceFixedSize option.
     /// @details If the @ref comms::option::def::SequenceFixedSize option hasn't been used
     ///     <b>std::numeric_limits&lt;std::size_t&gt;\::max()</b> is returned.
-    static constexpr bool fixedSize()
+    static constexpr std::size_t fixedSize()
     {
         return ParsedOptions::SequenceFixedSize;
     }           

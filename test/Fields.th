@@ -1759,6 +1759,8 @@ void FieldsTestSuite::test36()
 
     static_assert(Field::minLength() == 5U, "Invalid min length");
     static_assert(Field::maxLength() == 5U, "Invalid max length");
+    static_assert(Field::hasFixedSize(), "Invalid assumption");
+    static_assert(Field::fixedSize() == 5, "Invalid fixed size");
 
     Field field;
     TS_ASSERT(field.valid());
