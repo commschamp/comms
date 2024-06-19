@@ -309,7 +309,7 @@ private:
     void skipUntilFieldInternal(std::size_t& reqLen, PerformOpTag<TParams...>)
     {
         static_assert(TLenFieldIdx < TUntilIdx, "Invalid assumption");
-        auto fieldsLen = BaseImpl::template lengthFromUntil<TLenFieldIdx, TUntilIdx>();
+        auto fieldsLen = BaseImpl::template lengthFromUntil<TLenFieldIdx + 1, TUntilIdx>();
         COMMS_ASSERT(fieldsLen <= reqLen);
         reqLen -= fieldsLen;
     }
@@ -360,12 +360,11 @@ private:
             >;    
 
         skipUntilFieldInternal<TFromIdx>(reqLen, SkipTag());
-        if (len < reqLen) {
-            return comms::ErrorStatus::NotEnoughData;
-        }
 
-        auto remLen = reqLen;
-        es = BaseImpl::template readFromUntilAndUpdateLen<TLenFieldIdx + 1, TUntilIdx>(iter, remLen);
+        static const std::size_t NextIdx = (TFromIdx <= TLenFieldIdx) ? TLenFieldIdx + 1 : TFromIdx;
+
+        auto remLen = std::min(len, reqLen);
+        es = BaseImpl::template readFromUntilAndUpdateLen<NextIdx, TUntilIdx>(iter, remLen);
         auto consumed = reqLen - remLen;
         len -= consumed;
 
