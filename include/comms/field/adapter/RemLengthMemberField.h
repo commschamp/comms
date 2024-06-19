@@ -363,6 +363,11 @@ private:
 
         static const std::size_t NextIdx = (TFromIdx <= TLenFieldIdx) ? TLenFieldIdx + 1 : TFromIdx;
 
+        if ((std::tuple_size<ValueType>::value <= TUntilIdx) &&
+            (len < reqLen)) {
+            return comms::ErrorStatus::NotEnoughData;
+        }
+
         auto remLen = std::min(len, reqLen);
         es = BaseImpl::template readFromUntilAndUpdateLen<NextIdx, TUntilIdx>(iter, remLen);
         auto consumed = reqLen - remLen;
