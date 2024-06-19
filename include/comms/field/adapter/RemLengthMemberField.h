@@ -212,6 +212,12 @@ private:
     template <typename... TParams>
     using LocalTag = comms::details::tag::Tag2<>;
 
+    template <typename... TParams>
+    using HasEarlierFieldsTag = comms::details::tag::Tag3<>;    
+
+    template <typename... TParams>
+    using NoEarlierFieldsTag = comms::details::tag::Tag4<>;    
+
     template <std::size_t TFromIdx, typename... TParams>
     static constexpr std::size_t maxLengthFromInternal(BaseRedirectTag<TParams...>)
     {
@@ -254,16 +260,35 @@ private:
         return BaseImpl::template readFromUntilAndUpdateLen<TFromIdx, TUntilIdx>(iter, len);
     }       
 
+    template <std::size_t TFromIdx, typename TIter, typename... TParams>
+    ErrorStatus readEarlierFieldsInternal(TIter& iter, std::size_t& len, HasEarlierFieldsTag<TParams...>)
+    {
+        return BaseImpl::template readFromUntilAndUpdateLen<TFromIdx, TLenFieldIdx>(iter, len);
+    }
+
+    template <std::size_t TFromIdx, typename TIter, typename... TParams>
+    ErrorStatus readEarlierFieldsInternal(TIter& iter, std::size_t& len, NoEarlierFieldsTag<TParams...>)
+    {
+        static_cast<void>(iter);
+        static_cast<void>(len);
+        return ErrorStatus::Success;
+    }    
+
     template <std::size_t TFromIdx, std::size_t TUntilIdx, typename TIter, typename... TParams>
     ErrorStatus readFromUntilInternal(TIter& iter, std::size_t& len, LocalTag<TParams...>)
     {
         static_assert(TLenFieldIdx < TUntilIdx, "Invalid function invocation");
-        auto es = comms::ErrorStatus::Success;
-        if (TFromIdx < TLenFieldIdx) {
-            es = BaseImpl::template readFromUntilAndUpdateLen<TFromIdx, TLenFieldIdx>(iter, len);
-            if (es != comms::ErrorStatus::Success) {
-                return es;
-            }
+        using EarlierFieldsTag = 
+            typename comms::util::LazyShallowConditional<
+                (TFromIdx < TLenFieldIdx)
+            >::template Type<
+                HasEarlierFieldsTag,
+                NoEarlierFieldsTag
+            >; 
+
+        auto es = readEarlierFieldsInternal<TFromIdx>(iter, len, EarlierFieldsTag());
+        if (es != comms::ErrorStatus::Success) {
+            return es;
         }
 
         auto beforeLenReadIter = iter;
