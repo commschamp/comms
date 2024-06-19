@@ -213,10 +213,10 @@ private:
     using LocalTag = comms::details::tag::Tag2<>;
 
     template <typename... TParams>
-    using HasEarlierFieldsTag = comms::details::tag::Tag3<>;    
+    using PerformOpTag = comms::details::tag::Tag3<>;    
 
     template <typename... TParams>
-    using NoEarlierFieldsTag = comms::details::tag::Tag4<>;    
+    using SkipOpTag = comms::details::tag::Tag4<>;    
 
     template <std::size_t TFromIdx, typename... TParams>
     static constexpr std::size_t maxLengthFromInternal(BaseRedirectTag<TParams...>)
@@ -261,17 +261,63 @@ private:
     }       
 
     template <std::size_t TFromIdx, typename TIter, typename... TParams>
-    ErrorStatus readEarlierFieldsInternal(TIter& iter, std::size_t& len, HasEarlierFieldsTag<TParams...>)
+    ErrorStatus readEarlierFieldsInternal(TIter& iter, std::size_t& len, PerformOpTag<TParams...>)
     {
         return BaseImpl::template readFromUntilAndUpdateLen<TFromIdx, TLenFieldIdx>(iter, len);
     }
 
     template <std::size_t TFromIdx, typename TIter, typename... TParams>
-    ErrorStatus readEarlierFieldsInternal(TIter& iter, std::size_t& len, NoEarlierFieldsTag<TParams...>)
+    ErrorStatus readEarlierFieldsInternal(TIter& iter, std::size_t& len, SkipOpTag<TParams...>)
     {
         static_cast<void>(iter);
         static_cast<void>(len);
         return ErrorStatus::Success;
+    }   
+
+    template <typename TIter, typename... TParams>
+    ErrorStatus readRemLengthFieldInternal(TIter& iter, std::size_t& len, std::size_t& remLen, PerformOpTag<TParams...>)
+    {
+        auto& mems = BaseImpl::value();
+        auto& lenField = std::get<TLenFieldIdx>(mems);
+
+        auto beforeLenReadIter = iter;
+        auto es = lenField.read(iter, len);
+        if (es != comms::ErrorStatus::Success) {
+            return es;
+        }
+
+        auto lenFieldLen = static_cast<std::size_t>(std::distance(beforeLenReadIter, iter));
+        COMMS_ASSERT(lenFieldLen <= len);
+        len -= lenFieldLen;
+
+        remLen = static_cast<std::size_t>(lenField.getValue());
+        return ErrorStatus::Success;
+    }
+
+    template <typename TIter, typename... TParams>
+    ErrorStatus readRemLengthFieldInternal(TIter& iter, std::size_t& len, std::size_t& remLen, SkipOpTag<TParams...>)
+    {
+        static_cast<void>(iter);
+        static_cast<void>(len);
+        auto& mems = BaseImpl::value();
+        auto& lenField = std::get<TLenFieldIdx>(mems);
+        remLen = lenField.value();
+        return ErrorStatus::Success;
+    }    
+
+    template <std::size_t TUntilIdx, typename... TParams>
+    void skipUntilFieldInternal(std::size_t& reqLen, PerformOpTag<TParams...>)
+    {
+        static_assert(TLenFieldIdx < TUntilIdx, "Invalid assumption");
+        auto fieldsLen = BaseImpl::template lengthFromUntil<TLenFieldIdx, TUntilIdx>();
+        COMMS_ASSERT(fieldsLen <= reqLen);
+        reqLen -= fieldsLen;
+    }
+
+    template <std::size_t TUntilIdx, typename... TParams>
+    void skipUntilFieldInternal(std::size_t& reqLen, SkipOpTag<TParams...>)
+    {
+        static_cast<void>(reqLen);
     }    
 
     template <std::size_t TFromIdx, std::size_t TUntilIdx, typename TIter, typename... TParams>
@@ -282,8 +328,8 @@ private:
             typename comms::util::LazyShallowConditional<
                 (TFromIdx < TLenFieldIdx)
             >::template Type<
-                HasEarlierFieldsTag,
-                NoEarlierFieldsTag
+                PerformOpTag,
+                SkipOpTag
             >; 
 
         auto es = readEarlierFieldsInternal<TFromIdx>(iter, len, EarlierFieldsTag());
@@ -291,19 +337,29 @@ private:
             return es;
         }
 
-        auto beforeLenReadIter = iter;
-        auto& mems = BaseImpl::value();
-        auto& lenField = std::get<TLenFieldIdx>(mems);
-        es = lenField.read(iter, len);
+        using LenTag = 
+            typename comms::util::LazyShallowConditional<
+                (TFromIdx <= TLenFieldIdx)
+            >::template Type<
+                PerformOpTag,
+                SkipOpTag
+            >;         
+
+        std::size_t reqLen = 0U;
+        es = readRemLengthFieldInternal(iter, len, reqLen, LenTag());
         if (es != comms::ErrorStatus::Success) {
             return es;
         }
 
-        auto lenFieldLen = static_cast<std::size_t>(std::distance(beforeLenReadIter, iter));
-        COMMS_ASSERT(lenFieldLen <= len);
-        len -= lenFieldLen;
+        using SkipTag = 
+            typename comms::util::LazyShallowConditional<
+                (TLenFieldIdx < TFromIdx)
+            >::template Type<
+                PerformOpTag,
+                SkipOpTag
+            >;    
 
-        auto reqLen = static_cast<std::size_t>(lenField.getValue());
+        skipUntilFieldInternal<TFromIdx>(reqLen, SkipTag());
         if (len < reqLen) {
             return comms::ErrorStatus::NotEnoughData;
         }
