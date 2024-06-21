@@ -12,8 +12,8 @@ option (CC_COMMS_SKIP_CXX_STANDARD_FORCING "Do NOT force C++ standard to C++11, 
 option (CC_COMMS_EXTALL_EXTRA_CONFIGS "Install extra \"comms\" and \"cc_comms\" cmake configs in addition to \"LibComms\"" OFF)
 
 # Extra variables
-# CC_COMMS_EXTERNALS_DIR - Directory where pull externals, defaults to 
-#   ${PROJECT_SOURCE_DIR}/externals
+# CC_COMMS_EXTERNALS_DIR - Directory where pull externals, defaults to ${PROJECT_SOURCE_DIR}/externals
+# CC_COMMS_CCACHE_EXECUTABLE - Path to ccache executable
 
 if (CMAKE_TOOLCHAIN_FILE AND EXISTS ${CMAKE_TOOLCHAIN_FILE})
     message(STATUS "Loading toolchain from ${CMAKE_TOOLCHAIN_FILE}")
@@ -54,8 +54,11 @@ if (CC_COMMS_WARN_AS_ERR)
     list (APPEND extra_opts WARN_AS_ERR)
 endif ()
 
-if ((UNIX) AND (CC_COMMS_USE_CCACHE))
+if (CC_COMMS_USE_CCACHE)
     list (APPEND extra_opts USE_CCACHE)
+    if (NOT "${CC_COMMS_CCACHE_EXECUTABLE}" STREQUAL "")
+        list (APPEND extra_opts CCACHE_EXECUTABLE "${CC_COMMS_CCACHE_EXECUTABLE}")
+    endif ()
 endif ()
 
 if (CC_COMMS_UNIT_TESTS_USE_SANITIZERS)

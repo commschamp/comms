@@ -7,6 +7,7 @@
 #         [STATIC_RUNTIME]
 #         [USE_CCACHE]
 #         [DEFAULT_SANITIZERS]
+#         [CCACHE_EXECUTABLE /path/to/ccache]
 #         [EXTRA flags...]
 #     )
 #
@@ -27,7 +28,7 @@
 macro (cc_compile)
     set (_prefix CC_COMPILE)
     set (_options WARN_AS_ERR STATIC_RUNTIME USE_CCACHE DEFAULT_SANITIZERS)
-    set (_oneValueArgs)
+    set (_oneValueArgs CCACHE_EXECUTABLE)
     set (_mutiValueArgs EXTRA)
     cmake_parse_arguments(${_prefix} "${_options}" "${_oneValueArgs}" "${_mutiValueArgs}" ${ARGN})
    
@@ -114,10 +115,13 @@ macro (cc_compile)
     endif ()   
 
     if (CC_COMPILE_USE_CCACHE)
-        find_program(CCACHE_EXECUTABLE ccache)
-        if (CCACHE_EXECUTABLE)
-            set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_EXECUTABLE})
-            set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ${CCACHE_EXECUTABLE})
+        if (NOT CC_COMPILE_CCACHE_EXECUTABLE)
+            find_program(CC_COMPILE_CCACHE_EXECUTABLE ccache)
+        endif ()
+
+        if (CC_COMPILE_CCACHE_EXECUTABLE)
+            set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CC_COMPILE_CCACHE_EXECUTABLE})
+            set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ${CC_COMPILE_CCACHE_EXECUTABLE})
         endif ()
     endif ()      
 endmacro()
