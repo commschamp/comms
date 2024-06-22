@@ -17,6 +17,9 @@
 #include "comms/util/type_traits.h"
 #include "comms/details/tag.h"
 
+COMMS_MSVC_WARNING_PUSH
+COMMS_MSVC_WARNING_DISABLE(4127) // Disable warning about constant conditional expressions
+
 namespace comms
 {
 
@@ -409,5 +412,5 @@ private:
 
 }  // namespace comms
 
-
+COMMS_MSVC_WARNING_POP
 
