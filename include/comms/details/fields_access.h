@@ -191,6 +191,156 @@
 #define COMMS_FIELD_ACC_FUNC_50(T_, t_, n_, ...) \
     COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
     COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_49(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_51(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_50(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_52(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_51(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_53(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_52(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_54(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_53(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_55(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_54(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_56(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_55(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_57(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_56(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_58(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_57(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_59(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_58(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_60(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_59(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_61(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_60(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_62(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_61(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_63(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_62(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_64(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_63(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_65(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_64(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_66(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_65(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_67(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_66(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_68(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_67(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_69(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_68(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_70(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_69(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_71(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_70(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_72(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_71(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_73(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_72(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_74(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_73(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_75(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_74(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_76(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_75(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_77(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_76(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_78(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_77(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_79(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_78(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_80(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_79(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_81(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_80(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_82(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_81(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_83(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_82(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_84(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_83(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_85(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_84(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_86(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_85(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_87(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_86(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_88(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_87(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_89(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_88(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_90(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_89(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_91(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_90(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_92(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_91(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_93(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_92(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_94(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_93(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_95(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_94(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_96(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_95(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_97(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_96(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_98(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_97(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_99(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_98(T_, t_, __VA_ARGS__))
+#define COMMS_FIELD_ACC_FUNC_100(T_, t_, n_, ...) \
+    COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
+    COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_99(T_, t_, __VA_ARGS__))
 
 
 #define COMMS_CHOOSE_FIELD_ACC_FUNC_(N, T_, t_, ...) COMMS_EXPAND(COMMS_FIELD_ACC_FUNC_ ## N(T_, t_, __VA_ARGS__))
