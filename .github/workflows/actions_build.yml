@@ -342,7 +342,53 @@ jobs:
     - name: Documentation
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: make doc_comms             
+      run: make doc_comms 
+
+  build_clang_ubuntu_24_04:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [Debug, Release, MinSizeRel]
+        cc_ver: [16, 17, 18]
+        cpp: [11, 14, 17, 20]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Prepare Install
+      run: sudo apt-get update --fix-missing
+      
+    - name: Install Packages
+      run: sudo apt install doxygen dia clang-${{matrix.cc_ver}}
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON
+      env:
+        CC: clang-${{matrix.cc_ver}}
+        CXX: clang++-${{matrix.cc_ver}}
+
+    - name: Build
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: cmake --build . --config ${{matrix.type}} --target install
+      env:
+        VERBOSE: 1 
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: ctest -V 
+
+    - name: Documentation
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: make doc_comms                   
 
   build_msvc_2019:
     runs-on: windows-2019
