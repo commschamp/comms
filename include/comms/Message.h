@@ -565,7 +565,7 @@ using MessageIdType =
 }  // namespace comms
 
 /// @brief Add convenience access enum and functions to extra transport fields.
-/// @details Very similar to @ref COMMS_MSG_TRANSPORT_FIELDS_NAMES(), but does @b NOT
+/// @details Very similar to #COMMS_MSG_TRANSPORT_FIELDS_NAMES(), but does @b NOT
 ///     require definition of @b Base inner member type (for some compilers) and does @b NOT
 ///     define inner @b TransportField_* types for used fields.
 /// @param[in] ... List of fields' names.
@@ -720,7 +720,7 @@ using MessageIdType =
 /// @brief Generate convinience alias access member functions for extra
 ///     member transport fields.
 /// @details Similar to @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS() but requires usage
-///     of @ref COMMS_MSG_TRANSPORT_FIELDS_ACCESS() instead of @ref COMMS_MSG_TRANSPORT_FIELDS_NAMES()
+///     of @ref COMMS_MSG_TRANSPORT_FIELDS_ACCESS() instead of #COMMS_MSG_TRANSPORT_FIELDS_NAMES()
 ///     and does NOT create alias to the field type, only access functions.
 /// @param[in] f_ Alias field name.
 /// @param[in] ... List of fields' names.
@@ -734,16 +734,16 @@ using MessageIdType =
 
 /// @brief Generate convinience alias access member functions for extra
 ///     member transport fields in non template interface classes.
-/// @details Similar to @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS, but
+/// @details Similar to #COMMS_MSG_TRANSPORT_FIELD_ALIAS, but
 ///     needs to be used in @b non-template interface class to
 ///     allow compilation with gcc-4.8
-/// @see @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS_ACCESS()
+/// @see #COMMS_MSG_TRANSPORT_FIELD_ALIAS_ACCESS()
 /// @note Defined in "comms/Message.h"
 #define COMMS_MSG_TRANSPORT_FIELD_ALIAS_ACCESS_NOTEMPLATE(f_, ...) COMMS_EXPAND(COMMS_DO_ALIAS_NOTEMPLATE(transportField_, f_, __VA_ARGS__))
 
 /// @brief Generate convinience alias access member functions for extra
 ///     member transport fields.
-/// @details The @ref COMMS_MSG_TRANSPORT_FIELDS_NAMES() macro generates
+/// @details The #COMMS_MSG_TRANSPORT_FIELDS_NAMES() macro generates
 ///     alias type as well as convenience
 ///     access member functions for extra transport fields. Sometimes the fields
 ///     may get renamed or moved to be a member of other fields, like
@@ -836,7 +836,7 @@ using MessageIdType =
 ///     @endcode
 /// @param[in] f_ Alias field name.
 /// @param[in] ... List of fields' names.
-/// @pre The macro @ref COMMS_MSG_TRANSPORT_FIELDS_NAMES() needs to be used before
+/// @pre The macro #COMMS_MSG_TRANSPORT_FIELDS_NAMES() needs to be used before
 ///     @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS() to define convenience access functions.
 /// @related comms::Message
 /// @see @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS_ACCESS_NOTEMPLATE()
@@ -848,10 +848,10 @@ using MessageIdType =
 
 /// @brief Generate convinience alias access member functions and type for extra
 ///     member transport fields in non template interface classes.
-/// @details Similar to @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS(), but
+/// @details Similar to #COMMS_MSG_TRANSPORT_FIELD_ALIAS(), but
 ///     needs to be used in @b non-template interface class to
 ///     allow compilation with gcc-4.8
-/// @see @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS()
+/// @see #COMMS_MSG_TRANSPORT_FIELD_ALIAS()
 /// @note Defined in "comms/Message.h"
 #define COMMS_MSG_TRANSPORT_FIELD_ALIAS_NOTEMPLATE(f_, ...) \
     COMMS_EXPAND(COMMS_MSG_TRANSPORT_FIELD_ALIAS_ACCESS_NOTEMPLATE(f_, __VA_ARGS__)) \

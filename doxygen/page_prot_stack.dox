@@ -549,7 +549,7 @@
 /// Every protocol layer provides an ability to access the next one using
 /// @ref comms::protocol::ProtocolLayerBase::nextLayer() "nextLayer()" member function.
 /// It is strongly recommended to generate convenience access functions using
-/// @ref COMMS_PROTOCOL_LAYERS_ACCESS() macro.
+/// #COMMS_PROTOCOL_LAYERS_ACCESS() macro.
 /// @code
 /// template <
 ///     typename TMessage, // common interface class defined by the application
@@ -607,14 +607,14 @@
 /// @endcode
 /// Please note the following:
 /// @li Every provided name is prefixed with @b layer_.
-/// @li The names inside the @ref COMMS_PROTOCOL_LAYERS_ACCESS() macro specify
+/// @li The names inside the #COMMS_PROTOCOL_LAYERS_ACCESS() macro specify
 /// innermost layer first and outermost one last. There is a convenience 
-/// wrapper macro @ref COMMS_PROTOCOL_LAYERS_ACCESS_OUTER() which allows
+/// wrapper macro #COMMS_PROTOCOL_LAYERS_ACCESS_OUTER() which allows
 /// listing in the opposite order (outermost first and innermost last).
 ///
 /// <b style="color:red">WARNING:</b> Some compilers, such as @b clang or earlier
 /// versions of @b gcc (v4.9 and earlier) may have problems compiling the 
-/// @ref COMMS_PROTOCOL_LAYERS_ACCESS() macro
+/// #COMMS_PROTOCOL_LAYERS_ACCESS() macro
 /// even though it contains valid C++11 code. If the compilation failure 
 /// happens there is a need to define inner @b Base type which specifies exact type
 /// of the protocol stack base class.
@@ -655,9 +655,9 @@
 ///     COMMS_PROTOCOL_LAYERS_ACCESS(payload, id, size, checksum, sync);
 /// };
 /// @endcode
-/// Since **v5.2** the COMMS library defines @ref COMMS_PROTOCOL_LAYERS_NAMES() and
-/// @ref COMMS_PROTOCOL_LAYERS_NAMES_OUTER() macros they are similar to
-/// the @ref COMMS_PROTOCOL_LAYERS_NAMES() and @ref COMMS_PROTOCOL_LAYERS_NAMES_OUTER()
+/// Since **v5.2** the COMMS library defines #COMMS_PROTOCOL_LAYERS_NAMES() and
+/// #COMMS_PROTOCOL_LAYERS_NAMES_OUTER() macros they are similar to
+/// the #COMMS_PROTOCOL_LAYERS_NAMES() and #COMMS_PROTOCOL_LAYERS_NAMES_OUTER()
 /// respectively, but also provide aliases to the layer types. However usage of these
 /// macros requires inner **Base** type definition of the base class:
 /// @code

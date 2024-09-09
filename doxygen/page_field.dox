@@ -544,8 +544,8 @@
 ///
 /// Due to the fact that the provided bit names may have @b =val suffixes, it
 /// excludes the ability to generate proper access functions for the named bits.
-/// However, the @b COMMS library also provides @ref COMMS_BITMASK_BITS_ACCESS()
-/// macro, which can be used in addition to @ref COMMS_BITMASK_BITS() one to
+/// However, the @b COMMS library also provides #COMMS_BITMASK_BITS_ACCESS()
+/// macro, which can be used in addition to #COMMS_BITMASK_BITS() one to
 /// generate the convenience functions. For example:
 /// @code
 /// struct MyBitmask : public
@@ -581,8 +581,8 @@
 /// @endcode
 /// In case the bit names definition is sequential starting with index 0 and
 /// going up without and gaps, i.e. no @b =val suffixes are used, the usage of
-/// two separate @ref COMMS_BITMASK_BITS() and @ref COMMS_BITMASK_BITS_ACCESS() macros,
-/// can be unified into one @ref COMMS_BITMASK_BITS_SEQ():
+/// two separate #COMMS_BITMASK_BITS() and #COMMS_BITMASK_BITS_ACCESS() macros,
+/// can be unified into one #COMMS_BITMASK_BITS_SEQ():
 /// @code
 /// struct MyBitmask : public
 ///     comms::field::BitmaskValue<
@@ -596,11 +596,11 @@
 /// @endcode
 /// <b style="color:red">WARNING:</b> Some compilers, such as @b clang or earlier
 /// versions of @b gcc (v4.9 and earlier) may have problems compiling the 
-/// @ref COMMS_BITMASK_BITS_ACCESS() and @ref COMMS_BITMASK_BITS_SEQ() macros
+/// #COMMS_BITMASK_BITS_ACCESS() and #COMMS_BITMASK_BITS_SEQ() macros
 /// even though they contain valid C++11 code. If the compilation failure 
 /// happens and the bitmask definition class is @b NOT a template one (like
 /// in the example above), then try to substitute the used macros with
-/// @ref COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE() and @ref COMMS_BITMASK_BITS_SEQ_NOTEMPLATE()
+/// #COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE() and #COMMS_BITMASK_BITS_SEQ_NOTEMPLATE()
 /// respectively. For example:
 /// @code
 /// struct MyBitmask : public
@@ -1685,8 +1685,8 @@
 ///     COMMS_VARIANT_MEMBERS_NAMES(prop1, prop2, prop3);
 /// };
 /// @endcode 
-/// Similar to @ref COMMS_FIELD_MEMBERS_NAMES() macro for 
-/// @ref sec_field_tutorial_bundle, the @ref COMMS_VARIANT_MEMBERS_NAMES()
+/// Similar to #COMMS_FIELD_MEMBERS_NAMES() macro for 
+/// @ref sec_field_tutorial_bundle, the #COMMS_VARIANT_MEMBERS_NAMES()
 /// macro generates the following convenience member enum and functions
 /// @code
 /// struct MyVariant : public comms::field::Variant<...>
@@ -1895,9 +1895,9 @@
 /// auto& prop1 = var.accessField_prop1(); // Get access to Property1 interface
 /// ...
 /// @endcode
-/// <b>SIDE NOTE:</b> In addition to @ref COMMS_VARIANT_MEMBERS_NAMES() macro
-/// there is @ref COMMS_VARIANT_MEMBERS_ACCESS() one. It is very similar to
-/// @ref COMMS_VARIANT_MEMBERS_NAMES() but does @b NOT (re)define the inner @b Field_*
+/// <b>SIDE NOTE:</b> In addition to #COMMS_VARIANT_MEMBERS_NAMES() macro
+/// there is #COMMS_VARIANT_MEMBERS_ACCESS() one. It is very similar to
+/// #COMMS_VARIANT_MEMBERS_NAMES() but does @b NOT (re)define the inner @b Field_*
 /// types. It also does not require (except for @b clang) having base class to
 /// be (re)defined as inner @b Base type.
 /// @code
@@ -1907,8 +1907,8 @@
 ///     COMMS_VARIANT_MEMBERS_ACCESS(prop1, prop2, prop3);
 /// }
 /// @endcode
-/// In fact @ref COMMS_VARIANT_MEMBERS_NAMES() is implemented as the wrapper 
-/// around @ref COMMS_VARIANT_MEMBERS_ACCESS().
+/// In fact #COMMS_VARIANT_MEMBERS_NAMES() is implemented as the wrapper 
+/// around #COMMS_VARIANT_MEMBERS_ACCESS().
 /// 
 /// @section sec_field_tutorial_common_options Common Options or Modifications for the Fields
 /// There are options that suitable only to numeric fields, such as 

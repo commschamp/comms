@@ -685,7 +685,7 @@
 /// can be obtained using @b fields() member function (see @ref comms::MessageBase::fields()).
 ///
 /// However, every message that has at least one field is expected to use
-/// @ref COMMS_MSG_FIELDS_NAMES() (or @ref COMMS_MSG_FIELDS_ACCESS() in
+/// #COMMS_MSG_FIELDS_NAMES() (or #COMMS_MSG_FIELDS_ACCESS() in
 /// older versions) macro to provide names to inner fields.
 /// @code
 /// namespace my_protocol
@@ -1061,11 +1061,11 @@
 /// doesn't have an expected value, the call to @b valid() member function will
 /// return @b false.
 ///
-/// The bitmask field definition is also expected to use @ref COMMS_BITMASK_BITS()
-/// and @ref COMMS_BITMASK_BITS_ACCESS() macros to provide names for the bits
+/// The bitmask field definition is also expected to use #COMMS_BITMASK_BITS()
+/// and #COMMS_BITMASK_BITS_ACCESS() macros to provide names for the bits
 /// and generate convenience access function. If bit names are sequential, i.e. start
 /// from bit @b 0, and go up without any holes in the middle, then single
-/// @ref COMMS_BITMASK_BITS_SEQ() macro can be used instead achieving the same 
+/// #COMMS_BITMASK_BITS_SEQ() macro can be used instead achieving the same 
 /// effect.
 /// @code
 /// struct MyBitmask : public
@@ -1577,11 +1577,11 @@
 /// @ref comms::field::Variant::value() "value()" member function which returns reference
 /// to the used storage area. These type and function should @b NOT
 /// be used directly. Instead, the  protocol definition is expected to 
-/// use @ref COMMS_VARIANT_MEMBERS_NAMES() macro, which generates
+/// use #COMMS_VARIANT_MEMBERS_NAMES() macro, which generates
 /// appropriate access and conversion wrapper functions around
 /// @ref comms::field::Variant::initField() and @ref comms::field::Variant::accessField().
 ///
-/// The usage of @ref COMMS_VARIANT_MEMBERS_NAMES() in the above is
+/// The usage of #COMMS_VARIANT_MEMBERS_NAMES() in the above is
 /// equivalent to having the following member types and functions defined
 /// @code
 /// struct MyVariant : public comms::field::Variant<...>
@@ -2579,7 +2579,7 @@
 /// one another. Access to the appropriate layer may be obtained using a 
 /// sequence of calls to @b nextLayer() member functions (see 
 /// @ref comms::protocol::ProtocolLayerBase::nextLayer()). Alternatively, the protocol stack
-/// definition is also expected to use @ref COMMS_PROTOCOL_LAYERS_ACCESS()
+/// definition is also expected to use #COMMS_PROTOCOL_LAYERS_ACCESS()
 /// macro to generate a convenience access functions. For example
 /// @code
 /// namespace my_protocol
@@ -2946,7 +2946,7 @@
 /// } // namespace my_protocol
 /// @endcode
 /// Usage of @ref comms::option::def::ExtraTransportFields option as well as
-/// @ref COMMS_MSG_TRANSPORT_FIELDS_NAMES() macro in the message class definition
+/// #COMMS_MSG_TRANSPORT_FIELDS_NAMES() macro in the message class definition
 /// is equivalent to having the following types and member functions defined
 /// @code
 /// namespace my_protocol

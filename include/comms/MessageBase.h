@@ -77,7 +77,7 @@ namespace comms
 /// @extends Message
 /// @headerfile comms/MessageBase.h
 /// @see @ref toMessageBase()
-/// @see @ref COMMS_MSG_FIELDS_NAMES()
+/// @see #COMMS_MSG_FIELDS_NAMES()
 template <typename TMessage, typename... TOptions>
 class MessageBase : public details::MessageImplBuilderT<TMessage, TOptions...>
 {
@@ -904,12 +904,12 @@ constexpr bool isMessageBase()
 }  // namespace comms
 
 /// @brief Add convenience access enum and functions to message fields.
-/// @details Very similar to @ref COMMS_MSG_FIELDS_NAMES(), but does @b NOT
+/// @details Very similar to #COMMS_MSG_FIELDS_NAMES(), but does @b NOT
 ///     require definition of @b Base inner member type (for some compilers) and does @b NOT
 ///     define inner @b Field_* types for used fields.
 /// @param[in] ... List of fields' names.
 /// @related comms::MessageBase
-/// @see @ref COMMS_MSG_FIELDS_NAMES()
+/// @see #COMMS_MSG_FIELDS_NAMES()
 /// @note Defined in "comms/MessageBase.h"
 #define COMMS_MSG_FIELDS_ACCESS(...) \
     COMMS_EXPAND(COMMS_DEFINE_FIELD_ENUM(__VA_ARGS__)) \
@@ -1070,11 +1070,11 @@ constexpr bool isMessageBase()
 /// @brief Generate convinience alias access member functions for other
 ///     member fields.
 /// @details Similar to @ref COMMS_MSG_FIELD_ALIAS() but requires usage
-///     of @ref COMMS_MSG_FIELDS_ACCESS() instead of @ref COMMS_MSG_FIELDS_NAMES()
+///     of #COMMS_MSG_FIELDS_ACCESS() instead of #COMMS_MSG_FIELDS_NAMES()
 ///     and does NOT create alias to the field type, only access functions.
 /// @param[in] f_ Alias field name.
 /// @param[in] ... List of fields' names.
-/// @pre The macro @ref COMMS_MSG_FIELDS_ACCESS() needs to be used before
+/// @pre The macro #COMMS_MSG_FIELDS_ACCESS() needs to be used before
 ///     @ref COMMS_MSG_FIELD_ALIAS_ACCESS() to define convenience access functions.
 /// @related comms::MessageBase
 /// @note Defined in "comms/MessageBase.h"
@@ -1083,7 +1083,7 @@ constexpr bool isMessageBase()
 
 /// @brief Generate convinience alias types and access member functions for other
 ///     member fields.
-/// @details The @ref COMMS_MSG_FIELDS_NAMES() macro generates inner types
+/// @details The #COMMS_MSG_FIELDS_NAMES() macro generates inner types
 ///     and convenience access member functions for member fields. Sometimes the fields
 ///     may get renamed or moved to be a member of other fields, like
 ///     @ref comms::field::Bundle or @ref comms::field::Bitfield. In such
@@ -1176,7 +1176,7 @@ constexpr bool isMessageBase()
 ///     @endcode
 /// @param[in] f_ Alias field name.
 /// @param[in] ... List of fields' names.
-/// @pre The macro @ref COMMS_MSG_FIELDS_NAMES() needs to be used before
+/// @pre The macro #COMMS_MSG_FIELDS_NAMES() needs to be used before
 ///     @ref COMMS_MSG_FIELD_ALIAS() to define convenience access functions.
 /// @related comms::MessageBase
 /// @see COMMS_MSG_FIELD_ALIAS_ACCESS()
