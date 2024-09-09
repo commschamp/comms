@@ -4035,21 +4035,29 @@ void FieldsTestSuite::test75()
     TS_ASSERT_EQUALS(viewStart, &Buf[0]);
     TS_ASSERT(!field.refresh());
 
-#if !(__has_feature(address_sanitizer) && defined(NDEBUG) && COMMS_IS_CPP20 && COMMS_IS_CLANG_16_OR_ABOVE && COMMS_IS_CLANG_18_OR_BELOW)
+    bool testAssignAndSort = true;
+
+#if (defined(NDEBUG) && COMMS_IS_CPP20 && COMMS_IS_CLANG_16_OR_ABOVE && COMMS_IS_CLANG_18_OR_BELOW)
+#if __has_feature(address_sanitizer)
     // The following code seems to be problematic for clang between version 16 and 18 when
     // compiled with -O3 (release) and C++20 enabled. The failure happens on runtime when compiled with sanitizers reporting
     // "runtime error: reference binding to address 0x502000000053 with insufficient space for an object of type 'unsigned char'"
     // Looks like a compiler bug
-    std::vector<Field> vec;
-    vec.resize(2U);
-    TS_ASSERT_EQUALS(vec[0], vec[1]);
-    std::vector<std::uint8_t> Data1 = {0xa, 0xb, 0xc};
-    std::vector<std::uint8_t> Data2 = {0x0, 0x1, 0x2};
-    comms::util::assign(vec[0].value(), Data1.begin(), Data1.end());
-    comms::util::assign(vec[1].value(), Data2.begin(), Data2.end());
-    std::sort(vec.begin(), vec.end());
-    TS_ASSERT(std::equal(vec[0].value().begin(), vec[0].value().end(), Data2.begin()));    
-#endif // #if !(__has_feature(address_sanitizer) && defined(NDEBUG) && COMMS_IS_CLANG_16_OR_ABOVE && COMMS_IS_CLANG_18_OR_BELOW)    
+    testAssignAndSort = false;
+#endif // #if __has_feature(address_sanitizer)
+#endif // #if (defined(NDEBUG) && COMMS_IS_CPP20 && COMMS_IS_CLANG_16_OR_ABOVE && COMMS_IS_CLANG_18_OR_BELOW)
+
+    if (testAssignAndSort) {
+        std::vector<Field> vec;
+        vec.resize(2U);
+        TS_ASSERT_EQUALS(vec[0], vec[1]);
+        std::vector<std::uint8_t> Data1 = {0xa, 0xb, 0xc};
+        std::vector<std::uint8_t> Data2 = {0x0, 0x1, 0x2};
+        comms::util::assign(vec[0].value(), Data1.begin(), Data1.end());
+        comms::util::assign(vec[1].value(), Data2.begin(), Data2.end());
+        std::sort(vec.begin(), vec.end());
+        TS_ASSERT(std::equal(vec[0].value().begin(), vec[0].value().end(), Data2.begin()));    
+    }
 }
 
 void FieldsTestSuite::test76()
