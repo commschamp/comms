@@ -102,14 +102,21 @@ set (LIB_COMMS_CMAKE_FILES
 find_package (Doxygen)
 if (DOXYGEN_FOUND)
     set (doc_output_dir "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/doc/comms")
-    
-    set (match_str "OUTPUT_DIRECTORY[^\n]*")
-    set (replacement_str "OUTPUT_DIRECTORY = ${doc_output_dir}")
     set (output_file "${CMAKE_CURRENT_BINARY_DIR}/doxygen.conf")
+
+    set (out_dir_match_str "OUTPUT_DIRECTORY[^\n]*")
+    set (out_dir_replacement_str "OUTPUT_DIRECTORY = ${doc_output_dir}")
 
     set (config_file "${CMAKE_CURRENT_SOURCE_DIR}/doxygen/doxygen.conf")
     file (READ ${config_file} config_text)
-    string (REGEX REPLACE "${match_str}" "${replacement_str}" modified_config_text "${config_text}")
+    string (REGEX REPLACE "${out_dir_match_str}" "${out_dir_replacement_str}" modified_config_text "${config_text}")
+
+    if (UNIX)
+        set (dia_path_match_str "DIA_PATH[^\n]*")
+        set (dia_path_replacement_str "DIA_PATH = ${PROJECT_SOURCE_DIR}/script")
+        string (REGEX REPLACE "${dia_path_match_str}" "${dia_path_replacement_str}" modified_config_text "${modified_config_text}")
+    endif ()
+
     file (WRITE "${output_file}" "${modified_config_text}")
 
     add_custom_target ("doc_comms"

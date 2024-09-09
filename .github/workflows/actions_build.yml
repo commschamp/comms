@@ -191,6 +191,11 @@ jobs:
       shell: bash
       run: ctest -V 
 
+    - name: Documentation
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: make doc_comms       
+
   build_clang_old_ubuntu_20_04:
     runs-on: ubuntu-20.04
     strategy:
@@ -379,6 +384,11 @@ jobs:
       working-directory: ${{runner.workspace}}/build
       shell: bash
       run: ctest -V 
+
+    - name: Documentation
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: make doc_comms 
 
   build_msvc_2019:
     runs-on: windows-2019
