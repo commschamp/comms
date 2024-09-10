@@ -35,5 +35,4 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-echo "!!! Invoking ${DIA_PATH} ${new_params[@]}"
 exec ${DIA_PATH} "${new_params[@]}"
