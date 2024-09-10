@@ -157,7 +157,10 @@ jobs:
       matrix:
         type: [Debug, Release, MinSizeRel]
         cc_ver: [13, 14]
-        cpp: [11, 14, 17, 20]
+        cpp: [11, 14, 17, 20, 23]
+        exclude:
+          - cc_ver: 13
+            cpp: 23        
 
     steps:
     - uses: actions/checkout@v4
@@ -351,7 +354,7 @@ jobs:
       matrix:
         type: [Debug, Release, MinSizeRel]
         cc_ver: [16, 17, 18]
-        cpp: [11, 14, 17, 20]
+        cpp: [11, 14, 17, 20, 23]
 
     steps:
     - uses: actions/checkout@v4
