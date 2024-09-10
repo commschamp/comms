@@ -95,6 +95,7 @@
 #define COMMS_IS_CPP14 (__cplusplus >= 201402L)
 #define COMMS_IS_CPP17 (__cplusplus >= 201703L)
 #define COMMS_IS_CPP20 (__cplusplus >= 202002L)
+#define COMMS_IS_CPP23 (__cplusplus >= 202302L)
 
 #if COMMS_IS_MSVC_2019_OR_BELOW // Visual Studio 2019
 #undef COMMS_IS_CPP20

@@ -488,7 +488,7 @@ public:
 private:
     using AlignedStorage = typename TupleAsAlignedUnion<TAllTypes>::Type;
 
-    AlignedStorage place_;
+    alignas(8) AlignedStorage place_;
     bool allocated_ = false;
 
 };
@@ -582,7 +582,7 @@ public:
 private:
     using AlignedStorage = typename TupleAsAlignedUnion<TAllocMessages>::Type;
 
-    AlignedStorage place_;
+    alignas(8) AlignedStorage place_;
     bool allocated_ = false;
 
 };

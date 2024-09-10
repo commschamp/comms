@@ -901,7 +901,7 @@ private:
         setVersion(VersionBaseImpl::version_);
     }
 
-    ValueType storage_;
+    alignas(8) ValueType storage_;
     std::size_t memIdx_ = MembersCount;
 };
 
