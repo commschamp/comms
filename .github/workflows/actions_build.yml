@@ -355,6 +355,11 @@ jobs:
         type: [Debug, Release, MinSizeRel]
         cc_ver: [16, 17, 18]
         cpp: [11, 14, 17, 20, 23]
+        exclude:
+          - cc_ver: 16
+            cpp: 23
+          - cc_ver: 17
+            cpp: 23
 
     steps:
     - uses: actions/checkout@v4
