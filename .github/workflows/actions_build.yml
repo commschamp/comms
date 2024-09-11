@@ -99,11 +99,6 @@ jobs:
       shell: bash
       run: ctest -V 
 
-    - name: Documentation
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: make doc_comms 
-
   build_gcc_ubuntu_22_04:
     runs-on: ubuntu-22.04
     strategy:
@@ -144,11 +139,6 @@ jobs:
       working-directory: ${{runner.workspace}}/build
       shell: bash
       run: ctest -V 
-
-    - name: Documentation
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: make doc_comms    
 
   build_gcc_ubuntu_24_04:
     runs-on: ubuntu-24.04
@@ -296,11 +286,6 @@ jobs:
       shell: bash
       run: ctest -V 
 
-    - name: Documentation
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: make doc_comms      
-
   build_clang_ubuntu_22_04:
     runs-on: ubuntu-22.04
     strategy:
@@ -341,11 +326,6 @@ jobs:
       working-directory: ${{runner.workspace}}/build
       shell: bash
       run: ctest -V 
-
-    - name: Documentation
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: make doc_comms 
 
   build_clang_ubuntu_24_04:
     runs-on: ubuntu-24.04
