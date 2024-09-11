@@ -29,6 +29,9 @@ COMMS_GNU_WARNING_PUSH
 COMMS_GNU_WARNING_DISABLE("-Warray-bounds")
 #endif
 
+COMMS_MSVC_WARNING_PUSH
+COMMS_MSVC_WARNING_DISABLE(4324) // Disable warning about alignment padding
+
 namespace comms
 {
 
@@ -2012,4 +2015,5 @@ void swap(comms::util::StaticVector<T, TSize1>& v1, comms::util::StaticVector<T,
 
 }
 
+COMMS_MSVC_WARNING_POP
 COMMS_GNU_WARNING_POP

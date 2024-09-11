@@ -22,6 +22,9 @@
 #include "comms/field/tag.h"
 #include "CommonFuncs.h"
 
+COMMS_MSVC_WARNING_PUSH
+COMMS_MSVC_WARNING_DISABLE(4324) // Disable warning about alignment padding
+
 namespace comms
 {
 
@@ -910,3 +913,5 @@ private:
 }  // namespace field
 
 }  // namespace comms
+
+COMMS_MSVC_WARNING_POP

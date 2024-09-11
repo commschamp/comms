@@ -21,10 +21,15 @@
 #include <iterator>
 #include <algorithm>
 
+#include "comms/CompileControl.h"
 #include "comms/Assert.h"
 #include "comms/util/SizeToType.h"
 #include "comms/util/type_traits.h"
 #include "comms/util/AlignedStorage.h"
+
+COMMS_MSVC_WARNING_PUSH
+COMMS_MSVC_WARNING_DISABLE(4324) // Disable warning about alignment padding
+
 
 namespace comms
 {
@@ -3180,3 +3185,5 @@ public:
 }  // namespace util
 
 }  // namespace comms
+
+COMMS_MSVC_WARNING_POP
