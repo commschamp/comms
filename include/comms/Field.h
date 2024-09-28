@@ -383,9 +383,9 @@ protected:
 
 /// @brief Generate convinience alias access member functions for other
 ///     member fields.
-/// @details Same as @ref COMMS_MSG_FIELD_ALIAS() but applicable to
+/// @details Same as #COMMS_MSG_FIELD_ALIAS() but applicable to
 ///     @ref comms::field::Bundle field.
-/// @pre The macro @ref COMMS_FIELD_MEMBERS_ACCESS() needs to be used before
+/// @pre The macro #COMMS_FIELD_MEMBERS_ACCESS() needs to be used before
 ///     @ref COMMS_FIELD_ALIAS() to define convenience access functions.
 #define COMMS_FIELD_ALIAS(f_, ...) COMMS_DO_ALIAS(field_, f_, __VA_ARGS__)
 

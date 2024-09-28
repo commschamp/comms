@@ -389,7 +389,7 @@
 /// @code
 /// static_assert(comms::dispatchMsgIsPolymorphic<AllMessages1, MyMessage, MyHandler>(), "Unexpected dispatch type");
 /// @endcode
-/// There is a @ref dispatchMsgIsDirect() compile time check that can be used
+/// There is a @ref comms::dispatchMsgIsDirect() compile time check that can be used
 /// to verify that the direct dispatch actually being used:
 /// @code
 /// static_assert(comms::dispatchMsgIsDirect<MyMessage, MyHandler>(), "Unexpected dispatch type");

@@ -18,6 +18,7 @@
 
 #include "comms/CompileControl.h"
 #include "comms/Assert.h"
+#include "comms/util/AlignedStorage.h"
 
 COMMS_GNU_WARNING_PUSH
 
@@ -27,6 +28,9 @@ COMMS_GNU_WARNING_PUSH
 // unjustified warnings.
 COMMS_GNU_WARNING_DISABLE("-Warray-bounds")
 #endif
+
+COMMS_MSVC_WARNING_PUSH
+COMMS_MSVC_WARNING_DISABLE(4324) // Disable warning about alignment padding
 
 namespace comms
 {
@@ -51,12 +55,7 @@ public:
     using const_iterator = const_pointer;
     using reverse_iterator = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
-
-    using CellType =
-        typename std::aligned_storage<
-            sizeof(T),
-            std::alignment_of<T>::value
-        >::type;
+    using CellType = comms::util::AlignedStorage<sizeof(T), std::alignment_of<T>::value>;
 
     static_assert(sizeof(CellType) == sizeof(T), "Type T must be padded");
 
@@ -552,13 +551,9 @@ private:
 template <typename T, std::size_t TSize>
 struct StaticVectorStorageBase
 {
-    using ElementType = typename std::aligned_storage<
-        sizeof(T),
-        std::alignment_of<T>::value
-    >::type;
-
+    using ElementType = comms::util::AlignedStorage<sizeof(T), std::alignment_of<T>::value>; 
     using StorageType = std::array<ElementType, TSize>;
-    StorageType data_;
+    alignas(alignof(T)) StorageType data_;
 };
 
 template <typename T, std::size_t TSize>
@@ -2020,4 +2015,5 @@ void swap(comms::util::StaticVector<T, TSize1>& v1, comms::util::StaticVector<T,
 
 }
 
+COMMS_MSVC_WARNING_POP
 COMMS_GNU_WARNING_POP

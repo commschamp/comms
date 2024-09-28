@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Replacement of "dia" on Linux, because doxygen hardcodes "-t png-libart" parameters while "dia" doesn't have this filter any more
+
+MISSING_FILTER="png-libart"
+REPLACEMENT_FILTER="cairo-png"
+DIA_PATH="/usr/bin/dia"
+
+###########################################
+
+has_requested_filter=$(${DIA_PATH} --list-filters 2>/dev/null | grep ${MISSING_FILTER})
+if [ -n "${has_requested_filter}" ]; then
+    exec ${DIA_PATH} "$@"
+    exit 0
+fi
+
+new_params=()
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -t)
+            # If the current argument is "-t", shift and check the next argument
+            shift
+            if [ "$1" == "${MISSING_FILTER}" ]; then
+                new_params+=("-t" "${REPLACEMENT_FILTER}")
+            else
+                new_params+=("-t" "$1")
+            fi
+            ;;
+        *)
+            # For all other arguments, just add them to the array
+            new_params+=("$1")
+            ;;
+    esac
+    shift
+done
+
+exec ${DIA_PATH} "${new_params[@]}"

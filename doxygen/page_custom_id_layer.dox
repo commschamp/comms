@@ -69,10 +69,10 @@
 ///
 /// } // namespace my_prot
 /// @endcode
-/// Just to refresh the reader's memory: the usage of @ref COMMS_MSG_TRANSPORT_FIELDS_NAMES()
+/// Just to refresh the reader's memory: the usage of #COMMS_MSG_TRANSPORT_FIELDS_NAMES()
 /// macro for the interface definition will generate @b transportField_flags() 
 /// convenience member function to access the stored @b flags field, while 
-/// usage of @ref COMMS_BITMASK_BITS_SEQ() in the flags field definition will
+/// usage of #COMMS_BITMASK_BITS_SEQ() in the flags field definition will
 /// genereate @b getBitValue_X() and @b setBitValue_X() convenience member
 /// functions to get / set values of the bits (where X is one of the defined
 /// names: @b bit0, @b bit1, @b bit2, and @b bit3).

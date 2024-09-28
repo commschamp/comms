@@ -16,6 +16,7 @@
 
 #include "comms/CompileControl.h"
 #include "comms/util/type_traits.h"
+#include "comms/util/AlignedStorage.h"
 #include "comms/Assert.h"
 
 COMMS_GNU_WARNING_PUSH
@@ -175,11 +176,7 @@ class TupleAsAlignedUnion<std::tuple<TTypes...> >
     using SizeType = 
         typename details::TupleAsAlignedUnionHelper<(0U < sizeof...(TTypes))>::template SizeType<TTypes...>;
 public:
-    using Type = 
-        typename std::aligned_storage<
-            SizeType::value,
-            AlignmentType::value
-        >::type;
+    using Type = comms::util::AlignedStorage<SizeType::value, AlignmentType::value>;
 };
 /// @endcond
 

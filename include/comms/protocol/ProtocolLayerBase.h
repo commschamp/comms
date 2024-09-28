@@ -1671,7 +1671,7 @@ details::MsgPayloadRetriever<TIter> msgPayload(TIter& iter, std::size_t& len)
 
 /// @brief Provide names and convenience access functions to protocol
 ///     layers.
-/// @details Similar to @ref COMMS_PROTOCOL_LAYERS_ACCESS() but
+/// @details Similar to #COMMS_PROTOCOL_LAYERS_ACCESS() but
 ///     defines "Layer_<name>" type names.
 /// @pre Requires definition of inner "Base" type aliasing the base class.
 /// @related comms::protocol::ProtocolLayerBase
@@ -1680,19 +1680,19 @@ details::MsgPayloadRetriever<TIter> msgPayload(TIter& iter, std::size_t& len)
     COMMS_DO_ACCESS_LAYER_ACC_FUNC(__VA_ARGS__)
 
 
-/// @brief Same as @ref COMMS_PROTOCOL_LAYERS_ACCESS()
+/// @brief Same as #COMMS_PROTOCOL_LAYERS_ACCESS()
 /// @related comms::protocol::ProtocolLayerBase
 #define COMMS_PROTOCOL_LAYERS_ACCESS_INNER(...) \
     COMMS_PROTOCOL_LAYERS_ACCESS(__VA_ARGS__)
 
-/// @brief Same as @ref COMMS_PROTOCOL_LAYERS_NAMES()
+/// @brief Same as #COMMS_PROTOCOL_LAYERS_NAMES()
 /// @related comms::protocol::ProtocolLayerBase
 #define COMMS_PROTOCOL_LAYERS_NAMES_INNER(...) \
     COMMS_PROTOCOL_LAYERS_NAMES(__VA_ARGS__)    
 
 /// @brief Provide convenience access functions to protocol
 ///     layers.
-/// @details Similar to @ref COMMS_PROTOCOL_LAYERS_ACCESS(), but
+/// @details Similar to #COMMS_PROTOCOL_LAYERS_ACCESS(), but
 ///     the arguments are expected to be in reverse order, i.e.
 ///     the first argument is the name of the outermost layer, while
 ///     the last one is the name for the innermost one
@@ -1703,7 +1703,7 @@ details::MsgPayloadRetriever<TIter> msgPayload(TIter& iter, std::size_t& len)
 
 /// @brief Provide names and convenience access functions to protocol
 ///     layers.
-/// @details Similar to @ref COMMS_PROTOCOL_LAYERS_ACCESS_OUTER() but
+/// @details Similar to #COMMS_PROTOCOL_LAYERS_ACCESS_OUTER() but
 ///     defines "Layer_<name>" type names.
 /// @pre Requires definition of inner "Base" type aliasing the base class.
 /// @related comms::protocol::ProtocolLayerBase

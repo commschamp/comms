@@ -22,6 +22,9 @@
 #include "comms/field/tag.h"
 #include "CommonFuncs.h"
 
+COMMS_MSVC_WARNING_PUSH
+COMMS_MSVC_WARNING_DISABLE(4324) // Disable warning about alignment padding
+
 namespace comms
 {
 
@@ -901,7 +904,7 @@ private:
         setVersion(VersionBaseImpl::version_);
     }
 
-    ValueType storage_;
+    alignas(8) ValueType storage_;
     std::size_t memIdx_ = MembersCount;
 };
 
@@ -910,3 +913,5 @@ private:
 }  // namespace field
 
 }  // namespace comms
+
+COMMS_MSVC_WARNING_POP

@@ -18,11 +18,15 @@
 #include <algorithm>
 #include <limits>
 
+#include "comms/CompileControl.h"
 #include "comms/Assert.h"
 #include "comms/dispatch.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/type_traits.h"
 #include "comms/details/tag.h"
+
+COMMS_MSVC_WARNING_PUSH
+COMMS_MSVC_WARNING_DISABLE(4324) // Disable warning about alignment padding
 
 namespace comms
 {
@@ -488,7 +492,7 @@ public:
 private:
     using AlignedStorage = typename TupleAsAlignedUnion<TAllTypes>::Type;
 
-    AlignedStorage place_;
+    alignas(8) AlignedStorage place_;
     bool allocated_ = false;
 
 };
@@ -582,7 +586,7 @@ public:
 private:
     using AlignedStorage = typename TupleAsAlignedUnion<TAllocMessages>::Type;
 
-    AlignedStorage place_;
+    alignas(8) AlignedStorage place_;
     bool allocated_ = false;
 
 };
@@ -716,4 +720,4 @@ struct DynMemoryNoVirtualDestructorDeepCondWrap
 
 }  // namespace comms
 
-
+COMMS_MSVC_WARNING_POP

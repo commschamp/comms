@@ -405,8 +405,6 @@ public:
     /// @brief Destruct previously initialised (via @ref comms::field::Variant::initField() "initField()")
     ///     contained field.
     /// @tparam TIdx Index of the field type witin the @ref Members tuple.
-    /// @tparam TArgs Types of the agurments for the field's constructor
-    /// @param[in] args Arguments for the constructed field.
     /// @pre The field must contain an expected member field
     ///     @code
     ///     assert(currentField() == TIdx);
@@ -711,7 +709,7 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 
 /// @brief Add convenience access enum and functions to the members of
 ///     @ref comms::field::Variant field.
-/// @details Very similar to @ref COMMS_VARIANT_MEMBERS_NAMES(), but does @b NOT
+/// @details Very similar to #COMMS_VARIANT_MEMBERS_NAMES(), but does @b NOT
 ///     require definition of @b Base inner member type (for some compilers) and does @b NOT
 ///     define inner @b Field_* types for used member fields.
 /// @param[in] ... List of fields' names.
@@ -800,7 +798,7 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 ///     field1.value() = ...;
 ///     @endcode
 ///     However, it would be convenient to provide names and easier access to
-///     all the poisble variants. The @ref COMMS_VARIANT_MEMBERS_NAMES() macro does exactly
+///     all the poisble variants. The #COMMS_VARIANT_MEMBERS_NAMES() macro does exactly
 ///     that when used inside the field class definition. Just inherit from
 ///     the @ref comms::field::Variant class and use the macro inside with the names for the
 ///     member fields:
@@ -926,7 +924,7 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
 /// @param[in] ... List of member fields' names.
 /// @related comms::field::Variant
 /// @note Defined in "comms/field/Variant.h"
-/// @see @ref COMMS_VARIANT_MEMBERS_ACCESS()
+/// @see #COMMS_VARIANT_MEMBERS_ACCESS()
 /// @see @ref sec_field_tutorial_variant
 #define COMMS_VARIANT_MEMBERS_NAMES(...) \
     COMMS_EXPAND(COMMS_VARIANT_MEMBERS_ACCESS(__VA_ARGS__)) \

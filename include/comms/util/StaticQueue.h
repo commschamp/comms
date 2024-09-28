@@ -21,9 +21,15 @@
 #include <iterator>
 #include <algorithm>
 
+#include "comms/CompileControl.h"
 #include "comms/Assert.h"
 #include "comms/util/SizeToType.h"
 #include "comms/util/type_traits.h"
+#include "comms/util/AlignedStorage.h"
+
+COMMS_MSVC_WARNING_PUSH
+COMMS_MSVC_WARNING_DISABLE(4324) // Disable warning about alignment padding
+
 
 namespace comms
 {
@@ -46,11 +52,7 @@ public:
 
 protected:
     using ValueType = T;
-    using StorageType =
-        typename std::aligned_storage<
-            sizeof(ValueType),
-            std::alignment_of<ValueType>::value
-        >::type;
+    using StorageType = comms::util::AlignedStorage<sizeof(ValueType), std::alignment_of<ValueType>::value>;
     using StorageTypePtr = StorageType*;
     using ConstStorageTypePtr = const StorageType*;
     using SizeType = std::size_t;
@@ -1232,11 +1234,7 @@ public:
 
 protected:
     using ValueType = WrapperElemType;
-    using StorageType =
-        typename std::aligned_storage<
-            sizeof(ValueType),
-            std::alignment_of<ValueType>::value
-        >::type;
+    using StorageType = comms::util::AlignedStorage<sizeof(ValueType), std::alignment_of<ValueType>::value>;
     using StorageTypePtr = StorageType*;
     using Reference = ValueType&;
     using ConstReference = const ValueType&;
@@ -1801,7 +1799,7 @@ class StaticQueueBaseOptimised<std::int64_t> : public CastWrapperQueueBase<std::
     using Base = CastWrapperQueueBase<std::int64_t, std::uint64_t>;
 protected:
 
-    using StorageTypePtr = stypename Base::StorageTypePtr;
+    using StorageTypePtr = typename Base::StorageTypePtr;
 
     StaticQueueBaseOptimised(StorageTypePtr data, std::size_t capacity)
         : Base(data, capacity)
@@ -2759,7 +2757,7 @@ public:
 
 private:
     using ArrayType = std::array<StorageType, TSize>;
-    ArrayType array_;
+    alignas(alignof(T)) ArrayType array_;
 };
 
 /// @brief Const iterator for the elements of StaticQueue.
@@ -3187,3 +3185,5 @@ public:
 }  // namespace util
 
 }  // namespace comms
+
+COMMS_MSVC_WARNING_POP

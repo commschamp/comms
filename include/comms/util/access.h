@@ -16,8 +16,16 @@
 #include <limits>
 #include <iterator>
 
+#include "comms/CompileControl.h"
 #include "comms/util/type_traits.h"
 #include "comms/details/tag.h"
+
+COMMS_GNU_WARNING_PUSH
+
+#if COMMS_IS_GCC_14 && defined(NDEBUG) && (COMMS_IS_CPP20 || COMMS_IS_CPP23)
+// Bug in gcc-14, reporting "free-nonheap-object" error when working with vectors and using C++20/23, but only in Release mode
+COMMS_GNU_WARNING_DISABLE("-Wfree-nonheap-object") 
+#endif // #if COMMS_IS_GCC_14 && defined(NDEBUG) && (COMMS_IS_CPP20 || COMMS_IS_CPP23)
 
 namespace comms
 {
@@ -813,3 +821,5 @@ T readData(TIter& iter, std::size_t size, const traits::endian::Little& endian)
 }  // namespace util
 
 }  // namespace comms
+
+COMMS_GNU_WARNING_POP

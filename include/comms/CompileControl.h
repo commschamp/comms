@@ -76,11 +76,17 @@
 #define COMMS_IS_GCC_11 (COMMS_IS_GCC && (__GNUC__ == 11))
 #define COMMS_IS_GCC_11_OR_ABOVE (COMMS_IS_GCC && (__GNUC__ >= 11))
 #define COMMS_IS_GCC_12 (COMMS_IS_GCC && (__GNUC__ == 12))
+#define COMMS_IS_GCC_12_OR_ABOVE (COMMS_IS_GCC && (__GNUC__ >= 12))
+#define COMMS_IS_GCC_13 (COMMS_IS_GCC && (__GNUC__ == 13))
+#define COMMS_IS_GCC_14 (COMMS_IS_GCC && (__GNUC__ == 14))
+#define COMMS_IS_GCC_14_OR_BELOW (COMMS_IS_GCC && (__GNUC__ <= 14))
 #define COMMS_IS_CLANG_7_OR_ABOVE (COMMS_IS_CLANG && (__clang_major__ >= 7))
 #define COMMS_IS_CLANG_8 (COMMS_IS_CLANG && (__clang_major__ == 8))
 #define COMMS_IS_CLANG_8_OR_BELOW (COMMS_IS_CLANG && (__clang_major__ <= 8))
 #define COMMS_IS_CLANG_9_OR_BELOW (COMMS_IS_CLANG && (__clang_major__ <= 9))
 #define COMMS_IS_CLANG_9_OR_ABOVE (COMMS_IS_CLANG && (__clang_major__ >= 9))
+#define COMMS_IS_CLANG_16_OR_ABOVE (COMMS_IS_CLANG && (__clang_major__ >= 16))
+#define COMMS_IS_CLANG_18_OR_BELOW (COMMS_IS_CLANG && (__clang_major__ <= 18))
 #define COMMS_IS_MSVC_2019 (COMMS_IS_MSVC && (_MSC_VER >= 1920) && (_MSC_VER < 1930))
 #define COMMS_IS_MSVC_2019_OR_BELOW (COMMS_IS_MSVC && (_MSC_VER < 1930))
 #define COMMS_IS_MSVC_2017_OR_BELOW (COMMS_IS_MSVC && (_MSC_VER < 1920))
@@ -93,6 +99,7 @@
 #define COMMS_IS_CPP14 (__cplusplus >= 201402L)
 #define COMMS_IS_CPP17 (__cplusplus >= 201703L)
 #define COMMS_IS_CPP20 (__cplusplus >= 202002L)
+#define COMMS_IS_CPP23 (__cplusplus >= 202302L)
 
 #if COMMS_IS_MSVC_2019_OR_BELOW // Visual Studio 2019
 #undef COMMS_IS_CPP20
