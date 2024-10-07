@@ -15,6 +15,8 @@
 #include "comms/protocol/details/SyncPrefixLayerOptionsParser.h"
 #include "comms/protocol/details/ProtocolLayerExtendingClassHelper.h"
 
+#include <iterator>
+
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4189) // Disable erroneous initialized but not referenced variable warning
 
