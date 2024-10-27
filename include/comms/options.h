@@ -1240,6 +1240,9 @@ struct VariantHasCustomResetOnDestruct {};
 template <bool TVersionDependent>
 struct HasVersionDependentMembers {};
 
+/// @brief Remove an ability to update field's value by the client code
+struct FixedValue {};
+
 } // namespace def
 
 namespace app

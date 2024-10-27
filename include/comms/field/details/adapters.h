@@ -19,6 +19,7 @@
 #include "comms/field/adapter/FieldType.h"
 #include "comms/field/adapter/FixedBitLength.h"
 #include "comms/field/adapter/FixedLength.h"
+#include "comms/field/adapter/FixedValue.h"
 #include "comms/field/adapter/IgnoreInvalid.h"
 #include "comms/field/adapter/InvalidByDefault.h"
 #include "comms/field/adapter/MissingOnInvalid.h"

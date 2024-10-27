@@ -223,8 +223,11 @@ class AdaptBasicField
     using VariantResetOnDestructAdapted = 
         typename ParsedOptions::template AdaptVariantResetOnDestruct<MissingOnReadFailAdapted>;
 
+    using FixedValueAdapted = 
+        typename ParsedOptions::template AdaptFixedValue<VariantResetOnDestructAdapted>;        
+
 public:
-    using Type = VariantResetOnDestructAdapted;
+    using Type = FixedValueAdapted;
 };
 
 template <typename TBasic, typename... TOptions>

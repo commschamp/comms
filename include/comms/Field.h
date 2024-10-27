@@ -111,6 +111,13 @@ public:
         return false;
     }
 
+    /// @brief Default indication of whether the application is prevented to updated the field's value
+    /// @return Always @b false
+    static constexpr bool fixedValue()
+    {
+        return false;
+    }    
+
 protected:
     /// @brief Write data into the output buffer.
     /// @details Use this function to write data to the the buffer

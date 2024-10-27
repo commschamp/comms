@@ -74,6 +74,7 @@ public:
     static constexpr bool HasMissingOnInvalid = false;
     static constexpr bool HasVariantCustomResetOnDestruct = false;
     static constexpr bool HasVersionDependentMembersForced = false;
+    static constexpr bool HasFixedValue = false;
 
     using UnitsType = void;
     using ScalingRatio = std::ratio<1, 1>;
@@ -190,6 +191,9 @@ public:
             comms::field::adapter::VariantResetOnDestruct<TField>,
             TField
         >;
+
+    template <typename TField>
+    using AdaptFixedValue = TField;
 };
 
 template <typename... TOptions>
@@ -790,6 +794,18 @@ public:
     static constexpr bool HasVersionDependentMembersForced = true;
     static constexpr MembersVersionDependency ForcedMembersVersionDependency = 
         TVersionDependent ? MembersVersionDependency_Dependent : MembersVersionDependency_Independent;
+};
+
+template <typename... TOptions>
+class OptionsParser<
+    comms::option::def::FixedValue,
+    TOptions...> : public OptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasFixedValue = true;
+
+    template <typename TField>
+    using AdaptFixedValue = comms::field::adapter::FixedValue<TField>;       
 };
 
 

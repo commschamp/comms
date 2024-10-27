@@ -98,9 +98,10 @@ using Test1_IntKeyField =
     comms::field::IntValue<
         Test1_FieldBase,
         std::uint8_t,
-        comms::option::DefaultNumValue<TVal>,
-        comms::option::ValidNumValueRange<TVal, TVal>,
-        comms::option::FailOnInvalid<>
+        comms::option::def::DefaultNumValue<TVal>,
+        comms::option::def::ValidNumValueRange<TVal, TVal>,
+        comms::option::def::FailOnInvalid<>,
+        comms::option::def::FixedValue
 >;
 
 void FieldsTestSuite2::test1()
@@ -153,8 +154,8 @@ void FieldsTestSuite2::test1()
         TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
         TS_ASSERT_EQUALS(field.currentField(), 1U);
         auto& m = field.accessField<1>();
-        TS_ASSERT_EQUALS(std::get<0>(m.value()).value(), 2U);
-        TS_ASSERT_EQUALS(std::get<1>(m.value()).value(), 0x01020304);
+        TS_ASSERT_EQUALS(std::get<0>(m.value()).getValue(), 2U);
+        TS_ASSERT_EQUALS(std::get<1>(m.value()).getValue(), 0x01020304);
         TS_ASSERT(std::get<2>(m.value()).doesExist());
         TS_ASSERT_EQUALS(std::get<2>(m.value()).field().value(), 0x05);
         TS_ASSERT_EQUALS(field.length(), Buf1Size);
@@ -172,8 +173,8 @@ void FieldsTestSuite2::test1()
         TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
         TS_ASSERT_EQUALS(field.currentField(), 1U);
         auto& m = field.accessField<1>();
-        TS_ASSERT_EQUALS(std::get<0>(m.value()).value(), 2U);
-        TS_ASSERT_EQUALS(std::get<1>(m.value()).value(), 0x01020304);
+        TS_ASSERT_EQUALS(std::get<0>(m.value()).getValue(), 2U);
+        TS_ASSERT_EQUALS(std::get<1>(m.value()).getValue(), 0x01020304);
         TS_ASSERT(std::get<2>(m.value()).isMissing());
         TS_ASSERT_EQUALS(field.length(), Buf1Size - 1U);
     } while (false);
@@ -276,10 +277,10 @@ void FieldsTestSuite2::test2()
         TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
         TS_ASSERT_EQUALS(field.currentField(), 1U);
         auto& m = field.accessField<1>();
-        TS_ASSERT_EQUALS(m.field_key().value(), 2U);
-        TS_ASSERT_EQUALS(std::get<0>(m.field_value().value()).value(), 0x01020304);
-        TS_ASSERT(std::get<1>(m.field_value().value()).doesExist());
-        TS_ASSERT_EQUALS(std::get<1>(m.field_value().value()).field().value(), 0x05);
+        TS_ASSERT_EQUALS(m.field_key().getValue(), 2U);
+        TS_ASSERT_EQUALS(std::get<0>(m.field_value().getValue()).getValue(), 0x01020304);
+        TS_ASSERT(std::get<1>(m.field_value().getValue()).doesExist());
+        TS_ASSERT_EQUALS(std::get<1>(m.field_value().getValue()).field().getValue(), 0x05);
         TS_ASSERT_EQUALS(field.length(), Buf1Size);
     } while (false);
 
@@ -295,8 +296,8 @@ void FieldsTestSuite2::test2()
         TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
         TS_ASSERT_EQUALS(field.currentField(), 1U);
         auto& m = field.accessField<1>();
-        TS_ASSERT_EQUALS(m.field_key().value(), 2U);
-        TS_ASSERT_EQUALS(std::get<0>(m.field_value().value()).value(), 0x01020304);
+        TS_ASSERT_EQUALS(m.field_key().getValue(), 2U);
+        TS_ASSERT_EQUALS(std::get<0>(m.field_value().getValue()).getValue(), 0x01020304);
         TS_ASSERT(std::get<1>(m.field_value().value()).isMissing());
         TS_ASSERT_EQUALS(field.length(), Buf1Size - 1U);
     } while (false);
@@ -885,8 +886,8 @@ void FieldsTestSuite2::test10()
         auto es = field.read(readIter, Buf1Size);
         TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
         TS_ASSERT_EQUALS(field.currentField(), 0U);
-        TS_ASSERT_EQUALS(field.accessField_mem1().field_key().value(), 1U);
-        TS_ASSERT_EQUALS(field.accessField_mem1().field_val().value(), 0x0203);
+        TS_ASSERT_EQUALS(field.accessField_mem1().field_key().getValue(), 1U);
+        TS_ASSERT_EQUALS(field.accessField_mem1().field_val().getValue(), 0x0203);
         TS_ASSERT_EQUALS(field.length(), 3U);
     } while (false);
 }
@@ -2029,8 +2030,8 @@ void FieldsTestSuite2::test30()
         auto es = field.read(readIter, Buf1Size);
         TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
         TS_ASSERT_EQUALS(field.currentField(), 0U);
-        TS_ASSERT_EQUALS(field.accessField_mem1().field_key().value(), 1U);
-        TS_ASSERT_EQUALS(field.accessField_mem1().field_val().value(), 0x0203);
+        TS_ASSERT_EQUALS(field.accessField_mem1().field_key().getValue(), 1U);
+        TS_ASSERT_EQUALS(field.accessField_mem1().field_val().getValue(), 0x0203);
         TS_ASSERT_EQUALS(field.length(), 3U);
     } while (false);
 }
