@@ -62,6 +62,7 @@ public:
     void test34();
     void test35();
     void test36();
+    void test37();
 
 private:
     template <typename TField>
@@ -2218,6 +2219,23 @@ void FieldsTestSuite2::test36()
     TS_ASSERT_EQUALS(field.value().size(), field.value().max_size());
     TS_ASSERT_EQUALS(field.value(), "he");
     TS_ASSERT_EQUALS(static_cast<std::size_t>(std::distance(&Buf[0], readIter)), BufSize)
+}
+
+void FieldsTestSuite2::test37()
+{
+    using Field = 
+        comms::field::IntValue<
+            comms::Field<BigEndianOpt>,
+            std::uint16_t,
+            comms::option::def::DisplayOffset<2>
+        >;
+
+    Field field;
+
+    TS_ASSERT_EQUALS(field.getDisplayValue(), 2U);
+    field.setDisplayValue(10U);
+    TS_ASSERT_EQUALS(field.getDisplayValue(), 10U);
+    TS_ASSERT_EQUALS(field.getValue(), 8U);
 }
 
 template <typename TField>

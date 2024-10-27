@@ -48,6 +48,7 @@ namespace field
 ///     @li @ref comms::option::def::AvailableLengthLimit
 ///     @li @ref comms::option::def::DefaultValueInitialiser or @ref comms::option::def::DefaultNumValue.
 ///     @li comms::option::def::EmptySerialization
+///     @li @ref comms::option::def::DisplayOffset
 ///     @li @ref comms::option::def::FailOnInvalid
 ///     @li @ref comms::option::def::FieldType
 ///     @li @ref comms::option::def::FixedBitLength
@@ -183,7 +184,14 @@ public:
     static constexpr bool hasFixedValue()
     {
         return ParsedOptions::HasFixedValue;
-    }         
+    }      
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::DisplayOffset option
+    ///     has been used.
+    static constexpr bool hasDisplayOffset()
+    {
+        return ParsedOptions::HasDisplayOffset;
+    }                
 
     /// @brief Scales value according to ratio specified in provided
     ///     @ref comms::option::def::ScalingRatio option.
@@ -257,6 +265,23 @@ public:
     {
         BaseImpl::setValue(std::forward<U>(val));
     }        
+
+    /// @brief Get display value
+    /// @details Retrieving value by taking into account the display offset provided by the @ref comms::option::def::DisplayOffset option
+    ///     if such was used.
+    ValueType getDisplayValue() const
+    {
+        return static_cast<ValueType>(getValue() + BaseImpl::displayOffset());
+    }
+
+    /// @brief Set display value
+    /// @details Updating inner value by taking into account the display offset provided by the @ref comms::option::def::DisplayOffset option
+    ///     if such was used.
+    template <typename U>
+    void setDisplayValue(U&& val)
+    {
+        setValue(val - BaseImpl::displayOffset());
+    }
 
     /// @brief Get maximal numeric value the field can hold.
     static constexpr ValueType maxValue()

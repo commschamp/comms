@@ -13,6 +13,7 @@
 #include "comms/field/adapter/CustomRefreshWrap.h"
 #include "comms/field/adapter/CustomWriteWrap.h"
 #include "comms/field/adapter/DefaultValueInitialiser.h"
+#include "comms/field/adapter/DisplayOffset.h"
 #include "comms/field/adapter/EmptySerialization.h"
 #include "comms/field/adapter/ExistsBetweenVersions.h"
 #include "comms/field/adapter/FailOnInvalid.h"

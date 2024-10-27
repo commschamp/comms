@@ -1243,6 +1243,12 @@ struct HasVersionDependentMembers {};
 /// @brief Remove an ability to update field's value by the client code
 struct FixedValue {};
 
+/// @brief Option used to specify display offset for the @ref comms::field::IntValue field.
+/// @tparam TOffset Display offset.
+/// @headerfile comms/options.h
+template <std::intmax_t TOffset>
+struct DisplayOffset {};
+
 } // namespace def
 
 namespace app

@@ -139,8 +139,11 @@ class AdaptBasicField
     using SerOffsetAdapted = 
         typename ParsedOptions::template AdaptSerOffset<VersionStorageAdapted>;
 
+    using DisplayOffsetAdapted = 
+        typename ParsedOptions::template AdaptDisplayOffset<SerOffsetAdapted>;
+
     using VersionsRangeAdapted = 
-        typename ParsedOptions::template AdaptVersionsRange<SerOffsetAdapted>;
+        typename ParsedOptions::template AdaptVersionsRange<DisplayOffsetAdapted>;
 
     using FixedLengthLimitAdapted = 
         typename ParsedOptions::template AdaptFixedLengthLimit<VersionsRangeAdapted>;

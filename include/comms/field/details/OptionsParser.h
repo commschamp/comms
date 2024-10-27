@@ -75,6 +75,7 @@ public:
     static constexpr bool HasVariantCustomResetOnDestruct = false;
     static constexpr bool HasVersionDependentMembersForced = false;
     static constexpr bool HasFixedValue = false;
+    static constexpr bool HasDisplayOffset = false;
 
     using UnitsType = void;
     using ScalingRatio = std::ratio<1, 1>;
@@ -194,6 +195,9 @@ public:
 
     template <typename TField>
     using AdaptFixedValue = TField;
+
+    template <typename TField>
+    using AdaptDisplayOffset = TField;    
 };
 
 template <typename... TOptions>
@@ -808,6 +812,18 @@ public:
     using AdaptFixedValue = comms::field::adapter::FixedValue<TField>;       
 };
 
+template <std::intmax_t TOffset, typename... TOptions>
+class OptionsParser<
+    comms::option::def::DisplayOffset<TOffset>,
+    TOptions...> : public OptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasDisplayOffset = true;
+    static constexpr std::intmax_t DisplayOffset = TOffset;
+
+    template <typename TField>
+    using AdaptDisplayOffset = comms::field::adapter::DisplayOffset<TOffset, TField>;       
+};
 
 template <typename... TOptions>
 class OptionsParser<

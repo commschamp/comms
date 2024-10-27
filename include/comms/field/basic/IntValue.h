@@ -33,6 +33,7 @@ public:
     using SerialisedType = ValueType;
     using ScalingRatio = std::ratio<1, 1>;
     using CommsTag = comms::field::tag::Int;
+    using DisplayOffsetType = typename std::make_signed<ValueType>::type;
 
     IntValue() = default;
 
@@ -128,6 +129,11 @@ public:
     void writeNoStatus(TIter& iter) const
     {
         BaseImpl::writeData(toSerialised(value_), iter);
+    }
+
+    static constexpr DisplayOffsetType displayOffset()
+    {
+        return static_cast<DisplayOffsetType>(0);
     }
 
 private:
