@@ -70,12 +70,14 @@ namespace field
 /// @tparam TOptions Zero or more options that modify/refine default behaviour
 ///     of the field.@n
 ///     Supported options are:
+///     @li @ref comms::option::def::EmptySerialization
+///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::FixedValue
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
-///     @li @ref comms::option::def::EmptySerialization
-///     @li @ref comms::option::def::VersionStorage
-///     @li @ref comms::option::def::FieldType
 ///     @li @ref comms::option::def::HasVersionDependentMembers
+///     @li @ref comms::option::def::VersionStorage
+
 /// @pre TMember is a variant of std::tuple, that contains other fields.
 /// @pre Every field member specifies its length in bits using
 ///     @ref comms::option::def::FixedBitLength option.
@@ -177,6 +179,13 @@ public:
     {
         return ParsedOptions::HasFieldType;
     }    
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
+    ///     has been used.
+    static constexpr bool hasFixedValue()
+    {
+        return ParsedOptions::HasFixedValue;
+    }  
 
     /// @brief Retrieve number of bits specified member field consumes.
     /// @tparam TIdx Index of the member field.

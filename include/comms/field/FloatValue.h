@@ -40,19 +40,20 @@ namespace field
 ///     be serialised using big endian notation.@n
 ///     Supported options are:
 ///     @li @ref comms::option::def::DefaultValueInitialiser or @ref comms::option::def::DefaultNumValue.
+///     @li @ref comms::option::def::EmptySerialization
+///     @li @ref comms::option::def::FailOnInvalid
+///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::FixedValue
+///     @li @ref comms::option::def::HasCustomRead
+///     @li @ref comms::option::def::HasCustomRefresh
+///     @li @ref comms::option::def::IgnoreInvalid
+///     @li @ref comms::option::def::InvalidByDefault
+///     @li @b comms::option::def::Units* - all variants of value units, see
+///         @ref sec_field_tutorial_int_value_units for details.
 ///     @li @ref comms::option::def::ValidNumValueRange, @ref comms::option::def::ValidNumValue,
 ///         @ref comms::option::def::ValidBigUnsignedNumValueRange, @ref comms::option::def::ValidBigUnsignedNumValue
 ///     @li @ref comms::option::def::ValidRangesClear
-///     @li @ref comms::option::def::HasCustomRead
-///     @li @ref comms::option::def::HasCustomRefresh
-///     @li @ref comms::option::def::FailOnInvalid
-///     @li @ref comms::option::def::IgnoreInvalid
-///     @li @b comms::option::def::Units* - all variants of value units, see
-///         @ref sec_field_tutorial_int_value_units for details.
-///     @li @ref comms::option::def::EmptySerialization
-///     @li @ref comms::option::def::InvalidByDefault
 ///     @li @ref comms::option::def::VersionStorage
-///     @li @ref comms::option::def::FieldType
 /// @extends comms::Field
 /// @headerfile comms/field/FloatValue.h
 template <typename TFieldBase, typename T, typename... TOptions>
@@ -135,7 +136,14 @@ public:
     static constexpr bool hasFieldType()
     {
         return ParsedOptions::HasFieldType;
-    }    
+    }   
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
+    ///     has been used.
+    static constexpr bool hasFixedValue()
+    {
+        return ParsedOptions::HasFixedValue;
+    }   
 
     /// @brief Get access to floating point value storage.
     const ValueType& value() const

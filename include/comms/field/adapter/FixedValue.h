@@ -32,11 +32,6 @@ public:
     template <typename U>
     void setValue(U&& val) = delete;    
 
-    static constexpr bool fixedValue()
-    {
-        return true;
-    }        
-
 private:
     using BaseImpl::setValue;
 

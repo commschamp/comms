@@ -164,27 +164,29 @@ using ArrayListBase =
 /// @tparam TOptions Zero or more options that modify/refine default behaviour
 ///     of the field.@n
 ///     Supported options are:
-///     @li @ref comms::option::app::FixedSizeStorage
-///     @li @ref comms::option::app::CustomStorageType
-///     @li @ref comms::option::app::OrigDataView (valid only if TElement is integral type
-///         of 1 byte size.
-///     @li @ref comms::option::def::SequenceSizeFieldPrefix
-///     @li @ref comms::option::def::SequenceSerLengthFieldPrefix
-///     @li @ref comms::option::def::SequenceElemSerLengthFieldPrefix
-///     @li @ref comms::option::def::SequenceElemFixedSerLengthFieldPrefix
-///     @li @ref comms::option::def::SequenceSizeForcingEnabled
-///     @li @ref comms::option::def::SequenceLengthForcingEnabled
-///     @li @ref comms::option::def::SequenceFixedSize
-///     @li @ref comms::option::def::SequenceTerminationFieldSuffix
-///     @li @ref comms::option::def::SequenceTrailingFieldSuffix
 ///     @li @ref comms::option::def::DefaultValueInitialiser
+///     @li @ref comms::option::def::EmptySerialization
+///     @li @ref comms::option::def::FailOnInvalid
+///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::FixedValue
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
-///     @li @ref comms::option::def::FailOnInvalid
 ///     @li @ref comms::option::def::IgnoreInvalid
-///     @li @ref comms::option::def::EmptySerialization
+///     @li @ref comms::option::def::SequenceElemFixedSerLengthFieldPrefix
+///     @li @ref comms::option::def::SequenceElemSerLengthFieldPrefix
+///     @li @ref comms::option::def::SequenceFixedSize
+///     @li @ref comms::option::def::SequenceLengthForcingEnabled
+///     @li @ref comms::option::def::SequenceSerLengthFieldPrefix
+///     @li @ref comms::option::def::SequenceSizeFieldPrefix
+///     @li @ref comms::option::def::SequenceSizeForcingEnabled
+///     @li @ref comms::option::def::SequenceTerminationFieldSuffix
+///     @li @ref comms::option::def::SequenceTrailingFieldSuffix
 ///     @li @ref comms::option::def::VersionStorage
-///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::app::CustomStorageType
+///     @li @ref comms::option::app::FixedSizeStorage
+///     @li @ref comms::option::app::OrigDataView (valid only if TElement is integral type
+///         of 1 byte size.
+
 /// @extends comms::Field
 /// @headerfile comms/field/ArrayList.h
 template <typename TFieldBase, typename TElement, typename... TOptions>
@@ -352,6 +354,13 @@ public:
     {
         return ParsedOptions::HasSequenceFixedSize;
     }   
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
+    ///     has been used.
+    static constexpr bool hasFixedValue()
+    {
+        return ParsedOptions::HasFixedValue;
+    }      
 
     /// @brief Compile time inquiry of fixed size provided via @ref comms::option::def::SequenceFixedSize option.
     /// @details If the @ref comms::option::def::SequenceFixedSize option hasn't been used

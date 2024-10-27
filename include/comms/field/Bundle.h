@@ -36,13 +36,14 @@ namespace field
 ///     of the field.@n
 ///     Supported options are:
 ///     @li @ref comms::option::def::DefaultValueInitialiser
-///     @li @ref comms::option::def::RemLengthMemberField
+///     @li @ref comms::option::def::EmptySerialization
+///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::FixedValue
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
-///     @li @ref comms::option::def::EmptySerialization
-///     @li @ref comms::option::def::VersionStorage
-///     @li @ref comms::option::def::FieldType
 ///     @li @ref comms::option::def::HasVersionDependentMembers
+///     @li @ref comms::option::def::RemLengthMemberField
+///     @li @ref comms::option::def::VersionStorage
 /// @extends comms::Field
 /// @headerfile comms/field/Bundle.h
 /// @see @ref COMMS_FIELD_MEMBERS_NAMES()
@@ -143,6 +144,13 @@ public:
     {
         return ParsedOptions::HasFieldType;
     }    
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
+    ///     has been used.
+    static constexpr bool hasFixedValue()
+    {
+        return ParsedOptions::HasFixedValue;
+    }      
 
     /// @brief Get access to the stored tuple of fields.
     ValueType& value()
