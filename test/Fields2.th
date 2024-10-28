@@ -2245,6 +2245,7 @@ void FieldsTestSuite2::test38()
         comms::field::BitmaskValue<
             comms::Field<BigEndianOpt>,
             comms::option::def::FixedLength<1>,
+            comms::option::def::FixedValue,
             comms::option::def::BitmaskReservedBits<0xff, 0x1>,
             comms::option::def::DefaultNumValue<0x1>
         >;
@@ -2253,6 +2254,8 @@ void FieldsTestSuite2::test38()
     TS_ASSERT(field.valid());
     TS_ASSERT_EQUALS(field.getBitValue(0), true);
     TS_ASSERT_EQUALS(field.getBitValue(1), false);
+
+    // field.setBitValue(1, true); // Must fail compilation
 }
 
 template <typename TField>
