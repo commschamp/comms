@@ -63,6 +63,7 @@ public:
     void test35();
     void test36();
     void test37();
+    void test38();
 
 private:
     template <typename TField>
@@ -2236,6 +2237,22 @@ void FieldsTestSuite2::test37()
     field.setDisplayValue(10U);
     TS_ASSERT_EQUALS(field.getDisplayValue(), 10U);
     TS_ASSERT_EQUALS(field.getValue(), 8U);
+}
+
+void FieldsTestSuite2::test38()
+{
+    using Field = 
+        comms::field::BitmaskValue<
+            comms::Field<BigEndianOpt>,
+            comms::option::def::FixedLength<1>,
+            comms::option::def::BitmaskReservedBits<0xff, 0x1>,
+            comms::option::def::DefaultNumValue<0x1>
+        >;
+
+    Field field;
+    TS_ASSERT(field.valid());
+    TS_ASSERT_EQUALS(field.getBitValue(0), true);
+    TS_ASSERT_EQUALS(field.getBitValue(1), false);
 }
 
 template <typename TField>
