@@ -19,8 +19,8 @@
 #include "comms/MessageBase.h"
 #include "comms/details/detect.h"
 #include "comms/details/tag.h"
-#include "comms/field/ArrayList.h"
 #include "comms/field/IntValue.h"
+#include "comms/protocol/details/MsgDataLayerOptionsParser.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/type_traits.h"
 #include "ProtocolLayerBase.h"
@@ -33,16 +33,17 @@ namespace protocol
 
 /// @brief Message data layer.
 /// @details Must always be the last layer in protocol stack.
-/// @tparam TExtraOpts Extra options to inner @ref Field type which is defined
-///     to be @ref comms::field::ArrayList. This field is used only in @ref
-///     AllFields type and @ref readFieldsCached() member function.
+/// @tparam TOptions Default functionality extension options. Supported options are:
+///     @li @ref comms::option::def::FieldType - Use this option to override default field type.
 /// @headerfile comms/protocol/MsgDataLayer.h
-template <typename... TExtraOpts>
+template <typename... TOptions>
 class MsgDataLayer
 {
+    using ParsedOptionsInternal =  details::MsgDataLayerOptionsParser<TOptions...>;
+
 public:
     /// @brief Type of this layer
-    using ThisLayer = MsgDataLayer<TExtraOpts...>;
+    using ThisLayer = MsgDataLayer<TOptions...>;
 
     /// @brief Get access to this layer object.
     ThisLayer& thisLayer()
@@ -59,12 +60,9 @@ public:
     /// @brief Raw data field type.
     /// @details This field is used only in @ref AllFields field and @ref
     ///     readFieldsCached() member function.
-    using Field =
-        comms::field::ArrayList<
-            comms::Field<comms::option::def::BigEndian>,
-            std::uint8_t,
-            TExtraOpts...
-        >;
+    ///     If not specified using @ref comms::option::def::FieldType option then
+    ///     a variant of @b comms::field::ArrayList for @b std::uint8_t is used.
+    using Field = ParsedOptionsInternal::FieldType;
 
     /// @brief All fields of the remaining transport layers, contains only @ref Field.
     using AllFields = std::tuple<Field>;
