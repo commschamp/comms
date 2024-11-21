@@ -58,6 +58,7 @@ namespace field
 ///         functionality
 ///     @li @ref comms::option::def::HasCustomRefresh - Mark field to have custom
 ///         refresh functionality.
+///     @li @ref comms::option::def::HasName
 ///     @li @ref comms::option::def::HasVersionDependentMembers
 ///     @li @ref comms::option::def::VariantHasCustomResetOnDestruct - avoid calling
 ///         default @ref comms::field::Variant::reset() "reset()" on destruction, assume
@@ -174,7 +175,14 @@ public:
     static constexpr bool hasFixedValue()
     {
         return ParsedOptions::HasFixedValue;
-    }        
+    }   
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
+    ///     has been used.
+    static constexpr bool hasName()
+    {
+        return ParsedOptions::HasName;
+    }       
 
     /// @brief Get access to the internal storage buffer.
     /// @details Should not be used in normal operation.

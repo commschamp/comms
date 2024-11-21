@@ -59,6 +59,7 @@ namespace field
 ///     @li @ref comms::option::def::FixedValue
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
+///     @li @ref comms::option::def::HasName
 ///     @li @ref comms::option::def::IgnoreInvalid
 ///     @li @ref comms::option::def::InvalidByDefault
 ///     @li @ref comms::option::def::NumValueSerOffset
@@ -151,7 +152,14 @@ public:
     static constexpr bool hasFixedValue()
     {
         return ParsedOptions::HasFixedValue;
-    }      
+    }   
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
+    ///     has been used.
+    static constexpr bool hasName()
+    {
+        return ParsedOptions::HasName;
+    }    
 
     /// @brief Get access to enum value storage.
     const ValueType& value() const

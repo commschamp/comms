@@ -171,6 +171,7 @@ using ArrayListBase =
 ///     @li @ref comms::option::def::FixedValue
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
+///     @li @ref comms::option::def::HasName
 ///     @li @ref comms::option::def::IgnoreInvalid
 ///     @li @ref comms::option::def::SequenceElemFixedSerLengthFieldPrefix
 ///     @li @ref comms::option::def::SequenceElemSerLengthFieldPrefix
@@ -361,6 +362,13 @@ public:
     {
         return ParsedOptions::HasFixedValue;
     }      
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
+    ///     has been used.
+    static constexpr bool hasName()
+    {
+        return ParsedOptions::HasName;
+    }  
 
     /// @brief Compile time inquiry of fixed size provided via @ref comms::option::def::SequenceFixedSize option.
     /// @details If the @ref comms::option::def::SequenceFixedSize option hasn't been used

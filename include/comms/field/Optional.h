@@ -36,6 +36,7 @@ namespace field
 ///     @li @ref comms::option::def::FixedValue
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
+///     @li @ref comms::option::def::HasName
 ///     @li @ref comms::option::def::MissingOnInvalid
 ///     @li @ref comms::option::def::MissingOnReadFail
 ///     @li @ref comms::option::def::VersionStorage
@@ -140,6 +141,13 @@ public:
     {
         return ParsedOptions::HasFixedValue;
     }       
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
+    ///     has been used.
+    static constexpr bool hasName()
+    {
+        return ParsedOptions::HasName;
+    } 
 
     /// @brief Check whether mode is equivalent to Mode::Tentative
     /// @details Convenience wrapper for getMode(), equivalent to

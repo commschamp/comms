@@ -111,6 +111,13 @@ public:
         return false;
     }
 
+    /// @brief Check of whether the field class defines @b name() function
+    /// @return Always @b false
+    static constexpr bool hasName()
+    {
+        return false;
+    }     
+
 protected:
     /// @brief Write data into the output buffer.
     /// @details Use this function to write data to the the buffer

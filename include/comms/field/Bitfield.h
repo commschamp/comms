@@ -75,6 +75,7 @@ namespace field
 ///     @li @ref comms::option::def::FixedValue
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
+///     @li @ref comms::option::def::HasName
 ///     @li @ref comms::option::def::HasVersionDependentMembers
 ///     @li @ref comms::option::def::VersionStorage
 
@@ -186,6 +187,13 @@ public:
     {
         return ParsedOptions::HasFixedValue;
     }  
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
+    ///     has been used.
+    static constexpr bool hasName()
+    {
+        return ParsedOptions::HasName;
+    }     
 
     /// @brief Retrieve number of bits specified member field consumes.
     /// @tparam TIdx Index of the member field.

@@ -76,6 +76,7 @@ public:
     static constexpr bool HasVersionDependentMembersForced = false;
     static constexpr bool HasFixedValue = false;
     static constexpr bool HasDisplayOffset = false;
+    static constexpr bool HasName = false;
 
     using UnitsType = void;
     using ScalingRatio = std::ratio<1, 1>;
@@ -823,6 +824,15 @@ public:
 
     template <typename TField>
     using AdaptDisplayOffset = comms::field::adapter::DisplayOffset<TOffset, TField>;       
+};
+
+template <typename... TOptions>
+class OptionsParser<
+    comms::option::def::HasName,
+    TOptions...> : public OptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasName = true;
 };
 
 template <typename... TOptions>
