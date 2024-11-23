@@ -62,7 +62,7 @@ public:
     ///     readFieldsCached() member function.
     ///     If not specified using @ref comms::option::def::FieldType option then
     ///     a variant of @b comms::field::ArrayList for @b std::uint8_t is used.
-    using Field = ParsedOptionsInternal::FieldType;
+    using Field = typename ParsedOptionsInternal::FieldType;
 
     /// @brief All fields of the remaining transport layers, contains only @ref Field.
     using AllFields = std::tuple<Field>;
