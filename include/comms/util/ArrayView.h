@@ -128,6 +128,15 @@ public:
     {
     }
 
+    /// @brief Construct out of iterators rande
+    template <typename TIter>
+    ArrayView(TIter first, TIter last) noexcept
+      : data_(reinterpret_cast<const_pointer>(&(*first))),
+        len_(static_cast<std::size_t>(std::distance(first, last)))
+    {
+        COMMS_ASSERT(0 <= std::distance(first, last));
+    }    
+
     /// @brief Destructor
     ~ArrayView() noexcept = default;
 
