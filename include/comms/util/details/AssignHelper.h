@@ -5,9 +5,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// @file
-/// Various compile-time detection functions of whether specific member functions and/or types exist
-
 #pragma once
 
 #include <type_traits>
@@ -110,12 +107,12 @@ private:
     template <typename T, typename TIter, typename... TParams>
     static void assignInternal(T& obj, TIter from, TIter to, StdSpanTag<TParams...>)
     {
-        using ObjType = typename std::decay<decltype(obj)>::type;
-        using ConstPointerType = typename ObjType::const_pointer;
-        using PointerType = typename ObjType::pointer;
-        auto fromPtr = const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*from)));
-        auto toPtr = const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*to)));
-        assignInternal(obj, fromPtr, toPtr, UsePtrSizeConstructorTag<TParams...>());
+        // using ObjType = typename std::decay<decltype(obj)>::type;
+        // using ConstPointerType = typename ObjType::const_pointer;
+        // using PointerType = typename ObjType::pointer;
+        // auto fromPtr = const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*from)));
+        // auto toPtr = const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*to)));
+        assignInternal(obj, from, to, UsePtrSizeConstructorTag<TParams...>());
     }          
 };
 

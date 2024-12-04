@@ -41,6 +41,7 @@ public:
     void test25();
     void test26();
     void test27();
+    void test28();
 };
 
 void UtilTestSuite::test1()
@@ -1064,4 +1065,19 @@ void UtilTestSuite::test27()
     comms::util::assign(s3, Str.begin(), Str.end());
     TS_ASSERT_EQUALS(Str, s3);    
 #endif    
+}
+
+void UtilTestSuite::test28()
+{
+    static std::uint8_t Data[] = {
+        0x01, 0x02, 0x03, 0x04
+    };
+
+    using Data1 = std::vector<std::uint8_t>;
+    [[maybe_unused]] auto data1 = comms::util::construct<Data1>(std::begin(Data), std::end(Data));
+
+#if COMMS_HAS_CPP20_SPAN
+    using Data2 = std::span<std::uint8_t>;
+    [[maybe_unused]] auto data2 = comms::util::construct<Data2>(std::begin(Data), std::end(Data));
+#endif // #if COMMS_HAS_CPP20_SPAN    
 }
