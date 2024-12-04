@@ -112,7 +112,7 @@ private:
         using PointerType = typename ObjType::pointer;
         auto fromPtr = const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*from)));
         auto toPtr = const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*to)));
-        assignInternal(obj, from, to, UsePtrSizeConstructorTag<TParams...>());
+        assignInternal(obj, fromPtr, toPtr, UsePtrSizeConstructorTag<TParams...>());
     }          
 };
 
