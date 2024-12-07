@@ -1074,10 +1074,12 @@ void UtilTestSuite::test28()
     };
 
     using Data1 = std::vector<std::uint8_t>;
-    [[maybe_unused]] auto data1 = comms::util::construct<Data1>(std::begin(Data), std::end(Data));
+    auto data1 = comms::util::construct<Data1>(std::begin(Data), std::end(Data));
+    static_cast<void>(data1);
 
 #if COMMS_HAS_CPP20_SPAN
     using Data2 = std::span<std::uint8_t>;
-    [[maybe_unused]] auto data2 = comms::util::construct<Data2>(std::begin(Data), std::end(Data));
+    auto data2 = comms::util::construct<Data2>(std::begin(Data), std::end(Data));
+    static_cast<void>(data2);
 #endif // #if COMMS_HAS_CPP20_SPAN    
 }
