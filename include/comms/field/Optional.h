@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2024 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -32,12 +32,14 @@ namespace field
 ///     Supported options are:
 ///     @li @ref comms::option::def::DefaultValueInitialiser, @ref comms::option::def::DefaultOptionalMode,
 ///         @ref comms::option::def::OptionalMissingByDefault, or @ref comms::option::def::OptionalExistsByDefault.
+///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::FixedValue
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
-///     @li @ref comms::option::def::VersionStorage
-///     @li @ref comms::option::def::FieldType
-///     @li @ref comms::option::def::MissingOnReadFail
+///     @li @ref comms::option::def::HasName
 ///     @li @ref comms::option::def::MissingOnInvalid
+///     @li @ref comms::option::def::MissingOnReadFail
+///     @li @ref comms::option::def::VersionStorage
 /// @extends comms::Field
 /// @headerfile comms/field/Optional.h
 template <typename TField, typename... TOptions>
@@ -131,7 +133,21 @@ public:
     static constexpr bool hasFieldType()
     {
         return ParsedOptions::HasFieldType;
+    }      
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
+    ///     has been used.
+    static constexpr bool hasFixedValue()
+    {
+        return ParsedOptions::HasFixedValue;
     }       
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
+    ///     has been used.
+    static constexpr bool hasName()
+    {
+        return ParsedOptions::HasName;
+    } 
 
     /// @brief Check whether mode is equivalent to Mode::Tentative
     /// @details Convenience wrapper for getMode(), equivalent to

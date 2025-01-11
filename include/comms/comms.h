@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2024 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -28,6 +28,7 @@
 #include "comms/MsgDispatcher.h"
 #include "comms/GenericMessage.h"
 
-#include "comms/util/detect.h"
 #include "comms/util/assign.h"
+#include "comms/util/construct.h"
+#include "comms/util/detect.h"
 #include "comms/util/type_traits.h"

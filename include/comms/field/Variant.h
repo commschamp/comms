@@ -1,5 +1,5 @@
 //
-// Copyright 2017 - 2024 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -51,17 +51,19 @@ namespace field
 ///     @li @ref comms::option::def::DefaultVariantIndex - By default the Variant field
 ///         doesn't have any valid contents. This option may be used to specify
 ///         the index of the default member field.
+///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
+///     @li @ref comms::option::def::FieldType - Set actual field type
+///     @li @ref comms::option::def::FixedValue
 ///     @li @ref comms::option::def::HasCustomRead - Mark field to have custom read
 ///         functionality
 ///     @li @ref comms::option::def::HasCustomRefresh - Mark field to have custom
 ///         refresh functionality.
-///     @li @ref comms::option::def::EmptySerialization - Force empty serialization.
-///     @li @ref comms::option::def::VersionStorage - Add version storage.
-///     @li @ref comms::option::def::FieldType - Set actual field type
+///     @li @ref comms::option::def::HasName
+///     @li @ref comms::option::def::HasVersionDependentMembers
 ///     @li @ref comms::option::def::VariantHasCustomResetOnDestruct - avoid calling
 ///         default @ref comms::field::Variant::reset() "reset()" on destruction, assume
 ///         it is called by the extending class destructor.
-///     @li @ref comms::option::def::HasVersionDependentMembers
+///     @li @ref comms::option::def::VersionStorage - Add version storage.
 /// @extends comms::Field
 /// @headerfile comms/field/Variant.h
 /// @see COMMS_VARIANT_MEMBERS_NAMES()
@@ -166,7 +168,21 @@ public:
     static constexpr bool hasFieldType()
     {
         return ParsedOptions::HasFieldType;
-    }    
+    }  
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
+    ///     has been used.
+    static constexpr bool hasFixedValue()
+    {
+        return ParsedOptions::HasFixedValue;
+    }   
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
+    ///     has been used.
+    static constexpr bool hasName()
+    {
+        return ParsedOptions::HasName;
+    }       
 
     /// @brief Get access to the internal storage buffer.
     /// @details Should not be used in normal operation.

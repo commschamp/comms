@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2024 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -13,12 +13,14 @@
 #include "comms/field/adapter/CustomRefreshWrap.h"
 #include "comms/field/adapter/CustomWriteWrap.h"
 #include "comms/field/adapter/DefaultValueInitialiser.h"
+#include "comms/field/adapter/DisplayOffset.h"
 #include "comms/field/adapter/EmptySerialization.h"
 #include "comms/field/adapter/ExistsBetweenVersions.h"
 #include "comms/field/adapter/FailOnInvalid.h"
 #include "comms/field/adapter/FieldType.h"
 #include "comms/field/adapter/FixedBitLength.h"
 #include "comms/field/adapter/FixedLength.h"
+#include "comms/field/adapter/FixedValue.h"
 #include "comms/field/adapter/IgnoreInvalid.h"
 #include "comms/field/adapter/InvalidByDefault.h"
 #include "comms/field/adapter/MissingOnInvalid.h"

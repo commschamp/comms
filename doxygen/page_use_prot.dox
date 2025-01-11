@@ -84,6 +84,7 @@
 /// {
 ///     
 /// class Message : public comms::Message
+/// {
 ///     // comms::Field class with the same endian option. 
 ///     // Can (and should) be provided as a base class to all the
 ///     // fields.
@@ -2232,11 +2233,10 @@
 /// template <
 ///     typename TMessage, // common interface class defined by the application
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
-///     typename TAllocationOptions = comms::option::app::EmptyOption, // Extra options for comms::protocol::MsgIdLayer
-///     typename TPayloadOptions = comms::option::app::EmptyOption // Extra options for payload storage
+///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for comms::protocol::MsgIdLayer
 /// >
 /// struct ProtocolStack : public 
-///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions, TPayloadOptions> 
+///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
 ///     COMMS_PROTOCOL_LAYERS_ACCESS(...);
 /// };
@@ -2259,16 +2259,12 @@
 /// possible to modify such behaviour by using @ref comms::option::app::InPlaceAllocation
 /// option. It will be explained in more details further below.
 ///
-/// The fourth template parameter (@b TPayloadOptions) is irrelevant in
-/// most cases. It has a meaning only when transport wrapping values are cached
-/// for further analysis. It will also be explained in more details further below.
-///
 /// @b NOTE, that @b ProtocolStack definition is actually an alias to one
 /// of the classes from @ref comms::protocol namespace. To get a detailed
 /// information on available public API please reference to one of them, for
 /// example @ref comms::protocol::SyncPrefixLayer.
 ///
-/// It may also happen, that the extra options (@b TAllocationOptions and @b TPayloadOptions)
+/// It may also happen, that the extra options (@b TAllocationOptions)
 /// are defined inside the recommended @b DefaultOptions structure and be
 /// passed to the layers definitions themselves. Such approach is undertaken by
 /// the **commsdsl2comms** code generator application from the 
@@ -2565,8 +2561,7 @@
 /// The layer class that is responsible to read/write payload data 
 /// (see @ref comms::protocol::MsgDataLayer) uses @ref comms::field::ArrayList
 /// to define a field that will store the payload when "caching" operations are
-/// performed. That's where the fourth template parameter (@b TPayloadOptions)
-/// to @b ProtocolStack definition comes in play. 
+/// performed. 
 /// In case the the input / output buffer outlives the @b AllFields
 /// object, consider passing @ref comms::option::app::OrigDataView option as the
 /// fourth template parameter to @b ProtocolStack definition, which will pass it to
@@ -2588,11 +2583,10 @@
 /// template <
 ///     typename TMessage, // common interface class defined by the application
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
-///     typename TAllocationOptions = comms::option::app::EmptyOption, // Extra options for MsgIdLayer
-///     typename TPayloadOptions = comms::option::app::EmptyOption // Extra options for payload storage
+///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
 /// struct ProtocolStack : public 
-///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions, TPayloadOptions> 
+///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
 ///     COMMS_PROTOCOL_LAYERS_ACCESS(payload, id, size, checksum, sync);
 /// };
@@ -2606,11 +2600,10 @@
 /// template <
 ///     typename TMessage, // common interface class defined by the application
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
-///     typename TAllocationOptions = comms::option::app::EmptyOption, // Extra options for MsgIdLayer
-///     typename TPayloadOptions = comms::option::app::EmptyOption // Extra options for payload storage
+///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
 /// struct ProtocolStack : public 
-///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions, TPayloadOptions> 
+///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
 ///     // Access to PAYLOAD layer
 ///     decltype(auto) layer_payload();
@@ -3131,11 +3124,10 @@
 /// template <
 ///     typename TMessage, // common interface class defined by the application
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
-///     typename TAllocationOptions = comms::option::app::EmptyOption, // Extra options for MsgIdLayer
-///     typename TPayloadOptions = comms::option::app::EmptyOption // Extra options for payload storage
+///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
 /// struct ProtocolStack : public 
-///     MySizePrefix<TMessage, TInputMessages, TAllocationOptions, TPayloadOptions> 
+///     MySizePrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
 ///     COMMS_PROTOCOL_LAYERS_ACCESS(payload, version, id, size);
 /// };

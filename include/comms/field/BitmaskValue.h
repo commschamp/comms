@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2024 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -79,18 +79,20 @@ using BitmaskUndertlyingTypeT =
 ///         using MyField =comms::field::EnumValue<MyFieldBase, comms::option::def::FixedLength<2> >;
 ///     @endcode
 ///     Supported options are:
-///     @li @ref comms::option::def::FixedLength
-///     @li @ref comms::option::def::FixedBitLength
-///     @li @ref comms::option::def::DefaultValueInitialiser or comms::option::def::DefaultNumValue.
+///     @li @ref comms::option::def::AvailableLengthLimit
 ///     @li @ref comms::option::def::BitmaskReservedBits.
+///     @li @ref comms::option::def::DefaultValueInitialiser or comms::option::def::DefaultNumValue.
+///     @li @ref comms::option::def::EmptySerialization
+///     @li @ref comms::option::def::FailOnInvalid
+///     @li @ref comms::option::def::FieldType
+///     @li @ref comms::option::def::FixedBitLength
+///     @li @ref comms::option::def::FixedLength
+///     @li @ref comms::option::def::FixedValue
 ///     @li @ref comms::option::def::HasCustomRead
 ///     @li @ref comms::option::def::HasCustomRefresh
-///     @li @ref comms::option::def::FailOnInvalid
+///     @li @ref comms::option::def::HasName
 ///     @li @ref comms::option::def::IgnoreInvalid
-///     @li @ref comms::option::def::EmptySerialization
 ///     @li @ref comms::option::def::VersionStorage
-///     @li @ref comms::option::def::AvailableLengthLimit
-///     @li @ref comms::option::def::FieldType
 /// @extends comms::Field
 /// @headerfile comms/field/BitmaskValue.h
 /// @see COMMS_BITMASK_BITS()
@@ -187,6 +189,20 @@ public:
     {
         return ParsedOptions::HasFieldType;
     }    
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
+    ///     has been used.
+    static constexpr bool hasFixedValue()
+    {
+        return ParsedOptions::HasFixedValue;
+    }  
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
+    ///     has been used.
+    static constexpr bool hasName()
+    {
+        return ParsedOptions::HasName;
+    }         
 
     /// @brief Get access to underlying mask value storage.
     /// @return Const reference to the underlying stored value.

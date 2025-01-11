@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2024 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -1239,6 +1239,15 @@ struct VariantHasCustomResetOnDestruct {};
 /// @tparam TVersionDependent - @b true in case members are version dependent, @b false otherwise.
 template <bool TVersionDependent>
 struct HasVersionDependentMembers {};
+
+/// @brief Remove an ability to update field's value by the client code
+struct FixedValue {};
+
+/// @brief Option used to specify display offset for the @ref comms::field::IntValue field.
+/// @tparam TOffset Display offset.
+/// @headerfile comms/options.h
+template <std::intmax_t TOffset>
+struct DisplayOffset {};
 
 } // namespace def
 

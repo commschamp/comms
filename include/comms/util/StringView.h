@@ -1,5 +1,5 @@
 //
-// Copyright 2017 - 2024 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -241,7 +241,7 @@ public:
         return Base::operator[](pos);
     }
 
-    /// @brief Similar to <a href="http://en.cppreference.com/w/cpp/string/basic_string_view/at">std::string::at()</a>
+    /// @brief Similar to <a href="http://en.cppreference.com/w/cpp/string/basic_string_view/at">std::string_view::at()</a>
     /// @details Checks the range with @ref COMMS_ASSERT() macro without throwing exception.
     const_reference at(size_type pos) const
     {

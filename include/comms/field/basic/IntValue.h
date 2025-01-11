@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2024 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -33,6 +33,7 @@ public:
     using SerialisedType = ValueType;
     using ScalingRatio = std::ratio<1, 1>;
     using CommsTag = comms::field::tag::Int;
+    using DisplayOffsetType = typename std::make_signed<ValueType>::type;
 
     IntValue() = default;
 
@@ -128,6 +129,11 @@ public:
     void writeNoStatus(TIter& iter) const
     {
         BaseImpl::writeData(toSerialised(value_), iter);
+    }
+
+    static constexpr DisplayOffsetType displayOffset()
+    {
+        return static_cast<DisplayOffsetType>(0);
     }
 
 private:

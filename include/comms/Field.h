@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2024 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -110,6 +110,13 @@ public:
     {
         return false;
     }
+
+    /// @brief Check of whether the field class defines @b name() function
+    /// @return Always @b false
+    static constexpr bool hasName()
+    {
+        return false;
+    }     
 
 protected:
     /// @brief Write data into the output buffer.

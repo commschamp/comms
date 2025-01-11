@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include <cstdint>
+#include <type_traits>
+
 namespace comms
 {
 
@@ -16,14 +19,18 @@ namespace field
 namespace adapter
 {
 
-template <typename TBase>
-class CustomRefreshWrap : public TBase
+
+template <std::intmax_t TOffset, typename TBase>
+class DisplayOffset : public TBase
 {
+    using BaseImpl = TBase;
 public:
-    static constexpr bool hasNonDefaultRefresh()
+    using DisplayOffsetType = typename TBase::DisplayOffsetType;
+
+    static constexpr DisplayOffsetType displayOffset()
     {
-        return true;
-    }
+        return static_cast<DisplayOffsetType>(TOffset);
+    }    
 };
 
 }  // namespace adapter

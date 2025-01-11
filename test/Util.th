@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2021 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -41,6 +41,7 @@ public:
     void test25();
     void test26();
     void test27();
+    void test28();
 };
 
 void UtilTestSuite::test1()
@@ -1064,4 +1065,21 @@ void UtilTestSuite::test27()
     comms::util::assign(s3, Str.begin(), Str.end());
     TS_ASSERT_EQUALS(Str, s3);    
 #endif    
+}
+
+void UtilTestSuite::test28()
+{
+    static std::uint8_t Data[] = {
+        0x01, 0x02, 0x03, 0x04
+    };
+
+    using Data1 = std::vector<std::uint8_t>;
+    auto data1 = comms::util::construct<Data1>(std::begin(Data), std::end(Data));
+    static_cast<void>(data1);
+
+#if COMMS_HAS_CPP20_SPAN
+    using Data2 = std::span<std::uint8_t>;
+    auto data2 = comms::util::construct<Data2>(std::begin(Data), std::end(Data));
+    static_cast<void>(data2);
+#endif // #if COMMS_HAS_CPP20_SPAN    
 }

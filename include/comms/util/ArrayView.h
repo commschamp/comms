@@ -1,5 +1,5 @@
 //
-// Copyright 2017 - 2024 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -127,6 +127,15 @@ public:
         len_(TN)
     {
     }
+
+    /// @brief Construct out of iterators rande
+    template <typename TIter>
+    ArrayView(TIter first, TIter last) noexcept
+      : data_(reinterpret_cast<const_pointer>(&(*first))),
+        len_(static_cast<std::size_t>(std::distance(first, last)))
+    {
+        COMMS_ASSERT(0 <= std::distance(first, last));
+    }    
 
     /// @brief Destructor
     ~ArrayView() noexcept = default;

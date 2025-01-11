@@ -7,6 +7,7 @@
 
 #pragma once
 
+
 namespace comms
 {
 
@@ -16,14 +17,24 @@ namespace field
 namespace adapter
 {
 
+
 template <typename TBase>
-class CustomRefreshWrap : public TBase
+class FixedValue : public TBase
 {
+    using BaseImpl = TBase;
 public:
-    static constexpr bool hasNonDefaultRefresh()
-    {
-        return true;
-    }
+    using ValueType = typename BaseImpl::ValueType;
+
+    using BaseImpl::value;
+
+    ValueType& value() = delete;
+
+    template <typename U>
+    void setValue(U&& val) = delete;    
+
+private:
+    using BaseImpl::setValue;
+
 };
 
 }  // namespace adapter

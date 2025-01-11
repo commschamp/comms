@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2024 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -139,8 +139,11 @@ class AdaptBasicField
     using SerOffsetAdapted = 
         typename ParsedOptions::template AdaptSerOffset<VersionStorageAdapted>;
 
+    using DisplayOffsetAdapted = 
+        typename ParsedOptions::template AdaptDisplayOffset<SerOffsetAdapted>;
+
     using VersionsRangeAdapted = 
-        typename ParsedOptions::template AdaptVersionsRange<SerOffsetAdapted>;
+        typename ParsedOptions::template AdaptVersionsRange<DisplayOffsetAdapted>;
 
     using FixedLengthLimitAdapted = 
         typename ParsedOptions::template AdaptFixedLengthLimit<VersionsRangeAdapted>;
@@ -223,8 +226,11 @@ class AdaptBasicField
     using VariantResetOnDestructAdapted = 
         typename ParsedOptions::template AdaptVariantResetOnDestruct<MissingOnReadFailAdapted>;
 
+    using FixedValueAdapted = 
+        typename ParsedOptions::template AdaptFixedValue<VariantResetOnDestructAdapted>;        
+
 public:
-    using Type = VariantResetOnDestructAdapted;
+    using Type = FixedValueAdapted;
 };
 
 template <typename TBasic, typename... TOptions>
