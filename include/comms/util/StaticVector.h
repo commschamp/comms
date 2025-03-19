@@ -1104,6 +1104,7 @@ public:
     {
         return Base::at(pos);
     }
+    
     /// @brief Access specified element with bounds checking.
     /// @details The bounds check is performed with COMMS_ASSERT() macro, which means
     ///     it is performed only in DEBUG mode compilation. In case NDEBUG

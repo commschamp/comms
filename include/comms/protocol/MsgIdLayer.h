@@ -58,7 +58,8 @@ namespace protocol
 ///     @li @ref comms::option::app::MsgFactory - Override default message factory class.
 ///         The overriding class is expected to have the same public interface as @ref comms::MsgFactory.
 ///     @li @ref comms::option::app::MsgFactoryTempl - Override default message factory class.
-///         The overriding class is expected to have the same public interface as @ref comms::MsgFactory.
+///         The overriding class is expected to have the same template parameters as well as 
+///         public interface as @ref comms::MsgFactory.
 ///     @li All the options supported by the @ref comms::MsgFactory. All the options
 ///         except ones listed above will be forwarded to the definition of the
 ///         inner instance of @ref comms::MsgFactory.
