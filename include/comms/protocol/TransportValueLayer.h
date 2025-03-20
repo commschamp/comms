@@ -10,14 +10,13 @@
 
 #pragma once
 
-#include "ProtocolLayerBase.h"
 #include "comms/CompileControl.h"
 #include "comms/cast.h"
 #include "comms/util/type_traits.h"
 #include "comms/details/tag.h"
-#include "comms/protocol/details/TransportValueLayerAdapter.h"
+#include "comms/protocol/ProtocolLayerBase.h"
 #include "comms/protocol/details/TransportValueLayerOptionsParser.h"
-#include "comms/protocol/details/ProtocolLayerExtendingClassHelper.h"
+#include "comms/protocol/details/TransportValueLayerBase.h"
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4189) // Disable erroneous initialized but not referenced variable warning
@@ -48,7 +47,7 @@ namespace protocol
 /// @tparam TOptions Extending functionality options. Supported options are:
 ///     @li @ref comms::option::def::PseudoValue - Mark the handled value to be "pseudo"
 ///         one, i.e. the field is not getting serialised.
-///     @li  @ref comms::option::ExtendingClass - Use this option to provide a class
+///     @li  @ref comms::option::def::ExtendingClass - Use this option to provide a class
 ///         name of the extending class, which can be used to extend existing functionality.
 ///         See also @ref page_custom_transport_value_layer tutorial page.
 ///     @li @ref comms::option::def::ProtocolLayerSuppressReadUntilDataSplitForcing - Use 
@@ -62,38 +61,10 @@ namespace protocol
 /// @headerfile comms/protocol/TransportValueLayer.h
 /// @extends ProtocolLayerBase
 template <typename TField, std::size_t TIdx, typename TNextLayer, typename... TOptions>
-class TransportValueLayer : public
-        details::TransportValueLayerAdapterT<
-            ProtocolLayerBase<
-                TField,
-                TNextLayer,
-                details::ProtocolLayerExtendingClassT<
-                    TransportValueLayer<TField, TIdx, TNextLayer, TOptions...>,
-                    details::TransportValueLayerOptionsParser<TOptions...>
-                >,
-                typename details::TransportValueLayerOptionsParser<TOptions...>::
-                    template ForceReadUntilDataSplitIfNeeded<TNextLayer>
-            >,
-            TOptions...
-        >
+class TransportValueLayer : public comms::protocol::details::TransportValueLayerBase<TField, TIdx, TNextLayer, TOptions...>
 {
-    using ThisClass = TransportValueLayer<TField, TIdx, TNextLayer, TOptions...>;
-    using BaseImpl =
-        details::TransportValueLayerAdapterT<
-            ProtocolLayerBase<
-                TField,
-                TNextLayer,
-                details::ProtocolLayerExtendingClassT<
-                    ThisClass,
-                    details::TransportValueLayerOptionsParser<TOptions...>
-                >,
-                typename details::TransportValueLayerOptionsParser<TOptions...>::
-                    template ForceReadUntilDataSplitIfNeeded<TNextLayer>
-            >,
-            TOptions...
-        >;
-
-    using ParsedOptionsInternal = details::TransportValueLayerOptionsParser<TOptions...>;
+    using BaseImpl = comms::protocol::details::TransportValueLayerBase<TField, TIdx, TNextLayer, TOptions...>;
+    using ParsedOptionsInternal = comms::protocol::details::TransportValueLayerOptionsParser<TOptions...>;
     
 public:
     /// @brief Type of the field object used to read/write "sync" value.
@@ -261,11 +232,13 @@ public:
     /// @brief Access to pseudo field stored internally.
     /// @details The function exists only if @ref comms::option::def::PseudoValue
     ///     option has been used.
+    /// @see hasPseudoValue()
     Field& pseudoField();
 
     /// @brief Const access to pseudo field stored internally.
     /// @details The function exists only if @ref comms::option::def::PseudoValue
     ///     option has been used.
+    /// @see hasPseudoValue()
     const Field& pseudoField() const;
 #endif
 

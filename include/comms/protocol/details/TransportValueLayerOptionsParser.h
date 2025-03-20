@@ -8,8 +8,7 @@
 #pragma once
 
 #include "comms/options.h"
-#include "TransportValueLayerBases.h"
-#include "ProtocolLayerDetails.h"
+#include "comms/protocol/details/TransportValueLayerAllBases.h"
 
 namespace comms
 {
@@ -19,7 +18,6 @@ namespace protocol
 
 namespace details
 {
-
 
 template <typename... TOptions>
 class TransportValueLayerOptionsParser;

@@ -18,7 +18,7 @@
 #include "comms/dispatch.h"
 #include "comms/field_cast.h"
 #include "comms/iterator.h"
-#include "process.h"
+#include "comms/process.h"
 
 #include "comms/Message.h"
 #include "comms/EmptyHandler.h"
