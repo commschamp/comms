@@ -11,7 +11,6 @@
 #pragma once
 
 #include "comms/CompileControl.h"
-#include "comms/protocol/details/ProtocolLayerBase.h"
 #include "comms/protocol/details/SyncPrefixLayerBase.h"
 #include "comms/protocol/details/SyncPrefixLayerOptionsParser.h"
 
@@ -41,6 +40,7 @@ namespace protocol
 ///         name of the extending class, which can be used to extend existing functionality.
 ///         See also @ref page_custom_sync_prefix_layer.
 /// @headerfile comms/protocol/SyncPrefixLayer.h
+/// @extends comms::protocol::ProtocolLayerBase
 template <typename TField, typename TNextLayer, typename... TOptions>
 class SyncPrefixLayer : public comms::protocol::details::SyncPrefixLayerBase<TField, TNextLayer, TOptions...>
 {
@@ -77,7 +77,7 @@ public:
         return ParsedOptionsInternal::HasExtendingClass;
     }
 
-    /// @brief Customized read functionality, invoked by @ref read().
+    /// @brief Customized read functionality, invoked by @ref comms::protocol::ProtocolLayerBase::read() "read()".
     /// @details Reads the "sync" value from the input data. If the read value
     ///     is NOT as expected (doesn't equal to the default constructed
     ///     @ref Field), then comms::ErrorStatus::ProtocolError is returned.
@@ -136,7 +136,7 @@ public:
         return nextLayerReader.read(msg, iter, size - fieldLen, extraValues...);
     }
 
-    /// @brief Customized write functionality, invoked by @ref write().
+    /// @brief Customized write functionality, invoked by @ref comms::protocol::ProtocolLayerBase::write() "write()".
     /// @details The function will write proper "sync" value to the output
     ///     buffer, then call the write() function of the next layer.
     /// @tparam TMsg Type of message object.

@@ -17,9 +17,9 @@
 #include "comms/field/IntValue.h"
 #include "comms/MessageBase.h"
 #include "comms/details/tag.h"
-#include "comms/protocol/details/ProtocolLayerBase.h"
+#include "comms/protocol/details/MsgSizeLayerBase.h"
+#include "comms/protocol/details/MsgSizeLayerConstNullPtrCastHelper.h"
 #include "comms/protocol/details/MsgSizeLayerOptionsParser.h"
-#include "comms/protocol/details/ProtocolLayerExtendingClassHelper.h"
 #include "comms/util/type_traits.h"
 
 COMMS_MSVC_WARNING_PUSH
@@ -30,24 +30,6 @@ namespace comms
 
 namespace protocol
 {
-
-namespace details
-{
-template <bool TValidPtr>
-struct MsgSizeLayerConstNullPtrCastHelper
-{
-    template <typename TPtr>
-    using Type = const typename TPtr::element_type*;
-};
-
-template <>
-struct MsgSizeLayerConstNullPtrCastHelper<false>
-{
-    template <typename TPtr>
-    using Type = const void*;
-};
-
-} // namespace details    
 
 /// @brief Protocol layer that uses size field as a prefix to all the
 ///        subsequent data written by other (next) layers.
@@ -61,30 +43,13 @@ struct MsgSizeLayerConstNullPtrCastHelper<false>
 ///         name of the extending class, which can be used to extend existing functionality.
 ///         See also @ref page_custom_size_layer tutorial page.
 /// @headerfile comms/protocol/MsgSizeLayer.h
+/// @extends comms::protocol::ProtocolLayerBase
 template <typename TField, typename TNextLayer, typename... TOptions>
-class MsgSizeLayer : public
-        details::ProtocolLayerBase<
-            TField,
-            TNextLayer,
-            details::ProtocolLayerExtendingClassT<
-                MsgSizeLayer<TField, TNextLayer, TOptions...>, 
-                details::MsgSizeLayerOptionsParser<TOptions...>
-            >,
-            comms::option::ProtocolLayerDisallowReadUntilDataSplit
-        >
+class MsgSizeLayer : public comms::protocol::details::MsgSizeLayerBase<TField, TNextLayer, TOptions...>
 {
-    using BaseImpl =
-        details::ProtocolLayerBase<
-            TField,
-            TNextLayer,
-            details::ProtocolLayerExtendingClassT<
-                MsgSizeLayer<TField, TNextLayer, TOptions...>, 
-                details::MsgSizeLayerOptionsParser<TOptions...>
-            >,
-            comms::option::ProtocolLayerDisallowReadUntilDataSplit
-        >;
-
+    using BaseImpl = comms::protocol::details::MsgSizeLayerBase<TField, TNextLayer, TOptions...>;
     using ParsedOptionsInternal = details::MsgSizeLayerOptionsParser<TOptions...>;
+
 public:
     /// @brief Type of the field object used to read/write remaining size value.
     using Field = typename BaseImpl::Field;
@@ -122,7 +87,6 @@ public:
     }    
 
     /// @cond SKIP_DOC
-
     static constexpr std::size_t doFieldLength()
     {
         return BaseImpl::doFieldLength();

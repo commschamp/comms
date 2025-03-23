@@ -14,7 +14,6 @@
 #include "comms/cast.h"
 #include "comms/util/type_traits.h"
 #include "comms/details/tag.h"
-#include "comms/protocol/ProtocolLayerBase.h"
 #include "comms/protocol/details/TransportValueLayerOptionsParser.h"
 #include "comms/protocol/details/TransportValueLayerBase.h"
 
@@ -59,7 +58,7 @@ namespace protocol
 ///         @ref comms::protocol::MsgIdLayer and is unable to re-assign the read field value
 ///         to the message object, because the latter hasn't been created yet.
 /// @headerfile comms/protocol/TransportValueLayer.h
-/// @extends ProtocolLayerBase
+/// @extends comms::protocol::ProtocolLayerBase
 template <typename TField, std::size_t TIdx, typename TNextLayer, typename... TOptions>
 class TransportValueLayer : public comms::protocol::details::TransportValueLayerBase<TField, TIdx, TNextLayer, TOptions...>
 {
