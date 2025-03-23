@@ -10,15 +10,14 @@
 
 #pragma once
 
-#include <iterator>
-#include <type_traits>
-
 #include "comms/CompileControl.h"
 #include "comms/field/IntValue.h"
-#include "comms/protocol/details/ProtocolLayerBase.h"
+#include "comms/protocol/details/ChecksumPrefixLayerBase.h"
 #include "comms/protocol/details/ChecksumLayerOptionsParser.h"
-#include "comms/protocol/details/ProtocolLayerExtendingClassHelper.h"
 #include "comms/util/type_traits.h"
+
+#include <iterator>
+#include <type_traits>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4189) // Disable erroneous initialized but not referenced variable warning
@@ -60,33 +59,11 @@ namespace protocol
 ///         name of the extending class, which can be used to extend existing functionality.
 ///         See also @ref page_custom_checksum_layer tutorial page.
 /// @headerfile comms/protocol/ChecksumPrefixLayer.h
+/// @extends comms::protocol::ProtocolLayerBase
 template <typename TField, typename TCalc, typename TNextLayer, typename... TOptions>
-class ChecksumPrefixLayer : public
-        details::ProtocolLayerBase<
-            TField,
-            TNextLayer,
-            details::ProtocolLayerExtendingClassT<
-                ChecksumPrefixLayer<TField, TCalc, TNextLayer, TOptions...>,
-                details::ChecksumLayerOptionsParser<TOptions...>
-            >,            
-            typename details::template ChecksumLayerOptionsParser<TOptions...>::template SuppressForVerifyBeforeRead<
-                comms::option::def::ProtocolLayerDisallowReadUntilDataSplit
-            >
-        >
+class ChecksumPrefixLayer : public comms::protocol::details::ChecksumPrefixLayerBase<TField, TCalc, TNextLayer, TOptions...>
 {
-    using BaseImpl =
-        details::ProtocolLayerBase<
-            TField,
-            TNextLayer,
-            details::ProtocolLayerExtendingClassT<
-                ChecksumPrefixLayer<TField, TCalc, TNextLayer, TOptions...>,
-                details::ChecksumLayerOptionsParser<TOptions...>
-            >,            
-            typename details::template ChecksumLayerOptionsParser<TOptions...>::template SuppressForVerifyBeforeRead<
-                comms::option::def::ProtocolLayerDisallowReadUntilDataSplit
-            >
-        >;
-
+    using BaseImpl = comms::protocol::details::ChecksumPrefixLayerBase<TField, TCalc, TNextLayer, TOptions...>;
     using ParsedOptionsInternal = details::ChecksumLayerOptionsParser<TOptions...>;
 
 public:
