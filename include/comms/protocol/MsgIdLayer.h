@@ -10,26 +10,23 @@
 
 #pragma once
 
-#include <array>
-#include <tuple>
-#include <algorithm>
-#include <utility>
-#include <tuple>
-#include <limits>
-
-#include "comms/CompileControl.h"
 #include "comms/Assert.h"
+#include "comms/CompileControl.h"
 #include "comms/MessageBase.h"
 #include "comms/MsgFactory.h"
 #include "comms/details/tag.h"
-#include "comms/protocol/details/ProtocolLayerBase.h"
+#include "comms/protocol/details/MsgIdLayerBase.h"
 #include "comms/protocol/details/MsgIdLayerOptionsParser.h"
-#include "comms/protocol/details/ProtocolLayerExtendingClassHelper.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/type_traits.h"
 #include "comms/dispatch.h"
 #include "comms/fields.h"
 
+#include <algorithm>
+#include <array>
+#include <limits>
+#include <tuple>
+#include <utility>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4100) // Disable warning about unreferenced parameters
@@ -64,38 +61,22 @@ namespace protocol
 ///         except ones listed above will be forwarded to the definition of the
 ///         inner instance of @ref comms::MsgFactory.
 /// @headerfile comms/protocol/MsgIdLayer.h
+/// @extends comms::protocol::ProtocolLayerBase
 template <typename TField,
           typename TMessage,
           typename TAllMessages,
           typename TNextLayer,
           typename... TOptions>
-class MsgIdLayer : public
-        details::ProtocolLayerBase<
-            TField,
-            TNextLayer,
-            details::ProtocolLayerExtendingClassT<
-                MsgIdLayer<TField, TMessage, TAllMessages, TNextLayer, TOptions...>, 
-                details::MsgIdLayerOptionsParser<TOptions...>
-            >
-        >
+class MsgIdLayer : public comms::protocol::details::MsgIdLayerBase<TField, TMessage, TAllMessages, TNextLayer, TOptions...>
 {
     static_assert(util::IsTuple<TAllMessages>::Value,
         "TAllMessages must be of std::tuple type");
 
-    using BaseImpl =
-        details::ProtocolLayerBase<
-            TField,
-            TNextLayer,
-            details::ProtocolLayerExtendingClassT<
-                MsgIdLayer<TField, TMessage, TAllMessages, TNextLayer, TOptions...>, 
-                details::MsgIdLayerOptionsParser<TOptions...>
-            >
-        >;
-
     static_assert(TMessage::hasMsgIdType(),
         "Usage of MsgIdLayer requires support for ID type. "
-        "Use comms::option::def::MsgIdType option in message interface type definition.");
+        "Use comms::option::def::MsgIdType option in message interface type definition.");        
 
+    using BaseImpl = comms::protocol::details::MsgIdLayerBase<TField, TMessage, TAllMessages, TNextLayer, TOptions...>;
     using ParsedOptionsInternal =  details::MsgIdLayerOptionsParser<TOptions...>;
 
 public:
