@@ -12,8 +12,8 @@
 
 #include "comms/CompileControl.h"
 #include "comms/protocol/details/ProtocolLayerBase.h"
+#include "comms/protocol/details/SyncPrefixLayerBase.h"
 #include "comms/protocol/details/SyncPrefixLayerOptionsParser.h"
-#include "comms/protocol/details/ProtocolLayerExtendingClassHelper.h"
 
 #include <iterator>
 
@@ -42,27 +42,10 @@ namespace protocol
 ///         See also @ref page_custom_sync_prefix_layer.
 /// @headerfile comms/protocol/SyncPrefixLayer.h
 template <typename TField, typename TNextLayer, typename... TOptions>
-class SyncPrefixLayer : public
-        details::ProtocolLayerBase<
-            TField,
-            TNextLayer,
-            details::ProtocolLayerExtendingClassT<
-                SyncPrefixLayer<TField, TNextLayer, TOptions...>,
-                details::SyncPrefixLayerOptionsParser<TOptions...>
-            >            
-        >
+class SyncPrefixLayer : public comms::protocol::details::SyncPrefixLayerBase<TField, TNextLayer, TOptions...>
 {
-    using BaseImpl =
-        details::ProtocolLayerBase<
-            TField,
-            TNextLayer,
-            details::ProtocolLayerExtendingClassT<
-                SyncPrefixLayer<TField, TNextLayer, TOptions...>,
-                details::SyncPrefixLayerOptionsParser<TOptions...>
-            >            
-        >;
-
-    using ParsedOptionsInternal = details::SyncPrefixLayerOptionsParser<TOptions...>;
+    using BaseImpl = comms::protocol::details::SyncPrefixLayerBase<TField, TNextLayer, TOptions...>;
+    using ParsedOptionsInternal = comms::protocol::details::SyncPrefixLayerOptionsParser<TOptions...>;
 
 public:
     /// @brief Type of the field object used to read/write "sync" value.

@@ -26,7 +26,7 @@ namespace details
 {
 
 template <typename TField, std::size_t TIdx, typename TNextLayer, typename... TOptions>
-struct TransportValueLayerBaseHelper
+class TransportValueLayerBaseHelper
 {
     using ParsedOptionsInternal = comms::protocol::details::TransportValueLayerOptionsParser<TOptions...>;
     using ActualLayer = typename ParsedOptionsInternal::template DefineExtendingClass<TransportValueLayer<TField, TIdx, TNextLayer, TOptions...>>;
@@ -40,6 +40,7 @@ struct TransportValueLayerBaseHelper
 
     using AdaptedPseudoBase = typename ParsedOptionsInternal::template BuildPseudoBase<TopBase>;
 
+public:    
     using Base = AdaptedPseudoBase;
 };
 
