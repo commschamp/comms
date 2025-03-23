@@ -10,17 +10,16 @@
 
 #pragma once
 
-#include <iterator>
-#include <type_traits>
-
 #include "comms/CompileControl.h"
 #include "comms/field/IntValue.h"
-#include "comms/protocol/details/ProtocolLayerBase.h"
+#include "comms/protocol/details/ChecksumLayerBase.h"
 #include "comms/protocol/details/ChecksumLayerOptionsParser.h"
-#include "comms/protocol/details/ProtocolLayerExtendingClassHelper.h"
 #include "comms/util/type_traits.h"
 #include "comms/details/tag.h"
 #include "comms/cast.h"
+
+#include <iterator>
+#include <type_traits>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4189) // Disable erroneous initialized but not referenced variable warning
@@ -59,29 +58,11 @@ namespace protocol
 ///         name of the extending class, which can be used to extend existing functionality.
 ///         See also @ref page_custom_checksum_layer tutorial page.
 /// @headerfile comms/protocol/ChecksumLayer.h
+/// @extends comms::protocol::ProtocolLayerBase
 template <typename TField, typename TCalc, typename TNextLayer, typename... TOptions>
-class ChecksumLayer : public
-        details::ProtocolLayerBase<
-            TField,
-            TNextLayer,
-            details::ProtocolLayerExtendingClassT<
-                ChecksumLayer<TField, TCalc, TNextLayer, TOptions...>,
-                details::ChecksumLayerOptionsParser<TOptions...>
-            >,            
-            comms::option::def::ProtocolLayerDisallowReadUntilDataSplit
-        >
+class ChecksumLayer : public comms::protocol::details::ChecksumLayerBase<TField, TCalc, TNextLayer, TOptions...>
 {
-    using BaseImpl =
-        details::ProtocolLayerBase<
-            TField,
-            TNextLayer,
-            details::ProtocolLayerExtendingClassT<
-                ChecksumLayer<TField, TCalc, TNextLayer, TOptions...>,
-                details::ChecksumLayerOptionsParser<TOptions...>
-            >,            
-            comms::option::def::ProtocolLayerDisallowReadUntilDataSplit
-        >;
-
+    using BaseImpl = comms::protocol::details::ChecksumLayerBase<TField, TCalc, TNextLayer, TOptions...>;
     using ParsedOptionsInternal = details::ChecksumLayerOptionsParser<TOptions...>;
 
 public:
