@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include "basic/IntValue.h"
-#include "basic/EnumValue.h"
 #include "basic/ArrayList.h"
-#include "basic/Bundle.h"
 #include "basic/Bitfield.h"
+#include "basic/Bundle.h"
+#include "basic/EnumValue.h"
 #include "basic/FloatValue.h"
+#include "basic/IntValue.h"
 #include "basic/Variant.h"

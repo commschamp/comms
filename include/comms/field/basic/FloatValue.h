@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include <type_traits>
-#include <ratio>
-
 #include "comms/ErrorStatus.h"
-#include "comms/util/SizeToType.h"
 #include "comms/field/tag.h"
+#include "comms/util/SizeToType.h"
+
+#include <ratio>
+#include <type_traits>
 
 namespace comms
 {

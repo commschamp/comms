@@ -10,15 +10,15 @@
 
 #pragma once
 
-#include <type_traits>
-#include <algorithm>
-
 #include "comms/Assert.h"
+#include "comms/details/MsgFactoryBase.h"
+#include "comms/details/MsgFactoryOptionsParser.h"
 #include "comms/MsgFactoryCreateFailureReason.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/alloc.h"
-#include "details/MsgFactoryOptionsParser.h"
-#include "details/MsgFactoryBase.h"
+
+#include <algorithm>
+#include <type_traits>
 
 namespace comms
 {

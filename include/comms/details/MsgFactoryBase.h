@@ -7,19 +7,20 @@
 
 #pragma once
 
-#include <type_traits>
-#include <memory>
-
 #include "comms/Assert.h"
+#include "comms/dispatch.h"
+#include "comms/details/message_check.h"
+#include "comms/details/MsgFactoryOptionsParser.h"
+#include "comms/details/tag.h"
+#include "comms/MessageBase.h"
+#include "comms/MsgFactoryCreateFailureReason.h"
+#include "comms/traits.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/alloc.h"
 #include "comms/util/type_traits.h"
-#include "comms/MessageBase.h"
-#include "comms/details/message_check.h"
-#include "comms/traits.h"
-#include "comms/dispatch.h"
-#include "comms/details/message_check.h"
-#include "comms/details/tag.h"
+
+#include <memory>
+#include <type_traits>
 
 namespace comms
 {

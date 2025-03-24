@@ -10,15 +10,15 @@
 
 #pragma once
 
-#include <cstddef>
-#include <array>
-#include <algorithm>
-#include <iterator>
-#include <initializer_list>
-
-#include "comms/CompileControl.h"
 #include "comms/Assert.h"
+#include "comms/CompileControl.h"
 #include "comms/util/AlignedStorage.h"
+
+#include <algorithm>
+#include <array>
+#include <cstddef>
+#include <initializer_list>
+#include <iterator>
 
 COMMS_GNU_WARNING_PUSH
 

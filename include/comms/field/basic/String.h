@@ -7,24 +7,24 @@
 
 #pragma once
 
-#include <type_traits>
+#include "comms/Assert.h"
+#include "comms/CompileControl.h"
+#include "comms/details/tag.h"
+#include "comms/ErrorStatus.h"
+#include "comms/field/basic/CommonFuncs.h"
+#include "comms/field/tag.h"
+#include "comms/util/access.h"
+#include "comms/util/assign.h"
+#include "comms/util/detect.h"
+#include "comms/util/MaxSizeOf.h"
+#include "comms/util/StaticString.h"
+#include "comms/util/StaticVector.h"
+#include "comms/util/type_traits.h"
+
 #include <algorithm>
 #include <limits>
 #include <numeric>
-
-#include "comms/CompileControl.h"
-#include "comms/Assert.h"
-#include "comms/ErrorStatus.h"
-#include "comms/util/access.h"
-#include "comms/util/assign.h"
-#include "comms/util/MaxSizeOf.h"
-#include "comms/util/StaticVector.h"
-#include "comms/util/StaticString.h"
-#include "comms/util/detect.h"
-#include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
-#include "comms/field/tag.h"
-#include "CommonFuncs.h"
+#include <type_traits>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4100)

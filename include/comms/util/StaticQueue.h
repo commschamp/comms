@@ -11,25 +11,24 @@
 
 #pragma once
 
-#include <cstdint>
-#include <cstddef>
-#include <array>
-#include <string>
-#include <stdexcept>
-#include <utility>
-#include <type_traits>
-#include <iterator>
-#include <algorithm>
-
-#include "comms/CompileControl.h"
 #include "comms/Assert.h"
+#include "comms/CompileControl.h"
+#include "comms/util/AlignedStorage.h"
 #include "comms/util/SizeToType.h"
 #include "comms/util/type_traits.h"
-#include "comms/util/AlignedStorage.h"
+
+#include <algorithm>
+#include <array>
+#include <cstddef>
+#include <cstdint>
+#include <iterator>
+#include <stdexcept>
+#include <string>
+#include <type_traits>
+#include <utility>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4324) // Disable warning about alignment padding
-
 
 namespace comms
 {

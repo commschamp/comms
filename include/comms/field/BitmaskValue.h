@@ -10,16 +10,16 @@
 
 #pragma once
 
-#include <limits>
-#include "comms/Field.h"
-
-#include "comms/util/SizeToType.h"
-#include "details/AdaptBasicField.h"
-#include "details/OptionsParser.h"
-#include "comms/details/gen_enum.h"
 #include "comms/details/bits_access.h"
+#include "comms/details/gen_enum.h"
+#include "comms/Field.h"
+#include "comms/field/details/AdaptBasicField.h"
+#include "comms/field/details/OptionsParser.h"
 #include "comms/field/IntValue.h"
 #include "comms/field/tag.h"
+#include "comms/util/SizeToType.h"
+
+#include <limits>
 
 namespace comms
 {

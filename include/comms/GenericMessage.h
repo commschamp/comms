@@ -10,12 +10,12 @@
 
 #pragma once
 
+#include "comms/field/ArrayList.h"
+#include "comms/MessageBase.h"
+#include "comms/options.h"
+
 #include <tuple>
 #include <cstdint>
-
-#include "options.h"
-#include "MessageBase.h"
-#include "field/ArrayList.h"
 
 namespace comms
 {

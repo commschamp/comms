@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include <type_traits>
-#include <iterator>
-
-#include "comms/util/detect.h"
-#include "comms/util/type_traits.h"
 #include "comms/Assert.h"
 #include "comms/details/tag.h"
+#include "comms/util/detect.h"
+#include "comms/util/type_traits.h"
+
+#include <iterator>
+#include <type_traits>
 
 namespace comms
 {

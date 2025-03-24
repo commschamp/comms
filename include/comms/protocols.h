@@ -10,14 +10,14 @@
 
 #pragma once
 
-#include "protocol/MsgDataLayer.h"
-#include "protocol/MsgIdLayer.h"
-#include "protocol/MsgSizeLayer.h"
-#include "protocol/SyncPrefixLayer.h"
-#include "protocol/ChecksumLayer.h"
-#include "protocol/ChecksumPrefixLayer.h"
-#include "protocol/TransportValueLayer.h"
+#include "comms/protocol/MsgDataLayer.h"
+#include "comms/protocol/MsgIdLayer.h"
+#include "comms/protocol/MsgSizeLayer.h"
+#include "comms/protocol/SyncPrefixLayer.h"
+#include "comms/protocol/ChecksumLayer.h"
+#include "comms/protocol/ChecksumPrefixLayer.h"
+#include "comms/protocol/TransportValueLayer.h"
 
-#include "protocol/checksum/BasicSum.h"
-#include "protocol/checksum/BasicXor.h"
-#include "protocol/checksum/Crc.h"
+#include "comms/protocol/checksum/BasicSum.h"
+#include "comms/protocol/checksum/BasicXor.h"
+#include "comms/protocol/checksum/Crc.h"

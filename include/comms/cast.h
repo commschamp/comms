@@ -10,8 +10,8 @@
 
 #pragma once
 
-#include "comms/details/ValueAssignWrapper.h"
 #include "comms/details/FieldCastHelper.h"
+#include "comms/details/ValueAssignWrapper.h"
 
 namespace comms
 {

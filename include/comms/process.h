@@ -10,19 +10,19 @@
 
 #pragma once
 
-#include <type_traits>
-#include <iterator>
-
-#include "comms/ErrorStatus.h"
-#include "comms/iterator.h"
-#include "comms/dispatch.h"
-#include "comms/Message.h"
 #include "comms/Assert.h"
-#include "comms/MsgDispatcher.h"
 #include "comms/details/detect.h"
 #include "comms/details/process.h"
-#include "comms/util/ScopeGuard.h"
+#include "comms/dispatch.h"
+#include "comms/ErrorStatus.h"
+#include "comms/iterator.h"
+#include "comms/Message.h"
+#include "comms/MsgDispatcher.h"
 #include "comms/protocol/ProtocolLayerBase.h"
+#include "comms/util/ScopeGuard.h"
+
+#include <iterator>
+#include <type_traits>
 
 namespace  comms
 {

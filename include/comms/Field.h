@@ -10,13 +10,13 @@
 
 #pragma once
 
-#include <type_traits>
-
-#include "comms/util/access.h"
 #include "comms/details/FieldBase.h"
-#include "comms/details/macro_common.h"
-#include "comms/details/fields_access.h"
 #include "comms/details/field_alias.h"
+#include "comms/details/fields_access.h"
+#include "comms/details/macro_common.h"
+#include "comms/util/access.h"
+
+#include <type_traits>
 
 namespace comms
 {

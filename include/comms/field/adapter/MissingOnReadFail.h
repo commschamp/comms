@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include <utility>
-
 #include "comms/cast.h"
+
+#include <utility>
 
 namespace comms
 {

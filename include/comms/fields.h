@@ -10,17 +10,15 @@
 
 #pragma once
 
-#include "field/IntValue.h"
-#include "field/BitmaskValue.h"
-#include "field/EnumValue.h"
-#include "field/ArrayList.h"
-#include "field/String.h"
-#include "field/Bitfield.h"
-#include "field/Optional.h"
-#include "field/Bundle.h"
-#include "field/FloatValue.h"
-#include "field/Variant.h"
+#include "comms/field/ArrayList.h"
+#include "comms/field/Bitfield.h"
+#include "comms/field/BitmaskValue.h"
+#include "comms/field/Bundle.h"
+#include "comms/field/EnumValue.h"
+#include "comms/field/FloatValue.h"
+#include "comms/field/IntValue.h"
+#include "comms/field/Optional.h"
+#include "comms/field/String.h"
+#include "comms/field/Variant.h"
 
-#include "field/basics.h"
-
-#include "cast.h"
+#include "comms/cast.h"

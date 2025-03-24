@@ -10,11 +10,11 @@
 
 #pragma once
 
-#include "comms/details/MessageImplBuilder.h"
-#include "comms/details/macro_common.h"
-#include "comms/details/fields_access.h"
 #include "comms/details/detect.h"
 #include "comms/details/field_alias.h"
+#include "comms/details/fields_access.h"
+#include "comms/details/macro_common.h"
+#include "comms/details/MessageImplBuilder.h"
 
 namespace comms
 {

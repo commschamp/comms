@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "comms/protocol/ProtocolLayerBase.h"
 #include "comms/protocol/details/MsgIdLayerOptionsParser.h"
+#include "comms/protocol/ProtocolLayerBase.h"
 
 #include <cstddef>
 

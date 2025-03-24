@@ -12,18 +12,18 @@
 
 #pragma once
 
-#include <memory>
-#include <type_traits>
-#include <array>
-#include <algorithm>
-#include <limits>
-
 #include "comms/CompileControl.h"
 #include "comms/Assert.h"
 #include "comms/dispatch.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/type_traits.h"
 #include "comms/details/tag.h"
+
+#include <algorithm>
+#include <limits>
+#include <array>
+#include <memory>
+#include <type_traits>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4324) // Disable warning about alignment padding

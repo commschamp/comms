@@ -12,9 +12,9 @@
 
 #include "comms/Assert.h"
 #include "comms/CompileControl.h"
+#include "comms/details/tag.h"
 #include "comms/MessageBase.h"
 #include "comms/MsgFactory.h"
-#include "comms/details/tag.h"
 #include "comms/protocol/details/MsgIdLayerBase.h"
 #include "comms/protocol/details/MsgIdLayerOptionsParser.h"
 #include "comms/util/Tuple.h"

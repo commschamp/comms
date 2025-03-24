@@ -10,13 +10,15 @@
 
 #pragma once
 
-#include <cstdint>
+#include "comms/cast.h"
+#include "comms/details/tag.h"
+#include "comms/util/type_traits.h"
+
 #include <array>
+#include <cstdint>
 #include <limits>
 #include <type_traits>
-#include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
-#include "comms/cast.h"
+
 
 namespace comms
 {

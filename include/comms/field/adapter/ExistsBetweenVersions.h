@@ -7,15 +7,16 @@
 
 #pragma once
 
-#include <cstdint>
-#include <type_traits>
-#include <limits>
-#include <algorithm>
-#include "comms/CompileControl.h"
 #include "comms/Assert.h"
+#include "comms/CompileControl.h"
+#include "comms/details/tag.h"
 #include "comms/field/OptionalMode.h"
 #include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
+
+#include <algorithm>
+#include <cstdint>
+#include <limits>
+#include <type_traits>
 
 COMMS_GNU_WARNING_PUSH
 COMMS_GNU_WARNING_DISABLE("-Wtype-limits")

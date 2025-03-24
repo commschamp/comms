@@ -11,13 +11,13 @@
 
 #pragma once
 
-#include <type_traits>
-
+#include "comms/details/MsgDispatcherOptionsParser.h"
 #include "comms/dispatch.h"
 #include "comms/Message.h"
-#include "comms/details/MsgDispatcherOptionsParser.h"
 #include "comms/traits.h"
 #include "comms/util/type_traits.h"
+
+#include <type_traits>
 
 namespace comms
 {

@@ -7,13 +7,14 @@
 
 #pragma once
 
-#include <cstddef>
 #include "comms/Assert.h"
-#include "comms/ErrorStatus.h"
-#include "comms/util/detect.h"
-#include "comms/field/basic/CommonFuncs.h"
-#include "comms/util/type_traits.h"
 #include "comms/details/tag.h"
+#include "comms/ErrorStatus.h"
+#include "comms/field/basic/CommonFuncs.h"
+#include "comms/util/detect.h"
+#include "comms/util/type_traits.h"
+
+#include <cstddef>
 
 namespace comms
 {

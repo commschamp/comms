@@ -10,8 +10,8 @@
 
 #pragma once
 
-#include <memory>
 #include <functional>
+#include <memory>
 #include <type_traits>
 
 namespace comms

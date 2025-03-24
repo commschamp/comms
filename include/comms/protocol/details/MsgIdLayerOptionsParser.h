@@ -7,10 +7,11 @@
 
 #pragma once
 
-#include <tuple>
-#include "comms/util/type_traits.h"
 #include "comms/MsgFactory.h"
 #include "comms/options.h"
+#include "comms/util/type_traits.h"
+
+#include <tuple>
 
 namespace comms
 {

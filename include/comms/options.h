@@ -10,17 +10,17 @@
 
 #pragma once
 
-#include <tuple>
-#include <type_traits>
-#include <limits>
-#include <ratio>
-#include <cstdint>
-#include <cstddef>
-
-#include "comms/traits.h"
 #include "comms/ErrorStatus.h"
 #include "comms/field/OptionalMode.h"
+#include "comms/traits.h"
 #include "comms/util/type_traits.h"
+
+#include <cstddef>
+#include <cstdint>
+#include <limits>
+#include <ratio>
+#include <tuple>
+#include <type_traits>
 
 namespace comms
 {

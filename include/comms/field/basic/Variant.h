@@ -7,20 +7,20 @@
 
 #pragma once
 
-#include <type_traits>
-#include <algorithm>
-
-#include "comms/CompileControl.h"
 #include "comms/Assert.h"
+#include "comms/CompileControl.h"
+#include "comms/details/tag.h"
 #include "comms/ErrorStatus.h"
-#include "comms/util/Tuple.h"
-#include "comms/util/type_traits.h"
-#include "comms/field/details/VersionStorage.h"
+#include "comms/field/basic/CommonFuncs.h"
 #include "comms/field/details/FieldOpHelpers.h"
 #include "comms/field/details/MembersVersionDependency.h"
-#include "comms/details/tag.h"
+#include "comms/field/details/VersionStorage.h"
 #include "comms/field/tag.h"
-#include "CommonFuncs.h"
+#include "comms/util/Tuple.h"
+#include "comms/util/type_traits.h"
+
+#include <algorithm>
+#include <type_traits>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4324) // Disable warning about alignment padding

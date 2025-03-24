@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include <iterator>
-#include <limits>
-
 #include "comms/Assert.h"
 #include "comms/ErrorStatus.h"
 #include "comms/field/basic/CommonFuncs.h"
+
+#include <iterator>
+#include <limits>
 
 namespace comms
 {

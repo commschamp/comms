@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include <type_traits>
-
 #include "comms/ErrorStatus.h"
 #include "comms/field/tag.h"
+
+#include <type_traits>
 
 namespace comms
 {

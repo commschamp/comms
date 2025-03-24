@@ -7,12 +7,11 @@
 
 #pragma once
 
-#include <type_traits>
-
 #include "comms/ErrorStatus.h"
+#include "comms/field/basic/IntValue.h"
 #include "comms/field/tag.h"
 
-#include "IntValue.h"
+#include <type_traits>
 
 namespace comms
 {
@@ -33,7 +32,7 @@ class EnumValue : public TFieldBase
     using BaseImpl = TFieldBase;
 
     using IntValueField =
-        IntValue<
+        comms::field::basic::IntValue<
             BaseImpl,
             UnderlyingType
         >;

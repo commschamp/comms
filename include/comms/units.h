@@ -10,13 +10,13 @@
 
 #pragma once
 
-#include <ratio>
-#include <type_traits>
-
 #include "comms/CompileControl.h"
+#include "comms/details/tag.h"
 #include "comms/traits.h"
 #include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
+
+#include <ratio>
+#include <type_traits>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4100) // Disable unreferenced parameter warning

@@ -11,9 +11,9 @@
 #pragma once
 
 #include "comms/ErrorStatus.h"
-#include "comms/options.h"
 #include "comms/field/basic/Bundle.h"
 #include "comms/field/details/AdaptBasicField.h"
+#include "comms/options.h"
 
 namespace comms
 {

@@ -10,23 +10,23 @@
 
 #pragma once
 
-#include "comms/CompileControl.h"
-#include "comms/fields.h"
-#include "comms/protocols.h"
-#include "comms/units.h"
-#include "comms/version.h"
 #include "comms/dispatch.h"
+#include "comms/fields.h"
 #include "comms/field_cast.h"
 #include "comms/iterator.h"
 #include "comms/process.h"
+#include "comms/protocols.h"
+#include "comms/units.h"
+#include "comms/version.h"
 
-#include "comms/Message.h"
+#include "comms/CompileControl.h"
 #include "comms/EmptyHandler.h"
 #include "comms/GenericHandler.h"
-#include "comms/MessageBase.h"
-#include "comms/MsgFactory.h"
-#include "comms/MsgDispatcher.h"
 #include "comms/GenericMessage.h"
+#include "comms/Message.h"
+#include "comms/MessageBase.h"
+#include "comms/MsgDispatcher.h"
+#include "comms/MsgFactory.h"
 
 #include "comms/util/assign.h"
 #include "comms/util/construct.h"

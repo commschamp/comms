@@ -7,13 +7,13 @@
 
 #pragma once
 
+#include "comms/details/MessageInterfaceBases.h"
+#include "comms/options.h"
+#include "comms/util/Tuple.h"
+
 #include <cstdint>
 #include <limits>
 #include <tuple>
-
-#include "comms/options.h"
-#include "comms/util/Tuple.h"
-#include "MessageInterfaceBases.h"
 
 namespace comms
 {

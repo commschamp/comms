@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include <limits>
-#include <algorithm>
-
 #include "comms/Assert.h"
 #include "comms/ErrorStatus.h"
+
+#include <algorithm>
+#include <limits>
 
 namespace comms
 {

@@ -7,11 +7,13 @@
 
 #pragma once
 
-#include <type_traits>
-#include <limits>
 
 #include "comms/CompileControl.h"
 #include "comms/ErrorStatus.h"
+
+#include <cstdint>
+#include <limits>
+#include <type_traits>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4100) // Disable warning about unreferenced parameters

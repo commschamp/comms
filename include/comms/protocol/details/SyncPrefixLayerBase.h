@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "comms/protocol/ProtocolLayerBase.h"
 #include "comms/protocol/details/SyncPrefixLayerOptionsParser.h"
+#include "comms/protocol/ProtocolLayerBase.h"
 
 #include <cstddef>
 

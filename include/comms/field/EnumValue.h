@@ -10,12 +10,12 @@
 
 #pragma once
 
-#include <type_traits>
-
+#include "comms/field/basic/EnumValue.h"
+#include "comms/field/details/AdaptBasicField.h"
+#include "comms/field/details/OptionsParser.h"
 #include "comms/options.h"
-#include "details/OptionsParser.h"
-#include "basic/EnumValue.h"
-#include "details/AdaptBasicField.h"
+
+#include <type_traits>
 
 namespace comms
 {

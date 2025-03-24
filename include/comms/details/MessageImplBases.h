@@ -7,14 +7,14 @@
 
 #pragma once
 
-#include <tuple>
-#include <cstddef>
-
-#include "comms/ErrorStatus.h"
-#include "comms/util/Tuple.h"
 #include "comms/details/tag.h"
+#include "comms/ErrorStatus.h"
 #include "comms/field/basic/CommonFuncs.h"
 #include "comms/field/details/FieldOpHelpers.h"
+#include "comms/util/Tuple.h"
+
+#include <cstddef>
+#include <tuple>
 
 namespace comms
 {

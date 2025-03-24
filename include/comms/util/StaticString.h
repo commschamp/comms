@@ -10,14 +10,14 @@
 
 #pragma once
 
+#include "comms/Assert.h"
+#include "comms/CompileControl.h"
+#include "comms/util/StaticVector.h"
+
 #include <algorithm>
+#include <initializer_list>
 #include <iterator>
 #include <string>
-#include <initializer_list>
-
-#include "comms/CompileControl.h"
-#include "comms/Assert.h"
-#include "StaticVector.h"
 
 namespace comms
 {

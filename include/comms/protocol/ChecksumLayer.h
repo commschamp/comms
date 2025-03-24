@@ -10,13 +10,13 @@
 
 #pragma once
 
+#include "comms/cast.h"
 #include "comms/CompileControl.h"
+#include "comms/details/tag.h"
 #include "comms/field/IntValue.h"
 #include "comms/protocol/details/ChecksumLayerBase.h"
 #include "comms/protocol/details/ChecksumLayerOptionsParser.h"
 #include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
-#include "comms/cast.h"
 
 #include <iterator>
 #include <type_traits>

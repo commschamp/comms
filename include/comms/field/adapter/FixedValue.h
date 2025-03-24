@@ -17,7 +17,6 @@ namespace field
 namespace adapter
 {
 
-
 template <typename TBase>
 class FixedValue : public TBase
 {

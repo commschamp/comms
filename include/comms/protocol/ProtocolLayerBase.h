@@ -10,23 +10,22 @@
 
 #pragma once
 
-#include <tuple>
-#include <utility>
-#include <algorithm>
-#include <iterator>
-
-#include "comms/CompileControl.h"
-#include "comms/ErrorStatus.h"
-#include "comms/util/Tuple.h"
-#include "comms/util/type_traits.h"
 #include "comms/Assert.h"
-#include "comms/options.h"
-
-#include "comms/protocol/details/ProtocolLayerBaseOptionsParser.h"
-#include "comms/protocol/details/ProtocolLayerDetails.h"
+#include "comms/CompileControl.h"
 #include "comms/details/protocol_layers_access.h"
 #include "comms/details/detect.h"
 #include "comms/details/tag.h"
+#include "comms/ErrorStatus.h"
+#include "comms/options.h"
+#include "comms/protocol/details/ProtocolLayerBaseOptionsParser.h"
+#include "comms/protocol/details/ProtocolLayerDetails.h"
+#include "comms/util/Tuple.h"
+#include "comms/util/type_traits.h"
+
+#include <algorithm>
+#include <iterator>
+#include <tuple>
+#include <utility>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4100) // Disable warning about unreferenced parameters

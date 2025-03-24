@@ -10,12 +10,12 @@
 
 #pragma once
 
-#include "comms/ErrorStatus.h"
-#include "comms/options.h"
-#include "basic/Variant.h"
-#include "details/AdaptBasicField.h"
 #include "comms/details/macro_common.h"
 #include "comms/details/variant_access.h"
+#include "comms/ErrorStatus.h"
+#include "comms/field/basic/Variant.h"
+#include "comms/field/details/AdaptBasicField.h"
+#include "comms/options.h"
 
 namespace comms
 {

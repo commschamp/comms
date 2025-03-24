@@ -7,9 +7,9 @@
 
 #pragma once
 
+#include "comms/details/MessageImplBases.h"
 #include "comms/options.h"
 #include "comms/util/type_traits.h"
-#include "MessageImplBases.h"
 
 namespace comms
 {

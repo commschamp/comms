@@ -11,10 +11,10 @@
 
 #pragma once
 
+#include "comms/Assert.h"
+
 #include <algorithm>
 #include <iterator>
-
-#include "comms/Assert.h"
 
 namespace comms
 {
