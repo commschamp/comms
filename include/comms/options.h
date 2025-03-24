@@ -1443,482 +1443,615 @@ struct MsgFactoryTempl {};
 // Definition options
 
 /// @brief Same as @ref comms::option::def::Endian.
+/// @deprecated Use @ref comms::option::def::Endian instead.
 template <typename TEndian>
 using Endian = comms::option::def::Endian<TEndian>;
 
 /// @brief Same as @ref comms::option::def::BigEndian
+/// @deprecated Use @ref comms::option::def::BigEndian instead.
 using BigEndian = comms::option::def::BigEndian;
 
 /// @brief Same as @ref comms::option::def::LittleEndian
+/// @deprecated Use @ref comms::option::def::LittleEndian instead.
 using LittleEndian = comms::option::def::LittleEndian;
 
 /// @brief Same as @ref comms::option::def::MsgIdType
+/// @deprecated Use @ref comms::option::def::MsgIdType instead.
 template <typename T>
 using MsgIdType = comms::option::def::MsgIdType<T>;
 
 /// @brief Same as @ref comms::option::def::StaticNumIdImpl
+/// @deprecated Use @ref comms::option::def::StaticNumIdImpl instead.
 template <std::intmax_t TId>
 using StaticNumIdImpl = comms::option::def::StaticNumIdImpl<TId>;
 
 /// @brief Same as @ref comms::option::def::NoIdImpl
+/// @deprecated Use @ref comms::option::def::NoIdImpl instead.
 using NoIdImpl = comms::option::def::NoIdImpl;
 
 /// @brief Same as @ref comms::option::def::MsgType
+/// @deprecated Use @ref comms::option::def::MsgType instead.
 template <typename TMsg>
 using MsgType = comms::option::def::MsgType<TMsg>;
 
 /// @brief Same as @ref comms::option::def::FieldType
+/// @deprecated Use @ref comms::option::def::FieldType instead.
 template <typename TMsg>
 using FieldType = comms::option::def::FieldType<TMsg>;
 
 /// @brief Same as @ref comms::option::def::ExtraTransportFields
+/// @deprecated Use @ref comms::option::def::ExtraTransportFields instead.
 template <typename TFields>
 using ExtraTransportFields = comms::option::def::ExtraTransportFields<TFields>;
 
 /// @brief Same as @ref comms::option::def::VersionInExtraTransportFields
+/// @deprecated Use @ref comms::option::def::VersionInExtraTransportFields instead.
 template <std::size_t TIdx>
 using VersionInExtraTransportFields = comms::option::def::VersionInExtraTransportFields<TIdx>;
 
 /// @brief Same as @ref comms::option::def::FieldsImpl
+/// @deprecated Use @ref comms::option::def::FieldsImpl instead.
 template <typename TFields>
 using FieldsImpl = comms::option::def::FieldsImpl<TFields>;
 
 /// @brief Same as @ref comms::option::def::ZeroFieldsImpl
+/// @deprecated Use @ref comms::option::def::ZeroFieldsImpl instead.
 using ZeroFieldsImpl = comms::option::def::ZeroFieldsImpl;
 
 /// @brief Same as @ref comms::option::def::HasDoGetId
+/// @deprecated Use @ref comms::option::def::HasDoGetId instead.
 using HasDoGetId = comms::option::def::HasDoGetId;
 
 /// @brief Same as @ref comms::option::def::AssumeFieldsExistence
+/// @deprecated Use @ref comms::option::def::AssumeFieldsExistence instead.
 using AssumeFieldsExistence = comms::option::def::AssumeFieldsExistence;
 
 /// @brief Same as @ref comms::option::def::FixedLength
+/// @deprecated Use @ref comms::option::def::FixedLength instead.
 template<std::size_t TLen, bool TSignExtend = true>
 using FixedLength = comms::option::def::FixedLength<TLen, TSignExtend>;
 
 /// @brief Same as @ref comms::option::def::FixedBitLength
+/// @deprecated Use @ref comms::option::def::FixedBitLength instead.
 template<std::size_t TLen, bool TSignExtend = true>
 using FixedBitLength = comms::option::def::FixedBitLength<TLen, TSignExtend>;
 
 /// @brief Same as @ref comms::option::def::VarLength
+/// @deprecated Use @ref comms::option::def::VarLength instead.
 template<std::size_t TMin, std::size_t TMax>
 using VarLength = comms::option::def::VarLength<TMin, TMax>;
 
 /// @brief Same as @ref comms::option::def::NumValueSerOffset
+/// @deprecated Use @ref comms::option::def::NumValueSerOffset instead.
 template<std::intmax_t TOffset>
 using NumValueSerOffset = comms::option::def::NumValueSerOffset<TOffset>;
 
 /// @brief Same as @ref comms::option::def::ScalingRatio
+/// @deprecated Use @ref comms::option::def::ScalingRatio instead.
 template <std::intmax_t TNum, std::intmax_t TDenom>
 using ScalingRatio = comms::option::def::ScalingRatio<TNum, TDenom>;
 
 /// @brief Same as @ref comms::option::def::SequenceSizeFieldPrefix
+/// @deprecated Use @ref comms::option::def::SequenceSizeFieldPrefix instead.
 template <typename TField>
 using SequenceSizeFieldPrefix = comms::option::def::SequenceSizeFieldPrefix<TField>;
 
 /// @brief Same as @ref comms::option::def::SequenceSerLengthFieldPrefix
+/// @deprecated Use @ref comms::option::def::SequenceSerLengthFieldPrefix instead.
 template <typename TField, comms::ErrorStatus TReadErrorStatus = comms::ErrorStatus::InvalidMsgData>
 using SequenceSerLengthFieldPrefix =
     comms::option::def::SequenceSerLengthFieldPrefix<TField, TReadErrorStatus>;
 
 /// @brief Same as @ref comms::option::def::SequenceElemSerLengthFieldPrefix
+/// @deprecated Use @ref comms::option::def::SequenceElemSerLengthFieldPrefix instead.
 template <typename TField, comms::ErrorStatus TReadErrorStatus = comms::ErrorStatus::InvalidMsgData>
 using SequenceElemSerLengthFieldPrefix =
     comms::option::def::SequenceElemSerLengthFieldPrefix<TField, TReadErrorStatus>;
 
 /// @brief Same as @ref comms::option::def::SequenceElemFixedSerLengthFieldPrefix
+/// @deprecated Use @ref comms::option::def::SequenceElemFixedSerLengthFieldPrefix instead.
 template <typename TField, comms::ErrorStatus TReadErrorStatus = comms::ErrorStatus::InvalidMsgData>
 using SequenceElemFixedSerLengthFieldPrefix =
     comms::option::def::SequenceElemFixedSerLengthFieldPrefix<TField, TReadErrorStatus>;
 
 /// @brief Same as @ref comms::option::def::SequenceTerminationFieldSuffix
+/// @deprecated Use @ref comms::option::def::SequenceTerminationFieldSuffix instead.
 template <typename TField>
 using SequenceTerminationFieldSuffix = comms::option::def::SequenceTerminationFieldSuffix<TField>;
 
 /// @brief Same as @ref comms::option::def::SequenceTrailingFieldSuffix
+/// @deprecated Use @ref comms::option::def::SequenceTrailingFieldSuffix instead.
 template <typename TField>
 using SequenceTrailingFieldSuffix = comms::option::def::SequenceTrailingFieldSuffix<TField>;
 
 /// @brief Same as @ref comms::option::def::SequenceSizeForcingEnabled
+/// @deprecated Use @ref comms::option::def::SequenceSizeForcingEnabled instead.
 using SequenceSizeForcingEnabled = comms::option::def::SequenceSizeForcingEnabled;
 
 /// @brief Same as @ref comms::option::def::SequenceLengthForcingEnabled
+/// @deprecated Use @ref comms::option::def::SequenceLengthForcingEnabled instead.
 using SequenceLengthForcingEnabled = comms::option::def::SequenceLengthForcingEnabled;
 
 /// @brief Same as @ref comms::option::def::SequenceElemLengthForcingEnabled
+/// @deprecated Use @ref comms::option::def::SequenceElemLengthForcingEnabled instead.
 using SequenceElemLengthForcingEnabled = comms::option::def::SequenceElemLengthForcingEnabled;
 
 /// @brief Same as @ref comms::option::def::SequenceFixedSize
+/// @deprecated Use @ref comms::option::def::SequenceFixedSize instead.
 template <std::size_t TSize>
 using SequenceFixedSize = comms::option::def::SequenceFixedSize<TSize>;
 
 /// @brief Same as @ref comms::option::def::DefaultValueInitialiser
+/// @deprecated Use @ref comms::option::def::DefaultValueInitialiser instead.
 template <typename T>
 using DefaultValueInitialiser = comms::option::def::DefaultValueInitialiser<T>;
 
 /// @brief Same as @ref comms::option::def::FailOnInvalid
+/// @deprecated Use @ref comms::option::def::FailOnInvalid instead.
 template <comms::ErrorStatus TStatus = comms::ErrorStatus::InvalidMsgData>
 using FailOnInvalid = comms::option::def::FailOnInvalid<TStatus>;
 
 /// @brief Same as @ref comms::option::def::IgnoreInvalid
+/// @deprecated Use @ref comms::option::def::IgnoreInvalid instead.
 using IgnoreInvalid = comms::option::def::IgnoreInvalid;
 
 /// @brief Same as @ref comms::option::def::Units
+/// @deprecated Use @ref comms::option::def::Units instead.
 template <typename TType, typename TRatio>
 using Units = comms::option::def::Units<TType, TRatio>;
 
 /// @brief Same as @ref comms::option::def::UnitsNanoseconds
+/// @deprecated Use @ref comms::option::def::UnitsNanoseconds instead.
 using UnitsNanoseconds = comms::option::def::UnitsNanoseconds;
 
 /// @brief Same as @ref comms::option::def::UnitsMicroseconds
+/// @deprecated Use @ref comms::option::def::UnitsMicroseconds instead.
 using UnitsMicroseconds = comms::option::def::UnitsMicroseconds;
 
 /// @brief Same as @ref comms::option::def::UnitsMilliseconds
+/// @deprecated Use @ref comms::option::def::UnitsMilliseconds instead.
 using UnitsMilliseconds = comms::option::def::UnitsMilliseconds;
 
 /// @brief Same as @ref comms::option::def::UnitsSeconds
+/// @deprecated Use @ref comms::option::def::UnitsSeconds instead.
 using UnitsSeconds = comms::option::def::UnitsSeconds;
 
 /// @brief Same as @ref comms::option::def::UnitsMinutes
+/// @deprecated Use @ref comms::option::def::UnitsMinutes instead.
 using UnitsMinutes = comms::option::def::UnitsMinutes;
 
 /// @brief Same as @ref comms::option::def::UnitsHours
+/// @deprecated Use @ref comms::option::def::UnitsHours instead.
 using UnitsHours = comms::option::def::UnitsHours;
 
 /// @brief Same as @ref comms::option::def::UnitsDays
+/// @deprecated Use @ref comms::option::def::UnitsDays instead.
 using UnitsDays = comms::option::def::UnitsDays;
 
 /// @brief Same as @ref comms::option::def::UnitsWeeks
+/// @deprecated Use @ref comms::option::def::UnitsWeeks instead.
 using UnitsWeeks = comms::option::def::UnitsWeeks;
 
 /// @brief Same as @ref comms::option::def::UnitsNanometers
+/// @deprecated Use @ref comms::option::def::UnitsNanometers instead.
 using UnitsNanometers = comms::option::def::UnitsNanometers;
 
 /// @brief Same as @ref comms::option::def::UnitsMicrometers
+/// @deprecated Use @ref comms::option::def::UnitsMicrometers instead.
 using UnitsMicrometers = comms::option::def::UnitsMicrometers;
 
 /// @brief Same as @ref comms::option::def::UnitsMillimeters
+/// @deprecated Use @ref comms::option::def::UnitsMillimeters instead.
 using UnitsMillimeters = comms::option::def::UnitsMillimeters;
 
 /// @brief Same as @ref comms::option::def::UnitsCentimeters
+/// @deprecated Use @ref comms::option::def::UnitsCentimeters instead.
 using UnitsCentimeters = comms::option::def::UnitsCentimeters;
 
 /// @brief Same as @ref comms::option::def::UnitsMeters
+/// @deprecated Use @ref comms::option::def::UnitsMeters instead.
 using UnitsMeters = comms::option::def::UnitsMeters;
 
 /// @brief Same as @ref comms::option::def::UnitsKilometers
+/// @deprecated Use @ref comms::option::def::UnitsKilometers instead.
 using UnitsKilometers = comms::option::def::UnitsKilometers;
 
 /// @brief Same as @ref comms::option::def::UnitsNanometersPerSecond
+/// @deprecated Use @ref comms::option::def::UnitsNanometersPerSecond instead.
 using UnitsNanometersPerSecond = comms::option::def::UnitsNanometersPerSecond;
 
 /// @brief Same as @ref comms::option::def::UnitsMicrometersPerSecond
+/// @deprecated Use @ref comms::option::def::UnitsMicrometersPerSecond instead.
 using UnitsMicrometersPerSecond = comms::option::def::UnitsMicrometersPerSecond;
 
 /// @brief Same as @ref comms::option::def::UnitsMillimetersPerSecond
+/// @deprecated Use @ref comms::option::def::UnitsMillimetersPerSecond instead.
 using UnitsMillimetersPerSecond = comms::option::def::UnitsMillimetersPerSecond;
 
 /// @brief Same as @ref comms::option::def::UnitsCentimetersPerSecond
+/// @deprecated Use @ref comms::option::def::UnitsCentimetersPerSecond instead.
 using UnitsCentimetersPerSecond = comms::option::def::UnitsCentimetersPerSecond;
 
 /// @brief Same as @ref comms::option::def::UnitsMetersPerSecond
+/// @deprecated Use @ref comms::option::def::UnitsMetersPerSecond instead.
 using UnitsMetersPerSecond = comms::option::def::UnitsMetersPerSecond;
 
 /// @brief Same as @ref comms::option::def::UnitsKilometersPerSecond
+/// @deprecated Use @ref comms::option::def::UnitsKilometersPerSecond instead.
 using UnitsKilometersPerSecond = comms::option::def::UnitsKilometersPerSecond;
 
 /// @brief Same as @ref comms::option::def::UnitsKilometersPerHour
+/// @deprecated Use @ref comms::option::def::UnitsKilometersPerHour instead.
 using UnitsKilometersPerHour = comms::option::def::UnitsKilometersPerHour;
 
 /// @brief Same as @ref comms::option::def::UnitsHertz
+/// @deprecated Use @ref comms::option::def::UnitsHertz instead.
 using UnitsHertz = comms::option::def::UnitsHertz;
 
 /// @brief Same as @ref comms::option::def::UnitsKilohertz
+/// @deprecated Use @ref comms::option::def::UnitsKilohertz instead.
 using UnitsKilohertz = comms::option::def::UnitsKilohertz;
 
 /// @brief Same as @ref comms::option::def::UnitsMegahertz
+/// @deprecated Use @ref comms::option::def::UnitsMegahertz instead.
 using UnitsMegahertz = comms::option::def::UnitsMegahertz;
 
 /// @brief Same as @ref comms::option::def::UnitsGigahertz
+/// @deprecated Use @ref comms::option::def::UnitsGigahertz instead.
 using UnitsGigahertz = comms::option::def::UnitsGigahertz;
 
 /// @brief Same as @ref comms::option::def::UnitsDegrees
+/// @deprecated Use @ref comms::option::def::UnitsDegrees instead.
 using UnitsDegrees = comms::option::def::UnitsDegrees;
 
 /// @brief Same as @ref comms::option::def::UnitsRadians
+/// @deprecated Use @ref comms::option::def::UnitsRadians instead.
 using UnitsRadians = comms::option::def::UnitsRadians;
 
 /// @brief Same as @ref comms::option::def::UnitsNanoamps
+/// @deprecated Use @ref comms::option::def::UnitsNanoamps instead.
 using UnitsNanoamps = comms::option::def::UnitsNanoamps;
 
 /// @brief Same as @ref comms::option::def::UnitsMicroamps
+/// @deprecated Use @ref comms::option::def::UnitsMicroamps instead.
 using UnitsMicroamps = comms::option::def::UnitsMicroamps;
 
 /// @brief Same as @ref comms::option::def::UnitsMilliamps
+/// @deprecated Use @ref comms::option::def::UnitsMilliamps instead.
 using UnitsMilliamps = comms::option::def::UnitsMilliamps;
 
 /// @brief Same as @ref comms::option::def::UnitsAmps
+/// @deprecated Use @ref comms::option::def::UnitsAmps instead.
 using UnitsAmps = comms::option::def::UnitsAmps;
 
 /// @brief Same as @ref comms::option::def::UnitsKiloamps
+/// @deprecated Use @ref comms::option::def::UnitsKiloamps instead.
 using UnitsKiloamps = comms::option::def::UnitsKiloamps;
 
 /// @brief Same as @ref comms::option::def::UnitsNanovolts
+/// @deprecated Use @ref comms::option::def::UnitsNanovolts instead.
 using UnitsNanovolts = comms::option::def::UnitsNanovolts;
 
 /// @brief Same as @ref comms::option::def::UnitsMicrovolts
+/// @deprecated Use @ref comms::option::def::UnitsMicrovolts instead.
 using UnitsMicrovolts = comms::option::def::UnitsMicrovolts;
 
 /// @brief Same as @ref comms::option::def::UnitsMillivolts
+/// @deprecated Use @ref comms::option::def::UnitsMillivolts instead.
 using UnitsMillivolts = comms::option::def::UnitsMillivolts;
 
 /// @brief Same as @ref comms::option::def::UnitsVolts
+/// @deprecated Use @ref comms::option::def::UnitsVolts instead.
 using UnitsVolts = comms::option::def::UnitsVolts;
 
 /// @brief Same as @ref comms::option::def::UnitsKilovolts
+/// @deprecated Use @ref comms::option::def::UnitsKilovolts instead.
 using UnitsKilovolts = comms::option::def::UnitsKilovolts;
 
 /// @brief Same as @ref comms::option::def::UnitsBytes
+/// @deprecated Use @ref comms::option::def::UnitsBytes instead.
 using UnitsBytes = comms::option::def::UnitsBytes;
 
 /// @brief Same as @ref comms::option::def::UnitsKilobytes
+/// @deprecated Use @ref comms::option::def::UnitsKilobytes instead.
 using UnitsKilobytes = comms::option::def::UnitsKilobytes;
 
 /// @brief Same as @ref comms::option::def::UnitsMegabytes
+/// @deprecated Use @ref comms::option::def::UnitsMegabytes instead.
 using UnitsMegabytes = comms::option::def::UnitsMegabytes;
 
 /// @brief Same as @ref comms::option::def::UnitsGigabytes
+/// @deprecated Use @ref comms::option::def::UnitsGigabytes instead.
 using UnitsGigabytes = comms::option::def::UnitsGigabytes;
 
 /// @brief Same as @ref comms::option::def::UnitsTerabytes
+/// @deprecated Use @ref comms::option::def::UnitsTerabytes instead.
 using UnitsTerabytes = comms::option::def::UnitsTerabytes;
 
 /// @brief Same as @ref comms::option::def::DefaultNumValue
+/// @deprecated Use @ref comms::option::def::DefaultNumValue instead.
 template<std::intmax_t TVal>
 using DefaultNumValue = comms::option::def::DefaultNumValue<TVal>;
 
 /// @brief Same as @ref comms::option::def::DefaultBigUnsignedNumValue
+/// @deprecated Use @ref comms::option::def::DefaultBigUnsignedNumValue instead.
 template<std::uintmax_t TVal>
 using DefaultBigUnsignedNumValue = comms::option::def::DefaultBigUnsignedNumValue<TVal>;
 
 /// @brief Same as @ref comms::option::def::ValidNumValueRange
+/// @deprecated Use @ref comms::option::def::ValidNumValueRange instead.
 template<std::intmax_t TMinValue, std::intmax_t TMaxValue>
 using ValidNumValueRange = comms::option::def::ValidNumValueRange<TMinValue, TMaxValue>;
 
 /// @brief Same as @ref comms::option::def::ValidRangesClear
+/// @deprecated Use @ref comms::option::def::ValidRangesClear instead.
 using ValidRangesClear = comms::option::def::ValidRangesClear;
 
 /// @brief Same as @ref comms::option::def::ValidNumValueRangeOverride
-/// @deprecated Use @ref ValidRangesClear instead.
+/// @deprecated Use @ref comms::option::def::ValidNumValueRangeOverride instead.
 template<std::intmax_t TMinValue, std::intmax_t TMaxValue>
 using ValidNumValueRangeOverride = comms::option::def::ValidNumValueRangeOverride<TMinValue, TMaxValue>;
 
 /// @brief Same as @ref comms::option::def::ValidNumValue
+/// @deprecated Use @ref comms::option::def::ValidNumValue instead.
 template<std::intmax_t TValue>
 using ValidNumValue = comms::option::def::ValidNumValue<TValue>;
 
 /// @brief Same as @ref comms::option::def::ValidNumValueOverride
-/// @deprecated Use @ref ValidRangesClear instead.
+/// @deprecated Use @ref comms::option::def::ValidNumValueOverride instead.
 template<std::intmax_t TValue>
 using ValidNumValueOverride = comms::option::def::ValidNumValueOverride<TValue>;
 
 /// @brief Same as @ref comms::option::def::ValidBigUnsignedNumValueRange
+/// @deprecated Use @ref comms::option::def::ValidBigUnsignedNumValueRange instead.
 template<std::uintmax_t TMinValue, std::uintmax_t TMaxValue>
 using ValidBigUnsignedNumValueRange =
     comms::option::def::ValidBigUnsignedNumValueRange<TMinValue, TMaxValue>;
 
 /// @brief Same as @ref comms::option::def::ValidBigUnsignedNumValueRangeOverride
-/// @deprecated Use @ref ValidRangesClear instead.
+/// @deprecated Use @ref comms::option::def::ValidBigUnsignedNumValueRangeOverride instead.
 template<std::uintmax_t TMinValue, std::uintmax_t TMaxValue>
 using ValidBigUnsignedNumValueRangeOverride =
     comms::option::def::ValidBigUnsignedNumValueRangeOverride<TMinValue, TMaxValue>;
 
 /// @brief Same as @ref comms::option::def::ValidBigUnsignedNumValue
+/// @deprecated Use @ref comms::option::def::ValidBigUnsignedNumValue instead.
 template<std::uintmax_t TValue>
 using ValidBigUnsignedNumValue =
     comms::option::def::ValidBigUnsignedNumValue<TValue>;
 
 /// @brief Same as @ref comms::option::def::ValidBigUnsignedNumValueOverride
-/// @deprecated Use @ref ValidRangesClear instead.
+/// @deprecated Use @ref comms::option::def::ValidBigUnsignedNumValueOverride instead.
 template<std::uintmax_t TValue>
 using ValidBigUnsignedNumValueOverride =
     comms::option::def::ValidBigUnsignedNumValueOverride<TValue>;
 
 /// @brief Same as @ref comms::option::def::BitmaskReservedBits
+/// @deprecated Use @ref comms::option::def::BitmaskReservedBits instead.
 template<std::uintmax_t TMask, std::uintmax_t TValue = 0U>
 using BitmaskReservedBits = comms::option::def::BitmaskReservedBits<TMask, TValue>;
 
 /// @brief Same as @ref comms::option::def::DefaultOptionalMode
+/// @deprecated Use @ref comms::option::def::DefaultOptionalMode instead.
 template<comms::field::OptionalMode TVal>
 using DefaultOptionalMode = comms::option::def::DefaultOptionalMode<TVal>;
 
 /// @brief Same as @ref comms::option::def::MissingByDefault
+/// @deprecated Use @ref comms::option::def::MissingByDefault instead.
 using MissingByDefault = comms::option::def::MissingByDefault;
 
 /// @brief Same as @ref comms::option::def::ExistsByDefault
+/// @deprecated Use @ref comms::option::def::OptionalExistsByDefault instead.
 using ExistsByDefault = comms::option::def::ExistsByDefault;
 
 /// @brief Same as @ref comms::option::def::OptionalMissingByDefault
+/// @deprecated Use @ref comms::option::def::OptionalMissingByDefault instead.
 using OptionalMissingByDefault = comms::option::def::OptionalMissingByDefault;
 
-/// @brief Same as @ref comms::option::def::OptionalMissingByDefault
-using OptionalExistsByDefault = comms::option::def::OptionalMissingByDefault;
+/// @brief Same as @ref comms::option::def::OptionalExistsByDefault
+/// @deprecated Use @ref comms::option::def::OptionalExistsByDefault instead.
+using OptionalExistsByDefault = comms::option::def::OptionalExistsByDefault;
 
 /// @brief Same as @ref comms::option::def::DefaultVariantIndex
+/// @deprecated Use @ref comms::option::def::DefaultVariantIndex instead.
 template <std::size_t TIdx>
 using DefaultVariantIndex = comms::option::def::DefaultVariantIndex<TIdx>;
 
 /// @brief Same as @ref comms::option::def::ChecksumLayerVerifyBeforeRead
+/// @deprecated Use @ref comms::option::def::ChecksumLayerVerifyBeforeRead instead.
 using ChecksumLayerVerifyBeforeRead = comms::option::def::ChecksumLayerVerifyBeforeRead;
 
 /// @brief Same as @ref comms::option::def::EmptySerialization
+/// @deprecated Use @ref comms::option::def::EmptySerialization instead.
 using EmptySerialization = comms::option::def::EmptySerialization;
 
 /// @brief Same as @ref comms::option::def::EmptySerialisation
+/// @deprecated Use @ref comms::option::def::EmptySerialisation instead.
 using EmptySerialisation = comms::option::def::EmptySerialisation;
 
 /// @brief Same as @ref comms::option::def::ProtocolLayerForceReadUntilDataSplit
+/// @deprecated Use @ref comms::option::def::ProtocolLayerForceReadUntilDataSplit instead.
 using ProtocolLayerForceReadUntilDataSplit =
     comms::option::def::ProtocolLayerForceReadUntilDataSplit;
 
 /// @brief Same as @ref comms::option::def::ProtocolLayerDisallowReadUntilDataSplit
+/// @deprecated Use @ref comms::option::def::ProtocolLayerDisallowReadUntilDataSplit instead.
 using ProtocolLayerDisallowReadUntilDataSplit =
     comms::option::def::ProtocolLayerDisallowReadUntilDataSplit;
 
 /// @brief Same as @ref comms::option::def::HasCustomRead
+/// @deprecated Use @ref comms::option::def::HasCustomRead instead.
 using HasCustomRead = comms::option::def::HasCustomRead;
 
 /// @brief Same as @ref comms::option::def::HasCustomRefresh
+/// @deprecated Use @ref comms::option::def::HasCustomRefresh instead.
 using HasCustomRefresh = comms::option::def::HasCustomRefresh;
 
 /// @brief Same as @ref comms::option::def::HasName
+/// @deprecated Use @ref comms::option::def::HasName instead.
 using HasName = comms::option::def::HasName;
 
 /// @brief Same as @ref comms::option::def::HasDoRefresh
-/// @deprecated Use @ref HasCustomRefresh instead.
+/// @deprecated Use @ref comms::option::def::HasDoRefresh instead.
 using HasDoRefresh = comms::option::def::HasDoRefresh;
 
 /// @brief Same as @ref comms::option::def::PseudoValue
+/// @deprecated Use @ref comms::option::def::PseudoValue instead.
 using PseudoValue = comms::option::def::PseudoValue;
 
 /// @brief Same as @ref comms::option::def::VersionType
+/// @deprecated Use @ref comms::option::def::VersionType instead.
 template <typename T>
 using VersionType = comms::option::def::VersionType<T>;
 
 /// @brief Same as @ref comms::option::def::HasCustomVersionUpdate
+/// @deprecated Use @ref comms::option::def::HasCustomVersionUpdate instead.
 using HasCustomVersionUpdate = comms::option::def::HasCustomVersionUpdate;
 
 /// @brief Same as @ref comms::option::def::ExistsBetweenVersions
+/// @deprecated Use @ref comms::option::def::ExistsBetweenVersions instead.
 template <std::uintmax_t TFrom, std::uintmax_t TUntil>
 using ExistsBetweenVersions = comms::option::def::ExistsBetweenVersions<TFrom, TUntil>;
 
 /// @brief Same as @ref comms::option::def::ExistsSinceVersion
+/// @deprecated Use @ref comms::option::def::ExistsSinceVersion instead.
 template <std::uintmax_t TVer>
 using ExistsSinceVersion = comms::option::def::ExistsSinceVersion<TVer>;
 
 /// @brief Same as @ref comms::option::def::ExistsUntilVersion
+/// @deprecated Use @ref comms::option::def::ExistsUntilVersion instead.
 template <std::uintmax_t TVer>
 using ExistsUntilVersion = comms::option::def::ExistsUntilVersion<TVer>;
 
 /// @brief Same as @ref comms::option::def::InvalidByDefault
+/// @deprecated Use @ref comms::option::def::InvalidByDefault instead.
 using InvalidByDefault = comms::option::def::InvalidByDefault;
 
 /// @brief Same as @ref comms::option::def::VersionStorage
+/// @deprecated Use @ref comms::option::def::VersionStorage instead.
 using VersionStorage = comms::option::def::VersionStorage;
 
 /// @brief Same as @ref comms::option::def::ExtendingClass
+/// @deprecated Use @ref comms::option::def::ExtendingClass instead.
 template <typename T>
 using ExtendingClass = comms::option::def::ExtendingClass<T>;
 
 /// @brief Same as @ref comms::option::def::RemLengthMemberField
+/// @deprecated Use @ref comms::option::def::RemLengthMemberField instead.
 template <std::size_t TIdx>
 using RemLengthMemberField = comms::option::def::RemLengthMemberField<TIdx>;
 
 // Application customization options
 
 /// @brief Same as @ref comms::option::app::EmptyOption
+/// @deprecated Use @ref comms::option::app::EmptyOption instead.
 using EmptyOption = comms::option::app::EmptyOption;
 
 /// @brief Same as @ref comms::option::app::ReadIterator
+/// @deprecated Use @ref comms::option::app::ReadIterator instead.
 template <typename TIter>
 using ReadIterator = comms::option::app::ReadIterator<TIter>;
 
 /// @brief Same as @ref comms::option::app::WriteIterator
+/// @deprecated Use @ref comms::option::app::WriteIterator instead.
 template <typename TIter>
 using WriteIterator = comms::option::app::WriteIterator<TIter>;
 
 /// @brief Same as @ref comms::option::app::IdInfoInterface
+/// @deprecated Use @ref comms::option::app::IdInfoInterface instead.
 using IdInfoInterface = comms::option::app::IdInfoInterface;
 
 /// @brief Same as @ref comms::option::app::ValidCheckInterface
+/// @deprecated Use @ref comms::option::app::ValidCheckInterface instead.
 using ValidCheckInterface = comms::option::app::ValidCheckInterface;
 
 /// @brief Same as @ref comms::option::app::LengthInfoInterface
+/// @deprecated Use @ref comms::option::app::LengthInfoInterface instead.
 using LengthInfoInterface = comms::option::app::LengthInfoInterface;
 
 /// @brief Same as @ref comms::option::app::RefreshInterface
+/// @deprecated Use @ref comms::option::app::RefreshInterface instead.
 using RefreshInterface = comms::option::app::RefreshInterface;
 
 /// @brief Same as @ref comms::option::app::NameInterface
+/// @deprecated Use @ref comms::option::app::NameInterface instead.
 using NameInterface = comms::option::app::NameInterface;
 
 /// @brief Same as @ref comms::option::app::Handler
+/// @deprecated Use @ref comms::option::app::Handler instead.
 template <typename T>
 using Handler = comms::option::app::Handler<T>;
 
 /// @brief Same as @ref comms::option::app::NoDispatchImpl
+/// @deprecated Use @ref comms::option::app::NoDispatchImpl instead.
 using NoDispatchImpl = comms::option::app::NoDispatchImpl;
 
 /// @brief Same as @ref comms::option::app::NoReadImpl
+/// @deprecated Use @ref comms::option::app::NoReadImpl instead.
 using NoReadImpl = comms::option::app::NoReadImpl;
 
 /// @brief Same as @ref comms::option::app::NoWriteImpl
+/// @deprecated Use @ref comms::option::app::NoWriteImpl instead.
 using NoWriteImpl = comms::option::app::NoWriteImpl;
 
 /// @brief Same as @ref comms::option::app::NoValidImpl
+/// @deprecated Use @ref comms::option::app::NoValidImpl instead.
 using NoValidImpl = comms::option::app::NoValidImpl;
 
 /// @brief Same as @ref comms::option::app::NoLengthImpl
+/// @deprecated Use @ref comms::option::app::NoLengthImpl instead.
 using NoLengthImpl = comms::option::app::NoLengthImpl;
 
 /// @brief Same as @ref comms::option::app::NoRefreshImpl
+/// @deprecated Use @ref comms::option::app::NoRefreshImpl instead.
 using NoRefreshImpl = comms::option::app::NoRefreshImpl;
 
 /// @brief Same as @ref comms::option::app::InPlaceAllocation
+/// @deprecated Use @ref comms::option::app::InPlaceAllocation instead.
 using InPlaceAllocation = comms::option::app::InPlaceAllocation;
 
 /// @brief Same as @ref comms::option::app::SupportGenericMessage
+/// @deprecated Use @ref comms::option::app::SupportGenericMessage instead.
 template <typename TGenericMessage>
 using SupportGenericMessage = comms::option::app::SupportGenericMessage<TGenericMessage>;
 
 /// @brief Same as @ref comms::option::app::FixedSizeStorage
+/// @deprecated Use @ref comms::option::app::FixedSizeStorage instead.
 template <std::size_t TSize>
 using FixedSizeStorage = comms::option::app::FixedSizeStorage<TSize>;
 
 /// @brief Same as @ref comms::option::app::CustomStorageType
+/// @deprecated Use @ref comms::option::app::CustomStorageType instead.
 template <typename TType>
 using CustomStorageType = comms::option::app::CustomStorageType<TType>;
 
 /// @brief Same as @ref comms::option::app::SequenceFixedSizeUseFixedSizeStorage
+/// @deprecated Use @ref comms::option::app::SequenceFixedSizeUseFixedSizeStorage instead.
 using SequenceFixedSizeUseFixedSizeStorage = comms::option::app::SequenceFixedSizeUseFixedSizeStorage;
 
 /// @brief Same as @ref comms::option::app::NoVirtualDestructor
+/// @deprecated Use @ref comms::option::app::NoVirtualDestructor instead.
 using NoVirtualDestructor = comms::option::app::NoVirtualDestructor;
 
 /// @brief Same as @ref comms::option::app::OrigDataView
+/// @deprecated Use @ref comms::option::app::OrigDataView instead.
 using OrigDataView = comms::option::app::OrigDataView;
 
 /// @brief Same as @ref comms::option::app::ForceDispatch
+/// @deprecated Use @ref comms::option::app::ForceDispatch instead.
 template <typename T>
 using ForceDispatch = comms::option::app::ForceDispatch<T>;
 
 /// @brief Same as @ref comms::option::app::ForceDispatchPolymorphic
+/// @deprecated Use @ref comms::option::app::ForceDispatchPolymorphic instead.
 using ForceDispatchPolymorphic = comms::option::app::ForceDispatchPolymorphic;
 
 /// @brief Same as @ref comms::option::app::ForceDispatchStaticBinSearch
+/// @deprecated Use @ref comms::option::app::ForceDispatchStaticBinSearch instead.
 using ForceDispatchStaticBinSearch = comms::option::app::ForceDispatchStaticBinSearch;
 
 /// @brief Same as @ref comms::option::app::ForceDispatchLinearSwitch
+/// @deprecated Use @ref comms::option::app::ForceDispatchLinearSwitch instead.
 using ForceDispatchLinearSwitch = comms::option::app::ForceDispatchLinearSwitch;
 
 }  // namespace option
