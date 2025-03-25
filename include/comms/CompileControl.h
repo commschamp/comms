@@ -87,6 +87,7 @@
 #define COMMS_IS_CLANG_9_OR_ABOVE (COMMS_IS_CLANG && (__clang_major__ >= 9))
 #define COMMS_IS_CLANG_16_OR_ABOVE (COMMS_IS_CLANG && (__clang_major__ >= 16))
 #define COMMS_IS_CLANG_18_OR_BELOW (COMMS_IS_CLANG && (__clang_major__ <= 18))
+#define COMMS_IS_CLANG_19_OR_BELOW (COMMS_IS_CLANG && (__clang_major__ <= 19))
 #define COMMS_IS_MSVC_2019 (COMMS_IS_MSVC && (_MSC_VER >= 1920) && (_MSC_VER < 1930))
 #define COMMS_IS_MSVC_2019_OR_BELOW (COMMS_IS_MSVC && (_MSC_VER < 1930))
 #define COMMS_IS_MSVC_2017_OR_BELOW (COMMS_IS_MSVC && (_MSC_VER < 1920))

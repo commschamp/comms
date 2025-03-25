@@ -101,6 +101,12 @@ private:
         }
 
         using ObjType = typename std::decay<decltype(obj)>::type;
+
+        if (diff == 0) {
+            obj = ObjType();
+            return;
+        }
+        
         obj = ObjType(&(*from), static_cast<std::size_t>(diff));
     } 
 
@@ -111,7 +117,7 @@ private:
         using ConstPointerType = typename ObjType::const_pointer;
         using PointerType = typename ObjType::pointer;
         auto fromPtr = const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*from)));
-        auto toPtr = const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*to)));
+        auto toPtr = fromPtr + std::distance(from, to); //const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*to)));
         assignInternal(obj, fromPtr, toPtr, UsePtrSizeConstructorTag<TParams...>());
     }          
 };
