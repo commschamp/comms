@@ -39,7 +39,7 @@ namespace  comms
 ///     is used to process the raw input.
 /// @param[in, out] msg Smart pointer (see @ref comms::protocol::ProtocolLayerBase::MsgPtr "MsgPtr"
 ///     defintion of the @ref page_use_prot_transport) to message object to be allocated,
-///     or reference to actual message object (extending @ref comms::MessageBase) when
+///     or reference to actual message object (extending @ref comms::Message) when
 ///     such is known.
 /// @param[in, out] extraValues Extra values that are passed as variadic parameters to
 ///     @ref comms::protocol::ProtocolLayerBase::read() "read()" member function
@@ -101,7 +101,7 @@ comms::ErrorStatus processSingle(
 ///     is used to process the raw input.
 /// @param[in, out] msg Smart pointer (see @ref comms::protocol::ProtocolLayerBase::MsgPtr "MsgPtr"
 ///     defintion of the @ref page_use_prot_transport) to message object to be allocated,
-///     or reference to actual message object (extending @ref comms::MessageBase) when
+///     or reference to actual message object (extending @ref comms::Message) when
 ///     such is known.
 /// @param[in] handler Handler to handle message object when dispatched. The dispatch
 ///     is performed using @ref comms::dispatchMsg() function.
@@ -167,7 +167,7 @@ comms::ErrorStatus processSingleWithDispatch(
 ///     is used to process the raw input.
 /// @param[in, out] msg Smart pointer (see @ref comms::protocol::ProtocolLayerBase::MsgPtr "MsgPtr"
 ///     defintion of the @ref page_use_prot_transport) to message object to be allocated,
-///     or reference to actual message object (extending @ref comms::MessageBase) when
+///     or reference to actual message object (extending @ref comms::Message) when
 ///     such is known.
 /// @param[in] handler Handler to handle message object when dispatched. The dispatch
 ///     is performed via provded @b TDispatcher class (see @ref comms::MsgDispatcher).

@@ -41,7 +41,7 @@ namespace protocol
 /// @brief Protocol layer that uses uses message ID field as a prefix to all the
 ///        subsequent data written by other (next) layers.
 /// @details The main purpose of this layer is to process the message ID information.
-///     Holds instance of comms::MsgFactory as its private member and uses it
+///     Holds instance of @ref comms::MsgFactory as its private member and uses it
 ///     to create message(s) with the required ID.
 /// @tparam TField Field type that contains message ID.
 /// @tparam TMessage Interface class for the @b input messages
@@ -80,7 +80,7 @@ class MsgIdLayer : public comms::protocol::details::MsgIdLayerBase<TField, TMess
     using ParsedOptionsInternal =  details::MsgIdLayerOptionsParser<TOptions...>;
 
 public:
-    // @brief Message factory class
+    /// @brief Message factory class
     using MsgFactory = typename ParsedOptionsInternal::template MsgFactory<TMessage, TAllMessages>;
 
     /// @brief Type of real extending class
@@ -163,7 +163,7 @@ public:
     /// @param[out] field Field object to read.
     /// @param[in, out] msg Reference to smart pointer that will hold
     ///                 allocated message object, or to the previously allocated
-    ///                 message object itself (which extends @ref comms::MessageBase).
+    ///                 message object itself (which extends @ref comms::Message).
     /// @param[in, out] iter Input iterator used for reading.
     /// @param[in] size Size of the data in the sequence
     /// @param[in] nextLayerReader Reader object, needs to be invoked to
@@ -208,7 +208,7 @@ public:
 
         using Tag =
             typename comms::util::LazyShallowConditional<
-                comms::isMessageBase<typename std::decay<decltype(msg)>::type>()
+                comms::isMessage<typename std::decay<decltype(msg)>::type>()
             >::template Type<
                 DirectOpTag,
                 PointerOpTag
@@ -240,7 +240,7 @@ public:
     /// @tparam TIter Type of iterator used for writing.
     /// @tparam TNextLayerWriter next layer writer object type.
     /// @param[out] field Field object to update and write.
-    /// @param[in] msg Reference to message object
+    /// @param[in] msg Reference to message object, actual class of which must be a descendant of the @ref comms::Message.
     /// @param[in, out] iter Output iterator used for writing.
     /// @param[in] size Max number of bytes that can be written.
     /// @param[in] nextLayerWriter Next layer writer object.
@@ -261,6 +261,7 @@ public:
     {
         auto& thisObj = BaseImpl::thisLayer();
         using MsgType = typename std::decay<decltype(msg)>::type;
+        static_assert(comms::isMessage<MsgType>(), "The message type must extend comms::Message");
         thisObj.prepareFieldForWrite(
             getMsgId(msg, IdRetrieveTag<MsgType>()), 
             msg, 
@@ -296,7 +297,7 @@ public:
     /// @see comms::MsgFactory::createMsg()
     MsgPtr createMsg(MsgIdParamType id, unsigned idx = 0, CreateFailureReason* reason = nullptr)
     {
-        return factory_.createMsg(id, idx, reason);
+        return m_factory.createMsg(id, idx, reason);
     }
 
     /// @brief Compile time inquiry whether polymorphic dispatch tables are 
@@ -380,7 +381,7 @@ private:
     template <typename TMsg>
     using IdRetrieveTag =
         typename comms::util::LazyShallowConditional<
-            details::protocolLayerHasDoGetId<TMsg>()
+            comms::isMessageBase<TMsg>()
         >::template Type<
             DirectOpTag,
             PolymorphicOpTag
@@ -597,6 +598,12 @@ private:
     template <typename TMsg, typename... TParams>
     static constexpr MsgIdParamType getMsgId(const TMsg& msg, DirectOpTag<TParams...>)
     {
+        using MsgType = typename std::decay<decltype(msg)>::type;
+        static_assert(comms::isMessageBase<MsgType>(),
+            "The message class is expected to inherit from comms::MessageBase");
+        static_assert(MsgType::hasStaticMsgId(),
+            "The message class must expose direct ID retrieval functionality, "
+            "use comms::option::app::StaticNumIdImpl option to define it.");        
         return msg.doGetId();
     }
 
@@ -609,15 +616,12 @@ private:
         TNextLayerReader&& nextLayerReader,
         TExtraValues... extraValues)
     {
-        using MsgType = typename std::decay<decltype(msg)>::type;
-        static_assert(details::protocolLayerHasDoGetId<MsgType>(),
-                "Explicit message type is expected to expose compile type message ID by "
-                "using \"StaticNumIdImpl\" option");
-
         auto& thisObj = BaseImpl::thisLayer();
         auto id = thisObj.getMsgIdFromField(field);
         BaseImpl::setMsgId(id, extraValues...);
-        if (id != MsgType::doGetId()) {
+
+        using MsgType = typename std::decay<decltype(msg)>::type;
+        if (id != getMsgId(msg, IdRetrieveTag<MsgType>())) {
             return ErrorStatus::InvalidMsgId;
         }
 
@@ -677,10 +681,6 @@ private:
 
         using MsgElementType = typename MsgType::element_type;
 
-//        static_assert(std::has_virtual_destructor<MsgElementType>::value,
-//            "Message object is (dynamically) allocated and held by the pointer to the base class. "
-//            "However, there is no virtual desctructor to perform proper destruction.");
-
         using Tag = 
             typename comms::util::LazyShallowConditional<
                 MsgElementType::hasRead()
@@ -735,16 +735,17 @@ private:
                 NoGenericMsgTag
             >;
 
-        return createAndReadGenericMsgInternal(
-            field, 
-            idx,
-            msg, 
-            iter, 
-            size, 
-            std::forward<TNextLayerReader>(nextLayerReader), 
-            es,
-            GenericMsgTag(),
-            extraValues...);
+        return 
+            createAndReadGenericMsgInternal(
+                field, 
+                idx,
+                msg, 
+                iter, 
+                size, 
+                std::forward<TNextLayerReader>(nextLayerReader), 
+                es,
+                GenericMsgTag(),
+                extraValues...);
     }
 
     template <typename TMsg, typename TIter, typename TNextLayerReader, typename... TExtraValues>
@@ -789,13 +790,13 @@ private:
     template <typename TId, typename... TParams>
     MsgPtr createGenericMsgInternalTagged(TId&& id, unsigned idx, IdParamAsIsTag<TParams...>)
     {
-        return factory_.createGenericMsg(std::forward<TId>(id), idx);
+        return m_factory.createGenericMsg(std::forward<TId>(id), idx);
     }
 
     template <typename TId, typename... TParams>
     MsgPtr createGenericMsgInternalTagged(TId&& id, unsigned idx, IdParamCastTag<TParams...>)
     {
-        return factory_.createGenericMsg(static_cast<MsgIdType>(id), idx);
+        return m_factory.createGenericMsg(static_cast<MsgIdType>(id), idx);
     }
 
     template <typename TId>
@@ -896,13 +897,13 @@ private:
     template <typename TId, typename... TParams>
     std::size_t msgCountInternalTagged(TId&& id, IdParamAsIsTag<TParams...>)
     {
-        return factory_.msgCount(std::forward<TId>(id));
+        return m_factory.msgCount(std::forward<TId>(id));
     }
 
     template <typename TId, typename... TParams>
     std::size_t msgCountInternalTagged(TId&& id, IdParamCastTag<TParams...>)
     {
-        return factory_.msgCount(static_cast<MsgIdType>(id));
+        return m_factory.msgCount(static_cast<MsgIdType>(id));
     }
 
 
@@ -942,7 +943,7 @@ private:
         return comms::dispatchMsgStaticBinSearch(id, msg, handler);
     }
 
-    MsgFactory factory_;
+    MsgFactory m_factory;
 };
 
 

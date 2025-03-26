@@ -53,6 +53,7 @@ public:
     void test31();
     void test32();
     void test33();
+    void test34();
 
 private:
 
@@ -1517,4 +1518,40 @@ void MsgIdLayerTestSuite::test33()
         auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
         TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
     } while (false);    
+}
+
+void MsgIdLayerTestSuite::test34()
+{
+    // Testing read with pre-allocated message object
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
+
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    using Frame = ProtocolStack<BeField1, BeMsgBase>;
+    Frame frame;
+    {
+        Frame::MsgPtr msgPtr;
+        msgPtr.reset(new BeMsg1);
+        auto readIter = &Buf[0];
+        auto es = frame.read(*msgPtr, readIter, BufSize);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    }
+
+    {
+        Frame::MsgPtr msgPtr;
+        msgPtr.reset(new BeMsg2);
+        auto readIter = &Buf[0];
+        auto es = frame.read(*msgPtr, readIter, BufSize);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::InvalidMsgId);
+    }
+
+    {
+        Frame::MsgPtr msgPtr;
+        msgPtr.reset(new BeMsg1);
+        auto readIter = &Buf[0];
+        auto es = comms::processSingle(readIter, BufSize, frame, *msgPtr);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    }    
 }

@@ -850,7 +850,7 @@ private:
     template <typename TMsg>
     using MsgTypeTag =
         typename comms::util::LazyShallowConditional<
-            comms::details::hasImplOptions<TMsg>()
+            comms::isMessage<TMsg>()
         >::template Type<
             MessageObjTag,
             SmartPtrTag
