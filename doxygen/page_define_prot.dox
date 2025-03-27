@@ -16,7 +16,7 @@
 /// more fine-grained include statements may be used:
 /// @code
 /// #include "comms/fields.h" // Provides all definitions from comms::field namespace
-/// #include "comms/protocols.h" // Provides all definitions from comms::protocol namespace
+/// #include "comms/frames.h" // Provides all definitions from comms::frame namespace
 /// #include "comms/units.h" // Provides all definitions from comms::units namespace
 /// #include "comms/Message.h" // Definition of comms::Message class to define interface
 /// #include "comms/MessageBase.h" // Definition of comms::MessageBase class to define message impl
@@ -128,12 +128,12 @@
 /// } // namespace my_protocol
 /// @endcode
 /// @b HOWEVER, it will require implementation of a custom protocol transport layer
-/// (See @ref page_prot_stack_tutorial_new_layers) that read the required values
+/// (See @ref page_frame_tutorial_new_layers) that read the required values
 /// and re-assign them to the message object using appropriate API function. The
 /// COMMS library has a built-in way to automate such assignments (see 
-/// @ref page_prot_stack_tutorial_transport_value section in @ref page_prot_stack_tutorial). 
+/// @ref page_frame_tutorial_transport_value section in @ref page_frame_tutorial). 
 /// In order to support usage
-/// of @ref comms::protocol::TransportValueLayer the message interface class must
+/// of @ref comms::frame::TransportValueLayer the message interface class must
 /// define "extra transport fields".
 ///
 /// First, such extra transport field(s) must be defined using a field abstraction
@@ -1416,7 +1416,7 @@
 /// delivered over the I/O link to the other side and recognised (based on its ID). 
 /// The serialised message payload must be wrapped in some kind of transport 
 /// framing prior to being sent and unwrapped on the other side when received. 
-/// The @ref page_prot_stack_tutorial page contains detailed information on
+/// The @ref page_frame_tutorial page contains detailed information on
 /// how define such a frame and make it usable to the client application. Note,
 /// that the same protocol may be used over multiple I/O link, every one of 
 /// which may require different framing. There is no limit on amount of different

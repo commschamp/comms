@@ -104,7 +104,7 @@ private:
           typename TNextLayer,
           typename... TOptions>
     class CustomPostIdMsgSizeLayer : public
-        comms::protocol::MsgSizeLayer<
+        comms::frame::MsgSizeLayer<
             SizeWithFlagsField,
             TNextLayer,
             comms::option::ExtendingClass<CustomPostIdMsgSizeLayer<TNextLayer, TOptions...> >,
@@ -112,7 +112,7 @@ private:
         >
     {
         using Base = 
-            comms::protocol::MsgSizeLayer<
+            comms::frame::MsgSizeLayer<
                 SizeWithFlagsField,
                 TNextLayer,
                 comms::option::ExtendingClass<CustomPostIdMsgSizeLayer<TNextLayer, TOptions...> >,
@@ -152,7 +152,7 @@ private:
           typename TNextLayer,
           typename... TOptions>
     class CustomPreIdMsgSizeLayer : public
-        comms::protocol::MsgSizeLayer<
+        comms::frame::MsgSizeLayer<
             SizeWithFlagsField,
             TNextLayer,
             comms::option::ExtendingClass<CustomPreIdMsgSizeLayer<TNextLayer, TOptions...> >,
@@ -160,7 +160,7 @@ private:
         >
     {
         using Base = 
-            comms::protocol::MsgSizeLayer<
+            comms::frame::MsgSizeLayer<
                 SizeWithFlagsField,
                 TNextLayer,
                 comms::option::ExtendingClass<CustomPreIdMsgSizeLayer<TNextLayer, TOptions...> >,
@@ -207,26 +207,26 @@ private:
 
     template <typename TInterface = Interface>
     using Frame1 =
-        comms::protocol::MsgIdLayer<
+        comms::frame::MsgIdLayer<
             BigEndianMsgId,
             TInterface,
             AllMessages1<TInterface>,
             CustomPostIdMsgSizeLayer<
-                comms::protocol::MsgDataLayer<>
+                comms::frame::MsgDataLayer<>
             >
         >;
 
     template <typename TInterface = Interface>
     using Frame2 =
         CustomPreIdMsgSizeLayer<
-            comms::protocol::MsgIdLayer<
+            comms::frame::MsgIdLayer<
                 BigEndianMsgId,
                 TInterface,
                 AllMessages1<TInterface>,
-                comms::protocol::TransportValueLayer<
+                comms::frame::TransportValueLayer<
                     comms::field::IntValue<BigEndianField, std::uint8_t>,
                     0,
-                    comms::protocol::MsgDataLayer<>,
+                    comms::frame::MsgDataLayer<>,
                     comms::option::PseudoValue
                 >
             >
@@ -314,7 +314,7 @@ void CustomPostIdMsgSizeLayerTestSuite::test4()
     Stack::MsgPtr msg;
     std::size_t missingSize = 0U;
     auto readIter = &Buf[0];
-    auto es = stack.read(msg, readIter, BufSize, comms::protocol::missingSize(missingSize));
+    auto es = stack.read(msg, readIter, BufSize, comms::frame::missingSize(missingSize));
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::NotEnoughData);
     TS_ASSERT_EQUALS(missingSize, 2U);
 }

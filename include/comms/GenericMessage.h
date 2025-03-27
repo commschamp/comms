@@ -44,7 +44,7 @@ using GenericMessageFields =
 ///     The GenericMessage can be useful when implementing some kind of
 ///     "bridge" or "firewall", that requires knowledge only about message
 ///     ID and doesn't care much about message contents. The
-///     @ref comms::protocol::MsgIdLayer support creation of the
+///     @ref comms::frame::MsgIdLayer support creation of the
 ///     GenericMessage in case the received message ID is not known (supported
 ///     by using @ref comms::option::app::SupportGenericMessage option).
 /// @tparam TMessage Common message interface class, becomes one of the

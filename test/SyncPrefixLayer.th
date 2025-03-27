@@ -144,16 +144,16 @@ private:
     using LeIdField2 = IdField2<LeField>;
 
     template <typename TSyncField, typename TSizeField, typename TIdField, typename TMessage>
-    using ProtocolStack =
-        comms::protocol::SyncPrefixLayer<
+    using Frame =
+        comms::frame::SyncPrefixLayer<
             TSyncField,
-            comms::protocol::MsgSizeLayer<
+            comms::frame::MsgSizeLayer<
                 TSizeField,
-                comms::protocol::MsgIdLayer<
+                comms::frame::MsgIdLayer<
                     TIdField,
                     TMessage,
                     AllTestMessages<TMessage>,
-                    comms::protocol::MsgDataLayer<>
+                    comms::frame::MsgDataLayer<>
                 >
             >
         >;
@@ -168,7 +168,7 @@ void SyncPrefixLayerTestSuite::test1()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     typedef
-        ProtocolStack<
+        Frame<
             BeSyncField2,
             BeSizeField20,
             BeIdField1,
@@ -197,7 +197,7 @@ void SyncPrefixLayerTestSuite::test2()
     char buf[BufSize] = {0};
 
     typedef
-        ProtocolStack<
+        Frame<
             LeSyncField2,
             LeSizeField30,
             LeIdField2,
@@ -217,7 +217,7 @@ void SyncPrefixLayerTestSuite::test3()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     typedef
-        ProtocolStack<
+        Frame<
             BeSyncField2,
             BeSizeField20,
             BeIdField1,
@@ -239,7 +239,7 @@ void SyncPrefixLayerTestSuite::test4()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     typedef
-        ProtocolStack<
+        Frame<
             BeSyncField2,
             BeSizeField20,
             BeIdField1,
@@ -261,7 +261,7 @@ void SyncPrefixLayerTestSuite::test5()
     static const std::size_t BufSize = std::extent<decltype(buf)>::value;
 
     typedef
-        ProtocolStack<
+        Frame<
             LeSyncField2,
             LeSizeField30,
             LeIdField2,
@@ -281,7 +281,7 @@ void SyncPrefixLayerTestSuite::test6()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     typedef
-        ProtocolStack<
+        Frame<
             BeBackInsertSyncField2,
             BeBackInsertSizeField20,
             BeBackInsertIdField1,
@@ -306,7 +306,7 @@ void SyncPrefixLayerTestSuite::test7()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     typedef
-        ProtocolStack<
+        Frame<
             BeSyncField2,
             BeSizeField20,
             BeIdField1,
@@ -344,7 +344,7 @@ void SyncPrefixLayerTestSuite::test8()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     typedef
-        ProtocolStack<
+        Frame<
             BeSyncField2,
             BeSizeField20,
             BeIdField1,
@@ -361,9 +361,9 @@ void SyncPrefixLayerTestSuite::test8()
     auto es =
         stack.read(
             msg, readIter, BufSize,
-            comms::protocol::msgId(msgId),
-            comms::protocol::msgIndex(msgIndex),
-            comms::protocol::msgPayload(payloadIter, payloadSize));
+            comms::frame::msgId(msgId),
+            comms::frame::msgIndex(msgIndex),
+            comms::frame::msgPayload(payloadIter, payloadSize));
 
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT_EQUALS(msgId, MessageType90);

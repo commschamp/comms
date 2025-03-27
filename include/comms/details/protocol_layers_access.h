@@ -117,17 +117,17 @@
     const COMMS_DO_LAYER_TYPE_INTERNAL(c_, Base)& COMMS_CONCATENATE(layer_, n_)() const
 
 #else // #ifdef COMMS_MUST_DEFINE_BASE
-#define COMMS_ACCESS_LAYER_FUNC(c_, n_) FUNC_AUTO_REF_RETURN(COMMS_CONCATENATE(layer_, n_), decltype(COMMS_DO_LAYER_CALL_INTERNAL(c_, COMMS_EXPAND(comms::protocol::toProtocolLayerBase(*this)))))
-#define COMMS_ACCESS_LAYER_CONST_FUNC(c_, n_) FUNC_AUTO_REF_RETURN_CONST(COMMS_CONCATENATE(layer_, n_), decltype(COMMS_DO_LAYER_CALL_INTERNAL(c_, COMMS_EXPAND(comms::protocol::toProtocolLayerBase(*this)))))
+#define COMMS_ACCESS_LAYER_FUNC(c_, n_) FUNC_AUTO_REF_RETURN(COMMS_CONCATENATE(layer_, n_), decltype(COMMS_DO_LAYER_CALL_INTERNAL(c_, COMMS_EXPAND(comms::frame::toFrameLayerBase(*this)))))
+#define COMMS_ACCESS_LAYER_CONST_FUNC(c_, n_) FUNC_AUTO_REF_RETURN_CONST(COMMS_CONCATENATE(layer_, n_), decltype(COMMS_DO_LAYER_CALL_INTERNAL(c_, COMMS_EXPAND(comms::frame::toFrameLayerBase(*this)))))
     
 #endif // #ifdef COMMS_MUST_DEFINE_BASE
 
 #define COMMS_ACCESS_LAYER_ACC_FUNC(c_, n_) \
     COMMS_ACCESS_LAYER_FUNC(c_, n_) {\
-        return COMMS_DO_LAYER_CALL_INTERNAL(c_, comms::protocol::toProtocolLayerBase(*this)); \
+        return COMMS_DO_LAYER_CALL_INTERNAL(c_, comms::frame::toFrameLayerBase(*this)); \
     } \
     COMMS_ACCESS_LAYER_CONST_FUNC(c_, n_) {\
-        return COMMS_DO_LAYER_CALL_INTERNAL(c_, comms::protocol::toProtocolLayerBase(*this)); \
+        return COMMS_DO_LAYER_CALL_INTERNAL(c_, comms::frame::toFrameLayerBase(*this)); \
     }
 
 #define COMMS_ACCESS_LAYER_ACC_FUNC_1(n_) COMMS_ACCESS_LAYER_ACC_FUNC(1, n_)

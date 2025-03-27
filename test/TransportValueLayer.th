@@ -113,65 +113,65 @@ private:
         >;        
 
     template <typename TMessage>
-    using BeforeIdProtocolStack =
-        comms::protocol::MsgSizeLayer<
+    using BeforeIdFrame =
+        comms::frame::MsgSizeLayer<
             SizeField,
-            comms::protocol::TransportValueLayer<
+            comms::frame::TransportValueLayer<
                 VersionField,
                 ExtraTransportMessageBase<>::TransportFieldIdx_version,
-                comms::protocol::MsgIdLayer<
+                comms::frame::MsgIdLayer<
                     IdField,
                     TMessage,
                     AllTestMessages<TMessage>,
-                    comms::protocol::MsgDataLayer<>
+                    comms::frame::MsgDataLayer<>
                 >
             >
         >;
 
     template <typename TMessage>
-    using NoVersionProtocolStack =
-        comms::protocol::MsgSizeLayer<
+    using NoVersionFrame =
+        comms::frame::MsgSizeLayer<
             SizeField,
-            comms::protocol::MsgIdLayer<
+            comms::frame::MsgIdLayer<
                 IdField,
                 TMessage,
                 AllTestMessages<TMessage>,
-                comms::protocol::MsgDataLayer<>
+                comms::frame::MsgDataLayer<>
             >
         >;
 
     template <typename TMessage, typename... TOpt>
-    using AfterIdProtocolStack =
-        comms::protocol::MsgSizeLayer<
+    using AfterIdFrame =
+        comms::frame::MsgSizeLayer<
             SizeField,
-            comms::protocol::MsgIdLayer<
+            comms::frame::MsgIdLayer<
                 IdField,
                 TMessage,
                 AllTestMessages<TMessage>,
-                comms::protocol::TransportValueLayer<
+                comms::frame::TransportValueLayer<
                     VersionField,
                     ExtraTransportMessageBase<>::TransportFieldIdx_version,
-                    comms::protocol::MsgDataLayer<>,
+                    comms::frame::MsgDataLayer<>,
                     TOpt...
                 >
             >
         >;
 
     template <typename TMessage, typename... TOpt>
-    using AfterIdWithChecksumProtocolStack =
-        comms::protocol::ChecksumLayer<
+    using AfterIdWithChecksumFrame =
+        comms::frame::ChecksumLayer<
             ChecksumField,
-            comms::protocol::checksum::BasicSum<std::uint16_t>,
-            comms::protocol::MsgSizeLayer<
+            comms::frame::checksum::BasicSum<std::uint16_t>,
+            comms::frame::MsgSizeLayer<
                 SizeFieldIncChecksum,
-                comms::protocol::MsgIdLayer<
+                comms::frame::MsgIdLayer<
                     IdField,
                     TMessage,
                     AllTestMessages<TMessage>,
-                    comms::protocol::TransportValueLayer<
+                    comms::frame::TransportValueLayer<
                         VersionField,
                         ExtraTransportMessageBase<>::TransportFieldIdx_version,
-                        comms::protocol::MsgDataLayer<>,
+                        comms::frame::MsgDataLayer<>,
                         TOpt...
                     >
                 >
@@ -191,7 +191,7 @@ void TransportValueLayerTestSuite::test1()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using MsgBase = ExtraTransportMessageBase<BeOptions>;
-    using Stack = BeforeIdProtocolStack<MsgBase>;
+    using Stack = BeforeIdFrame<MsgBase>;
 
     Stack stack;
 
@@ -217,7 +217,7 @@ void TransportValueLayerTestSuite::test2()
     char buf[BufSize] = {0};
 
     using MsgBase = ExtraTransportMessageBase<BeOptions>;
-    using Stack = BeforeIdProtocolStack<MsgBase>;
+    using Stack = BeforeIdFrame<MsgBase>;
 
     Message1<MsgBase> msg;
     std::get<0>(msg.fields()).value() = 0x0102;
@@ -235,7 +235,7 @@ void TransportValueLayerTestSuite::test3()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using MsgBase = ExtraTransportMessageBase<BeOptions>;
-    using Stack = AfterIdProtocolStack<MsgBase>;
+    using Stack = AfterIdFrame<MsgBase>;
 
     Stack stack;
 
@@ -258,7 +258,7 @@ void TransportValueLayerTestSuite::test4()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    using Stack = BeforeIdProtocolStack<BeNonPolymorphicMessageBase>;
+    using Stack = BeforeIdFrame<BeNonPolymorphicMessageBase>;
 
     Stack stack;
 
@@ -298,7 +298,7 @@ void TransportValueLayerTestSuite::test5()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using MsgBase = ExtraTransportMessageBase<BeOptions>;
-    using Stack = AfterIdProtocolStack<MsgBase, comms::option::PseudoValue>;
+    using Stack = AfterIdFrame<MsgBase, comms::option::PseudoValue>;
 
     Stack stack;
     TS_ASSERT_EQUALS(stack.length(), 4U);
@@ -328,7 +328,7 @@ void TransportValueLayerTestSuite::test6()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using MsgBase = ExtraTransportMessageBase<BeOptions>;
-    using Stack = AfterIdWithChecksumProtocolStack<MsgBase>;
+    using Stack = AfterIdWithChecksumFrame<MsgBase>;
 
     Stack stack;
 

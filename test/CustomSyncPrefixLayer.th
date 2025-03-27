@@ -138,14 +138,14 @@ private:
 
     template <typename TField, typename TNextLayer>
     class CustomSyncPrefixLayer : public
-        comms::protocol::SyncPrefixLayer<
+        comms::frame::SyncPrefixLayer<
             TField,
             TNextLayer,
             comms::option::ExtendingClass<CustomSyncPrefixLayer<TField, TNextLayer> >
         >
     {
         using Base = 
-            comms::protocol::SyncPrefixLayer<
+            comms::frame::SyncPrefixLayer<
                 TField,
                 TNextLayer,
                 comms::option::ExtendingClass<CustomSyncPrefixLayer<TField, TNextLayer> >
@@ -187,16 +187,16 @@ private:
 
 
     template <typename TSyncField, typename TSizeField, typename TIdField, typename TMessage>
-    using ProtocolStack =
+    using Frame =
         CustomSyncPrefixLayer<
             TSyncField,
-            comms::protocol::MsgSizeLayer<
+            comms::frame::MsgSizeLayer<
                 TSizeField,
-                comms::protocol::MsgIdLayer<
+                comms::frame::MsgIdLayer<
                     TIdField,
                     TMessage,
                     AllTestMessages<TMessage>,
-                    comms::protocol::MsgDataLayer<>
+                    comms::frame::MsgDataLayer<>
                 >
             >
         >;
@@ -205,7 +205,7 @@ private:
 void CustomSyncPrefixLayerTestSuite::test1()
 {
     typedef
-        ProtocolStack<
+        Frame<
             BeSyncField2,
             BeSizeField20,
             BeIdField1,

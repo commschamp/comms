@@ -102,7 +102,7 @@ private:
           typename TNextLayer,
           typename... TOptions>
     class CustomMsgIdLayer : public
-        comms::protocol::MsgIdLayer<
+        comms::frame::MsgIdLayer<
             IdWithFlagsField,
             TInterface,
             TAllMessages,
@@ -112,7 +112,7 @@ private:
         >
     {
         using Base = 
-            comms::protocol::MsgIdLayer<
+            comms::frame::MsgIdLayer<
                 IdWithFlagsField,
                 TInterface,
                 TAllMessages,
@@ -157,14 +157,14 @@ private:
         CustomMsgIdLayer<
             TInterface, 
             AllMessages1<TInterface>,
-            comms::protocol::MsgDataLayer<>
+            comms::frame::MsgDataLayer<>
         >
     {
         using Base =
             CustomMsgIdLayer<
                 TInterface,
                 AllMessages1<TInterface>,
-                comms::protocol::MsgDataLayer<>
+                comms::frame::MsgDataLayer<>
             >;
     public:
         COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
@@ -175,7 +175,7 @@ private:
         CustomMsgIdLayer<
             TInterface,
             AllMessages1<TInterface>,
-            comms::protocol::MsgDataLayer<>,
+            comms::frame::MsgDataLayer<>,
             comms::option::SupportGenericMessage<comms::GenericMessage<TInterface> >
         >
     {
@@ -183,7 +183,7 @@ private:
             CustomMsgIdLayer<
                 TInterface,
                 AllMessages1<TInterface>,
-                comms::protocol::MsgDataLayer<>,
+                comms::frame::MsgDataLayer<>,
                 comms::option::SupportGenericMessage<comms::GenericMessage<TInterface> >
             >;
     public:
@@ -195,7 +195,7 @@ private:
         CustomMsgIdLayer<
             TInterface,
             AllMessages1<TInterface>,
-            comms::protocol::MsgDataLayer<>,
+            comms::frame::MsgDataLayer<>,
             comms::option::SupportGenericMessage<comms::GenericMessage<TInterface> >,
             comms::option::InPlaceAllocation
         >
@@ -204,7 +204,7 @@ private:
             CustomMsgIdLayer<
                 TInterface,
                 AllMessages1<TInterface>,
-                comms::protocol::MsgDataLayer<>,
+                comms::frame::MsgDataLayer<>,
                 comms::option::SupportGenericMessage<comms::GenericMessage<TInterface> >,
                 comms::option::InPlaceAllocation
             >;
@@ -322,7 +322,7 @@ void CustomMsgIdLayerTestSuite::test6()
     Stack::MsgPtr msgPtr;
     auto readIter = &Buf[0];
     std::size_t missingSize = 0U;
-    auto es = stack.read(msgPtr, readIter, BufSize, comms::protocol::missingSize(missingSize));
+    auto es = stack.read(msgPtr, readIter, BufSize, comms::frame::missingSize(missingSize));
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::NotEnoughData);
     TS_ASSERT_EQUALS(missingSize, 1U);
 }

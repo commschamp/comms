@@ -1,24 +1,24 @@
 /// @page page_custom_checksum_layer Defining Custom Checksum Protocol Stack Layer
 /// @tableofcontents
-/// The @b COMMS library provides default @ref comms::protocol::ChecksumLayer 
-/// and @ref comms::protocol::ChecksumPrefixLayer protocol 
+/// The @b COMMS library provides default @ref comms::frame::ChecksumLayer 
+/// and @ref comms::frame::ChecksumPrefixLayer protocol 
 /// stack layer to handle transport framing checksum. 
 /// However, they may be insufficient (or incorrect) for some particular use cases. For example
 /// the protocol may support multiple checksum algorithms usage of which is determined
 /// at runtime.
-/// The @ref page_prot_stack_tutorial_new_layers section of the 
-/// @ref page_prot_stack_tutorial page explains how to define new (custom)
+/// The @ref page_frame_tutorial_new_layers section of the 
+/// @ref page_frame_tutorial page explains how to define new (custom)
 /// protocol layer. 
 ///
 /// However, since @b v3.2 COMMS library provides an ability to extend the existing
-/// definition of @ref comms::protocol::ChecksumLayer as well as 
-/// @ref comms::protocol::ChecksumPrefixLayer and customize some bits
+/// definition of @ref comms::frame::ChecksumLayer as well as 
+/// @ref comms::frame::ChecksumPrefixLayer and customize some bits
 /// and pieces. Let's implement the mentioned above example of supporting 
 /// multiple checksum algorithms.
 ///
-/// This tutorial page focuses on the customization of @ref comms::protocol::ChecksumLayer,
+/// This tutorial page focuses on the customization of @ref comms::frame::ChecksumLayer,
 /// but all the listed customization points are also applicable to 
-/// @ref comms::protocol::ChecksumPrefixLayer.
+/// @ref comms::frame::ChecksumPrefixLayer.
 ///
 /// For this example the protocol framing is defined to be
 /// @code
@@ -88,11 +88,11 @@
 /// convenience member function to access the stored checksum type field.
 ///
 /// When implementing the transport framing (protocol stack) the handling of 
-/// `CHECKSUM_TYPE` can be done using regular @ref comms::protocol::TransportValueLayer
-/// (see @ref page_prot_stack_tutorial_transport_value).
+/// `CHECKSUM_TYPE` can be done using regular @ref comms::frame::TransportValueLayer
+/// (see @ref page_frame_tutorial_transport_value).
 ///
 /// Now it's time to actually extend the provided definition of 
-/// the @ref comms::protocol::ChecksumLayer and support usage of multiple checksum
+/// the @ref comms::frame::ChecksumLayer and support usage of multiple checksum
 /// algorithms.
 /// @code
 /// namespace my_prot
@@ -103,17 +103,17 @@
 /// 
 /// template <typename TNextLayer>
 /// class MyChecksumLayer : public
-///     comms::protocol::ChecksumLayer<
+///     comms::frame::ChecksumLayer<
 ///         ChecksumField,   
-///         comms::protocol::checksum::Crc_32, // Not really important for this example, 
+///         comms::frame::checksum::Crc_32, // Not really important for this example, 
 ///                                            // but template parameter type needs to be populated
 ///         TNextLayer,          // Next layer in the protocol stack
 ///         comms::option::def::ExtendingClass<MyChecksumLayer<TNextLayer> >
-///                              // Make the comms::protocol::ChecksumLayer aware of it being extended
+///                              // Make the comms::frame::ChecksumLayer aware of it being extended
 ///     >
 /// {
 ///     // Repeat definition of the base class
-///     using Base = comms::protocol::ChecksumLayer<...>;
+///     using Base = comms::frame::ChecksumLayer<...>;
 ///
 /// public:
 ///     // Repeat types defined in the base class (not visible by default)
@@ -131,17 +131,17 @@
 ///         checksumValid = true;
 ///         auto checksumType = msgPtr->transportField_checksumType().value();
 ///         if (checksumType == ChecksumTypeVal::Sum8) {
-///             using Calc = comms::protocol::checksum::BasicSum<std::uint8_t>;
+///             using Calc = comms::frame::checksum::BasicSum<std::uint8_t>;
 ///             return Calc()(iter, len);
 ///         }
 ///     
 ///         if (checksumType == ChecksumType::Crc16) {
-///             using Calc = comms::protocol::checksum::Crc_16;
+///             using Calc = comms::frame::checksum::Crc_16;
 ///             return Calc()(iter, len);
 ///         }        
 ///     
 ///         if (checksumType == ChecksumType::Crc32) {
-///             using Calc = comms::protocol::checksum::Crc_32;
+///             using Calc = comms::frame::checksum::Crc_32;
 ///             return Calc()(iter, len);
 ///         }        
 ///     
@@ -248,33 +248,33 @@
 ///
 /// } // namespace my_prot
 /// @endcode
-/// The @ref comms::protocol::ChecksumLayer doesn't have any virtual functions and
+/// The @ref comms::frame::ChecksumLayer doesn't have any virtual functions and
 /// as the result not able to provide any polymorphic behavior. In order to be
 /// able to extend its default functionality there is a need to use 
 /// <a href="https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously Recurring Template Pattern</a>.
 /// It is done by passing @ref comms::option::def::ExtendingClass extension option with
-/// the type of the layer class being defined to the @ref comms::protocol::ChecksumLayer.
+/// the type of the layer class being defined to the @ref comms::frame::ChecksumLayer.
 ///
 /// The extending class can customize the default behavior by overriding 
 /// the listed below functions. They do not
 /// necessarily need to be @b static, accessing inner private state of the layer object
 /// is also acceptable.
-/// @li @ref comms::protocol::ChecksumLayer::doReadField() "doReadField()" - Member
+/// @li @ref comms::frame::ChecksumLayer::doReadField() "doReadField()" - Member
 /// function that is invoked to read field's value.
-/// @li @ref comms::protocol::ChecksumLayer::doWriteField() "doWriteField()" - Member
+/// @li @ref comms::frame::ChecksumLayer::doWriteField() "doWriteField()" - Member
 /// function that is invoked to write field's value.
-/// @li @ref comms::protocol::ChecksumLayer::doFieldLength() "doFieldLength()" - Member
+/// @li @ref comms::frame::ChecksumLayer::doFieldLength() "doFieldLength()" - Member
 /// function that is invoked to calculate serialization length of the field.
-/// @li @ref comms::protocol::ChecksumLayer::calculateChecksum() "calculateChecksum()" - 
+/// @li @ref comms::frame::ChecksumLayer::calculateChecksum() "calculateChecksum()" - 
 /// Member function that is responsible to calculate a checksum on provided range.
-/// @li @ref comms::protocol::ChecksumLayer::getChecksumFromField() "getChecksumFromField()" - 
+/// @li @ref comms::frame::ChecksumLayer::getChecksumFromField() "getChecksumFromField()" - 
 /// Retrieve value of the checksum from the field.
-/// @li @ref comms::protocol::ChecksumLayer::prepareFieldForWrite() "prepareFieldForWrite()" -
+/// @li @ref comms::frame::ChecksumLayer::prepareFieldForWrite() "prepareFieldForWrite()" -
 /// Assign the calculated checksum value to the field's value.
 /// 
 /// The newly defined custom protocol stack layer can be used instead of
-/// @ref comms::protocol::ChecksumLayer when defining 
-/// @ref page_prot_stack_tutorial "protocol stack" (framing) of the protocol.
+/// @ref comms::frame::ChecksumLayer when defining 
+/// @ref page_frame_tutorial "protocol stack" (framing) of the protocol.
 /// For example:
 /// @code
 /// namespace my_prot
@@ -283,16 +283,16 @@
 /// template <typename TMessage, typename TAllMessages>
 /// struct Frame1 : public 
 ///     MyChecksumLayer<                                     // CHECKSUM
-///         comms::protocol::MsgSizeLayer<                   // SIZE
+///         comms::frame::MsgSizeLayer<                   // SIZE
 ///             common::field::IntValue<FieldBase, std::uint16_t>,
-///             comms::protocol::MsgIdLayer<                 // ID
+///             comms::frame::MsgIdLayer<                 // ID
 ///                 comms::feild::EnumValue<FieldBase, MsgId>,
 ///                 TMessage,
 ///                 TAllMessages,
 ///                 comms::field::TransportValueLayer<       // CHECKSUM_TYPE
 ///                     ChecksumType,
 ///                     Message::TransportFieldIdx_checksumType,
-///                     comms::protocol::MsgDataLayer<>      // PAYLOAD
+///                     comms::frame::MsgDataLayer<>      // PAYLOAD
 ///                 >
 ///             >
 ///         >

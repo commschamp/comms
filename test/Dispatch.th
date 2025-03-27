@@ -397,13 +397,13 @@ void DispatchTestSuite::test5()
     using Idfield = comms::field::EnumValue<FieldBase, MessageType>;
 
     using Frame = 
-        comms::protocol::MsgSizeLayer<
+        comms::frame::MsgSizeLayer<
             SizeField,
-            comms::protocol::MsgIdLayer<
+            comms::frame::MsgIdLayer<
                 Idfield,
                 TestInterface,
                 AllMessages,
-                comms::protocol::MsgDataLayer<>
+                comms::frame::MsgDataLayer<>
             >
         >;
 

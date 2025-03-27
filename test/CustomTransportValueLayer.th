@@ -138,7 +138,7 @@ private:
           typename TNextLayer,
           typename... TOptions>
     class CustomTransportValueLayer : public
-        comms::protocol::TransportValueLayer<
+        comms::frame::TransportValueLayer<
             VersionWithFlagsField,
             std::tuple_size<ExtraTransport>::value,
             TNextLayer,
@@ -147,7 +147,7 @@ private:
         >
     {
         using Base = 
-            comms::protocol::TransportValueLayer<
+            comms::frame::TransportValueLayer<
                 VersionWithFlagsField,
                 std::tuple_size<ExtraTransport>::value,
                 TNextLayer,
@@ -178,23 +178,23 @@ private:
           typename TNextLayer,
           typename... TOptions>
     class CustomReassigningTransportValueLayer : public
-        comms::protocol::TransportValueLayer<
+        comms::frame::TransportValueLayer<
             VersionWithFlagsField,
             std::tuple_size<ExtraTransport>::value,
             TNextLayer,
             comms::option::ExtendingClass<CustomReassigningTransportValueLayer<TNextLayer, TOptions...> >,
             TOptions...,
-            comms::option::def::ProtocolLayerSuppressReadUntilDataSplitForcing
+            comms::option::def::FrameLayerSuppressReadUntilDataSplitForcing
         >
     {
         using Base = 
-            comms::protocol::TransportValueLayer<
+            comms::frame::TransportValueLayer<
                 VersionWithFlagsField,
                 std::tuple_size<ExtraTransport>::value,
                 TNextLayer,
                 comms::option::ExtendingClass<CustomReassigningTransportValueLayer<TNextLayer, TOptions...> >,
                 TOptions...,
-                comms::option::def::ProtocolLayerSuppressReadUntilDataSplitForcing
+                comms::option::def::FrameLayerSuppressReadUntilDataSplitForcing
             >;
 
     public:
@@ -221,49 +221,49 @@ private:
     };        
 
     template <typename TMessage>
-    using BeforeIdProtocolStack =
-        comms::protocol::MsgSizeLayer<
+    using BeforeIdFrame =
+        comms::frame::MsgSizeLayer<
             SizeField,
             CustomTransportValueLayer<
-                comms::protocol::MsgIdLayer<
+                comms::frame::MsgIdLayer<
                     IdField,
                     TMessage,
                     AllTestMessages<TMessage>,
-                    comms::protocol::MsgDataLayer<>
+                    comms::frame::MsgDataLayer<>
                 >            
             >
         >;
 
 
     template <typename TMessage, typename... TOpt>
-    using AfterIdProtocolStack =
-        comms::protocol::MsgSizeLayer<
+    using AfterIdFrame =
+        comms::frame::MsgSizeLayer<
             SizeField,
-            comms::protocol::MsgIdLayer<
+            comms::frame::MsgIdLayer<
                 IdField,
                 TMessage,
                 AllTestMessages<TMessage>,
                 CustomTransportValueLayer<
-                    comms::protocol::MsgDataLayer<>,
+                    comms::frame::MsgDataLayer<>,
                     TOpt...
                 >
             >
         >;
 
     template <typename TMessage>
-    using BeforeIdWithChecksumProtocolStack =
-        comms::protocol::MsgSizeLayer<
+    using BeforeIdWithChecksumFrame =
+        comms::frame::MsgSizeLayer<
             SizeField,
             CustomReassigningTransportValueLayer<
-                comms::protocol::MsgIdLayer<
+                comms::frame::MsgIdLayer<
                     IdField,
                     TMessage,
                     AllTestMessages<TMessage>,
                     CustomTransportValueLayer<
-                        comms::protocol::ChecksumLayer<
+                        comms::frame::ChecksumLayer<
                             ChcecksumField,
-                            comms::protocol::checksum::BasicSum<>,
-                            comms::protocol::MsgDataLayer<>
+                            comms::frame::checksum::BasicSum<>,
+                            comms::frame::MsgDataLayer<>
                         >,
                         comms::option::def::PseudoValue
                     >
@@ -284,7 +284,7 @@ void CustomTransportValueLayerTestSuite::test1()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using MsgBase = ExtraTransportMessageBase<BeOptions>;
-    using Stack = AfterIdProtocolStack<MsgBase>;
+    using Stack = AfterIdFrame<MsgBase>;
 
     Stack stack;
 
@@ -314,7 +314,7 @@ void CustomTransportValueLayerTestSuite::test2()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using MsgBase = ExtraTransportMessageBase<BeOptions>;
-    using Stack = BeforeIdProtocolStack<MsgBase>;
+    using Stack = BeforeIdFrame<MsgBase>;
 
     Stack stack;
 
@@ -344,7 +344,7 @@ void CustomTransportValueLayerTestSuite::test3()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using MsgBase = ExtraTransportMessageBase<BeOptions>;
-    using Stack = BeforeIdWithChecksumProtocolStack<MsgBase>;
+    using Stack = BeforeIdWithChecksumFrame<MsgBase>;
 
     Stack stack;
 

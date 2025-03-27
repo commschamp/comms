@@ -123,15 +123,15 @@ private:
 
 #ifndef CC_COMPILER_GCC47
     template <typename TMessage>
-    class ProtocolStack : public comms::protocol::MsgDataLayer<>
+    class Frame : public comms::frame::MsgDataLayer<>
     {
-        using Base = comms::protocol::MsgDataLayer<>;
+        using Base = comms::frame::MsgDataLayer<>;
     public:
         COMMS_PROTOCOL_LAYERS_NAMES(payload);
     };
 #else
     template <typename TMessage>
-    using ProtocolStack = comms::protocol::MsgDataLayer<>;
+    using Frame = comms::frame::MsgDataLayer<>;
 #endif
 };
 
@@ -209,7 +209,7 @@ void MsgDataLayerTestSuite::test5()
 
      static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-     using ProtStack = ProtocolStack<BeMessageBase>;
+     using ProtStack = Frame<BeMessageBase>;
      ProtStack stack;
  #ifndef CC_COMPILER_GCC47
      static_cast<void>(stack.layer_payload()); // check generation of access func
@@ -225,9 +225,9 @@ void MsgDataLayerTestSuite::test5()
             msg1,
             readIter,
             BufSize,
-            comms::protocol::missingSize(missingSize),
-            comms::protocol::msgId(id),
-            comms::protocol::missingSize(missingSize2));
+            comms::frame::missingSize(missingSize),
+            comms::frame::msgId(id),
+            comms::frame::missingSize(missingSize2));
      TS_ASSERT_EQUALS(es, comms::ErrorStatus::NotEnoughData);
      TS_ASSERT_EQUALS(missingSize, 1U);
      TS_ASSERT_EQUALS(missingSize, missingSize2);
@@ -245,8 +245,8 @@ TMessage MsgDataLayerTestSuite::internalReadWriteTest(
         typename comms::util::Conditional<
             std::is_base_of<BeMessageBase, Message>::value
         >::template Type<
-            ProtocolStack<BeMessageBase>,
-            ProtocolStack<LeMessageBase>
+            Frame<BeMessageBase>,
+            Frame<LeMessageBase>
         >;
 
     ProtStack stack;
@@ -282,7 +282,7 @@ TMessage MsgDataLayerTestSuite::internalReadWriteCachedTest(
     comms::ErrorStatus expectedErrStatus)
 {
     using Interface = typename std::decay<decltype(comms::toMessage(std::declval<TMessage>()))>::type;
-    using ProtStack = ProtocolStack<Interface>;
+    using ProtStack = Frame<Interface>;
 
     ProtStack stack;
     static_cast<void>(stack);
@@ -330,8 +330,8 @@ TMessage MsgDataLayerTestSuite::internalReadWriteToVectorTest(
         typename comms::util::Conditional<
             std::is_base_of<BackInsertBeMessageBase, Message>::value
         >::template Type<
-            ProtocolStack<BackInsertBeMessageBase>,
-            ProtocolStack<BackInsertLeMessageBase>
+            Frame<BackInsertBeMessageBase>,
+            Frame<BackInsertLeMessageBase>
         >;
 
     ProtStack stack;
@@ -369,8 +369,8 @@ void MsgDataLayerTestSuite::internalWriteReadTest(
         typename comms::util::Conditional<
             std::is_base_of<BeMessageBase, Message>::value
         >::template Type<
-            ProtocolStack<BeMessageBase>,
-            ProtocolStack<LeMessageBase>
+            Frame<BeMessageBase>,
+            Frame<LeMessageBase>
         >;
 
     ProtStack stack;
@@ -400,7 +400,7 @@ void MsgDataLayerTestSuite::internalDirectReadWriteTest(
     comms::ErrorStatus expectedErrStatus)
 {
     using InterfaceType = typename std::decay<decltype(comms::toMessage(msg))>::type;
-    using ProtStack = ProtocolStack<InterfaceType>;
+    using ProtStack = Frame<InterfaceType>;
     ProtStack stack;
     static_cast<void>(stack);
     auto readIter = buf;

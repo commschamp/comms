@@ -2222,9 +2222,9 @@
 /// over the I/O link to the other side. The serialised message payload must 
 /// be wrapped in some kind of transport information prior to being sent and 
 /// unwrapped on the other side when received. The @b COMMS protocol defines
-/// multiple so called @b layers (defined in @b comms::protocol namespace). 
+/// multiple so called @b layers (defined in @b comms::frame namespace). 
 /// The transport framing will be defined using those @b layer classes and may
-/// be called @b ProtocolStack or @b Frame. Its definition is expected to
+/// be called @b Frame. Its definition is expected to
 /// look something like this:
 /// @code
 /// namespace my_protocol
@@ -2233,9 +2233,9 @@
 /// template <
 ///     typename TMessage, // common interface class defined by the application
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
-///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for comms::protocol::MsgIdLayer
+///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for comms::frame::MsgIdLayer
 /// >
-/// struct ProtocolStack : public 
+/// struct Frame : public 
 ///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
 ///     COMMS_PROTOCOL_LAYERS_ACCESS(...);
@@ -2254,15 +2254,15 @@
 ///
 /// The third template parameter (@b TAllocationOptions) is extra option(s)
 /// (bundled in @b std::tuple if more than one) to be passed to 
-/// @ref comms::protocol::MsgIdLayer class which is responsible for message
+/// @ref comms::frame::MsgIdLayer class which is responsible for message
 /// allocation. By default the message object is dynamically allocated, it is 
 /// possible to modify such behaviour by using @ref comms::option::app::InPlaceAllocation
 /// option. It will be explained in more details further below.
 ///
-/// @b NOTE, that @b ProtocolStack definition is actually an alias to one
-/// of the classes from @ref comms::protocol namespace. To get a detailed
+/// @b NOTE, that @b Frame definition is actually an alias to one
+/// of the classes from @ref comms::frame namespace. To get a detailed
 /// information on available public API please reference to one of them, for
-/// example @ref comms::protocol::SyncPrefixLayer.
+/// example @ref comms::frame::SyncPrefixLayer.
 ///
 /// It may also happen, that the extra options (@b TAllocationOptions)
 /// are defined inside the recommended @b DefaultOptions structure and be
@@ -2297,7 +2297,7 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TOpt = DefaultOptions // Options of the protocol definitions
 /// >
-/// struct ProtocolStack : public 
+/// struct Frame : public 
 ///     MySyncPrefix<TMessage, TInputMessages, TOpt> 
 /// {
 ///     COMMS_PROTOCOL_LAYERS_ACCESS(...);
@@ -2315,12 +2315,12 @@
 /// @code
 /// #include "comms/process.h" // Contains processing function(s)
 ///
-/// // Alias to my_protocol::ProtocolStack
-/// using ProtStack = my_protocol::ProtocolStack<MyMessage>
+/// // Alias to my_protocol::Frame
+/// using MyFrame = my_protocol::Frame<MyMessage>
 ///
-/// ProtStack protStack; // Protocol stack object
+/// MyFrame frame; // Protocol stack object
 /// MyHandler handler; // Handler object
-/// std::size_t consumed = comms::processAllWithDispatch(buf, bufLen, protStack, handler);
+/// std::size_t consumed = comms::processAllWithDispatch(buf, bufLen, frame, handler);
 /// ... // Removed consumed bytes from input buffer
 /// @endcode
 /// The code above will dispatch allocated message objects to the provided
@@ -2335,7 +2335,7 @@
 /// @code
 /// using MyDispatcher = comms::MsgDispatcher<comms::option::ForceDispatchStaticBinSearch>
 /// std::size_t consumed = 
-///     comms::processAllWithDispatchViaDispatcher<MyDispatcher>(buf, bufLen, protStack, handler);
+///     comms::processAllWithDispatchViaDispatcher<MyDispatcher>(buf, bufLen, frame, handler);
 /// @endcode
 /// If the described above processing functions (@ref comms::processAllWithDispatch() 
 /// and @ref comms::processAllWithDispatchViaDispatcher()) are not good enough
@@ -2348,14 +2348,14 @@
 ///
 /// There are protocols when number of input messages is very limited (one or two)
 /// such as various types of acknowledgment. To support such case
-/// @ref comms::protocol::ProtocolLayerBase::read() "read()" member function of the
-/// @b ProtocolStack as well as processing function(s) described above support reception of
+/// @ref comms::frame::FrameLayerBase::read() "read()" member function of the
+/// @b Frame as well as processing function(s) described above support reception of
 /// reference to the real message object (instead of 
-/// @ref comms::protocol::ProtocolLayerBase::MsgPtr "MsgPtr" pointer).
+/// @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr" pointer).
 /// @code
 /// using MyAckMsg = my_protocol::AckMsg<MyMessage>;
 /// MyAckMsg msg;
-/// auto es = comms::processSingleWithDispatch(buf, bufLen, protStack, msg);
+/// auto es = comms::processSingleWithDispatch(buf, bufLen, frame, msg);
 /// if (es == comms::ErrorStatus::InvalidMsgId) {
 ///     // Unexpected message (not AckMsg) has been received, report or handle error
 ///     ...
@@ -2370,19 +2370,19 @@
 /// applications (especially bare-metal ones) may require something different.
 /// The @b COMMS library has @ref comms::option::app::InPlaceAllocation option, 
 /// which may be passed as third template parameter (@b TAllocationOptions)
-/// to @b ProtocolStack type definition. It statically allocates (in private data
+/// to @b Frame type definition. It statically allocates (in private data
 /// members) storage area, that is capable to store any message object from
-/// the @b std::tuple passed as second parameter to @b ProtocolStack type
+/// the @b std::tuple passed as second parameter to @b Frame type
 /// definition. The message allocation is performed using "placement new" operator,
 /// which means only one message object can be allocated at a time. The
-/// smart pointer holding the message (@ref comms::protocol::ProtocolLayerBase::MsgPtr "MsgPtr") is still
+/// smart pointer holding the message (@ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr") is still
 /// @b std::unique_ptr, but with custom deleter.
 ///
 /// In case the @ref page_use_prot_interface "Message Interface" class does
 /// not define any virtual function (which results in lack of virtual
 /// destructor), the @b COMMS library also creates a custom deleter for
 /// the defined smart pointer to the allocated message 
-/// (see @ref comms::protocol::ProtocolLayerBase::MsgPtr "MsgPtr") 
+/// (see @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr") 
 /// to allow proper downcast of the held pointer to the appropriate
 /// class and invoke the correct destructor.
 ///
@@ -2399,7 +2399,7 @@
 /// different I/O link. To help with such task @b COMMS library provides
 /// @ref comms::GenericMessage class. There is also @ref comms::option::app::SupportGenericMessage
 /// option that can be passed as third template parameter (@b TAllocationOptions)
-/// to the @b ProtocolStack type definition. It will force of creation
+/// to the @b Frame type definition. It will force of creation
 /// @ref comms::GenericMessage object when appropriate message object is not found.
 /// @code
 /// // Define generic message type
@@ -2413,8 +2413,8 @@
 ///     >;
 ///
 /// // Protocol stack definition
-/// using ProtStack = 
-///     my_protocol::ProtocolStack<
+/// using MyFrame = 
+///     my_protocol::Frame<
 ///         MyMessage, 
 ///         MyInputMessages,
 ///         comms::option::app::SupportGenericMessage<MyGenericMessage>
@@ -2435,10 +2435,10 @@
 ///
 /// Also @b note, that it is possible to combine usage of @ref comms::option::app::InPlaceAllocation
 /// and @ref comms::option::app::SupportGenericMessage as the third template parameter to
-/// @b ProtocolStack type definition using @b std::tuple bundling.
+/// @b Frame type definition using @b std::tuple bundling.
 /// @code
-/// using ProtStack = 
-///     my_protocol::ProtocolStack<
+/// using MyFrame = 
+///     my_protocol::Frame<
 ///         MyMessage, 
 ///         MyInputMessages,
 ///         std::tuple<
@@ -2452,11 +2452,11 @@
 /// The easiest way to implement write functionality is to use the ability of
 /// the message object to perform polymorphic write.
 /// @code
-/// ProtStack protStack; // Protocol stack defined in one of previous sections
+/// MyFrame frame; // Protocol stack defined in one of previous sections
 /// void sendMessage(const MyMessage& msg, std::uint8_t* buf, std::size_t len)
 /// {
 ///     auto writeIter = comms::writeIteratorFor<MyMessage>(&buf[0]);
-///     auto es = protStack.write(msg, writeIter, len);
+///     auto es = frame.write(msg, writeIter, len);
 ///     if (es == comms::ErrorStatus::Success) {
 ///         ... // Send contents of dataToSend via I/O link
 ///     }
@@ -2483,15 +2483,15 @@
 /// is passed to @b MyMessage with @ref comms::option::app::WriteIterator option.
 /// the message object to perform polymorphic write
 /// @code
-/// ProtStack protStack; // Protocol stack defined in one of previous sections
+/// MyFrame frame; // Protocol stack defined in one of previous sections
 /// void sendMessage(const MyMessage& msg, std::vector<std::uint8_t>& outBuf)
 /// {
 ///     assert(outBuf.empty()) // Make sure buffer is empty
 ///     auto writeIter = std::back_inserter(outBuf);
-///     auto es = protStack.write(msg, writeIter, outBuf.max_size());
+///     auto es = frame.write(msg, writeIter, outBuf.max_size());
 ///     if (es == comms::ErrorStatus::UpdateRequired) {
 ///         auto updateIter = &outBuf[0];
-///         es = protStack.update(updateIter, outBuf.size());
+///         es = frame.update(updateIter, outBuf.size());
 ///     }
 ///         
 ///     if (es == comms::ErrorStatus::Success) {
@@ -2509,16 +2509,16 @@
 /// message object being written. For example when remaining size information
 /// shares the same bytes with some extra flags, which can be retrieved from the message object being written.
 /// To support such cases there is also overloaded 
-/// @ref comms::protocol::ProtocolLayerBase::update() "update()" member
+/// @ref comms::frame::FrameLayerBase::update() "update()" member
 /// function which also receives reference to message object/
 /// @code
 /// if (es == comms::ErrorStatus::UpdateRequired) {
 ///     auto updateIter = &outBuf[0];
-///     es = protStack.update(msg, updateIter, outBuf.size());
+///     es = frame.update(msg, updateIter, outBuf.size());
 /// }
 /// @endcode
 ///
-/// The @b ProtocolStack does not require usage of polymorphic
+/// The @b Frame does not require usage of polymorphic
 /// write for message serialisation all the time. If number of messages being 
 /// sent is not very high, sometimes it makes sense to avoid adding an ability
 /// to support polymorphic write in the common interface. In this case the
@@ -2529,7 +2529,7 @@
 /// void sendMessage(const TMsg& msg)
 /// {
 ///     ...
-///     auto es = protStack.write(msg, ...);
+///     auto es = frame.write(msg, ...);
 ///     ...
 /// }
 /// @endcode
@@ -2542,38 +2542,38 @@
 /// @subsection page_use_prot_transport_caching Access to Processed Stack Fields
 /// All the examples above do not store the read/written transport fields
 /// anywhere. In most cases it is not needed. However, if need arises they can
-/// be cached during the read/write operations and accessed later. The @b ProtocolStack
+/// be cached during the read/write operations and accessed later. The @b Frame
 /// also defines @b AllFields type which is @b std::tuple of all the fields used by all the 
 /// layer classes. @n
-/// Also, the @b ProtocolStack defines 
-/// @ref comms::protocol::ProtocolLayerBase::readFieldsCached() "readFieldsCached()" 
-/// and @ref comms::protocol::ProtocolLayerBase::writeFieldsCached() "writeFieldsCached()"
+/// Also, the @b Frame defines 
+/// @ref comms::frame::FrameLayerBase::readFieldsCached() "readFieldsCached()" 
+/// and @ref comms::frame::FrameLayerBase::writeFieldsCached() "writeFieldsCached()"
 /// member functions which are substitutes to normal 
-/// @ref comms::protocol::ProtocolLayerBase::read() "read()" and 
-/// @ref comms::protocol::ProtocolLayerBase::write() "write()". The first
+/// @ref comms::frame::FrameLayerBase::read() "read()" and 
+/// @ref comms::frame::FrameLayerBase::write() "write()". The first
 /// parameter to these functions is reference to the 
-/// @ref comms::protocol::ProtocolLayerBase::AllFields "AllFields" bundle
+/// @ref comms::frame::FrameLayerBase::AllFields "AllFields" bundle
 /// object.
 /// @code
-/// ProtStack::AllFields fields;
-/// auto es = protStack.readFieldsCached(fields, msgPtr, readIter, bufSize);
+/// MyFrame::AllFields fields;
+/// auto es = frame.readFieldsCached(fields, msgPtr, readIter, bufSize);
 /// @endcode
 /// The layer class that is responsible to read/write payload data 
-/// (see @ref comms::protocol::MsgDataLayer) uses @ref comms::field::ArrayList
+/// (see @ref comms::frame::MsgDataLayer) uses @ref comms::field::ArrayList
 /// to define a field that will store the payload when "caching" operations are
 /// performed. 
 /// In case the the input / output buffer outlives the @b AllFields
 /// object, consider passing @ref comms::option::app::OrigDataView option as the
-/// fourth template parameter to @b ProtocolStack definition, which will pass it to
+/// fourth template parameter to @b Frame definition, which will pass it to
 /// to the field containing the message payload raw data. Otherwise, the 
 /// payload part from the read / written buffer will also be copied to storage
 /// area of the cached payload field.
 ///
 /// As was mentioned earlier, the protocol stack is defined using so called
-/// @b layer classes (defined in @ref comms::protocol namespace) by wrapping
+/// @b layer classes (defined in @ref comms::frame namespace) by wrapping
 /// one another. Access to the appropriate layer may be obtained using a 
 /// sequence of calls to @b nextLayer() member functions (see 
-/// @ref comms::protocol::ProtocolLayerBase::nextLayer()). Alternatively, the protocol stack
+/// @ref comms::frame::FrameLayerBase::nextLayer()). Alternatively, the protocol stack
 /// definition is also expected to use #COMMS_PROTOCOL_LAYERS_ACCESS()
 /// macro to generate a convenience access functions. For example
 /// @code
@@ -2585,7 +2585,7 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
-/// struct ProtocolStack : public 
+/// struct Frame : public 
 ///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
 ///     COMMS_PROTOCOL_LAYERS_ACCESS(payload, id, size, checksum, sync);
@@ -2602,7 +2602,7 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
-/// struct ProtocolStack : public 
+/// struct Frame : public 
 ///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
 ///     // Access to PAYLOAD layer
@@ -2638,33 +2638,33 @@
 /// @endcode
 /// Then the access to the appropriate layer as as simple as calling appropriate
 /// @b layer_*() member function. Once the access is obtained, it is possible to
-/// call @b accessCachedField() (see @ref comms::protocol::ProtocolLayerBase::accessCachedField())
+/// call @b accessCachedField() (see @ref comms::frame::FrameLayerBase::accessCachedField())
 /// member function to get an access to appropriate field. For example:
 /// @code
-/// ProtStack protStack; // Protocol stack object
-/// ProtStack::AllFields fields; // Transport fields
-/// auto es = protStack.readFieldsCached(fields, msgPtr, readIter, bufSize);
+/// MyFrame frame; // Protocol stack object
+/// MyFrame::AllFields fields; // Transport fields
+/// auto es = frame.readFieldsCached(fields, msgPtr, readIter, bufSize);
 /// if (es != comms::ErrorStatus::Success) {
 ///     ... // handle error
 ///     return;
 /// }
-/// std::cout << "SYNC = " << protStack.layer_sync().accessCachedField(fields).value() << '\n';
-/// std::cout << "SIZE = " << protStack.layer_size().accessCachedField(fields).value() << '\n';
-/// std::cout << "ID = " << protStack.layer_id().accessCachedField(fields).value() << '\n';
-/// std::cout << "CHECKSUM = " << protStack.layer_checksum().accessCachedField(fields).value() << std::endl;
+/// std::cout << "SYNC = " << frame.layer_sync().accessCachedField(fields).value() << '\n';
+/// std::cout << "SIZE = " << frame.layer_size().accessCachedField(fields).value() << '\n';
+/// std::cout << "ID = " << frame.layer_id().accessCachedField(fields).value() << '\n';
+/// std::cout << "CHECKSUM = " << frame.layer_checksum().accessCachedField(fields).value() << std::endl;
 /// @endcode
 /// Version @b v2.0 the @b COMMS library has introduced additional way to retrieve 
 /// values from stripped message framing. There are several functions listed
 /// below that can be used to pass extra variadic arguments to the "read" functions
-/// of the protocol stack (see @ref comms::protocol::ProtocolLayerBase::read() "read()"
-/// and @ref comms::protocol::ProtocolLayerBase::readFieldsCached "readFieldsCached()").
-/// @li @ref comms::protocol::missingSize() - Use to retrieve minimal missing
+/// of the protocol stack (see @ref comms::frame::FrameLayerBase::read() "read()"
+/// and @ref comms::frame::FrameLayerBase::readFieldsCached "readFieldsCached()").
+/// @li @ref comms::frame::missingSize() - Use to retrieve minimal missing
 /// size required to be read in order the following "read()" operation to have
 /// a chance of being completed successfully.
-/// @li @ref comms::protocol::msgId() - Use to retrieve numeric message ID.
-/// @li @ref comms::protocol::msgIndex() - Use to retrieve index of the message
+/// @li @ref comms::frame::msgId() - Use to retrieve numeric message ID.
+/// @li @ref comms::frame::msgIndex() - Use to retrieve index of the message
 /// among difference message types that have the same numeric ID.
-/// @li @ref comms::protocol::msgPayload() - Use to retrieve the location 
+/// @li @ref comms::frame::msgPayload() - Use to retrieve the location 
 /// of message payload in the input buffer.
 /// 
 /// For example there can be a case when @ref page_use_prot_interface
@@ -2673,22 +2673,22 @@
 /// its relevant index in order to dispatch message object to its
 /// appropriate handling function (see @ref page_dispatch).
 /// @code
-/// // Alias to my_protocol::ProtocolStack
-/// using ProtStack = my_protocol::ProtocolStack<MyMessage>
+/// // Alias to my_protocol::Frame
+/// using MyFrame = my_protocol::Frame<MyMessage>
 ///
-/// ProtStack protStack; // Protocol stack object
+/// MyFrame frame; // Protocol stack object
 /// MyHandler handler; // Handler object
-/// ProtStack::MsgPtr msg; Pointer to message to be updated
+/// MyFrame::MsgPtr msg; Pointer to message to be updated
 /// my_protocol::MsgId msgId = my_protocol::MsgId(); // Message ID to be updated 
 /// std::size_t msgIndex = 0U; // Message index to be updated
 ///
 /// auto es = 
-///     protStack.read(
+///     frame.read(
 ///         msg, 
 ///         readIter, 
 ///         bufLen, 
-///         comms::protocol::msgId(msgId), // msgId will be updated here
-///         comms::protocol::msgIndex(msgIndex)); // msgIndex will be updated here
+///         comms::frame::msgId(msgId), // msgId will be updated here
+///         comms::frame::msgIndex(msgIndex)); // msgIndex will be updated here
 /// if (es == comms::ErrorStatus::Success) {
 ///     assert(msg); // Message object is expected to be valid
 ///
@@ -3101,7 +3101,7 @@
 /// the way how other messages being deserialised and/or handled. Usually it is
 /// some kind of @b CONNECT message. Such scenario is implemented in the
 /// very similar way to @ref page_use_prot_extra_transport. The protocol stack
-/// is still defined using @ref comms::protocol::TransportValueLayer but with @ref
+/// is still defined using @ref comms::frame::TransportValueLayer but with @ref
 /// comms::option::def::PseudoValue option. Such layer contains the "pseudo" field in
 /// its internal data members and pretends to read it during @b read operation.
 ///
@@ -3126,7 +3126,7 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
-/// struct ProtocolStack : public 
+/// struct Frame : public 
 ///     MySizePrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
 ///     COMMS_PROTOCOL_LAYERS_ACCESS(payload, version, id, size);
@@ -3136,12 +3136,12 @@
 /// @endcode
 /// Then after reception and handling of the mentioned @b CONNECT message, the
 /// stored pseudo version field may be accessed using @b pseudoField() member
-/// function of @ref comms::protocol::TransportValueLayer layer (see @ref
-/// comms::protocol::TransportValueLayer::pseudoField()) and updated with
+/// function of @ref comms::frame::TransportValueLayer layer (see @ref
+/// comms::frame::TransportValueLayer::pseudoField()) and updated with
 /// reported value.
 /// @code
-/// ProtStack protStack; // Protocol stack object
-/// protStack.layer_version().pseudoField().value() = connectMsg.field_version().value();
+/// MyFrame frame; // Protocol stack object
+/// frame.layer_version().pseudoField().value() = connectMsg.field_version().value();
 /// @endcode
 /// From now on every received message will have appropriate extra transport field
 /// updated accordingly right after receiving of the message and before its @b
@@ -3291,7 +3291,7 @@
 ///         ...
 ///     >;
 ///
-/// using MyProtocolStack = my_protocol::ProtocolStack<MyMessage, MyInputMessages>;
+/// using MyFrame = my_protocol::Frame<MyMessage, MyInputMessages>;
 /// using MyHandler = comms::GenericHandler<MyMessage, MyInputMessages>;
 /// ...
 /// @endcode

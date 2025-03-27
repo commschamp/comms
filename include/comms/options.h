@@ -1075,8 +1075,8 @@ using OptionalExistsByDefault = ExistsByDefault;
 template <std::size_t TIdx>
 using DefaultVariantIndex = DefaultValueInitialiser<details::DefaultVariantIndexInitialiser<TIdx> >;
 
-/// @brief Force @ref comms::protocol::ChecksumLayer and
-///     @ref comms::protocol::ChecksumPrefixLayer, to verify checksum prior to
+/// @brief Force @ref comms::frame::ChecksumLayer and
+///     @ref comms::frame::ChecksumPrefixLayer, to verify checksum prior to
 ///     forwarding read to the wrapped layer(s).
 /// @headerfile comms/options.h
 struct ChecksumLayerVerifyBeforeRead {};
@@ -1096,30 +1096,42 @@ struct EmptySerialization {};
 /// @headerfile comms/options.h
 using EmptySerialisation = EmptySerialization;
 
-/// @brief Option to force @ref comms::protocol::ProtocolLayerBase class to
+/// @brief Option to force @ref comms::frame::FrameLayerBase class to
 ///     split read operation "until" and "from" data (payload) layer.
 /// @details Can be used by some layers which require its read operation to be
 ///     fully complete before read is forwared to data layer, i.e. until message
 ///     contents being read.
 /// @headerfile comms/options.h
-struct ProtocolLayerForceReadUntilDataSplit {};
+struct FrameLayerForceReadUntilDataSplit {};
 
-/// @brief Option to forcefully disable passing the @ref ProtocolLayerForceReadUntilDataSplit
+/// @brief Same as @ref comms::option::def::FrameLayerForceReadUntilDataSplit
+/// @deprecated Use @ref comms::option::def::FrameLayerForceReadUntilDataSplit instead.
+using ProtocolLayerForceReadUntilDataSplit = FrameLayerForceReadUntilDataSplit;
+
+/// @brief Option to forcefully disable passing the @ref FrameLayerForceReadUntilDataSplit
 ///     option to the layer definition.
 /// @details Can be used by some customized layers default implementation of
-///     which pass the @ref comms::option::def::ProtocolLayerForceReadUntilDataSplit option
-///     to the @ref comms::protocol::ProtocolLayerBase
+///     which pass the @ref comms::option::def::FrameLayerForceReadUntilDataSplit option
+///     to the @ref comms::frame::FrameLayerBase
 /// @headerfile comms/options.h
-struct ProtocolLayerSuppressReadUntilDataSplitForcing {};
+struct FrameLayerSuppressReadUntilDataSplitForcing {};
 
-/// @brief Disallow usage of @ref ProtocolLayerForceReadUntilDataSplit option in
+/// @brief Same as @ref comms::option::def::FrameLayerSuppressReadUntilDataSplitForcing
+/// @deprecated Use @ref comms::option::def::FrameLayerSuppressReadUntilDataSplitForcing instead.
+using ProtocolLayerSuppressReadUntilDataSplitForcing = FrameLayerSuppressReadUntilDataSplitForcing;
+
+/// @brief Disallow usage of @ref FrameLayerForceReadUntilDataSplit option in
 ///     earlier (outer wrapping) layers.
-/// @details Some layers, such as @ref comms::protocol::ChecksumLayer cannot
+/// @details Some layers, such as @ref comms::frame::ChecksumLayer cannot
 ///     split their "read" operation to "until" and "from" data layer. They can
 ///     use this option to prevent outer layers from using
-///     @ref ProtocolLayerForceReadUntilDataSplit one.
+///     @ref FrameLayerForceReadUntilDataSplit one.
 /// @headerfile comms/options.h
-struct ProtocolLayerDisallowReadUntilDataSplit {};
+struct FrameLayerDisallowReadUntilDataSplit {};
+
+/// @brief Same as @ref comms::option::def::FrameLayerDisallowReadUntilDataSplit
+/// @deprecated Use @ref comms::option::def::FrameLayerDisallowReadUntilDataSplit instead.
+using ProtocolLayerDisallowReadUntilDataSplit = FrameLayerDisallowReadUntilDataSplit;
 
 /// @brief Mark field class to have custom
 ///     implementation of @b read functionality.
@@ -1147,7 +1159,7 @@ struct HasName {};
 /// @headerfile comms/options.h
 using HasDoRefresh = HasCustomRefresh;
 
-/// @brief Option for @ref comms::protocol::TransportValueLayer to
+/// @brief Option for @ref comms::frame::TransportValueLayer to
 ///     mark that the handled field is a "pseudo" one, i.e. is not serialised.
 struct PseudoValue {};
 
@@ -1204,7 +1216,7 @@ struct InvalidByDefault {};
 struct VersionStorage {};
 
 /// @brief Option to specify real extending class.
-/// @details Used for some layer classes in @ref comms::protocol namespace.
+/// @details Used for some layer classes in @ref comms::frame namespace.
 /// @headerfile comms/options.h
 template <typename T>
 struct ExtendingClass {};
@@ -1332,7 +1344,7 @@ struct NoRefreshImpl {};
 struct InPlaceAllocation {};
 
 /// @brief Option used to allow @ref comms::GenericMessage generation inside
-///  @ref comms::MsgFactory and/or @ref comms::protocol::MsgIdLayer classes.
+///  @ref comms::MsgFactory and/or @ref comms::frame::MsgIdLayer classes.
 /// @tparam TGenericMessage Type of message, expected to be a variant of
 ///     @ref comms::GenericMessage.
 template <typename TGenericMessage>
@@ -1425,7 +1437,7 @@ using ForceDispatchStaticBinSearch = ForceDispatch<comms::traits::dispatch::Stat
 using ForceDispatchLinearSwitch = ForceDispatch<comms::traits::dispatch::LinearSwitch>;
 
 /// @brief Force usage of the provide message factory.
-/// @details Applicable to @ref comms::protocol::MsgIdLayer.
+/// @details Applicable to @ref comms::frame::MsgIdLayer.
 /// @tparam TFactory Factory class, expected to expose the same interface as @ref comms::MsgFactory
 template <typename TFactory>
 struct MsgFactory {};
@@ -1869,15 +1881,15 @@ using EmptySerialization = comms::option::def::EmptySerialization;
 /// @deprecated Use @ref comms::option::def::EmptySerialisation instead.
 using EmptySerialisation = comms::option::def::EmptySerialisation;
 
-/// @brief Same as @ref comms::option::def::ProtocolLayerForceReadUntilDataSplit
-/// @deprecated Use @ref comms::option::def::ProtocolLayerForceReadUntilDataSplit instead.
-using ProtocolLayerForceReadUntilDataSplit =
-    comms::option::def::ProtocolLayerForceReadUntilDataSplit;
+/// @brief Same as @ref comms::option::def::FrameLayerForceReadUntilDataSplit
+/// @deprecated Use @ref comms::option::def::FrameLayerForceReadUntilDataSplit instead.
+using FrameLayerForceReadUntilDataSplit =
+    comms::option::def::FrameLayerForceReadUntilDataSplit;
 
-/// @brief Same as @ref comms::option::def::ProtocolLayerDisallowReadUntilDataSplit
-/// @deprecated Use @ref comms::option::def::ProtocolLayerDisallowReadUntilDataSplit instead.
-using ProtocolLayerDisallowReadUntilDataSplit =
-    comms::option::def::ProtocolLayerDisallowReadUntilDataSplit;
+/// @brief Same as @ref comms::option::def::FrameLayerDisallowReadUntilDataSplit
+/// @deprecated Use @ref comms::option::def::FrameLayerDisallowReadUntilDataSplit instead.
+using FrameLayerDisallowReadUntilDataSplit =
+    comms::option::def::FrameLayerDisallowReadUntilDataSplit;
 
 /// @brief Same as @ref comms::option::def::HasCustomRead
 /// @deprecated Use @ref comms::option::def::HasCustomRead instead.

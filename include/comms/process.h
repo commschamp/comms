@@ -15,10 +15,10 @@
 #include "comms/details/process.h"
 #include "comms/dispatch.h"
 #include "comms/ErrorStatus.h"
+#include "comms/frame/FrameLayerBase.h"
 #include "comms/iterator.h"
 #include "comms/Message.h"
 #include "comms/MsgDispatcher.h"
-#include "comms/protocol/ProtocolLayerBase.h"
 #include "comms/util/ScopeGuard.h"
 
 #include <iterator>
@@ -37,14 +37,14 @@ namespace  comms
 /// @param[in] len Number of remaining bytes in input buffer.
 /// @param[in] frame Protocol frame / stack (see @ref page_use_prot_transport) that
 ///     is used to process the raw input.
-/// @param[in, out] msg Smart pointer (see @ref comms::protocol::ProtocolLayerBase::MsgPtr "MsgPtr"
+/// @param[in, out] msg Smart pointer (see @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr"
 ///     defintion of the @ref page_use_prot_transport) to message object to be allocated,
 ///     or reference to actual message object (extending @ref comms::Message) when
 ///     such is known.
 /// @param[in, out] extraValues Extra values that are passed as variadic parameters to
-///     @ref comms::protocol::ProtocolLayerBase::read() "read()" member function
+///     @ref comms::frame::FrameLayerBase::read() "read()" member function
 ///     of the protocol frame / stack.
-/// @return ErrorStatus of the protocol frame / stack @ref comms::protocol::ProtocolLayerBase::read() "read()"
+/// @return ErrorStatus of the protocol frame / stack @ref comms::frame::FrameLayerBase::read() "read()"
 ///     operation.
 /// @note Defined in comms/process.h
 /// @see @ref page_dispatch
@@ -99,16 +99,16 @@ comms::ErrorStatus processSingle(
 /// @param[in] len Number of remaining bytes in input buffer.
 /// @param[in] frame Protocol frame / stack (see @ref page_use_prot_transport) that
 ///     is used to process the raw input.
-/// @param[in, out] msg Smart pointer (see @ref comms::protocol::ProtocolLayerBase::MsgPtr "MsgPtr"
+/// @param[in, out] msg Smart pointer (see @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr"
 ///     defintion of the @ref page_use_prot_transport) to message object to be allocated,
 ///     or reference to actual message object (extending @ref comms::Message) when
 ///     such is known.
 /// @param[in] handler Handler to handle message object when dispatched. The dispatch
 ///     is performed using @ref comms::dispatchMsg() function.
 /// @param[in, out] extraValues Extra values that are passed as variadic parameters to
-///     @ref comms::protocol::ProtocolLayerBase::read() "read()" member function
+///     @ref comms::frame::FrameLayerBase::read() "read()" member function
 ///     of the protocol frame / stack.
-/// @return ErrorStatus of the protocol frame / stack @ref comms::protocol::ProtocolLayerBase::read() "read()"
+/// @return ErrorStatus of the protocol frame / stack @ref comms::frame::FrameLayerBase::read() "read()"
 ///     operation.
 /// @note Defined in comms/process.h
 /// @note If default dispatch behaviour of the @ref comms::dispatchMsg()
@@ -134,8 +134,8 @@ comms::ErrorStatus processSingleWithDispatch(
             len,
             std::forward<TFrame>(frame),
             msg,
-            comms::protocol::msgId(id),
-            comms::protocol::msgIndex(idx),
+            comms::frame::msgId(id),
+            comms::frame::msgIndex(idx),
             extraValues...);
 
     if (es != comms::ErrorStatus::Success) {
@@ -165,16 +165,16 @@ comms::ErrorStatus processSingleWithDispatch(
 /// @param[in] len Number of remaining bytes in input buffer.
 /// @param[in] frame Protocol frame / stack (see @ref page_use_prot_transport) that
 ///     is used to process the raw input.
-/// @param[in, out] msg Smart pointer (see @ref comms::protocol::ProtocolLayerBase::MsgPtr "MsgPtr"
+/// @param[in, out] msg Smart pointer (see @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr"
 ///     defintion of the @ref page_use_prot_transport) to message object to be allocated,
 ///     or reference to actual message object (extending @ref comms::Message) when
 ///     such is known.
 /// @param[in] handler Handler to handle message object when dispatched. The dispatch
 ///     is performed via provded @b TDispatcher class (see @ref comms::MsgDispatcher).
 /// @param[in, out] extraValues Extra values that are passed as variadic parameters to
-///     @ref comms::protocol::ProtocolLayerBase::read() "read()" member function
+///     @ref comms::frame::FrameLayerBase::read() "read()" member function
 ///     of the protocol frame / stack.
-/// @return ErrorStatus of the protocol frame / stack @ref comms::protocol::ProtocolLayerBase::read() "read()"
+/// @return ErrorStatus of the protocol frame / stack @ref comms::frame::FrameLayerBase::read() "read()"
 ///     operation.
 /// @note Defined in comms/process.h
 /// @see @ref comms::processSingleWithDispatch().
@@ -201,8 +201,8 @@ comms::ErrorStatus processSingleWithDispatchViaDispatcher(
             len,
             std::forward<TFrame>(frame),
             msg,
-            comms::protocol::msgId(id),
-            comms::protocol::msgIndex(idx),
+            comms::frame::msgId(id),
+            comms::frame::msgIndex(idx),
             extraValues...);
 
     if (es != comms::ErrorStatus::Success) {
