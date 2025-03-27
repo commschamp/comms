@@ -264,7 +264,7 @@ template <
     TResult TInit = 0,
     TResult TFin = 0,
     bool TReflect = false,
-    bool TRefrectRem = false
+    bool TReflectRem = false
 >
 class Crc
 {
@@ -319,7 +319,7 @@ private:
     template <typename...>
     using ReflectRemTag = 
         typename comms::util::LazyShallowConditional<
-            TRefrectRem
+            TReflectRem
         >::template Type<
             DoReflectTag,
             NoReflectTag
