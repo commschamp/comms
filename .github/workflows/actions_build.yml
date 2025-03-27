@@ -195,7 +195,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        type: [Debug, Release, MinSizeRel]
+        type: [Debug, Release]
         arch: [Win32, x64]
         cpp: [11, 14, 17]
 
@@ -229,7 +229,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        type: [Debug, Release, MinSizeRel]
+        type: [Debug, Release]
         arch: [Win32, x64]
         cpp: [11, 14, 17, 20]
 
