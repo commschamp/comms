@@ -209,10 +209,10 @@ void MsgDataLayerTestSuite::test5()
 
      static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-     using ProtStack = Frame<BeMessageBase>;
-     ProtStack stack;
+     using ProtFrame = Frame<BeMessageBase>;
+     ProtFrame frame;
  #ifndef CC_COMPILER_GCC47
-     static_cast<void>(stack.layer_payload()); // check generation of access func
+     static_cast<void>(frame.layer_payload()); // check generation of access func
  #endif
 
      NonPolymorphicBeMsg1 msg1;
@@ -221,7 +221,7 @@ void MsgDataLayerTestSuite::test5()
      std::size_t missingSize2 = 0U;
      unsigned id = 0U;
      auto es =
-        stack.read(
+        frame.read(
             msg1,
             readIter,
             BufSize,
@@ -241,7 +241,7 @@ TMessage MsgDataLayerTestSuite::internalReadWriteTest(
 {
     typedef TMessage Message;
 
-    using ProtStack =
+    using ProtFrame =
         typename comms::util::Conditional<
             std::is_base_of<BeMessageBase, Message>::value
         >::template Type<
@@ -249,14 +249,14 @@ TMessage MsgDataLayerTestSuite::internalReadWriteTest(
             Frame<LeMessageBase>
         >;
 
-    ProtStack stack;
+    ProtFrame frame;
 #ifndef CC_COMPILER_GCC47
-    static_cast<void>(stack.layer_payload()); // check generation of access func
+    static_cast<void>(frame.layer_payload()); // check generation of access func
 #endif
 
     auto readIter = buf;
     std::unique_ptr<Message> msg(new Message);
-    auto es = stack.read(msg, readIter, bufSize);
+    auto es = frame.read(msg, readIter, bufSize);
     TS_ASSERT_EQUALS(es, expectedErrStatus);
 
     if (es == comms::ErrorStatus::Success) {
@@ -267,7 +267,7 @@ TMessage MsgDataLayerTestSuite::internalReadWriteTest(
         }
 
         auto writeIter = &outDataBuf[0];
-        auto writeES = stack.write(*msg, writeIter, diff);
+        auto writeES = frame.write(*msg, writeIter, diff);
         TS_ASSERT_EQUALS(writeES, comms::ErrorStatus::Success);
         TS_ASSERT(std::equal(buf, buf + diff, &outDataBuf[0]));
     }
@@ -282,14 +282,14 @@ TMessage MsgDataLayerTestSuite::internalReadWriteCachedTest(
     comms::ErrorStatus expectedErrStatus)
 {
     using Interface = typename std::decay<decltype(comms::toMessage(std::declval<TMessage>()))>::type;
-    using ProtStack = Frame<Interface>;
+    using ProtFrame = Frame<Interface>;
 
-    ProtStack stack;
-    static_cast<void>(stack);
-    typename ProtStack::AllFields allFields;
+    ProtFrame frame;
+    static_cast<void>(frame);
+    typename ProtFrame::AllFields allFields;
     auto readIter = buf;
     std::unique_ptr<TMessage> msg(new TMessage);
-    auto es = stack.readFromDataFeildsCached(allFields, msg, readIter, bufSize);
+    auto es = frame.readFromDataFeildsCached(allFields, msg, readIter, bufSize);
     TS_ASSERT_EQUALS(es, expectedErrStatus);
     auto& dataField = std::get<0>(allFields);
     auto& dataFieldVec = dataField.value();
@@ -306,8 +306,8 @@ TMessage MsgDataLayerTestSuite::internalReadWriteCachedTest(
         }
         auto writeIter = &outDataBuf[0];        
 
-        typename ProtStack::AllFields allOutFields;
-        auto writeES = stack.writeFieldsCached(allOutFields, *msg, writeIter, diff);
+        typename ProtFrame::AllFields allOutFields;
+        auto writeES = frame.writeFieldsCached(allOutFields, *msg, writeIter, diff);
         TS_ASSERT_EQUALS(writeES, comms::ErrorStatus::Success);
         TS_ASSERT(std::equal(buf, buf + diff, &outDataBuf[0]));
 
@@ -326,7 +326,7 @@ TMessage MsgDataLayerTestSuite::internalReadWriteToVectorTest(
 {
     typedef TMessage Message;
 
-    using ProtStack =
+    using ProtFrame =
         typename comms::util::Conditional<
             std::is_base_of<BackInsertBeMessageBase, Message>::value
         >::template Type<
@@ -334,18 +334,18 @@ TMessage MsgDataLayerTestSuite::internalReadWriteToVectorTest(
             Frame<BackInsertLeMessageBase>
         >;
 
-    ProtStack stack;
-    static_cast<void>(stack);
+    ProtFrame frame;
+    static_cast<void>(frame);
     auto readIter = buf;
     std::unique_ptr<Message> msg(new Message);
-    auto es = stack.read(msg, readIter, bufSize);
+    auto es = frame.read(msg, readIter, bufSize);
     TS_ASSERT_EQUALS(es, expectedErrStatus);
 
     if (es == comms::ErrorStatus::Success) {
         auto diff = static_cast<std::size_t>(std::distance(buf, readIter));
         std::vector<char> outDataBuf;
         auto writeIter = std::back_inserter(outDataBuf);
-        auto writeES = stack.write(*msg, writeIter, diff);
+        auto writeES = frame.write(*msg, writeIter, diff);
         TS_ASSERT_EQUALS(writeES, comms::ErrorStatus::Success);
         TS_ASSERT_EQUALS(diff, outDataBuf.size());
         TS_ASSERT(std::equal(buf, buf + diff, &outDataBuf[0]));
@@ -365,7 +365,7 @@ void MsgDataLayerTestSuite::internalWriteReadTest(
 {
     typedef TMessage Message;
 
-    using ProtStack = 
+    using ProtFrame = 
         typename comms::util::Conditional<
             std::is_base_of<BeMessageBase, Message>::value
         >::template Type<
@@ -373,10 +373,10 @@ void MsgDataLayerTestSuite::internalWriteReadTest(
             Frame<LeMessageBase>
         >;
 
-    ProtStack stack;
-    static_cast<void>(stack);
+    ProtFrame frame;
+    static_cast<void>(frame);
     auto writeIter = buf;
-    auto es = stack.write(msg, writeIter, bufSize);
+    auto es = frame.write(msg, writeIter, bufSize);
     TS_ASSERT_EQUALS(es, expectedErrStatus);
 
     if (es == comms::ErrorStatus::Success) {
@@ -386,7 +386,7 @@ void MsgDataLayerTestSuite::internalWriteReadTest(
 
         std::unique_ptr<Message> readMsgPtr(new Message);
         auto readIter = static_cast<const char*>(buf);
-        auto readES = stack.read(readMsgPtr, readIter, diff);
+        auto readES = frame.read(readMsgPtr, readIter, diff);
         TS_ASSERT_EQUALS(readES, comms::ErrorStatus::Success);
         TS_ASSERT_EQUALS(msg, *readMsgPtr);
     }
@@ -400,11 +400,11 @@ void MsgDataLayerTestSuite::internalDirectReadWriteTest(
     comms::ErrorStatus expectedErrStatus)
 {
     using InterfaceType = typename std::decay<decltype(comms::toMessage(msg))>::type;
-    using ProtStack = Frame<InterfaceType>;
-    ProtStack stack;
-    static_cast<void>(stack);
+    using ProtFrame = Frame<InterfaceType>;
+    ProtFrame frame;
+    static_cast<void>(frame);
     auto readIter = buf;
-    auto es = stack.read(msg, readIter, bufSize);
+    auto es = frame.read(msg, readIter, bufSize);
     TS_ASSERT_EQUALS(es, expectedErrStatus);
 
     if (es == comms::ErrorStatus::Success) {
@@ -414,7 +414,7 @@ void MsgDataLayerTestSuite::internalDirectReadWriteTest(
             outDataBuf.resize(1U); // Make sure the pointer to the first element is valid
         }
         auto writeIter = &outDataBuf[0];
-        auto writeES = stack.write(msg, writeIter, diff);
+        auto writeES = frame.write(msg, writeIter, diff);
         TS_ASSERT_EQUALS(writeES, comms::ErrorStatus::Success);
         TS_ASSERT(std::equal(buf, buf + diff, &outDataBuf[0]));
     }

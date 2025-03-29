@@ -382,30 +382,30 @@ void MsgSizeLayerTestSuite::test1()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    Frame<BeSizeField20, BeIdField1, BeMsgBase> stack;
-    auto& sizeLayer = stack.layer_size();
+    Frame<BeSizeField20, BeIdField1, BeMsgBase> frame;
+    auto& sizeLayer = frame.layer_size();
     using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
     static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
     static_cast<void>(sizeLayer);
 
-    auto& idLayer = stack.layer_id();
+    auto& idLayer = frame.layer_id();
     using IdLayerType = typename std::decay<decltype(idLayer)>::type;
     static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
     static_cast<void>(idLayer);
 
-    auto& payloadLayer = stack.layer_payload();
+    auto& payloadLayer = frame.layer_payload();
     using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
     static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(), "Invalid layer");
     static_cast<void>(payloadLayer);
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
     TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
 
-    InPlaceFrame<BeSizeField20, BeIdField1, BeMsgBase> inPlaceStack;
-    auto msgPtr2 = commonReadWriteMsgTest(inPlaceStack, &Buf[0], BufSize);
+    InPlaceFrame<BeSizeField20, BeIdField1, BeMsgBase> inPlaceFrame;
+    auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr2);
     TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType1);
     auto& msg2 = dynamic_cast<BeMsg1&>(*msgPtr2);
@@ -413,8 +413,8 @@ void MsgSizeLayerTestSuite::test1()
 
     TS_ASSERT_EQUALS(msg1, msg2);
 
-    GenMsgFrame<BeSizeField20, BeIdField1, BeMsgBase> genMsgStack;
-    auto msgPtr3 = commonReadWriteMsgTest(genMsgStack, &Buf[0], BufSize);
+    GenMsgFrame<BeSizeField20, BeIdField1, BeMsgBase> genMsgFrame;
+    auto msgPtr3 = commonReadWriteMsgTest(genMsgFrame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr3);
     TS_ASSERT_EQUALS(msgPtr3->getId(), MessageType1);
     auto& msg3 = dynamic_cast<BeMsg1&>(*msgPtr2);
@@ -422,7 +422,7 @@ void MsgSizeLayerTestSuite::test1()
 
     TS_ASSERT_EQUALS(msg1, msg3);
 
-    auto msgPtr4 = commonReadWriteMsgTest(inPlaceStack, &Buf[0], BufSize, comms::ErrorStatus::MsgAllocFailure);
+    auto msgPtr4 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize, comms::ErrorStatus::MsgAllocFailure);
     TS_ASSERT(!msgPtr4);
 }
 
@@ -438,11 +438,11 @@ void MsgSizeLayerTestSuite::test2()
     static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
     char buf[BufSize] = {0};
 
-    Frame<LeSizeField30, LeIdField2, LeMsgBase> stack;
-    commonWriteReadMsgTest(stack, msg, buf, BufSize, &ExpectedBuf[0]);
+    Frame<LeSizeField30, LeIdField2, LeMsgBase> frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, &ExpectedBuf[0]);
 
-    InPlaceFrame<LeSizeField30, LeIdField2, LeMsgBase> inPlaceStack;
-    commonWriteReadMsgTest(inPlaceStack, msg, buf, BufSize, &ExpectedBuf[0]);
+    InPlaceFrame<LeSizeField30, LeIdField2, LeMsgBase> inPlaceFrame;
+    commonWriteReadMsgTest(inPlaceFrame, msg, buf, BufSize, &ExpectedBuf[0]);
 }
 
 void MsgSizeLayerTestSuite::test3()
@@ -453,12 +453,12 @@ void MsgSizeLayerTestSuite::test3()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    Frame<BeSizeField20, BeIdField1, BeMsgBase> stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize, comms::ErrorStatus::ProtocolError);
+    Frame<BeSizeField20, BeIdField1, BeMsgBase> frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::ProtocolError);
     TS_ASSERT(!msgPtr);
 
-    InPlaceFrame<BeSizeField20, BeIdField1, BeMsgBase> inPlaceStack;
-    auto msgPtr2 = commonReadWriteMsgTest(inPlaceStack, &Buf[0], BufSize, comms::ErrorStatus::ProtocolError);
+    InPlaceFrame<BeSizeField20, BeIdField1, BeMsgBase> inPlaceFrame;
+    auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize, comms::ErrorStatus::ProtocolError);
     TS_ASSERT(!msgPtr2);
 }
 
@@ -470,12 +470,12 @@ void MsgSizeLayerTestSuite::test4()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    Frame<BeSizeField20, BeIdField1, BeMsgBase> stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
+    Frame<BeSizeField20, BeIdField1, BeMsgBase> frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
     TS_ASSERT(!msgPtr);
 
-    InPlaceFrame<BeSizeField20, BeIdField1, BeMsgBase> inPlaceStack;
-    auto msgPtr2 = commonReadWriteMsgTest(inPlaceStack, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
+    InPlaceFrame<BeSizeField20, BeIdField1, BeMsgBase> inPlaceFrame;
+    auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
     TS_ASSERT(!msgPtr2);
 }
 
@@ -487,11 +487,11 @@ void MsgSizeLayerTestSuite::test5()
     char buf[2] = {0};
     static const std::size_t BufSize = std::extent<decltype(buf)>::value;
 
-    Frame<LeSizeField30, LeIdField2, LeMsgBase> stack;
-    commonWriteReadMsgTest(stack, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
+    Frame<LeSizeField30, LeIdField2, LeMsgBase> frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
 
-    InPlaceFrame<LeSizeField30, LeIdField2, LeMsgBase> inPlaceStack;
-    commonWriteReadMsgTest(inPlaceStack, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
+    InPlaceFrame<LeSizeField30, LeIdField2, LeMsgBase> inPlaceFrame;
+    commonWriteReadMsgTest(inPlaceFrame, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
 }
 
 void MsgSizeLayerTestSuite::test6()
@@ -502,23 +502,23 @@ void MsgSizeLayerTestSuite::test6()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    RevFrame<BeIdField1, BeSizeField20, BeMsgBase> stack;
-    auto& sizeLayer = stack.layer_size();
+    RevFrame<BeIdField1, BeSizeField20, BeMsgBase> frame;
+    auto& sizeLayer = frame.layer_size();
     using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
     static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
     static_cast<void>(sizeLayer);
 
-    auto& idLayer = stack.layer_id();
+    auto& idLayer = frame.layer_id();
     using IdLayerType = typename std::decay<decltype(idLayer)>::type;
     static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
     static_cast<void>(idLayer);
 
-    auto& payloadLayer = stack.layer_payload();
+    auto& payloadLayer = frame.layer_payload();
     using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
     static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(), "Invalid layer");
     static_cast<void>(payloadLayer);
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg = dynamic_cast<BeMsg1&>(*msgPtr);
@@ -533,23 +533,23 @@ void MsgSizeLayerTestSuite::test7()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    RevFrame<BeIdField1, BeSizeField22, BeMsgBase> stack;
-    auto& sizeLayer = stack.layer_size();
+    RevFrame<BeIdField1, BeSizeField22, BeMsgBase> frame;
+    auto& sizeLayer = frame.layer_size();
     using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
     static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
     static_cast<void>(sizeLayer);
 
-    auto& idLayer = stack.layer_id();
+    auto& idLayer = frame.layer_id();
     using IdLayerType = typename std::decay<decltype(idLayer)>::type;
     static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
     static_cast<void>(idLayer);
 
-    auto& payloadLayer = stack.layer_payload();
+    auto& payloadLayer = frame.layer_payload();
     using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
     static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(), "Invalid layer");
     static_cast<void>(payloadLayer);
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg = dynamic_cast<BeMsg1&>(*msgPtr);
@@ -564,15 +564,15 @@ void MsgSizeLayerTestSuite::test8()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    Frame<BeBackInsertSizeField20, BeBackInsertIdField1, BeBackInsertMsgBase> stack;
-    auto msgPtr = vectorBackInsertReadWriteMsgTest(stack, &Buf[0], BufSize);
+    Frame<BeBackInsertSizeField20, BeBackInsertIdField1, BeBackInsertMsgBase> frame;
+    auto msgPtr = vectorBackInsertReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeBackInsertMsg1&>(*msgPtr);
     TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
 
-    InPlaceFrame<BeBackInsertSizeField20, BeBackInsertIdField1, BeBackInsertMsgBase> inPlaceStack;
-    auto msgPtr2 = vectorBackInsertReadWriteMsgTest(inPlaceStack, &Buf[0], BufSize);
+    InPlaceFrame<BeBackInsertSizeField20, BeBackInsertIdField1, BeBackInsertMsgBase> inPlaceFrame;
+    auto msgPtr2 = vectorBackInsertReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr2);
     TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType1);
     auto& msg2 = dynamic_cast<BeBackInsertMsg1&>(*msgPtr2);
@@ -580,7 +580,7 @@ void MsgSizeLayerTestSuite::test8()
 
     TS_ASSERT_EQUALS(msg1, msg2);
 
-    auto msgPtr3 = vectorBackInsertReadWriteMsgTest(inPlaceStack, &Buf[0], BufSize, comms::ErrorStatus::MsgAllocFailure);
+    auto msgPtr3 = vectorBackInsertReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize, comms::ErrorStatus::MsgAllocFailure);
     TS_ASSERT(!msgPtr3);
 }
 
@@ -599,20 +599,20 @@ void MsgSizeLayerTestSuite::test9()
     };
     static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
 
-    Frame<BeBackInsertSizeField20, BeBackInsertIdField1, BeBackInsertMsgBase> stack;
-    vectorBackInsertWriteReadMsgTest(stack, msg, ExpectedBuf, BufSize);
+    Frame<BeBackInsertSizeField20, BeBackInsertIdField1, BeBackInsertMsgBase> frame;
+    vectorBackInsertWriteReadMsgTest(frame, msg, ExpectedBuf, BufSize);
 }
 
 void MsgSizeLayerTestSuite::test10()
 {
-    RevFrame<BeIdField1, BeSizeField22, BeMsgBase> stack;
-    auto msgPtr1 = stack.createMsg(MessageType1);
+    RevFrame<BeIdField1, BeSizeField22, BeMsgBase> frame;
+    auto msgPtr1 = frame.createMsg(MessageType1);
     TS_ASSERT(msgPtr1);
     TS_ASSERT_EQUALS(msgPtr1->getId(), MessageType1);
-    auto msgPtr2 = stack.createMsg(MessageType2);
+    auto msgPtr2 = frame.createMsg(MessageType2);
     TS_ASSERT(msgPtr2);
     TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType2);
-    auto msgPtr3 = stack.createMsg(MessageType3);
+    auto msgPtr3 = frame.createMsg(MessageType3);
     TS_ASSERT(msgPtr3);
     TS_ASSERT_EQUALS(msgPtr3->getId(), MessageType3);
 }
@@ -624,13 +624,13 @@ void MsgSizeLayerTestSuite::test11()
     };
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    using ProtStack = Frame<BeSizeField20, BeIdField1, BeMsgBase>;
-    ProtStack stack;
+    using TestFrame = Frame<BeSizeField20, BeIdField1, BeMsgBase>;
+    TestFrame frame;
 
-    using AllFields = ProtStack::AllFields;
+    using AllFields = TestFrame::AllFields;
     AllFields fields;
 
-    auto msgPtr = commonReadWriteMsgTest(stack, fields, Buf, BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, fields, Buf, BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType3);
 
@@ -657,8 +657,8 @@ void MsgSizeLayerTestSuite::test12()
     static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
     char buf[BufSize] = {0};
 
-    Frame<BeSizeField20, BeIdField1, BeNoLengthMsgBase> stack;
-    commonWriteReadMsgTest(stack, msg, buf, BufSize, &ExpectedBuf[0]);
+    Frame<BeSizeField20, BeIdField1, BeNoLengthMsgBase> frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, &ExpectedBuf[0]);
 }
 
 void MsgSizeLayerTestSuite::test13()
@@ -671,8 +671,8 @@ void MsgSizeLayerTestSuite::test13()
     };
 
     static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
-    Frame<BeSizeField20, BeIdField2, BeNoLengthBackInsertMsgBase> stack;
-    vectorBackInsertWriteReadMsgTest(stack, msg, ExpectedBuf, BufSize);
+    Frame<BeSizeField20, BeIdField2, BeNoLengthBackInsertMsgBase> frame;
+    vectorBackInsertWriteReadMsgTest(frame, msg, ExpectedBuf, BufSize);
 }
 
 void MsgSizeLayerTestSuite::test14()
@@ -683,8 +683,8 @@ void MsgSizeLayerTestSuite::test14()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    GenMsgFrame<BeSizeField20, BeIdField1, BeMsgBase> stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    GenMsgFrame<BeSizeField20, BeIdField1, BeMsgBase> frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), UnusedValue1);
 
@@ -703,22 +703,22 @@ void MsgSizeLayerTestSuite::test15()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    using ProtStack = Frame<BeSizeField20, BeIdField1, BeNonPolymorphicMessageBase>;
-    ProtStack stack;
+    using TestFrame = Frame<BeSizeField20, BeIdField1, BeNonPolymorphicMessageBase>;
+    TestFrame frame;
     NonPolymorphicBeMsg1 msg;
-    commonReadWriteMsgDirectTest(stack, msg, &Buf[0], BufSize);
+    commonReadWriteMsgDirectTest(frame, msg, &Buf[0], BufSize);
     TS_ASSERT_EQUALS(std::get<0>(msg.fields()).value(), 0x0102);
 
-    ProtStack::AllFields fields;
-    commonReadWriteMsgDirectTest(stack, fields, msg, &Buf[0], BufSize);
+    TestFrame::AllFields fields;
+    commonReadWriteMsgDirectTest(frame, fields, msg, &Buf[0], BufSize);
     TS_ASSERT_EQUALS(std::get<0>(fields).value(), 3U);
     TS_ASSERT_EQUALS(std::get<1>(fields).value(), MessageType1);
 
     NonPolymorphicBeMsg2 msg2;
-    commonReadWriteMsgDirectTest(stack, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
+    commonReadWriteMsgDirectTest(frame, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
 
-    ProtStack::AllFields fields2;
-    commonReadWriteMsgDirectTest(stack, fields2, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
+    TestFrame::AllFields fields2;
+    commonReadWriteMsgDirectTest(frame, fields2, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
 
     TS_ASSERT_EQUALS(std::get<0>(fields2).value(), 3U);
     TS_ASSERT_EQUALS(std::get<1>(fields2).value(), MessageType1);
@@ -732,23 +732,23 @@ void MsgSizeLayerTestSuite::test16()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    Frame<LeVarLenSizeField, LeIdField1, LeMsgBase> stack;
-    auto& sizeLayer = stack.layer_size();
+    Frame<LeVarLenSizeField, LeIdField1, LeMsgBase> frame;
+    auto& sizeLayer = frame.layer_size();
     using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
     static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
     static_cast<void>(sizeLayer);
 
-    auto& idLayer = stack.layer_id();
+    auto& idLayer = frame.layer_id();
     using IdLayerType = typename std::decay<decltype(idLayer)>::type;
     static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
     static_cast<void>(idLayer);
 
-    auto& payloadLayer = stack.layer_payload();
+    auto& payloadLayer = frame.layer_payload();
     using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
     static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(), "Invalid layer");
     static_cast<void>(payloadLayer);
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
     TS_ASSERT(!msgPtr)
 }
 
@@ -760,10 +760,10 @@ void MsgSizeLayerTestSuite::test17()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    using Frame = Frame<LeVarLenSizeField, LeIdField1, LeMsgBase>;
-    Frame frame;
+    using TestFrame = Frame<LeVarLenSizeField, LeIdField1, LeMsgBase>;
+    TestFrame frame;
 
-    Frame::MsgPtr msg;
+    TestFrame::MsgPtr msg;
     auto readIter = &Buf[0];
     auto es = frame.read(msg, readIter, BufSize);
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
@@ -780,12 +780,12 @@ void MsgSizeLayerTestSuite::test18()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    using ProtStack = Frame<BeSizeField20, BeIdField1, BeNonPolymorphicMessageBase>;
-    ProtStack stack;
+    using TestFrame = Frame<BeSizeField20, BeIdField1, BeNonPolymorphicMessageBase>;
+    TestFrame frame;
     NonPolymorphicBeMsg1 msg;
     auto readIter = &Buf[0];
     std::size_t missingSize = 0U;
-    auto es = stack.read(msg, readIter, BufSize, comms::frame::missingSize(missingSize));
+    auto es = frame.read(msg, readIter, BufSize, comms::frame::missingSize(missingSize));
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::NotEnoughData);
     TS_ASSERT_EQUALS(missingSize, 2U);
 }
@@ -798,8 +798,8 @@ void MsgSizeLayerTestSuite::test19()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    Frame<BeSizeField20, BeIdField1, BeMsgBase> stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
+    Frame<BeSizeField20, BeIdField1, BeMsgBase> frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
     TS_ASSERT(!msgPtr);
 }
 
@@ -811,7 +811,7 @@ void MsgSizeLayerTestSuite::test20()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    Frame<BeSizeComplexField, BeIdField1, BeMsgBase> stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    Frame<BeSizeComplexField, BeIdField1, BeMsgBase> frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
 }

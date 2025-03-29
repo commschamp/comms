@@ -173,11 +173,11 @@ void SyncPrefixLayerTestSuite::test1()
             BeSizeField20,
             BeIdField1,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
@@ -202,10 +202,10 @@ void SyncPrefixLayerTestSuite::test2()
             LeSizeField30,
             LeIdField2,
             LeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    commonWriteReadMsgTest(stack, msg, buf, BufSize, &ExpectedBuf[0]);
+    TestFrame frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, &ExpectedBuf[0]);
 }
 
 void SyncPrefixLayerTestSuite::test3()
@@ -222,11 +222,11 @@ void SyncPrefixLayerTestSuite::test3()
             BeSizeField20,
             BeIdField1,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize, comms::ErrorStatus::ProtocolError);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::ProtocolError);
     TS_ASSERT(!msgPtr);
 }
 
@@ -244,11 +244,11 @@ void SyncPrefixLayerTestSuite::test4()
             BeSizeField20,
             BeIdField1,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
     TS_ASSERT(!msgPtr);
 }
 
@@ -266,10 +266,10 @@ void SyncPrefixLayerTestSuite::test5()
             LeSizeField30,
             LeIdField2,
             LeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    commonWriteReadMsgTest(stack, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
+    TestFrame frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
 }
 
 void SyncPrefixLayerTestSuite::test6()
@@ -286,11 +286,11 @@ void SyncPrefixLayerTestSuite::test6()
             BeBackInsertSizeField20,
             BeBackInsertIdField1,
             BeBackInsertMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto msgPtr = vectorBackInsertReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = vectorBackInsertReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeBackInsertMsg1&>(*msgPtr);
@@ -311,25 +311,25 @@ void SyncPrefixLayerTestSuite::test7()
             BeSizeField20,
             BeIdField1,
             BeNonPolymorphicMessageBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
     NonPolymorphicBeMsg1 msg;
-    commonReadWriteMsgDirectTest(stack, msg, &Buf[0], BufSize);
+    commonReadWriteMsgDirectTest(frame, msg, &Buf[0], BufSize);
     TS_ASSERT_EQUALS(std::get<0>(msg.fields()).value(), 0x0102);
 
-    Stack::AllFields fields;
-    commonReadWriteMsgDirectTest(stack, fields, msg, &Buf[0], BufSize);
+    TestFrame::AllFields fields;
+    commonReadWriteMsgDirectTest(frame, fields, msg, &Buf[0], BufSize);
     TS_ASSERT_EQUALS(std::get<0>(fields).value(), 0xabcd);
     TS_ASSERT_EQUALS(std::get<1>(fields).value(), 3U);
     TS_ASSERT_EQUALS(std::get<2>(fields).value(), MessageType1);
     TS_ASSERT_EQUALS(std::get<3>(fields).value(), std::vector<std::uint8_t>(Buf + 5, Buf + 7));
 
     NonPolymorphicBeMsg2 msg2;
-    commonReadWriteMsgDirectTest(stack, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
+    commonReadWriteMsgDirectTest(frame, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
 
-    Stack::AllFields fields2;
-    commonReadWriteMsgDirectTest(stack, fields2, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
+    TestFrame::AllFields fields2;
+    commonReadWriteMsgDirectTest(frame, fields2, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
     TS_ASSERT_EQUALS(std::get<0>(fields2).value(), 0xabcd);
     TS_ASSERT_EQUALS(std::get<1>(fields2).value(), 3U);
     TS_ASSERT_EQUALS(std::get<2>(fields2).value(), MessageType1);
@@ -349,17 +349,17 @@ void SyncPrefixLayerTestSuite::test8()
             BeSizeField20,
             BeIdField1,
             BeNonPolymorphicMessageBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    Stack::MsgPtr msg;
+    TestFrame frame;
+    TestFrame::MsgPtr msg;
     MessageType msgId = MessageType();
     std::size_t msgIndex = 0U;
     auto readIter = &Buf[0];
     decltype(readIter) payloadIter = nullptr;
     std::size_t payloadSize = 0U;
     auto es =
-        stack.read(
+        frame.read(
             msg, readIter, BufSize,
             comms::frame::msgId(msgId),
             comms::frame::msgIndex(msgIndex),
