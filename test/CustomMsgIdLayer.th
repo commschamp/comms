@@ -221,9 +221,9 @@ void CustomMsgIdLayerTestSuite::test1()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    using Stack = SimpleFrame<>;
-    Stack stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    using TestFrame = SimpleFrame<>;
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     TS_ASSERT_EQUALS(msgPtr->transportField_flags().value(), 0x2U);
@@ -242,9 +242,9 @@ void CustomMsgIdLayerTestSuite::test2()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    using Stack = FrameWithGenericMsg<>;
-    Stack stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    using TestFrame = FrameWithGenericMsg<>;
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType5);
     TS_ASSERT_EQUALS(msgPtr->transportField_flags().value(), 0xfU);
@@ -258,9 +258,9 @@ void CustomMsgIdLayerTestSuite::test3()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    using Stack = InPlaceFrameWithGenericMsg<>;
-    Stack stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    using TestFrame = InPlaceFrameWithGenericMsg<>;
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     TS_ASSERT_EQUALS(msgPtr->transportField_flags().value(), 0x2U);
@@ -279,9 +279,9 @@ void CustomMsgIdLayerTestSuite::test4()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    using Stack = InPlaceFrameWithGenericMsg<>;
-    Stack stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    using TestFrame = InPlaceFrameWithGenericMsg<>;
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType5);
     TS_ASSERT_EQUALS(msgPtr->transportField_flags().value(), 0xfU);
@@ -295,11 +295,11 @@ void CustomMsgIdLayerTestSuite::test5()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    using Stack = InPlaceFrameWithGenericMsg<NonPolymorphicInterface>;
-    Stack stack;
-    Stack::MsgPtr msgPtr;
+    using TestFrame = InPlaceFrameWithGenericMsg<NonPolymorphicInterface>;
+    TestFrame frame;
+    TestFrame::MsgPtr msgPtr;
     auto readIter = &Buf[0];
-    auto es = stack.read(msgPtr, readIter, BufSize);
+    auto es = frame.read(msgPtr, readIter, BufSize);
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->transportField_flags().value(), 0xfU);
@@ -317,12 +317,12 @@ void CustomMsgIdLayerTestSuite::test6()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    using Stack = SimpleFrame<NonPolymorphicInterface>;
-    Stack stack;
-    Stack::MsgPtr msgPtr;
+    using TestFrame = SimpleFrame<NonPolymorphicInterface>;
+    TestFrame frame;
+    TestFrame::MsgPtr msgPtr;
     auto readIter = &Buf[0];
     std::size_t missingSize = 0U;
-    auto es = stack.read(msgPtr, readIter, BufSize, comms::frame::missingSize(missingSize));
+    auto es = frame.read(msgPtr, readIter, BufSize, comms::frame::missingSize(missingSize));
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::NotEnoughData);
     TS_ASSERT_EQUALS(missingSize, 1U);
 }

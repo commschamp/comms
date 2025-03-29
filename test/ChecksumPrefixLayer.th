@@ -299,11 +299,11 @@ void ChecksumPrefixLayerTestSuite::test1()
             BeSizeField20,
             BeIdField1,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
@@ -329,10 +329,10 @@ void ChecksumPrefixLayerTestSuite::test2()
             LeSizeField30,
             LeIdField2,
             LeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    commonWriteReadMsgTest(stack, msg, buf, BufSize, &ExpectedBuf[0]);
+    TestFrame frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, &ExpectedBuf[0]);
 }
 
 void ChecksumPrefixLayerTestSuite::test3()
@@ -350,11 +350,11 @@ void ChecksumPrefixLayerTestSuite::test3()
             BeSizeField20,
             BeIdField1,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize, comms::ErrorStatus::ProtocolError);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::ProtocolError);
     TS_ASSERT(!msgPtr);
 }
 
@@ -373,11 +373,11 @@ void ChecksumPrefixLayerTestSuite::test4()
             BeSizeField20,
             BeIdField1,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
     TS_ASSERT(!msgPtr);
 }
 //
@@ -396,10 +396,10 @@ void ChecksumPrefixLayerTestSuite::test5()
             LeSizeField30,
             LeIdField2,
             LeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    commonWriteReadMsgTest(stack, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
+    TestFrame frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
 }
 
 void ChecksumPrefixLayerTestSuite::test6()
@@ -417,11 +417,11 @@ void ChecksumPrefixLayerTestSuite::test6()
             BeBackInsertSizeField20,
             BeBackInsertIdField1,
             BeBackInsertMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto msgPtr = vectorBackInsertReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = vectorBackInsertReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeBackInsertMsg1&>(*msgPtr);
@@ -444,11 +444,11 @@ void ChecksumPrefixLayerTestSuite::test7()
             BeSizeField20,
             BeIdField1,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg = dynamic_cast<BeMsg1&>(*msgPtr);
@@ -475,16 +475,16 @@ void ChecksumPrefixLayerTestSuite::test8()
             BeSizeField20,
             BeIdField1,
             BeNonPolymorphicMessageBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
     NonPolymorphicBeMsg1 msg;
-    commonReadWriteMsgDirectTest(stack, msg, &Buf[0], BufSize);
+    commonReadWriteMsgDirectTest(frame, msg, &Buf[0], BufSize);
     TS_ASSERT_EQUALS(msg.field_value1().value(), 0x0102);
 
-    Stack::AllFields fields;
-    commonReadWriteMsgDirectTest(stack, fields, msg, &Buf[0], BufSize);
+    TestFrame::AllFields fields;
+    commonReadWriteMsgDirectTest(frame, fields, msg, &Buf[0], BufSize);
     TS_ASSERT_EQUALS(std::get<0>(fields).value(), 0xabcd);
     TS_ASSERT_EQUALS(std::get<1>(fields).value(), 6U);
     TS_ASSERT_EQUALS(std::get<2>(fields).value(), 3U);
@@ -492,10 +492,10 @@ void ChecksumPrefixLayerTestSuite::test8()
     TS_ASSERT_EQUALS(std::get<4>(fields).value(), std::vector<std::uint8_t>(Buf + 6, Buf + 8));
 
     NonPolymorphicBeMsg2 msg2;
-    commonReadWriteMsgDirectTest(stack, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
+    commonReadWriteMsgDirectTest(frame, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
 
-    Stack::AllFields fields2;
-    commonReadWriteMsgDirectTest(stack, fields2, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
+    TestFrame::AllFields fields2;
+    commonReadWriteMsgDirectTest(frame, fields2, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
     TS_ASSERT_EQUALS(std::get<0>(fields2).value(), 0xabcd);
     TS_ASSERT_EQUALS(std::get<1>(fields2).value(), 6U);
     TS_ASSERT_EQUALS(std::get<2>(fields2).value(), 3U);
@@ -524,12 +524,12 @@ void ChecksumPrefixLayerTestSuite::test9()
             BeVersionField1,
             BeChecksumField1,
             BeNonPolymorphicExtraTransportMessageBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
     NonPolymorphicExtraTransportBeMsg1 msg;
-    commonReadWriteMsgDirectTest(stack, msg, &Buf[0], BufSize);
+    commonReadWriteMsgDirectTest(frame, msg, &Buf[0], BufSize);
     TS_ASSERT_EQUALS(msg.field_value1().value(), 0x0102);
     TS_ASSERT_EQUALS(msg.transportField_version().value(), 0x5);
 }
@@ -556,12 +556,12 @@ void ChecksumPrefixLayerTestSuite::test10()
             BeIdField1,
             BeChecksumField1,
             BeNonPolymorphicExtraTransportMessageBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
     NonPolymorphicExtraTransportBeMsg1 msg;
-    commonReadWriteMsgDirectTest(stack, msg, &Buf[0], BufSize);
+    commonReadWriteMsgDirectTest(frame, msg, &Buf[0], BufSize);
     TS_ASSERT_EQUALS(msg.field_value1().value(), 0x0102);
     TS_ASSERT_EQUALS(msg.transportField_version().value(), 0x5);
 }

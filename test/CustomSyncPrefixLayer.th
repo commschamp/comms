@@ -210,9 +210,9 @@ void CustomSyncPrefixLayerTestSuite::test1()
             BeSizeField20,
             BeIdField1,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
     static const char Buf[] = {
         static_cast<char>(0xab), static_cast<char>(0xcd), 0x0, 0x3, MessageType1, 0x01, 0x02, static_cast<char>(0x3f)
@@ -220,7 +220,7 @@ void CustomSyncPrefixLayerTestSuite::test1()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;    
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
@@ -232,7 +232,7 @@ void CustomSyncPrefixLayerTestSuite::test1()
 
     static const std::size_t Buf2Size = std::extent<decltype(Buf2)>::value;      
 
-    auto msgPtr2 = commonReadWriteMsgTest(stack, &Buf2[0], Buf2Size);
+    auto msgPtr2 = commonReadWriteMsgTest(frame, &Buf2[0], Buf2Size);
     TS_ASSERT(msgPtr2);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg2 = dynamic_cast<BeMsg1&>(*msgPtr);

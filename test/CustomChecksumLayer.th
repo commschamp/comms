@@ -545,10 +545,10 @@ void CustomChecksumLayerTestSuite::test1()
             BeIdField1,
             BeChecksumTypeField1,
             BeChecksumTypeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeCheckumTypeMsg1&>(*msgPtr);
@@ -576,10 +576,10 @@ void CustomChecksumLayerTestSuite::test2()
             BeIdField1,
             BeChecksumTypeField1,
             BeChecksumTypeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeCheckumTypeMsg1&>(*msgPtr);
@@ -607,10 +607,10 @@ void CustomChecksumLayerTestSuite::test3()
             BeHasChecksumFlagsField,
             BeOptChecksumField2,
             BeHasChecksumFlagsMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     // auto& msg1 = dynamic_cast<BeCheckumTypeMsg1&>(*msgPtr);

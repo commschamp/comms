@@ -429,10 +429,10 @@ void CustomChecksumPrefixLayerTestSuite::test1()
             BeIdField1,
             BeChecksumField2,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
@@ -458,10 +458,10 @@ void CustomChecksumPrefixLayerTestSuite::test2()
             BeIdField1,
             BeChecksumField2,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType9);
     auto* msg = dynamic_cast<BeMsg9*>(msgPtr.get());
@@ -487,10 +487,10 @@ void CustomChecksumPrefixLayerTestSuite::test3()
             BeIdField1,
             BeOptChecksumField2,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType9);
     auto* msg = dynamic_cast<BeMsg9*>(msgPtr.get());

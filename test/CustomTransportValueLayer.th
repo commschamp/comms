@@ -284,13 +284,13 @@ void CustomTransportValueLayerTestSuite::test1()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using MsgBase = ExtraTransportMessageBase<BeOptions>;
-    using Stack = AfterIdFrame<MsgBase>;
+    using TestFrame = AfterIdFrame<MsgBase>;
 
-    Stack stack;
+    TestFrame frame;
 
-    TS_ASSERT_EQUALS(stack.length(), 5U);
+    TS_ASSERT_EQUALS(frame.length(), 5U);
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType7);
     TS_ASSERT_EQUALS(msgPtr->transportField_version().value(), 5U);
@@ -314,13 +314,13 @@ void CustomTransportValueLayerTestSuite::test2()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using MsgBase = ExtraTransportMessageBase<BeOptions>;
-    using Stack = BeforeIdFrame<MsgBase>;
+    using TestFrame = BeforeIdFrame<MsgBase>;
 
-    Stack stack;
+    TestFrame frame;
 
-    TS_ASSERT_EQUALS(stack.length(), 5U);
+    TS_ASSERT_EQUALS(frame.length(), 5U);
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType7);
     TS_ASSERT_EQUALS(msgPtr->transportField_version().value(), 4U);
@@ -344,13 +344,13 @@ void CustomTransportValueLayerTestSuite::test3()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     using MsgBase = ExtraTransportMessageBase<BeOptions>;
-    using Stack = BeforeIdWithChecksumFrame<MsgBase>;
+    using TestFrame = BeforeIdWithChecksumFrame<MsgBase>;
 
-    Stack stack;
+    TestFrame frame;
 
-    TS_ASSERT_EQUALS(stack.length(), 6U);
+    TS_ASSERT_EQUALS(frame.length(), 6U);
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType7);
     TS_ASSERT_EQUALS(msgPtr->transportField_version().value(), 4U);

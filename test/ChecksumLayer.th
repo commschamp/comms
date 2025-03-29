@@ -285,36 +285,36 @@ void ChecksumLayerTestSuite::test1()
             BeSizeField20,
             BeIdField1,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto& syncLayer = stack.layer_sync();
+    auto& syncLayer = frame.layer_sync();
     using SyncLayerType = typename std::decay<decltype(syncLayer)>::type;
     static_assert(comms::frame::isSyncPrefixLayer<SyncLayerType>(), "Invalid layer");
     static_cast<void>(syncLayer);
 
-    auto& checksumLayer = stack.layer_checksum();
+    auto& checksumLayer = frame.layer_checksum();
     using ChecksumLayerType = typename std::decay<decltype(checksumLayer)>::type;
     static_assert(comms::frame::isChecksumLayer<ChecksumLayerType>(), "Invalid layer");
     static_cast<void>(checksumLayer);
 
-    auto& sizeLayer = stack.layer_size();
+    auto& sizeLayer = frame.layer_size();
     using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
     static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
     static_cast<void>(sizeLayer);
 
-    auto& idLayer = stack.layer_id();
+    auto& idLayer = frame.layer_id();
     using IdLayerType = typename std::decay<decltype(idLayer)>::type;
     static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
     static_cast<void>(idLayer);
 
-    auto& payloadLayer = stack.layer_payload();
+    auto& payloadLayer = frame.layer_payload();
     using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
     static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(), "Invalid layer");
     static_cast<void>(payloadLayer);
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
@@ -340,10 +340,10 @@ void ChecksumLayerTestSuite::test2()
             LeSizeField30,
             LeIdField2,
             LeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    commonWriteReadMsgTest(stack, msg, buf, BufSize, &ExpectedBuf[0]);
+    TestFrame frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, &ExpectedBuf[0]);
 }
 
 void ChecksumLayerTestSuite::test3()
@@ -361,11 +361,11 @@ void ChecksumLayerTestSuite::test3()
             BeSizeField20,
             BeIdField1,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize, comms::ErrorStatus::ProtocolError);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::ProtocolError);
     TS_ASSERT(!msgPtr);
 }
 
@@ -384,11 +384,11 @@ void ChecksumLayerTestSuite::test4()
             BeSizeField20,
             BeIdField1,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
     TS_ASSERT(!msgPtr);
 }
 //
@@ -407,10 +407,10 @@ void ChecksumLayerTestSuite::test5()
             LeSizeField30,
             LeIdField2,
             LeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    commonWriteReadMsgTest(stack, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
+    TestFrame frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
 }
 
 void ChecksumLayerTestSuite::test6()
@@ -428,11 +428,11 @@ void ChecksumLayerTestSuite::test6()
             BeBackInsertSizeField20,
             BeBackInsertIdField1,
             BeBackInsertMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto msgPtr = vectorBackInsertReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = vectorBackInsertReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeBackInsertMsg1&>(*msgPtr);
@@ -485,11 +485,11 @@ void ChecksumLayerTestSuite::test8()
             BeSizeField20,
             BeIdField1,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg = dynamic_cast<BeMsg1&>(*msgPtr);
@@ -516,37 +516,37 @@ void ChecksumLayerTestSuite::test9()
             BeSizeField20,
             BeIdField1,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
 
 
-    auto& syncLayer = stack.layer_sync();
+    auto& syncLayer = frame.layer_sync();
     using SyncLayerType = typename std::decay<decltype(syncLayer)>::type;
     static_assert(comms::frame::isSyncPrefixLayer<SyncLayerType>(), "Invalid layer");
     static_cast<void>(syncLayer);
 
-    auto& checksumLayer = stack.layer_checksum();
+    auto& checksumLayer = frame.layer_checksum();
     using ChecksumLayerType = typename std::decay<decltype(checksumLayer)>::type;
     static_assert(comms::frame::isChecksumPrefixLayer<ChecksumLayerType>(), "Invalid layer");
     static_cast<void>(checksumLayer);
 
-    auto& sizeLayer = stack.layer_size();
+    auto& sizeLayer = frame.layer_size();
     using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
     static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
     static_cast<void>(sizeLayer);
 
-    auto& idLayer = stack.layer_id();
+    auto& idLayer = frame.layer_id();
     using IdLayerType = typename std::decay<decltype(idLayer)>::type;
     static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
     static_cast<void>(idLayer);
 
-    auto& payloadLayer = stack.layer_payload();
+    auto& payloadLayer = frame.layer_payload();
     using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
     static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(), "Invalid layer");
     static_cast<void>(payloadLayer);
 
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
@@ -568,15 +568,15 @@ void ChecksumLayerTestSuite::test10()
             BeSizeField20,
             BeIdField1,
             BeNonPolymorphicMessageBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
+    TestFrame frame;
     NonPolymorphicBeMsg1 msg;
-    commonReadWriteMsgDirectTest(stack, msg, &Buf[0], BufSize);
+    commonReadWriteMsgDirectTest(frame, msg, &Buf[0], BufSize);
     TS_ASSERT_EQUALS(msg.field_value1().value(), 0x0102);
 
-    Stack::AllFields fields;
-    commonReadWriteMsgDirectTest(stack, fields, msg, &Buf[0], BufSize);
+    TestFrame::AllFields fields;
+    commonReadWriteMsgDirectTest(frame, fields, msg, &Buf[0], BufSize);
     TS_ASSERT_EQUALS(std::get<0>(fields).value(), 0xabcd);
     TS_ASSERT_EQUALS(std::get<1>(fields).value(), 6U); // checksum
     TS_ASSERT_EQUALS(std::get<2>(fields).value(), 3U);
@@ -584,10 +584,10 @@ void ChecksumLayerTestSuite::test10()
     TS_ASSERT_EQUALS(std::get<4>(fields).value(), std::vector<std::uint8_t>(Buf + 5, Buf + 7));
 
     NonPolymorphicBeMsg2 msg2;
-    commonReadWriteMsgDirectTest(stack, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
+    commonReadWriteMsgDirectTest(frame, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
 
-    Stack::AllFields fields2;
-    commonReadWriteMsgDirectTest(stack, fields2, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
+    TestFrame::AllFields fields2;
+    commonReadWriteMsgDirectTest(frame, fields2, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
     TS_ASSERT_EQUALS(std::get<0>(fields2).value(), 0xabcd);
     TS_ASSERT_EQUALS(std::get<2>(fields2).value(), 3U);
     TS_ASSERT_EQUALS(std::get<3>(fields2).value(), MessageType1);
