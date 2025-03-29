@@ -42,7 +42,7 @@ namespace frame
 /// @tparam TField Type of the field that is used read / write extra transport value.
 /// @tparam TIdx Index of "extra transport" field that message object contains
 ///     (accessed via @ref comms::Message::transportFields()).
-/// @tparam TNextLayer Next transport layer in protocol stack.
+/// @tparam TNextLayer Next transport layer in frame.
 /// @tparam TOptions Extending functionality options. Supported options are:
 ///     @li @ref comms::option::def::PseudoValue - Mark the handled value to be "pseudo"
 ///         one, i.e. the field is not getting serialised.
@@ -125,7 +125,7 @@ public:
     /// @param[in] nextLayerReader Reader object, needs to be invoked to
     ///     forward read operation to the next layer.
     /// @param[out] extraValues Variadic extra output parameters passed to the
-    ///     "read" operatation of the protocol stack (see
+    ///     "read" operatation of the frame (see
     ///     @ref comms::frame::FrameLayerBase::read() "read()" and
     ///     @ref comms::frame::FrameLayerBase::readFieldsCached() "readFieldsCached()").
     ///     Need to passed on as variadic arguments to the @b nextLayerReader.

@@ -1,7 +1,7 @@
-/// @page page_custom_size_layer Defining Custom Message Size Protocol Stack Layer
+/// @page page_custom_size_layer Defining Custom Message Size Frame Layer
 /// @tableofcontents
-/// The @b COMMS library provides default @ref comms::frame::MsgSizeLayer protocol 
-/// stack layer to handle remaining length information in the protocol framing. 
+/// The @b COMMS library provides default @ref comms::frame::MsgSizeLayer  
+/// frame layer to handle remaining length information in the protocol framing. 
 /// However, it may be insufficient (or incorrect) for some particular use cases, such as
 /// using @b bitfield field to store both remaining size (length) and some extra flags. 
 /// The @ref page_frame_tutorial_new_layers section of the 
@@ -115,7 +115,7 @@
 /// class MsgSizeAndFlagsLayer : public
 ///     comms::frame::MsgSizeLayer<
 ///         SizeAndFlagsField,   // Used field that contains remaining length
-///         TNextLayer,          // Next layer in the protocol stack
+///         TNextLayer,          // Next layer in the frame
 ///         comms::option::def::ExtendingClass<MsgSizeAndFlagsLayer<TNextLayer> >
 ///                              // Make the comms::frame::MsgSizeLayer aware of it being extended
 ///     >
@@ -195,9 +195,9 @@
 /// function is going to be called without having actual message object being
 /// present. In this case the @b msg parameter will be @b nullptr.
 ///
-/// The newly defined custom protocol stack layer can be used instead of
+/// The newly defined custom frame layer can be used instead of
 /// @ref comms::frame::MsgSizeLayer when defining 
-/// @ref page_frame_tutorial "protocol stack" (framing) of the protocol.
+/// @ref page_frame_tutorial "framing" of the protocol.
 /// For example:
 /// @code
 /// namespace my_prot
@@ -255,7 +255,7 @@
 /// class MsgSizeAndFlagsLayer : public
 ///     comms::frame::MsgSizeLayer<
 ///         SizeAndFlagsField,   // Used field that contains remaining length
-///         TNextLayer,          // Next layer in the protocol stack
+///         TNextLayer,          // Next layer in the frame
 ///         comms::option::def::ExtendingClass<MsgSizeAndFlagsLayer<TNextLayer> >
 ///                              // Make the comms::frame::MsgSizeLayer aware of it being extended
 ///     >
@@ -299,7 +299,7 @@
 ///
 /// } // namespace my_prot
 /// @endcode
-/// The protocol stack (transport framing) itself needs to be defined like this:
+/// The transport framing itself needs to be defined like this:
 /// @code
 /// namespace my_prot
 /// {

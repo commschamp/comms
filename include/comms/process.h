@@ -35,7 +35,7 @@ namespace  comms
 ///     calculating the distance between originally passed value and the one after
 ///     function returns.
 /// @param[in] len Number of remaining bytes in input buffer.
-/// @param[in] frame Protocol frame / stack (see @ref page_use_prot_transport) that
+/// @param[in] frame Protocol frame (see @ref page_use_prot_transport) that
 ///     is used to process the raw input.
 /// @param[in, out] msg Smart pointer (see @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr"
 ///     defintion of the @ref page_use_prot_transport) to message object to be allocated,
@@ -43,8 +43,8 @@ namespace  comms
 ///     such is known.
 /// @param[in, out] extraValues Extra values that are passed as variadic parameters to
 ///     @ref comms::frame::FrameLayerBase::read() "read()" member function
-///     of the protocol frame / stack.
-/// @return ErrorStatus of the protocol frame / stack @ref comms::frame::FrameLayerBase::read() "read()"
+///     of the protocol frame.
+/// @return ErrorStatus of the protocol frame @ref comms::frame::FrameLayerBase::read() "read()"
 ///     operation.
 /// @note Defined in comms/process.h
 /// @see @ref page_dispatch
@@ -97,7 +97,7 @@ comms::ErrorStatus processSingle(
 ///     calculating the distance between originally passed value and the one after
 ///     function returns.
 /// @param[in] len Number of remaining bytes in input buffer.
-/// @param[in] frame Protocol frame / stack (see @ref page_use_prot_transport) that
+/// @param[in] frame Protocol frame (see @ref page_use_prot_transport) that
 ///     is used to process the raw input.
 /// @param[in, out] msg Smart pointer (see @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr"
 ///     defintion of the @ref page_use_prot_transport) to message object to be allocated,
@@ -107,8 +107,8 @@ comms::ErrorStatus processSingle(
 ///     is performed using @ref comms::dispatchMsg() function.
 /// @param[in, out] extraValues Extra values that are passed as variadic parameters to
 ///     @ref comms::frame::FrameLayerBase::read() "read()" member function
-///     of the protocol frame / stack.
-/// @return ErrorStatus of the protocol frame / stack @ref comms::frame::FrameLayerBase::read() "read()"
+///     of the protocol frame.
+/// @return ErrorStatus of the protocol frame @ref comms::frame::FrameLayerBase::read() "read()"
 ///     operation.
 /// @note Defined in comms/process.h
 /// @note If default dispatch behaviour of the @ref comms::dispatchMsg()
@@ -163,7 +163,7 @@ comms::ErrorStatus processSingleWithDispatch(
 ///     calculating the distance between originally passed value and the one after
 ///     function returns.
 /// @param[in] len Number of remaining bytes in input buffer.
-/// @param[in] frame Protocol frame / stack (see @ref page_use_prot_transport) that
+/// @param[in] frame Protocol frame (see @ref page_use_prot_transport) that
 ///     is used to process the raw input.
 /// @param[in, out] msg Smart pointer (see @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr"
 ///     defintion of the @ref page_use_prot_transport) to message object to be allocated,
@@ -173,8 +173,8 @@ comms::ErrorStatus processSingleWithDispatch(
 ///     is performed via provded @b TDispatcher class (see @ref comms::MsgDispatcher).
 /// @param[in, out] extraValues Extra values that are passed as variadic parameters to
 ///     @ref comms::frame::FrameLayerBase::read() "read()" member function
-///     of the protocol frame / stack.
-/// @return ErrorStatus of the protocol frame / stack @ref comms::frame::FrameLayerBase::read() "read()"
+///     of the protocol frame.
+/// @return ErrorStatus of the protocol frame @ref comms::frame::FrameLayerBase::read() "read()"
 ///     operation.
 /// @note Defined in comms/process.h
 /// @see @ref comms::processSingleWithDispatch().
@@ -228,7 +228,7 @@ comms::ErrorStatus processSingleWithDispatchViaDispatcher(
 ///     when buffer is iterated over (unlike @ref comms::processSingle(),
 ///     @ref comms::processSingleWithDispatch(), @ref comms::processSingleWithDispatchViaDispatcher()).
 /// @param[in] len Number of remaining bytes in input buffer.
-/// @param[in] frame Protocol frame / stack (see @ref page_use_prot_transport) that
+/// @param[in] frame Protocol framek (see @ref page_use_prot_transport) that
 ///     is used to process the raw input.
 /// @param[in] handler Handler to handle message object when dispatched. The dispatch
 ///     is performed using @ref comms::dispatchMsg() function.
@@ -281,7 +281,7 @@ std::size_t processAllWithDispatch(
 ///     when buffer is iterated over (unlike @ref comms::processSingle(),
 ///     @ref comms::processSingleWithDispatch(), @ref comms::processSingleWithDispatchViaDispatcher()).
 /// @param[in] len Number of remaining bytes in input buffer.
-/// @param[in] frame Protocol frame / stack (see @ref page_use_prot_transport) that
+/// @param[in] frame Protocol frame (see @ref page_use_prot_transport) that
 ///     is used to process the raw input.
 /// @param[in] handler Handler to handle message object when dispatched. The dispatch
 ///     is performed via provded @b TDispatcher class (see @ref comms::MsgDispatcher).

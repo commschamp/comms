@@ -1,8 +1,7 @@
-/// @page page_custom_checksum_layer Defining Custom Checksum Protocol Stack Layer
+/// @page page_custom_checksum_layer Defining Custom Checksum Frame Layer
 /// @tableofcontents
 /// The @b COMMS library provides default @ref comms::frame::ChecksumLayer 
-/// and @ref comms::frame::ChecksumPrefixLayer protocol 
-/// stack layer to handle transport framing checksum. 
+/// and @ref comms::frame::ChecksumPrefixLayer frame layer to handle transport framing checksum. 
 /// However, they may be insufficient (or incorrect) for some particular use cases. For example
 /// the protocol may support multiple checksum algorithms usage of which is determined
 /// at runtime.
@@ -87,7 +86,7 @@
 /// @b transportField_checksumType() 
 /// convenience member function to access the stored checksum type field.
 ///
-/// When implementing the transport framing (protocol stack) the handling of 
+/// When implementing the transport framing the handling of 
 /// `CHECKSUM_TYPE` can be done using regular @ref comms::frame::TransportValueLayer
 /// (see @ref page_frame_tutorial_transport_value).
 ///
@@ -107,7 +106,7 @@
 ///         ChecksumField,   
 ///         comms::frame::checksum::Crc_32, // Not really important for this example, 
 ///                                            // but template parameter type needs to be populated
-///         TNextLayer,          // Next layer in the protocol stack
+///         TNextLayer,          // Next layer in the frame
 ///         comms::option::def::ExtendingClass<MyChecksumLayer<TNextLayer> >
 ///                              // Make the comms::frame::ChecksumLayer aware of it being extended
 ///     >
@@ -272,9 +271,9 @@
 /// @li @ref comms::frame::ChecksumLayer::prepareFieldForWrite() "prepareFieldForWrite()" -
 /// Assign the calculated checksum value to the field's value.
 /// 
-/// The newly defined custom protocol stack layer can be used instead of
+/// The newly defined custom frame layer can be used instead of
 /// @ref comms::frame::ChecksumLayer when defining 
-/// @ref page_frame_tutorial "protocol stack" (framing) of the protocol.
+/// @ref page_frame_tutorial "framing" of the protocol.
 /// For example:
 /// @code
 /// namespace my_prot

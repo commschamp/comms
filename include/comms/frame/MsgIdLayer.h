@@ -46,7 +46,7 @@ namespace frame
 /// @tparam TField Field type that contains message ID.
 /// @tparam TMessage Interface class for the @b input messages
 /// @tparam TAllMessages Types of all @b input messages, bundled in std::tuple,
-///     that this protocol stack must be able to read() as well as create (using createMsg()).
+///     that this frame must be able to read() as well as create (using createMsg()).
 /// @tparam TNextLayer Next transport layer type.
 /// @tparam TOptions Default functionality extension options. Supported options are:
 ///     @li @ref comms::option::def::ExtendingClass - Use this option to provide a class
@@ -169,7 +169,7 @@ public:
     /// @param[in] nextLayerReader Reader object, needs to be invoked to
     ///     forward read operation to the next layer.
     /// @param[out] extraValues Variadic extra output parameters passed to the
-    ///     "read" operatation of the protocol stack (see
+    ///     "read" operatation of the frame (see
     ///     @ref comms::frame::FrameLayerBase::read() "read()" and
     ///     @ref comms::frame::FrameLayerBase::readFieldsCached() "readFieldsCached()").
     ///     Need to passed on as variadic arguments to the @b nextLayerReader.

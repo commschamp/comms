@@ -1,7 +1,7 @@
-/// @page page_custom_sync_prefix_layer Defining Custom Sync Prefix Protocol Stack Layer
+/// @page page_custom_sync_prefix_layer Defining Custom Sync Prefix Frame Layer
 /// @tableofcontents
-/// The @b COMMS library provides default @ref comms::frame::SyncPrefixLayer protocol 
-/// stack layer to handle predefined protocol synchronization prefix. 
+/// The @b COMMS library provides default @ref comms::frame::SyncPrefixLayer 
+/// frame layer to handle predefined protocol synchronization prefix. 
 /// However, it may be insufficient (or incorrect) for some particular use cases, such as
 /// using alternating bytes. For example, every first message has `0xabcd` prefix while
 /// every second is expected to be `0xdead`.
@@ -33,7 +33,7 @@
 /// class AlternatingPrefixLayer : public
 ///     comms::frame::SyncPrefixLayer<
 ///         SyncField,   
-///         TNextLayer,          // Next layer in the protocol stack
+///         TNextLayer,          // Next layer in the frame
 ///         comms::option::def::ExtendingClass<AlternatingPrefixLayer<TNextLayer> >
 ///                              // Make the comms::frame::SyncPrefixLayer aware of it being extended
 ///     >
@@ -107,9 +107,9 @@
 /// That's the reason why @ref comms::frame::SyncPrefixLayer::prepareFieldForWrite() "prepareFieldForWrite()"
 /// also needs to be const. Any variables it updates must be declared as `mutable`.
 ///
-/// The newly defined custom protocol stack layer can be used instead of
+/// The newly defined custom frame layer can be used instead of
 /// @ref comms::frame::SyncPrefixLayer when defining 
-/// @ref page_frame_tutorial "protocol stack" (framing) of the protocol.
+/// @ref page_frame_tutorial "framing" of the protocol.
 /// For example:
 /// @code
 /// namespace my_prot

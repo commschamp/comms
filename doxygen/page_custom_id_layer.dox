@@ -1,7 +1,7 @@
-/// @page page_custom_id_layer Defining Custom Message ID Protocol Stack Layer
+/// @page page_custom_id_layer Defining Custom Message ID Frame Layer
 /// @tableofcontents
-/// The @b COMMS library provides default @ref comms::frame::MsgIdLayer protocol 
-/// stack layer to manage message ID information in the protocol framing. 
+/// The @b COMMS library provides default @ref comms::frame::MsgIdLayer 
+/// frame layer to manage message ID information in the protocol framing. 
 /// However, it may be insufficient (or incorrect) for some particular use cases, such as
 /// using @b bitfield field to store both numeric message ID and some extra flags
 /// (like <a href="http://mqtt.org">MQTT</a> protocol does). 
@@ -118,7 +118,7 @@
 ///         IdAndFlagsField,   // Used field that contains message ID
 ///         TMessage,          // Common interface class
 ///         TAllMessages,      // std::tuple of all the supported input messages
-///         TNextLayer,        // Next layer in the protocol stack
+///         TNextLayer,        // Next layer in the frame
 ///         TOptions...,       // Application specific extension options
 ///         comms::option::def::ExtendingClass<MsgIdAndFlagsLayer<TMessage, TAllMessages, TNextLayer, TOptions...> >
 ///                            // Make the comms::frame::MsgIdLayer aware of it being extended
@@ -190,7 +190,7 @@
 /// the @ref comms::frame::MsgIdLayer will invoke @b write member function
 /// of the passed field in order to serialize it.
 ///
-/// The newly defined custom protocol stack layer can be used instead of
+/// The newly defined custom frame layer can be used instead of
 /// @ref comms::frame::MsgIdLayer when defining 
-/// @ref page_frame_tutorial "protocol stack" (framing) of the protocol.
+/// @ref page_frame_tutorial "framing" of the protocol.
 ///

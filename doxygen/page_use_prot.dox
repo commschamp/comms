@@ -2318,7 +2318,7 @@
 /// // Alias to my_protocol::Frame
 /// using MyFrame = my_protocol::Frame<MyMessage>
 ///
-/// MyFrame frame; // Protocol stack object
+/// MyFrame frame; // Frame object
 /// MyHandler handler; // Handler object
 /// std::size_t consumed = comms::processAllWithDispatch(buf, bufLen, frame, handler);
 /// ... // Removed consumed bytes from input buffer
@@ -2412,7 +2412,7 @@
 ///         my_protocol::Message2<MyMessage>
 ///     >;
 ///
-/// // Protocol stack definition
+/// // Frame definition
 /// using MyFrame = 
 ///     my_protocol::Frame<
 ///         MyMessage, 
@@ -2452,7 +2452,7 @@
 /// The easiest way to implement write functionality is to use the ability of
 /// the message object to perform polymorphic write.
 /// @code
-/// MyFrame frame; // Protocol stack defined in one of previous sections
+/// MyFrame frame; // Frame defined in one of previous sections
 /// void sendMessage(const MyMessage& msg, std::uint8_t* buf, std::size_t len)
 /// {
 ///     auto writeIter = comms::writeIteratorFor<MyMessage>(&buf[0]);
@@ -2483,7 +2483,7 @@
 /// is passed to @b MyMessage with @ref comms::option::app::WriteIterator option.
 /// the message object to perform polymorphic write
 /// @code
-/// MyFrame frame; // Protocol stack defined in one of previous sections
+/// MyFrame frame; // Frame defined in one of previous sections
 /// void sendMessage(const MyMessage& msg, std::vector<std::uint8_t>& outBuf)
 /// {
 ///     assert(outBuf.empty()) // Make sure buffer is empty
@@ -2539,7 +2539,7 @@
 /// @b doLength() (see @ref comms::MessageBase::doLength()). The payload write is also performed using
 /// direct call to @b doWrite() (see @ref comms::MessageBase::doWrite()).
 ///
-/// @subsection page_use_prot_transport_caching Access to Processed Stack Fields
+/// @subsection page_use_prot_transport_caching Access to Processed Frame Fields
 /// All the examples above do not store the read/written transport fields
 /// anywhere. In most cases it is not needed. However, if need arises they can
 /// be cached during the read/write operations and accessed later. The @b Frame
@@ -2569,11 +2569,11 @@
 /// payload part from the read / written buffer will also be copied to storage
 /// area of the cached payload field.
 ///
-/// As was mentioned earlier, the protocol stack is defined using so called
+/// As was mentioned earlier, the frame is defined using so called
 /// @b layer classes (defined in @ref comms::frame namespace) by wrapping
 /// one another. Access to the appropriate layer may be obtained using a 
 /// sequence of calls to @b nextLayer() member functions (see 
-/// @ref comms::frame::FrameLayerBase::nextLayer()). Alternatively, the protocol stack
+/// @ref comms::frame::FrameLayerBase::nextLayer()). Alternatively, the frame
 /// definition is also expected to use #COMMS_PROTOCOL_LAYERS_ACCESS()
 /// macro to generate a convenience access functions. For example
 /// @code
@@ -2641,7 +2641,7 @@
 /// call @b accessCachedField() (see @ref comms::frame::FrameLayerBase::accessCachedField())
 /// member function to get an access to appropriate field. For example:
 /// @code
-/// MyFrame frame; // Protocol stack object
+/// MyFrame frame; // Frame object
 /// MyFrame::AllFields fields; // Transport fields
 /// auto es = frame.readFieldsCached(fields, msgPtr, readIter, bufSize);
 /// if (es != comms::ErrorStatus::Success) {
@@ -2656,7 +2656,7 @@
 /// Version @b v2.0 the @b COMMS library has introduced additional way to retrieve 
 /// values from stripped message framing. There are several functions listed
 /// below that can be used to pass extra variadic arguments to the "read" functions
-/// of the protocol stack (see @ref comms::frame::FrameLayerBase::read() "read()"
+/// of the frame (see @ref comms::frame::FrameLayerBase::read() "read()"
 /// and @ref comms::frame::FrameLayerBase::readFieldsCached "readFieldsCached()").
 /// @li @ref comms::frame::missingSize() - Use to retrieve minimal missing
 /// size required to be read in order the following "read()" operation to have
@@ -2676,7 +2676,7 @@
 /// // Alias to my_protocol::Frame
 /// using MyFrame = my_protocol::Frame<MyMessage>
 ///
-/// MyFrame frame; // Protocol stack object
+/// MyFrame frame; // Frame object
 /// MyHandler handler; // Handler object
 /// MyFrame::MsgPtr msg; Pointer to message to be updated
 /// my_protocol::MsgId msgId = my_protocol::MsgId(); // Message ID to be updated 
@@ -3100,7 +3100,7 @@
 /// which are reported in the payload of one of the messages and may influence
 /// the way how other messages being deserialised and/or handled. Usually it is
 /// some kind of @b CONNECT message. Such scenario is implemented in the
-/// very similar way to @ref page_use_prot_extra_transport. The protocol stack
+/// very similar way to @ref page_use_prot_extra_transport. The frame
 /// is still defined using @ref comms::frame::TransportValueLayer but with @ref
 /// comms::option::def::PseudoValue option. Such layer contains the "pseudo" field in
 /// its internal data members and pretends to read it during @b read operation.
@@ -3111,7 +3111,7 @@
 /// @endcode
 /// but there is some kind of @b CONNECT message that reports client protocol version.
 /// The transport framing will probably be defined as if it handles the following
-/// stack.
+/// values.
 /// @code
 /// SIZE | ID | VERSION (pseudo) | PAYLOAD
 /// @endcode
@@ -3140,7 +3140,7 @@
 /// comms::frame::TransportValueLayer::pseudoField()) and updated with
 /// reported value.
 /// @code
-/// MyFrame frame; // Protocol stack object
+/// MyFrame frame; // Frame object
 /// frame.layer_version().pseudoField().value() = connectMsg.field_version().value();
 /// @endcode
 /// From now on every received message will have appropriate extra transport field

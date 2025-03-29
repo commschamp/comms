@@ -1,7 +1,7 @@
-/// @page page_custom_transport_value_layer Defining Custom Transport Value Protocol Stack Layer
+/// @page page_custom_transport_value_layer Defining Custom Transport Value Frame Layer
 /// @tableofcontents
-/// The @b COMMS library provides default @ref comms::frame::TransportValueLayer protocol 
-/// stack layer to handle extra value in transport framing and re-assigning it to the 
+/// The @b COMMS library provides default @ref comms::frame::TransportValueLayer 
+/// frame layer to handle extra value in transport framing and re-assigning it to the 
 /// message object. 
 /// However, it may be insufficient (or incorrect) for some particular use cases, such as
 /// using @b bitfield field to store both protocol version and some extra flags. 
@@ -140,7 +140,7 @@
 ///                              // irrelevant for this situation, because the interface splits
 ///                              // the information into two separate fields.
 ///
-///         TNextLayer,          // Next layer in the protocol stack
+///         TNextLayer,          // Next layer in the frame
 ///         comms::option::def::ExtendingClass<VersionAndFlagsLayer<TNextLayer> >
 ///                              // Make the comms::frame::TransportValueLayer aware of it being extended
 ///     >
@@ -202,9 +202,9 @@
 /// the @ref comms::frame::TransportValueLayer will invoke @b write member function
 /// of the passed field in order to serialize it. 
 ///
-/// The newly defined custom protocol stack layer can be used instead of
+/// The newly defined custom frame layer can be used instead of
 /// @ref comms::frame::TransportValueLayer when defining 
-/// @ref page_frame_tutorial "protocol stack" (framing) of the protocol.
+/// @ref page_frame_tutorial "framing" of the protocol.
 /// For example:
 /// @code
 /// namespace my_prot

@@ -34,7 +34,7 @@ namespace frame
 /// @tparam TField Type of the field that is used as sync prefix. The "sync"
 ///     field type definition must use options (@ref comms::option::def::DefaultNumValue)
 ///     to specify its default value to be equal to the expected "sync" value.
-/// @tparam TNextLayer Next transport layer in protocol stack.
+/// @tparam TNextLayer Next transport layer in frame.
 /// @tparam TOptions Extending functionality options. Supported options are:
 ///     @li  @ref comms::option::ExtendingClass - Use this option to provide a class
 ///         name of the extending class, which can be used to extend existing functionality.
@@ -95,7 +95,7 @@ public:
     /// @param[in] nextLayerReader Reader object, needs to be invoked to
     ///     forward read operation to the next layer.
     /// @param[out] extraValues Variadic extra output parameters passed to the
-    ///     "read" operatation of the protocol stack (see
+    ///     "read" operatation of the frame (see
     ///     @ref comms::frame::FrameLayerBase::read() "read()" and
     ///     @ref comms::frame::FrameLayerBase::readFieldsCached() "readFieldsCached()").
     ///     Need to passed on as variadic arguments to the @b nextLayerReader.

@@ -47,7 +47,7 @@ namespace frame
 ///     assign the field's value.@n
 ///     Available checksum algorithms provided by the COMMS library reside in
 ///     @ref comms::frame::checksum namespace (`comms/frame/checkum` folder).
-/// @tparam TNextLayer Next transport layer in protocol stack.
+/// @tparam TNextLayer Next transport layer in frame.
 /// @tparam TOptions Extending functionality options. Supported options are:
 ///     @li @ref comms::option::def::ChecksumLayerVerifyBeforeRead - By default, the
 ///         @b ChecksumPrefixLayer will invoke @b read operation of inner (wrapped) layers
@@ -132,7 +132,7 @@ public:
     /// @param[in] nextLayerReader Reader object, needs to be invoked to
     ///     forward read operation to the next layer.
     /// @param[out] extraValues Variadic extra output parameters passed to the
-    ///     "read" operatation of the protocol stack (see
+    ///     "read" operatation of the frame (see
     ///     @ref comms::frame::FrameLayerBase::read() "read()" and
     ///     @ref comms::frame::FrameLayerBase::readFieldsCached() "readFieldsCached()").
     ///     Need to passed on as variadic arguments to the @b nextLayerReader.

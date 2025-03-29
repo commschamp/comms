@@ -32,7 +32,7 @@ namespace frame
 {
 
 /// @brief Message data layer.
-/// @details Must always be the last layer in protocol stack.
+/// @details Must always be the last layer in frame.
 /// @tparam TOptions Default functionality extension options. Supported options are:
 ///     @li @ref comms::option::def::FieldType - Use this option to override default field type.
 /// @headerfile comms/frame/MsgDataLayer.h
@@ -197,7 +197,7 @@ public:
     ///     element in the tuple.
     /// @tparam TAllFields std::tuple of all the transport fields, must be
     ///     @ref AllFields type defined in the last layer class that defines
-    ///     protocol stack.
+    ///     frame.
     /// @tparam TMsg Type of the @b msg parameter
     /// @tparam TIter Type of iterator used for reading.
     /// @param[out] allFields Reference to the std::tuple object that wraps all
@@ -350,7 +350,7 @@ public:
     ///     parameter to store raw data of the message.
     /// @tparam TAllFields std::tuple of all the transport fields, must be
     ///     @ref AllFields type defined in the last layer class that defines
-    ///     protocol stack.
+    ///     frame.
     /// @tparam TMsg Type of the message.
     /// @tparam TIter Type of the iterator used for writing.
     /// @param[out] allFields Reference to the std::tuple object that wraps all
@@ -428,7 +428,7 @@ public:
     ///     parameter to store raw data of the message.
     /// @tparam TAllFields std::tuple of all the transport fields, must be
     ///     @ref AllFields type defined in the last layer class that defines
-    ///     protocol stack.
+    ///     frame.
     /// @tparam TIter Type of the random access iterator.
     /// @param[out] allFields Reference to the std::tuple object that wraps all
     ///     transport fields (@ref AllFields type of the last protocol layer class).
@@ -452,7 +452,7 @@ public:
     ///     but adds "msg" parameter to reference message object if needed.
     /// @tparam TAllFields std::tuple of all the transport fields, must be
     ///     @ref AllFields type defined in the last layer class that defines
-    ///     protocol stack.
+    ///     frame.
     /// @tparam TMsg Type of @b msg parameter.
     /// @tparam TIter Type of the random access iterator.
     /// @param[out] allFields Reference to the std::tuple object that wraps all
@@ -512,8 +512,8 @@ public:
     }
 
     /// @brief Access appropriate field from "cached" bundle of all the
-    ///     protocol stack fields.
-    /// @param allFields All fields of the protocol stack
+    ///     frame fields.
+    /// @param allFields All fields of the frame
     /// @return Reference to requested field.
     template <typename TAllFields>
     static auto accessCachedField(TAllFields& allFields) ->
