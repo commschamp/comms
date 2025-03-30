@@ -33,6 +33,18 @@ template <
 >
 using Crc = comms::frame::checksum::Crc<TResult, TPoly, TInit, TFin, TReflect, TReflectRem>;
 
+/// @brief Alias to the @ref comms::frame::checksum::Crc_CCITT
+/// @deprecated Use @ref comms::frame::checksum::Crc_CCITT class instead
+using Crc_CCITT = comms::frame::checksum::Crc_CCITT;
+
+/// @brief Alias to the @ref comms::frame::checksum::Crc_16
+/// @deprecated Use @ref comms::frame::checksum::Crc_16 class instead
+using Crc_16 = comms::frame::checksum::Crc_16;
+
+/// @brief Alias to the @ref comms::frame::checksum::Crc_32
+/// @deprecated Use @ref comms::frame::checksum::Crc_32 class instead
+using Crc_32 = comms::frame::checksum::Crc_32;
+
 }  // namespace checksum
 
 }  // namespace protocol
