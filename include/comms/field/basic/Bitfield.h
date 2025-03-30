@@ -40,15 +40,15 @@ class BitfieldReadHelper
 {
 public:
     BitfieldReadHelper(TSerializedType val, ErrorStatus& es)
-      : value_(val),
-        es_(es) 
+      : m_value(val),
+        m_es(es) 
     {
     }
 
     template <std::size_t TIdx, typename TFieldParam>
     void operator()(TFieldParam&& field)
     {
-        if (es_ != comms::ErrorStatus::Success) {
+        if (m_es != comms::ErrorStatus::Success) {
             return;
         }
 
@@ -59,9 +59,9 @@ public:
             (static_cast<TSerializedType>(1) << FieldBitLength) - 1;
 
         auto fieldSerValue =
-            static_cast<TSerializedType>((value_ >> pos_) & Mask);
+            static_cast<TSerializedType>((m_value >> m_pos) & Mask);
 
-        pos_ += FieldBitLength;
+        m_pos += FieldBitLength;
 
         static_assert(FieldType::minLength() == FieldType::maxLength(),
             "Bitfield doesn't support members with variable length");
@@ -73,13 +73,13 @@ public:
         comms::util::writeData<MaxLength>(fieldSerValue, writeIter, FieldEndian());
 
         const auto* readIter = &buf[0];
-        es_ = field.read(readIter, MaxLength);
+        m_es = field.read(readIter, MaxLength);
     }
 
 private:
-    TSerializedType value_ = TSerializedType();
-    ErrorStatus& es_;
-    std::size_t pos_ = 0U;
+    TSerializedType m_value = TSerializedType();
+    ErrorStatus& m_es;
+    std::size_t m_pos = 0U;
 };
 
 template <typename TSerializedType>
@@ -87,7 +87,7 @@ class BitfieldReadNoStatusHelper
 {
 public:
     BitfieldReadNoStatusHelper(TSerializedType val)
-        : value_(val) {}
+        : m_value(val) {}
 
     template <std::size_t TIdx, typename TFieldParam>
     void operator()(TFieldParam&& field)
@@ -99,8 +99,8 @@ public:
             (static_cast<TSerializedType>(1) << FieldBitLength) - 1;
 
         auto fieldSerValue =
-            static_cast<TSerializedType>((value_ >> pos_) & Mask);
-        pos_ += FieldBitLength;
+            static_cast<TSerializedType>((m_value >> m_pos) & Mask);
+        m_pos += FieldBitLength;
 
         static_assert(FieldType::minLength() == FieldType::maxLength(),
             "Bitfield doesn't support members with variable length");
@@ -116,8 +116,8 @@ public:
     }
 
 private:
-    TSerializedType value_ = TSerializedType();
-    std::size_t pos_ = 0U;
+    TSerializedType m_value = TSerializedType();
+    std::size_t m_pos = 0U;
 };
 
 template <typename TSerializedType>
@@ -125,13 +125,13 @@ class BitfieldWriteHelper
 {
 public:
     BitfieldWriteHelper(TSerializedType& val, ErrorStatus& es)
-      : value_(val),
-        es_(es) {}
+      : m_value(val),
+        m_es(es) {}
 
     template <std::size_t TIdx, typename TFieldParam>
     void operator()(TFieldParam&& field)
     {
-        if (es_ != comms::ErrorStatus::Success) {
+        if (m_es != comms::ErrorStatus::Success) {
             return;
         }
 
@@ -143,8 +143,8 @@ public:
         static const std::size_t MaxLength = FieldType::maxLength();
         std::uint8_t buf[MaxLength];
         auto* writeIter = &buf[0];
-        es_ = field.write(writeIter, MaxLength);
-        if (es_ != comms::ErrorStatus::Success) {
+        m_es = field.write(writeIter, MaxLength);
+        if (m_es != comms::ErrorStatus::Success) {
             return;
         }
 
@@ -157,22 +157,22 @@ public:
         static const auto Mask =
             (static_cast<TSerializedType>(1) << FieldBitLength) - 1;
 
-        static const auto ClearMask = static_cast<TSerializedType>(~(Mask << pos_));
+        static const auto ClearMask = static_cast<TSerializedType>(~(Mask << m_pos));
 
         auto valueMask =
             static_cast<TSerializedType>(
-                (static_cast<TSerializedType>(fieldSerValue) & Mask) << pos_);
+                (static_cast<TSerializedType>(fieldSerValue) & Mask) << m_pos);
 
-        value_ &= ClearMask;
-        value_ |= valueMask;
-        pos_ += FieldBitLength;
+        m_value &= ClearMask;
+        m_value |= valueMask;
+        m_pos += FieldBitLength;
     }
 
 
 private:
-    TSerializedType& value_;
-    ErrorStatus& es_;
-    std::size_t pos_ = 0U;
+    TSerializedType& m_value;
+    ErrorStatus& m_es;
+    std::size_t m_pos = 0U;
 };
 
 template <typename TSerializedType>
@@ -180,7 +180,7 @@ class BitfieldWriteNoStatusHelper
 {
 public:
     BitfieldWriteNoStatusHelper(TSerializedType& val)
-        : value_(val) {}
+        : m_value(val) {}
 
     template <std::size_t TIdx, typename TFieldParam>
     void operator()(TFieldParam&& field)
@@ -206,20 +206,20 @@ public:
         static const auto Mask =
             (static_cast<TSerializedType>(1) << FieldBitLength) - 1;
 
-        static const auto ClearMask = static_cast<TSerializedType>(~(Mask << pos_));
+        static const auto ClearMask = static_cast<TSerializedType>(~(Mask << m_pos));
 
         auto valueMask =
             static_cast<TSerializedType>(
-                (static_cast<TSerializedType>(fieldSerValue) & Mask) << pos_);
+                (static_cast<TSerializedType>(fieldSerValue) & Mask) << m_pos);
 
-        value_ &= ClearMask;
-        value_ |= valueMask;
-        pos_ += FieldBitLength;
+        m_value &= ClearMask;
+        m_value |= valueMask;
+        m_pos += FieldBitLength;
     }
 
 private:
-    TSerializedType& value_;
-    std::size_t pos_ = 0U;
+    TSerializedType& m_value;
+    std::size_t m_pos = 0U;
 };
 
 template <comms::field::details::MembersVersionDependency TVersionDependency, typename... TMembers>
@@ -298,23 +298,23 @@ public:
 
     Bitfield() = default;
     explicit Bitfield(const ValueType& val)
-      : members_(val)
+      : m_members(val)
     {
     }
 
     explicit Bitfield(ValueType&& val)
-      : members_(std::move(val))
+      : m_members(std::move(val))
     {
     }
 
     const ValueType& value() const
     {
-        return members_;
+        return m_members;
     }
 
     ValueType& value()
     {
-        return members_;
+        return m_members;
     }
 
     const ValueType& getValue() const
@@ -353,7 +353,7 @@ public:
         auto serValue = BaseImpl::template readData<SerializedType, Length>(iter);
         ErrorStatus es = ErrorStatus::Success;
         comms::util::tupleForEachWithTemplateParamIdx(
-            members_, details::BitfieldReadHelper<SerializedType>(serValue, es));
+            m_members, details::BitfieldReadHelper<SerializedType>(serValue, es));
         return es;
     }
 
@@ -367,7 +367,7 @@ public:
     {
         auto serValue = BaseImpl::template readData<SerializedType, Length>(iter);
         comms::util::tupleForEachWithTemplateParamIdx(
-            members_, details::BitfieldReadNoStatusHelper<SerializedType>(serValue));
+            m_members, details::BitfieldReadNoStatusHelper<SerializedType>(serValue));
     }
 
     bool canWrite() const
@@ -387,7 +387,7 @@ public:
         SerializedType serValue = 0;
         ErrorStatus es = ErrorStatus::Success;
         comms::util::tupleForEachWithTemplateParamIdx(
-            members_, details::BitfieldWriteHelper<SerializedType>(serValue, es));
+            m_members, details::BitfieldWriteHelper<SerializedType>(serValue, es));
         if (es == ErrorStatus::Success) {
             comms::util::writeData<Length>(serValue, iter, Endian());
         }
@@ -404,7 +404,7 @@ public:
     {
         SerializedType serValue = 0;
         comms::util::tupleForEachWithTemplateParamIdx(
-            members_, details::BitfieldWriteNoStatusHelper<SerializedType>(serValue));
+            m_members, details::BitfieldWriteNoStatusHelper<SerializedType>(serValue));
         comms::util::writeData<Length>(serValue, iter, Endian());
     }
 
@@ -416,7 +416,7 @@ public:
     bool refresh()
     {
         return comms::util::tupleAccumulate(
-            members_, false, comms::field::details::FieldRefreshHelper<>());
+            m_members, false, comms::field::details::FieldRefreshHelper<>());
     }
 
     template <std::size_t TIdx>
@@ -450,7 +450,7 @@ protected:
     using BaseImpl::writeData;
 
 private:
-    ValueType members_;
+    ValueType m_members;
 };
 
 }  // namespace basic

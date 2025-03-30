@@ -16,6 +16,7 @@
 #include "comms/field/basic/Variant.h"
 #include "comms/field/details/AdaptBasicField.h"
 #include "comms/options.h"
+#include "comms/util/Tuple.h"
 
 namespace comms
 {
@@ -562,19 +563,19 @@ class VariantEqualityCompHelper
 {
 public:
     VariantEqualityCompHelper(const TVar& other, bool& result)
-      : other_(other),
-        result_(result)
+      : m_other(other),
+        m_result(result)
     {}
 
     template <std::size_t TIdx, typename TField>
     void operator()(const TField& field)
     {
-        result_ = (field == other_.template accessField<TIdx>());
+        m_result = (field == m_other.template accessField<TIdx>());
     }
 
 private:
-    const TVar& other_;
-    bool& result_;
+    const TVar& m_other;
+    bool& m_result;
 
 };
 
@@ -589,19 +590,19 @@ class VariantLessCompHelper
 {
 public:
     VariantLessCompHelper(const TVar& other, bool& result)
-      : other_(other),
-        result_(result)
+      : m_other(other),
+        m_result(result)
     {}
 
     template <std::size_t TIdx, typename TField>
     void operator()(const TField& field)
     {
-        result_ = (field < other_.template accessField<TIdx>());
+        m_result = (field < m_other.template accessField<TIdx>());
     }
 
 private:
-    const TVar& other_;
-    bool& result_;
+    const TVar& m_other;
+    bool& m_result;
 };
 
 template <typename TVar>

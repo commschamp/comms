@@ -166,7 +166,7 @@ public:
 
     bool canAllocate() const
     {
-        return alloc_.canAllocate();
+        return m_alloc.canAllocate();
     }
 
     std::size_t msgCount(MsgIdParamType id) const
@@ -214,7 +214,7 @@ protected:
                     comms::util::IsInTuple<AllMessagesInternal>::template Type<TObj>::value,
             "TObj must be in provided tuple of supported messages");
 
-        return alloc_.template alloc<TObj>(std::forward<TArgs>(args)...);
+        return m_alloc.template alloc<TObj>(std::forward<TArgs>(args)...);
     }
 
     template <typename TObj, typename... TArgs>
@@ -231,7 +231,7 @@ protected:
                     comms::util::IsInTuple<AllMessagesInternal>::template Type<TObj>::value,
             "TObj must be in provided tuple of supported messages");
 
-        return alloc_.template alloc<TObj>(id, idx, std::forward<TArgs>(args)...);
+        return m_alloc.template alloc<TObj>(id, idx, std::forward<TArgs>(args)...);
     }
 
 private:
@@ -274,50 +274,50 @@ private:
     class CreateHandler
     {
     public:
-        explicit CreateHandler(Alloc& a) : a_(a) {}
+        explicit CreateHandler(Alloc& a) : m_a(a) {}
 
         MsgPtr getMsg()
         {
-            return std::move(msg_);
+            return std::move(m_msg);
         }
 
         template <typename T>
         void handle()
         {
-            msg_ = a_.template alloc<T>();
+            m_msg = m_a.template alloc<T>();
         }
 
     private:
-        Alloc& a_;
-        MsgPtr msg_;
+        Alloc& m_a;
+        MsgPtr m_msg;
     };
 
     class NonVirtualDestructorCreateHandler
     {
     public:
         explicit NonVirtualDestructorCreateHandler(MsgIdParamType id, unsigned idx, Alloc& a) :
-            id_(id),
-            idx_(idx),
-            a_(a)
+            m_id(id),
+            m_idx(idx),
+            m_a(a)
         {
         }
 
         MsgPtr getMsg()
         {
-            return std::move(msg_);
+            return std::move(m_msg);
         }
 
         template <typename T>
         void handle()
         {
-            msg_ = a_.template alloc<T>(id_, idx_);
+            m_msg = m_a.template alloc<T>(m_id, m_idx);
         }
 
     private:
-        MsgIdType id_;
-        unsigned idx_ = 0U;
-        Alloc& a_;
-        MsgPtr msg_;
+        MsgIdType m_id;
+        unsigned m_idx = 0U;
+        Alloc& m_a;
+        MsgPtr m_msg;
     };
 
     template <typename... TParams>
@@ -413,7 +413,7 @@ private:
     template <typename... TParams>
     MsgPtr createMsgInternal(MsgIdParamType id, unsigned idx, bool& success, VirtualDestructorTag<TParams...>) const
     {
-        CreateHandler handler(alloc_);
+        CreateHandler handler(m_alloc);
         success = dispatchMsgTypeInternal(id, idx, handler, DispatchTag<>());
         return handler.getMsg();
     }
@@ -421,12 +421,12 @@ private:
     template <typename... TParams>
     MsgPtr createMsgInternal(MsgIdParamType id, unsigned idx, bool& success, NonVirtualDestructorTag<TParams...>) const
     {
-        NonVirtualDestructorCreateHandler handler(id, idx, alloc_);
+        NonVirtualDestructorCreateHandler handler(id, idx, m_alloc);
         success = dispatchMsgTypeInternal(id, idx, handler, DispatchTag<>());
         return handler.getMsg();
     }
 
-    mutable Alloc alloc_;
+    mutable Alloc m_alloc;
 };
 
 

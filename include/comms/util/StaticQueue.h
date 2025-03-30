@@ -67,10 +67,10 @@ protected:
     using ConstLinearisedIteratorRange = std::pair<ConstLinearisedIterator, ConstLinearisedIterator>;
 
     StaticQueueBase(StorageTypePtr data, std::size_t capacity)
-        : data_(data),
-          capacity_(capacity),
-          startIdx_(0),
-          count_(0)
+        : m_data(data),
+          m_capacity(capacity),
+          m_startIdx(0),
+          m_count(0)
     {
     }
 
@@ -106,12 +106,12 @@ protected:
 
     constexpr std::size_t capacity() const
     {
-        return capacity_;
+        return m_capacity;
     }
 
     std::size_t size() const
     {
-        return count_;
+        return m_count;
     }
 
     void clear()
@@ -156,7 +156,7 @@ protected:
             return (*this)[0]; // Back() on empty queue
         }
 
-        return (*this)[count_ - 1];
+        return (*this)[m_count - 1];
     }
 
 
@@ -172,11 +172,11 @@ protected:
         Reference element = front();
         element.~T();
 
-        --count_;
-        ++startIdx_;
-        if ((capacity() <= startIdx_) ||
+        --m_count;
+        ++m_startIdx;
+        if ((capacity() <= m_startIdx) ||
             (empty())) {
-            startIdx_ = 0;
+            m_startIdx = 0;
         }
     }
 
@@ -201,7 +201,7 @@ protected:
         Reference element = back();
         element.~T();
 
-        --count_;
+        --m_count;
     }
 
     void popBack(std::size_t count)
@@ -243,19 +243,19 @@ protected:
     {
         ConstPointer elementPtr = &element;
         auto cellPtr = reinterpret_cast<ConstStorageTypePtr>(elementPtr);
-        if ((cellPtr < &data_[0]) ||
-            (&data_[capacity()] <= cellPtr)) {
+        if ((cellPtr < &m_data[0]) ||
+            (&m_data[capacity()] <= cellPtr)) {
             // invalid, element is not within array boundaries
             return -1;
         }
 
-        auto rawIdx = cellPtr - &data_[0];
+        auto rawIdx = cellPtr - &m_data[0];
         std::size_t actualIdx = capacity(); // invalid value
-        if (rawIdx < startIdx_) {
-            actualIdx = (capacity() - startIdx_) + rawIdx;
+        if (rawIdx < m_startIdx) {
+            actualIdx = (capacity() - m_startIdx) + rawIdx;
         }
         else {
-            actualIdx = rawIdx - startIdx_;
+            actualIdx = rawIdx - m_startIdx;
         }
 
         if (size() <= actualIdx)
@@ -269,24 +269,24 @@ protected:
 
     LinearisedIterator invalidIter()
     {
-        return reinterpret_cast<LinearisedIterator>(&data_[capacity()]);
+        return reinterpret_cast<LinearisedIterator>(&m_data[capacity()]);
     }
 
     ConstLinearisedIterator invalidIter() const
     {
-        return reinterpret_cast<LinearisedIterator>(&data_[capacity()]);
+        return reinterpret_cast<LinearisedIterator>(&m_data[capacity()]);
     }
 
     ReverseLinearisedIterator invalidReverseIter()
     {
         return ReverseLinearisedIterator(
-            reinterpret_cast<LinearisedIterator>(&data_[0]));
+            reinterpret_cast<LinearisedIterator>(&m_data[0]));
     }
 
     ConstReverseLinearisedIterator invalidReverseIter() const
     {
         return ReverseLinearisedIterator(
-            reinterpret_cast<LinearisedIterator>(&data_[0]));
+            reinterpret_cast<LinearisedIterator>(&m_data[0]));
     }
 
     LinearisedIterator lbegin()
@@ -295,7 +295,7 @@ protected:
             return invalidIter();
         }
 
-        return reinterpret_cast<LinearisedIterator>(&data_[0] + startIdx_);
+        return reinterpret_cast<LinearisedIterator>(&m_data[0] + m_startIdx);
     }
 
     ConstLinearisedIterator lbegin() const
@@ -309,7 +309,7 @@ protected:
             return invalidIter();
         }
 
-        return reinterpret_cast<LinearisedIterator>(&data_[0] + startIdx_);
+        return reinterpret_cast<LinearisedIterator>(&m_data[0] + m_startIdx);
     }
 
     ReverseLinearisedIterator rlbegin()
@@ -415,7 +415,7 @@ protected:
 
     bool linearised() const
     {
-        return (empty() || ((startIdx_ + size()) <= capacity()));
+        return (empty() || ((m_startIdx + size()) <= capacity()));
     }
 
     LinearisedIteratorRange arrayOne()
@@ -430,8 +430,8 @@ protected:
 
     ConstLinearisedIteratorRange arrayOne() const
     {
-        auto begCell = &data_[startIdx_];
-        auto endCell = std::min(&data_[startIdx_ + size()], &data_[capacity()]);
+        auto begCell = &m_data[m_startIdx];
+        auto endCell = std::min(&m_data[m_startIdx + size()], &m_data[capacity()]);
         return
             ConstLinearisedIteratorRange(
                 reinterpret_cast<ConstLinearisedIterator>(begCell),
@@ -455,8 +455,8 @@ protected:
             return ConstLinearisedIteratorRange(iter, iter);
         }
 
-        auto begCell = &data_[0];
-        auto endCell = &data_[(startIdx_ + size()) - capacity()];
+        auto begCell = &m_data[0];
+        auto endCell = &m_data[(m_startIdx + size()) - capacity()];
 
         return
             ConstLinearisedIteratorRange(
@@ -572,7 +572,7 @@ protected:
 
     Iterator begin()
     {
-        return Iterator(*this, reinterpret_cast<LinearisedIterator>(&data_[0]));
+        return Iterator(*this, reinterpret_cast<LinearisedIterator>(&m_data[0]));
     }
 
     ConstIterator begin() const
@@ -582,12 +582,12 @@ protected:
 
     ConstIterator cbegin() const
     {
-        return ConstIterator(*this, reinterpret_cast<ConstLinearisedIterator>(&data_[0]));
+        return ConstIterator(*this, reinterpret_cast<ConstLinearisedIterator>(&m_data[0]));
     }
 
     Iterator end()
     {
-        return Iterator(*this, reinterpret_cast<LinearisedIterator>(&data_[size()]));
+        return Iterator(*this, reinterpret_cast<LinearisedIterator>(&m_data[size()]));
     }
 
     ConstIterator end() const
@@ -597,7 +597,7 @@ protected:
 
     ConstIterator cend() const
     {
-        return ConstIterator(*this, reinterpret_cast<ConstLinearisedIterator>(&data_[size()]));
+        return ConstIterator(*this, reinterpret_cast<ConstLinearisedIterator>(&m_data[size()]));
     }
 
     template <typename TOther>
@@ -750,7 +750,7 @@ private:
     {
         COMMS_ASSERT(!full());
         createValueAtIndex(std::forward<U>(value), size());
-        ++count_;
+        ++m_count;
     }
 
     template <typename... TArgs>
@@ -760,7 +760,7 @@ private:
         Reference elementRef = elementAtIndex(size());
         auto elementPtr = new(&elementRef) ValueType(std::forward<TArgs>(args)...);
         static_cast<void>(elementPtr);
-        ++count_;
+        ++m_count;
     }
 
     template <typename U>
@@ -768,14 +768,14 @@ private:
     {
         COMMS_ASSERT(!full());
         createValueAtIndex(std::forward<U>(value), capacity() - 1);
-        if (startIdx_ == 0) {
-            startIdx_ = capacity() - 1;
+        if (m_startIdx == 0) {
+            m_startIdx = capacity() - 1;
         }
         else {
-            --startIdx_;
+            --m_startIdx;
         }
 
-        ++count_;
+        ++m_count;
     }
 
     template <typename U>
@@ -829,12 +829,12 @@ private:
 
     ConstReference elementAtIndex(std::size_t index) const
     {
-        std::size_t rawIdx = startIdx_ + index;
+        std::size_t rawIdx = m_startIdx + index;
         while (capacity() <= rawIdx) {
             rawIdx = rawIdx - capacity();
         }
 
-        auto cellAddr = &data_[rawIdx];
+        auto cellAddr = &m_data[rawIdx];
         return *(reinterpret_cast<ConstPointer>(cellAddr));
     }
 
@@ -892,7 +892,7 @@ private:
         const LinearisedIteratorRange& rangeTwo)
     {
         lineariseByMove(rangeOne, rangeTwo);
-        startIdx_ = std::distance(rangeTwo.first, rangeTwo.second);
+        m_startIdx = std::distance(rangeTwo.first, rangeTwo.second);
     }
 
     void lineariseByMoveTwoOne(
@@ -904,7 +904,7 @@ private:
             std::make_pair(RevIter(rangeTwo.second), RevIter(rangeTwo.first)),
             std::make_pair(RevIter(rangeOne.second), RevIter(rangeOne.first)));
 
-        startIdx_ = (capacity() - std::distance(rangeOne.first, rangeOne.second)) - size();
+        m_startIdx = (capacity() - std::distance(rangeOne.first, rangeOne.second)) - size();
     }
 
     void lineariseByPopOne()
@@ -916,12 +916,12 @@ private:
         ValueType tmp(std::move(front()));
         popFront();
         lineariseByPopOne();
-        if (startIdx_ == 0) {
+        if (m_startIdx == 0) {
             using RevIter = std::reverse_iterator<LinearisedIterator>;
             auto target =
-                RevIter(reinterpret_cast<LinearisedIterator>(&data_[capacity()]));
+                RevIter(reinterpret_cast<LinearisedIterator>(&m_data[capacity()]));
             moveRange(rlbegin(), rlend(), target);
-            startIdx_ = capacity() - size();
+            m_startIdx = capacity() - size();
         }
         pushFront(std::move(tmp));
         COMMS_ASSERT(linearised());
@@ -936,10 +936,10 @@ private:
         ValueType tmp(std::move(back()));
         popBack();
         lineariseByPopTwo();
-        if (startIdx_ != 0) {
-            auto target = reinterpret_cast<LinearisedIterator>(&data_[0]);
+        if (m_startIdx != 0) {
+            auto target = reinterpret_cast<LinearisedIterator>(&m_data[0]);
             moveRange(lbegin(), lend(), target);
-            startIdx_ = 0;
+            m_startIdx = 0;
         }
         pushBack(std::move(tmp));
         COMMS_ASSERT(linearised());
@@ -970,10 +970,10 @@ private:
         }
     }
 
-    StorageTypePtr const data_;
-    const std::size_t capacity_;
-    std::size_t startIdx_;
-    std::size_t count_;
+    StorageTypePtr const m_data;
+    const std::size_t m_capacity;
+    std::size_t m_startIdx;
+    std::size_t m_count;
 };
 
 template <typename T>
@@ -1010,53 +1010,53 @@ protected:
     using ConstReference = typename std::add_const<Reference>::type;
 
     IteratorBase(QueueType& queue, ArrayIterator iterator)
-        : queue_(queue),
-          iterator_(iterator)
+        : m_queue(queue),
+          m_iterator(iterator)
     {
     }
 
     Derived& operator=(const IteratorBase& other)
     {
-        COMMS_ASSERT(&queue_ == &other.queue_);
-        iterator_ = other.iterator_; // No need to check for self assignment
+        COMMS_ASSERT(&m_queue == &other.m_queue);
+        m_iterator = other.m_iterator; // No need to check for self assignment
         return static_cast<Derived&>(*this);
     }
 
     Derived& operator++()
     {
-        ++iterator_;
+        ++m_iterator;
         return static_cast<Derived&>(*this);
     }
 
     Derived operator++(int)
     {
         IteratorBase copy(*this);
-        ++iterator_;
+        ++m_iterator;
         return std::move(*(static_cast<Derived*>(&copy)));
     }
 
     Derived& operator--()
     {
-        --iterator_;
+        --m_iterator;
         return static_cast<Derived&>(*this);
     }
 
     Derived operator--(int)
     {
         IteratorBase copy(*this);
-        --iterator_;
+        --m_iterator;
         return std::move(*(static_cast<Derived*>(&copy)));
     }
 
     Derived& operator+=(DifferenceType value)
     {
-        iterator_ += value;
+        m_iterator += value;
         return static_cast<Derived&>(*this);
     }
 
     Derived& operator-=(DifferenceType value)
     {
-        iterator_ -= value;
+        m_iterator -= value;
         return static_cast<Derived&>(*this);
     }
 
@@ -1076,37 +1076,37 @@ protected:
 
     DifferenceType operator-(const IteratorBase& other) const
     {
-        return iterator_ - other.iterator_;
+        return m_iterator - other.m_iterator;
     }
 
     bool operator==(const IteratorBase& other) const
     {
-        return (iterator_ == other.iterator_);
+        return (m_iterator == other.m_iterator);
     }
 
     bool operator!=(const IteratorBase& other) const
     {
-        return (iterator_ != other.iterator_);
+        return (m_iterator != other.m_iterator);
     }
 
     bool operator<(const IteratorBase& other) const
     {
-        return iterator_ < other.iterator_;
+        return m_iterator < other.m_iterator;
     }
 
     bool operator<=(const IteratorBase& other) const
     {
-        return iterator_ <= other.iterator_;
+        return m_iterator <= other.m_iterator;
     }
 
     bool operator>(const IteratorBase& other) const
     {
-        return iterator_ > other.iterator_;
+        return m_iterator > other.m_iterator;
     }
 
     bool operator>=(const IteratorBase& other) const
     {
-        return iterator_ >= other.iterator_;
+        return m_iterator >= other.m_iterator;
     }
 
     Reference operator*()
@@ -1118,10 +1118,10 @@ protected:
 
     ConstReference operator*() const
     {
-        auto begCell = reinterpret_cast<ArrayIterator>(&queue_.data_[0]);
-        auto idx = iterator_ - begCell;
+        auto begCell = reinterpret_cast<ArrayIterator>(&m_queue.m_data[0]);
+        auto idx = m_iterator - begCell;
         COMMS_ASSERT(0 <= idx);
-        return queue_[static_cast<std::size_t>(idx)];
+        return m_queue[static_cast<std::size_t>(idx)];
     }
 
     Pointer operator->()
@@ -1135,27 +1135,27 @@ protected:
     }
 
     QueueType& getQueue() {
-        return queue_;
+        return m_queue;
     }
 
     typename std::add_const<QueueType&>::type getQueue() const
     {
-        return queue_;
+        return m_queue;
     }
 
     ArrayIterator& getIterator() {
-        return iterator_;
+        return m_iterator;
     }
 
     typename std::add_const<ArrayIterator>::type& getIterator() const
     {
-        return iterator_;
+        return m_iterator;
     }
 
 private:
 
-    QueueType& queue_; ///< Queue
-    ArrayIterator iterator_; ///< Low level array iterator
+    QueueType& m_queue; ///< Queue
+    ArrayIterator m_iterator; ///< Low level array iterator
 };
 
 template <typename T>
@@ -1922,7 +1922,7 @@ public:
     /// @note Thread safety: Safe
     /// @note Exception guarantee: No throw
     StaticQueue()
-        : Base(&array_[0], TSize)
+        : Base(&m_array[0], TSize)
     {
     }
 
@@ -1935,7 +1935,7 @@ public:
     /// @note Exception guarantee: No throw in case copy constructor
     ///       of the internal elements do not throw, Basic otherwise.
     StaticQueue(const StaticQueue& queue)
-        : Base(&array_[0], TSize)
+        : Base(&m_array[0], TSize)
     {
         Base::assignElements(queue);
     }
@@ -1949,7 +1949,7 @@ public:
     /// @note Exception guarantee: No throw in case move constructor
     ///       of the internal elements do not throw, Basic otherwise.
     StaticQueue(StaticQueue&& queue)
-        : Base(&array_[0], TSize)
+        : Base(&m_array[0], TSize)
     {
         Base::assignElements(std::move(queue));
     }
@@ -1965,7 +1965,7 @@ public:
     ///       of the internal elements do not throw, Basic otherwise.
     template <std::size_t TAnySize>
     StaticQueue(const StaticQueue<T, TAnySize>& queue)
-        : Base(&array_[0], TSize)
+        : Base(&m_array[0], TSize)
     {
         Base::assignElements(queue);
     }
@@ -1980,7 +1980,7 @@ public:
     ///       of the internal elements do not throw, Basic otherwise.
     template <std::size_t TAnySize>
     StaticQueue(StaticQueue<T, TAnySize>&& queue)
-        : Base(&array_[0], TSize)
+        : Base(&m_array[0], TSize)
     {
         Base::assignElements(std::move(queue));
     }
@@ -2756,7 +2756,7 @@ public:
 
 private:
     using ArrayType = std::array<StorageType, TSize>;
-    alignas(alignof(T)) ArrayType array_;
+    alignas(alignof(T)) ArrayType m_array;
 };
 
 /// @brief Const iterator for the elements of StaticQueue.

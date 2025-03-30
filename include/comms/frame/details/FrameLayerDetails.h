@@ -93,15 +93,15 @@ template<typename...>
 class MissingSizeRetriever
 {
 public:
-    MissingSizeRetriever(std::size_t& val) : value_(val) {}
+    MissingSizeRetriever(std::size_t& val) : m_value(val) {}
 
     void setValue(std::size_t val)
     {
-        value_ = val;
+        m_value = val;
     }
 
 private:
-    std::size_t& value_;
+    std::size_t& m_value;
 };
 
 template <typename T>
@@ -126,16 +126,16 @@ template <typename TId>
 class MsgIdRetriever
 {
 public:
-    MsgIdRetriever(TId& val) : value_(val) {}
+    MsgIdRetriever(TId& val) : m_value(val) {}
 
     template <typename U>
     void setValue(U&& val)
     {
-        value_ = static_cast<TId>(val);
+        m_value = static_cast<TId>(val);
     }
 
 private:
-    TId& value_;
+    TId& m_value;
 };
 
 template <typename T>
@@ -159,15 +159,15 @@ constexpr bool isMsgIdRetriever()
 class MsgIndexRetriever
 {
 public:
-    MsgIndexRetriever(std::size_t& val) : value_(val) {}
+    MsgIndexRetriever(std::size_t& val) : m_value(val) {}
 
     void setValue(std::size_t val)
     {
-        value_ = val;
+        m_value = val;
     }
 
 private:
-    std::size_t& value_;
+    std::size_t& m_value;
 };
 
 template <typename T>
@@ -192,18 +192,18 @@ template <typename TIter>
 class MsgPayloadRetriever
 {
 public:
-    MsgPayloadRetriever(TIter& iter, std::size_t& len) : iter_(iter), len_(len) {}
+    MsgPayloadRetriever(TIter& iter, std::size_t& len) : m_iter(iter), m_len(len) {}
 
     template <typename TOtherIter>
     void setValue(TOtherIter iter, std::size_t len)
     {
-        iter_ = static_cast<TIter>(iter);
-        len_ = len;
+        m_iter = static_cast<TIter>(iter);
+        m_len = len;
     }
 
 private:
-    TIter& iter_;
-    std::size_t& len_;
+    TIter& m_iter;
+    std::size_t& m_len;
 };
 
 template <typename TITer>

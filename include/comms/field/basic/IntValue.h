@@ -38,7 +38,7 @@ public:
     IntValue() = default;
 
     explicit IntValue(ValueType val)
-      : value_(val)
+      : m_value(val)
     {
     }
 
@@ -51,12 +51,12 @@ public:
 
     const ValueType& value() const
     {
-        return value_;
+        return m_value;
     }
 
     ValueType& value()
     {
-        return value_;
+        return m_value;
     }
 
     const ValueType& getValue() const
@@ -111,7 +111,7 @@ public:
     {
         auto serialisedValue =
             BaseImpl::template readData<SerialisedType>(iter);
-        value_ = fromSerialised(serialisedValue);
+        m_value = fromSerialised(serialisedValue);
     }
 
     template <typename TIter>
@@ -128,7 +128,7 @@ public:
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        BaseImpl::writeData(toSerialised(value_), iter);
+        BaseImpl::writeData(toSerialised(m_value), iter);
     }
 
     static constexpr DisplayOffsetType displayOffset()
@@ -137,7 +137,7 @@ public:
     }
 
 private:
-    ValueType value_ = static_cast<ValueType>(0);
+    ValueType m_value = static_cast<ValueType>(0);
 };
 
 }  // namespace basic

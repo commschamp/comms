@@ -46,14 +46,14 @@ public:
     Optional() = default;
 
     explicit Optional(const Field& fieldSrc, Mode mode = Mode::Tentative)
-      : field_(fieldSrc),
-        mode_(mode)
+      : m_field(fieldSrc),
+        m_mode(mode)
     {
     }
 
     explicit Optional(Field&& fieldSrc, Mode mode = Mode::Tentative)
-      : field_(std::move(fieldSrc)),
-        mode_(mode)
+      : m_field(std::move(fieldSrc)),
+        m_mode(mode)
     {
     }
 
@@ -69,12 +69,12 @@ public:
 
     Field& field()
     {
-        return field_;
+        return m_field;
     }
 
     const Field& field() const
     {
-        return field_;
+        return m_field;
     }
 
     ValueType& value()
@@ -100,22 +100,22 @@ public:
 
     Mode getMode() const
     {
-        return mode_;
+        return m_mode;
     }
 
     void setMode(Mode val)
     {
         COMMS_ASSERT(val < Mode::NumOfModes);
-        mode_ = val;
+        m_mode = val;
     }
 
     std::size_t length() const
     {
-        if (mode_ != Mode::Exists) {
+        if (m_mode != Mode::Exists) {
             return 0U;
         }
 
-        return field_.length();
+        return m_field.length();
     }
 
     static constexpr std::size_t minLength()
@@ -130,35 +130,35 @@ public:
 
     bool valid() const
     {
-        if (mode_ == Mode::Missing) {
+        if (m_mode == Mode::Missing) {
             return true;
         }
 
-        return field_.valid();
+        return m_field.valid();
     }
 
     bool refresh() {
-        if (mode_ != Mode::Exists) {
+        if (m_mode != Mode::Exists) {
             return false;
         }
-        return field_.refresh();
+        return m_field.refresh();
     }
 
     template <typename TIter>
     ErrorStatus read(TIter& iter, std::size_t len)
     {
-        if (mode_ == Mode::Missing) {
+        if (m_mode == Mode::Missing) {
             return comms::ErrorStatus::Success;
         }
 
-        if ((mode_ == Mode::Tentative) && (0U == len)) {
-            mode_ = Mode::Missing;
+        if ((m_mode == Mode::Tentative) && (0U == len)) {
+            m_mode = Mode::Missing;
             return comms::ErrorStatus::Success;
         }
 
-        auto es = field_.read(iter, len);
+        auto es = m_field.read(iter, len);
         if (es == comms::ErrorStatus::Success) {
-            mode_ = Mode::Exists;
+            m_mode = Mode::Exists;
         }
         return es;
     }
@@ -170,21 +170,21 @@ public:
 
     bool canWrite() const
     {
-        if (mode_ != Mode::Exists) {
+        if (m_mode != Mode::Exists) {
             return true;
         }
 
-        return field_.canWrite();
+        return m_field.canWrite();
     }
 
     template <typename TIter>
     ErrorStatus write(TIter& iter, std::size_t len) const
     {
-        if (mode_ != Mode::Exists) {
+        if (m_mode != Mode::Exists) {
             return comms::ErrorStatus::Success;
         }
 
-        return field_.write(iter, len);
+        return m_field.write(iter, len);
     }
 
     static constexpr bool hasWriteNoStatus()
@@ -195,11 +195,11 @@ public:
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        if (mode_ != Mode::Exists) {
+        if (m_mode != Mode::Exists) {
             return;
         }
 
-        field_.writeNoStatus(iter);
+        m_field.writeNoStatus(iter);
     }
 
     static constexpr bool isVersionDependent()
@@ -214,12 +214,12 @@ public:
 
     bool setVersion(VersionType version)
     {
-        return field_.setVersion(static_cast<typename Field::VersionType>(version));
+        return m_field.setVersion(static_cast<typename Field::VersionType>(version));
     }
 
 private:
-    Field field_;
-    Mode mode_ = Mode::Tentative;
+    Field m_field;
+    Mode m_mode = Mode::Tentative;
 };
 
 }  // namespace basic

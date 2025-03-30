@@ -149,7 +149,7 @@ public:
     /// @brief Constructor
     /// @param[in] val Value of the field to initialise it with.
     explicit BitmaskValue(const ValueType& val)
-       : intValue_(val)
+       : m_intValue(val)
     {
     }
 
@@ -208,34 +208,34 @@ public:
     /// @return Const reference to the underlying stored value.
     const ValueType& value() const
     {
-        return intValue_.value();
+        return m_intValue.value();
     }
 
     /// @brief Get access to underlying mask value storage.
     /// @return Reference to the underlying stored value.
     ValueType& value()
     {
-        return intValue_.value();
+        return m_intValue.value();
     }
 
     /// @brief Get value
     const ValueType& getValue() const
     {
-        return intValue_.getValue();
+        return m_intValue.getValue();
     }
 
     /// @brief Set value
     template <typename U>
     void setValue(U&& val)
     {
-        intValue_.setValue(std::forward<U>(val));
+        m_intValue.setValue(std::forward<U>(val));
     }        
 
     /// @brief Get length required to serialise the current field value.
     /// @return Number of bytes it will take to serialise the field value.
     constexpr std::size_t length() const
     {
-        return intValue_.length();
+        return m_intValue.length();
     }
 
     /// @brief Get maximal length that is required to serialise field of this type.
@@ -260,7 +260,7 @@ public:
     template <typename TIter>
     ErrorStatus read(TIter& iter, std::size_t size)
     {
-        return intValue_.read(iter, size);
+        return m_intValue.read(iter, size);
     }
 
     /// @brief Compile time check of whether the field has @b proper
@@ -278,7 +278,7 @@ public:
     template <typename TIter>
     void readNoStatus(TIter& iter)
     {
-        intValue_.readNoStatus(iter);
+        m_intValue.readNoStatus(iter);
     }
 
     /// @brief Check of whether the field has a consistent value for writing.
@@ -295,7 +295,7 @@ public:
     template <typename TIter>
     ErrorStatus write(TIter& iter, std::size_t size) const
     {
-        return intValue_.write(iter, size);
+        return m_intValue.write(iter, size);
     }
 
     /// @brief Compile time check of whether the field has @b proper
@@ -313,20 +313,20 @@ public:
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        intValue_.writeNoStatus(iter);
+        m_intValue.writeNoStatus(iter);
     }
 
     /// @brief Check validity of the field value.
     constexpr bool valid() const
     {
-        return intValue_.valid();
+        return m_intValue.valid();
     }
 
     /// @brief Refresh contents of the field
     /// @return @b true in case the field's value has been updated, @b false otherwise
     bool refresh()
     {
-        return intValue_.refresh();
+        return m_intValue.refresh();
     }
 
     /// @brief Check whether all bits from provided mask are set.
@@ -396,14 +396,14 @@ public:
     /// @details Exists only if @ref comms::option::def::VersionStorage option has been provided.
     VersionType getVersion() const
     {
-        return intValue_.getVersion();
+        return m_intValue.getVersion();
     }
 
     /// @brief Default implementation of version update.
     /// @return @b true in case the field contents have changed, @b false otherwise
     bool setVersion(VersionType version)
     {
-        return intValue_.setVersion(version);
+        return m_intValue.setVersion(version);
     }
 
     /// @brief Force serialization length of the field.
@@ -415,14 +415,14 @@ public:
     ///     @li negative value means the length is determined by the stored value
     void setForcedLength(int len)
     {
-        intValue_.setForcedLength(len);
+        m_intValue.setForcedLength(len);
     }
 
     /// @brief Get forced serialization length
     /// @see @ref setForcedLength()
     int getForcedLength() const
     {
-        return intValue_.getForcedLength();
+        return m_intValue.getForcedLength();
     }    
 
 protected:
@@ -477,7 +477,7 @@ private:
             "comms::option::def::MissingOnReadFail option is not applicable to BitmaskValue field");   
     static_assert(!ParsedOptions::HasMissingOnInvalid,
             "comms::option::def::MissingOnInvalid option is not applicable to BitmaskValue field");                
-    IntValueField intValue_;
+    IntValueField m_intValue;
 };
 
 // Implementation

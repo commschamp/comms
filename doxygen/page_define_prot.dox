@@ -479,13 +479,13 @@
 ///     // Access the stored std::tuple of fields
 ///     AllFields& fields()
 ///     {
-///         return fields_;
+///         return m_fields;
 ///     }
 ///
 ///     // Access the stored std::tuple of fields
 ///     const AllFields& fields() const
 ///     {
-///         return fields_;
+///         return m_fields;
 ///     }
 ///
 ///     // Default implementation of read functionality
@@ -526,7 +526,7 @@
 ///     }
 ///
 /// private:
-///     AllFields fields_; // Fields stored as tuple.
+///     AllFields m_fields; // Fields stored as tuple.
 /// };
 /// @endcode
 /// See also relevant API documentation:

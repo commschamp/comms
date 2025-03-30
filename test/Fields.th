@@ -3597,14 +3597,14 @@ public:
 class Test70_LengthRetriever
 {
 public:
-    Test70_LengthRetriever(std::size_t& val) : val_(val) {}
+    Test70_LengthRetriever(std::size_t& val) : m_val(val) {}
     template <std::size_t TIdx, typename TField>
     void operator()(const TField& field)
     {
-        val_ = field.length();
+        m_val = field.length();
     }
 private:
-    std::size_t& val_;
+    std::size_t& m_val;
 };
 
 void FieldsTestSuite::test70()

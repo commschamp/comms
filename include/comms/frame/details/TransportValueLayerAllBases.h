@@ -24,16 +24,16 @@ class TransportValueLayerPseudoBase : public TBase
 public:
     FieldImpl& pseudoField()
     {
-        return pseudoField_;
+        return m_pseudoField;
     }
 
     const FieldImpl& pseudoField() const
     {
-        return pseudoField_;
+        return m_pseudoField;
     }
 
 private:
-    FieldImpl pseudoField_;
+    FieldImpl m_pseudoField;
 };
 
 } // namespace details

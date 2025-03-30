@@ -68,12 +68,12 @@ public:
 
     Bundle() = default;
     explicit Bundle(const ValueType& val)
-      : members_(val)
+      : m_members(val)
     {
     }
 
     explicit Bundle(ValueType&& val)
-      : members_(std::move(val))
+      : m_members(std::move(val))
     {
     }
 
@@ -86,12 +86,12 @@ public:
 
     const ValueType& value() const
     {
-        return members_;
+        return m_members;
     }
 
     ValueType& value()
     {
-        return members_;
+        return m_members;
     }
 
     const ValueType& getValue() const
@@ -401,7 +401,7 @@ private:
     }
 
     static_assert(comms::util::IsTuple<ValueType>::Value, "ValueType must be tuple");
-    ValueType members_;
+    ValueType m_members;
 };
 
 }  // namespace basic

@@ -14,6 +14,7 @@
 #include "comms/field/basic/Bundle.h"
 #include "comms/field/details/AdaptBasicField.h"
 #include "comms/options.h"
+#include "comms/util/Tuple.h"
 
 namespace comms
 {

@@ -13,6 +13,7 @@
 #include "comms/Field.h"
 #include "comms/options.h"
 #include "comms/util/access.h"
+#include "comms/util/Tuple.h"
 #include "comms/util/type_traits.h"
 
 #include <cstddef>
@@ -100,18 +101,18 @@ public:
 
     TransportFields& transportFields()
     {
-        return transportFields_;
+        return m_transportFields;
     }
 
     const TransportFields& transportFields() const
     {
-        return transportFields_;
+        return m_transportFields;
     }
 
 protected:
     ~MessageInterfaceExtraTransportFieldsBase() noexcept = default;
 private:
-    TransportFields transportFields_;
+    TransportFields m_transportFields;
 };
 
 // ------------------------------------------------------

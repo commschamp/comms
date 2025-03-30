@@ -111,8 +111,8 @@ public:
     ///     @ref NextLayer object.
     /// @param args Arguments to be passed to the constructor of the next layer
     template <typename... TArgs>
-    explicit FrameLayerBase(TArgs&&... args)
-      : nextLayer_(std::forward<TArgs>(args)...)
+    explicit FrameLayerBase(TArgs&&... args) :
+        m_nextLayer(std::forward<TArgs>(args)...)
     {
     }
 
@@ -125,13 +125,13 @@ public:
     /// @brief Get access to the next layer object.
     NextLayer& nextLayer()
     {
-        return nextLayer_;
+        return m_nextLayer;
     }
 
     /// @brief Get "const" access to the next layer object.
     const NextLayer& nextLayer() const
     {
-        return nextLayer_;
+        return m_nextLayer;
     }
 
     /// @brief Get access to this layer object.
@@ -539,7 +539,7 @@ public:
     /// @return length of the field + length reported by the next layer.
     constexpr std::size_t length() const
     {
-        return thisLayer().doFieldLength() + nextLayer_.length();
+        return thisLayer().doFieldLength() + m_nextLayer.length();
     }
 
     /// @brief Get remaining length of wrapping transport information + length
@@ -557,7 +557,7 @@ public:
     template <typename TMsg>
     constexpr std::size_t length(const TMsg& msg) const
     {
-        return thisLayer().doFieldLength(msg) + nextLayer_.length(msg);
+        return thisLayer().doFieldLength(msg) + m_nextLayer.length(msg);
     }
 
     /// @brief Update recently written (using write()) message contents data.
@@ -1000,7 +1000,7 @@ protected:
     {
     public:
         explicit NextLayerReader(NextLayer& nextLayer)
-          : nextLayer_(nextLayer)
+          : m_nextLayer(nextLayer)
         {
         }
 
@@ -1011,17 +1011,17 @@ protected:
             std::size_t size,
             TExtraValues... extraValues)
         {
-            return nextLayer_.read(msg, iter, size, extraValues...);
+            return m_nextLayer.read(msg, iter, size, extraValues...);
         }
     private:
-        NextLayer& nextLayer_;
+        NextLayer& m_nextLayer;
     };
 
     class NextLayerUntilDataReader
     {
     public:
         explicit NextLayerUntilDataReader(NextLayer& nextLayer)
-          : nextLayer_(nextLayer)
+          : m_nextLayer(nextLayer)
         {
         }
 
@@ -1032,10 +1032,10 @@ protected:
             std::size_t size,
             TExtraValues... extraValues)
         {
-            return nextLayer_.readUntilData(msg, iter, size, extraValues...);
+            return m_nextLayer.readUntilData(msg, iter, size, extraValues...);
         }
     private:
-        NextLayer& nextLayer_;
+        NextLayer& m_nextLayer;
     };
 
     template <typename TAllFields>
@@ -1045,8 +1045,8 @@ protected:
         NextLayerCachedFieldsReader(
             NextLayer& nextLayer,
             TAllFields& allFields)
-          : nextLayer_(nextLayer),
-            allFields_(allFields)
+          : m_nextLayer(nextLayer),
+            m_allFields(allFields)
         {
         }
 
@@ -1057,12 +1057,12 @@ protected:
             std::size_t size,
             TExtraValues... extraValues)
         {
-            return nextLayer_.readFieldsCached(allFields_, msg, iter, size, extraValues...);
+            return m_nextLayer.readFieldsCached(m_allFields, msg, iter, size, extraValues...);
         }
 
     private:
-        NextLayer& nextLayer_;
-        TAllFields& allFields_;
+        NextLayer& m_nextLayer;
+        TAllFields& m_allFields;
     };
 
     template <typename TAllFields>
@@ -1072,8 +1072,8 @@ protected:
         NextLayerCachedFieldsUntilDataReader(
             NextLayer& nextLayer,
             TAllFields& allFields)
-          : nextLayer_(nextLayer),
-            allFields_(allFields)
+          : m_nextLayer(nextLayer),
+            m_allFields(allFields)
         {
         }
 
@@ -1084,12 +1084,12 @@ protected:
             std::size_t size,
             TExtraValues... extraValues)
         {
-            return nextLayer_.readUntilDataFieldsCache(allFields_, msg, iter, size, extraValues...);
+            return m_nextLayer.readUntilDataFieldsCache(m_allFields, msg, iter, size, extraValues...);
         }
 
     private:
-        NextLayer& nextLayer_;
-        TAllFields& allFields_;
+        NextLayer& m_nextLayer;
+        TAllFields& m_allFields;
     };
 
     class NextLayerWriter
@@ -1097,18 +1097,18 @@ protected:
     public:
 
         explicit NextLayerWriter(const NextLayer& nextLayer)
-          : nextLayer_(nextLayer)
+          : m_nextLayer(nextLayer)
         {
         }
 
         template <typename TMsg, typename TIter>
         ErrorStatus write(const TMsg& msg, TIter& iter, std::size_t size) const
         {
-            return nextLayer_.write(msg, iter, size);
+            return m_nextLayer.write(msg, iter, size);
         }
 
     private:
-        const NextLayer& nextLayer_;
+        const NextLayer& m_nextLayer;
     };
 
     template <typename TAllFields>
@@ -1118,20 +1118,20 @@ protected:
         NextLayerCachedFieldsWriter(
             const NextLayer& nextLayer,
             TAllFields& allFields)
-          : nextLayer_(nextLayer),
-            allFields_(allFields)
+          : m_nextLayer(nextLayer),
+            m_allFields(allFields)
         {
         }
 
         template <typename TMsg, typename TIter>
         ErrorStatus write(const TMsg& msg, TIter& iter, std::size_t size) const
         {
-            return nextLayer_.writeFieldsCached(allFields_, msg, iter, size);
+            return m_nextLayer.writeFieldsCached(m_allFields, msg, iter, size);
         }
 
     private:
-        const NextLayer& nextLayer_;
-        TAllFields& allFields_;
+        const NextLayer& m_nextLayer;
+        TAllFields& m_allFields;
     };
 
     class NextLayerUpdater
@@ -1139,24 +1139,24 @@ protected:
     public:
 
         explicit NextLayerUpdater(const NextLayer& nextLayer)
-          : nextLayer_(nextLayer)
+          : m_nextLayer(nextLayer)
         {
         }
 
         template <typename TIter>
         ErrorStatus update(TIter& iter, std::size_t size) const
         {
-            return nextLayer_.update(iter, size);
+            return m_nextLayer.update(iter, size);
         }
 
         template <typename TMsg, typename TIter>
         ErrorStatus update(const TMsg& msg, TIter& iter, std::size_t size) const
         {
-            return nextLayer_.update(msg, iter, size);
+            return m_nextLayer.update(msg, iter, size);
         }
 
     private:
-        const NextLayer& nextLayer_;
+        const NextLayer& m_nextLayer;
     };
 
     template <typename TAllFields>
@@ -1166,74 +1166,74 @@ protected:
         NextLayerCachedFieldsUpdater(
             const NextLayer& nextLayer,
             TAllFields& allFields)
-          : nextLayer_(nextLayer),
-            allFields_(allFields)
+          : m_nextLayer(nextLayer),
+            m_allFields(allFields)
         {
         }
 
         template <typename TIter>
         ErrorStatus update(TIter& iter, std::size_t size) const
         {
-            return nextLayer_.updateFieldsCached(allFields_, iter, size);
+            return m_nextLayer.updateFieldsCached(m_allFields, iter, size);
         }
 
         template <typename TMsg, typename TIter>
         ErrorStatus update(const TMsg& msg, TIter& iter, std::size_t size) const
         {
-            return nextLayer_.updateFieldsCached(allFields_, msg, iter, size);
+            return m_nextLayer.updateFieldsCached(m_allFields, msg, iter, size);
         }
 
     private:
-        const NextLayer& nextLayer_;
-        TAllFields& allFields_;
+        const NextLayer& m_nextLayer;
+        TAllFields& m_allFields;
     };
 
     NextLayerReader createNextLayerReader()
     {
-        return NextLayerReader(nextLayer_);
+        return NextLayerReader(m_nextLayer);
     }
 
     NextLayerUntilDataReader createNextLayerUntilDataReader()
     {
-        return NextLayerUntilDataReader(nextLayer_);
+        return NextLayerUntilDataReader(m_nextLayer);
     }
 
     template <typename TAllFields>
     NextLayerCachedFieldsReader<TAllFields>
     createNextLayerCachedFieldsReader(TAllFields& fields)
     {
-        return NextLayerCachedFieldsReader<TAllFields>(nextLayer_, fields);
+        return NextLayerCachedFieldsReader<TAllFields>(m_nextLayer, fields);
     }
 
     template <typename TAllFields>
     NextLayerCachedFieldsUntilDataReader<TAllFields>
     createNextLayerCachedFieldsUntilDataReader(TAllFields& fields)
     {
-        return NextLayerCachedFieldsUntilDataReader<TAllFields>(nextLayer_, fields);
+        return NextLayerCachedFieldsUntilDataReader<TAllFields>(m_nextLayer, fields);
     }
 
     NextLayerWriter createNextLayerWriter() const
     {
-        return NextLayerWriter(nextLayer_);
+        return NextLayerWriter(m_nextLayer);
     }
 
     template <typename TAllFields>
     NextLayerCachedFieldsWriter<TAllFields>
     createNextLayerCachedFieldsWriter(TAllFields& fields) const
     {
-        return NextLayerCachedFieldsWriter<TAllFields>(nextLayer_, fields);
+        return NextLayerCachedFieldsWriter<TAllFields>(m_nextLayer, fields);
     }
 
     NextLayerUpdater createNextLayerUpdater() const
     {
-        return NextLayerUpdater(nextLayer_);
+        return NextLayerUpdater(m_nextLayer);
     }
 
     template <typename TAllFields>
     NextLayerCachedFieldsUpdater<TAllFields>
     createNextLayerCachedFieldsUpdater(TAllFields& fields) const
     {
-        return NextLayerCachedFieldsUpdater<TAllFields>(nextLayer_, fields);
+        return NextLayerCachedFieldsUpdater<TAllFields>(m_nextLayer, fields);
     }
 
     /// @endcond
@@ -1386,7 +1386,7 @@ private:
         static_assert(
             details::isMissingSizeRetriever<typename std::decay<decltype(retriever)>::type>(),
             "Must be missing size retriever");
-        auto totalLen = field.length() + nextLayer_.length();
+        auto totalLen = field.length() + m_nextLayer.length();
         COMMS_ASSERT(size <= totalLen);
         retriever.setValue(std::max(std::size_t(1U), totalLen - size));
         updateMissingSizeInternal(size, extraValues...);
@@ -1505,7 +1505,7 @@ private:
     }
 
     static_assert (comms::util::IsTuple<AllFields>::Value, "Must be tuple");
-    NextLayer nextLayer_;
+    NextLayer m_nextLayer;
 };
 
 /// @brief Upcast protocol layer in order to have

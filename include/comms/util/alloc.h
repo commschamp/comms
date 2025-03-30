@@ -159,19 +159,19 @@ class NoVirtualDestructorDeleter
 {
     static const unsigned InvalidIdx = std::numeric_limits<unsigned>::max();
 public:
-    NoVirtualDestructorDeleter() : id_(TId()), idx_(InvalidIdx) {}
-    NoVirtualDestructorDeleter(TId id, unsigned idx) : id_(id), idx_(idx) {}
+    NoVirtualDestructorDeleter() : m_id(TId()), m_idx(InvalidIdx) {}
+    NoVirtualDestructorDeleter(TId id, unsigned idx) : m_id(id), m_idx(idx) {}
 
     void operator()(TInterface* obj)
     {
         COMMS_ASSERT(obj != nullptr);
-        COMMS_ASSERT(idx_ != InvalidIdx);
+        COMMS_ASSERT(m_idx != InvalidIdx);
         TDeleteHandler handler;
-        comms::dispatchMsgStaticBinSearch<TAllMessages>(id_, idx_, *obj, handler);
+        comms::dispatchMsgStaticBinSearch<TAllMessages>(m_id, m_idx, *obj, handler);
     }
 private:
-    TId id_;
-    unsigned idx_ = 0;
+    TId m_id;
+    unsigned m_idx = 0;
 };
 
 template <
@@ -186,14 +186,14 @@ class NoVirtualDestructorInPlaceDeleter : public
     static const unsigned InvalidIdx = std::numeric_limits<unsigned>::max();
 public:
     NoVirtualDestructorInPlaceDeleter() = default;
-    NoVirtualDestructorInPlaceDeleter(TId id, unsigned idx, bool& allocated) : Base(id, idx), allocated_(&allocated) {}
+    NoVirtualDestructorInPlaceDeleter(TId id, unsigned idx, bool& allocated) : Base(id, idx), m_allocated(&allocated) {}
 
     NoVirtualDestructorInPlaceDeleter(const NoVirtualDestructorInPlaceDeleter&) = delete;
     NoVirtualDestructorInPlaceDeleter(NoVirtualDestructorInPlaceDeleter&& other) :
         Base(std::move(other)),
-        allocated_(other.allocated_)
+        m_allocated(other.m_allocated)
     {
-        other.allocated_ = nullptr;
+        other.m_allocated = nullptr;
     }
 
     ~NoVirtualDestructorInPlaceDeleter()
@@ -208,21 +208,21 @@ public:
         }
 
         Base::operator=(std::move(other));
-        allocated_ = other.allocated_;
-        other.allocated_ = nullptr;
+        m_allocated = other.m_allocated;
+        other.m_allocated = nullptr;
         return *this;
     }
 
     void operator()(TInterface* obj)
     {
-        COMMS_ASSERT(allocated_ != nullptr);
-        COMMS_ASSERT(*allocated_);
+        COMMS_ASSERT(m_allocated != nullptr);
+        COMMS_ASSERT(*m_allocated);
         Base::operator()(obj);
-        *allocated_ = false;
-        allocated_ = nullptr;
+        *m_allocated = false;
+        m_allocated = nullptr;
     }
 private:
-    bool* allocated_ = nullptr;
+    bool* m_allocated = nullptr;
 };
 
 template <typename T>
@@ -233,7 +233,7 @@ class InPlaceDeleter
 
 public:
     InPlaceDeleter(bool* allocated = nullptr)
-        : allocated_(allocated)
+        : m_allocated(allocated)
     {
     }
 
@@ -241,7 +241,7 @@ public:
 
     template <typename U>
     InPlaceDeleter(InPlaceDeleter<U>&& other)
-        : allocated_(other.allocated_)
+        : m_allocated(other.m_allocated)
     {
         static_assert(std::is_base_of<T, U>::value ||
                       std::is_base_of<U, T>::value ||
@@ -250,7 +250,7 @@ public:
             "To make Deleter convertible, their template parameters "
             "must be convertible.");
 
-        other.allocated_ = nullptr;
+        other.m_allocated = nullptr;
     }
 
     ~InPlaceDeleter() noexcept
@@ -273,22 +273,22 @@ public:
             return *this;
         }
 
-        COMMS_ASSERT(allocated_ == nullptr);
-        allocated_ = other.allocated_;
-        other.allocated_ = nullptr;
+        COMMS_ASSERT(m_allocated == nullptr);
+        m_allocated = other.m_allocated;
+        other.m_allocated = nullptr;
         return *this;
     }
 
     void operator()(T* obj) {
-        COMMS_ASSERT(allocated_ != nullptr);
-        COMMS_ASSERT(*allocated_);
+        COMMS_ASSERT(m_allocated != nullptr);
+        COMMS_ASSERT(*m_allocated);
         obj->~T();
-        *allocated_ = false;
-        allocated_ = nullptr;
+        *m_allocated = false;
+        m_allocated = nullptr;
     }
 
 private:
-    bool* allocated_ = nullptr;
+    bool* m_allocated = nullptr;
 };
 
 
@@ -411,7 +411,7 @@ public:
     ~InPlaceSingle()
     {
         // Not supposed to be destructed while elemenent is still allocated
-        COMMS_ASSERT(!allocated_);
+        COMMS_ASSERT(!m_allocated);
     }
 
     /// @brief Allocation function
@@ -425,7 +425,7 @@ public:
     template <typename TObj, typename... TArgs>
     Ptr alloc(TArgs&&... args)
     {
-        if (allocated_) {
+        if (m_allocated) {
             return Ptr();
         }
 
@@ -440,26 +440,26 @@ public:
             std::is_same<TInterface, TObj>::value,
             "TInterface is expected to have virtual destructor");
 
-        static_assert(sizeof(TObj) <= sizeof(place_), "Object is too big");
+        static_assert(sizeof(TObj) <= sizeof(m_place), "Object is too big");
 
-        new (&place_) TObj(std::forward<TArgs>(args)...);
+        new (&m_place) TObj(std::forward<TArgs>(args)...);
         Ptr obj(
-            reinterpret_cast<TInterface*>(&place_),
-            details::InPlaceDeleter<TInterface>(&allocated_));
-        allocated_ = true;
+            reinterpret_cast<TInterface*>(&m_place),
+            details::InPlaceDeleter<TInterface>(&m_allocated));
+        m_allocated = true;
         return obj;
     }
 
     /// @brief Inquire whether the object is already allocated.
     bool allocated() const
     {
-        return allocated_;
+        return m_allocated;
     }
 
     /// @brief Get address of the objects being allocated using this allocator
     const void* allocAddr() const
     {
-        return &place_;
+        return &m_place;
     }
 
     /// @brief Function used to wrap raw pointer into a smart one
@@ -476,24 +476,24 @@ public:
 
         static_assert(std::is_base_of<TInterface, TObj>::value,
             "TObj does not inherit from TInterface");
-        COMMS_ASSERT(obj == reinterpret_cast<TInterface*>(&place_)); // Wrong object if fails
-        COMMS_ASSERT(allocated_); // Error if not set
+        COMMS_ASSERT(obj == reinterpret_cast<TInterface*>(&m_place)); // Wrong object if fails
+        COMMS_ASSERT(m_allocated); // Error if not set
         return Ptr(
-            reinterpret_cast<TInterface*>(&place_),
-            details::InPlaceDeleter<TInterface>(&allocated_));
+            reinterpret_cast<TInterface*>(&m_place),
+            details::InPlaceDeleter<TInterface>(&m_allocated));
     }
 
     /// @brief Inquiry whether allocation is possible.
     bool canAllocate() const
     {
-        return !allocated_;
+        return !m_allocated;
     }
 
 private:
     using AlignedStorage = typename TupleAsAlignedUnion<TAllTypes>::Type;
 
-    alignas(8) AlignedStorage place_;
-    bool allocated_ = false;
+    alignas(8) AlignedStorage m_place;
+    bool m_allocated = false;
 
 };
 
@@ -545,7 +545,7 @@ public:
     template <typename TObj, typename... TArgs>
     Ptr alloc(TId id, unsigned idx, TArgs&&... args)
     {
-        if (allocated_) {
+        if (m_allocated) {
             return Ptr();
         }
 
@@ -555,39 +555,39 @@ public:
         static_assert(comms::util::IsInTuple<TAllocMessages>::template Type<TObj>::value, ""
             "TObj must be in provided tuple of supported types");
 
-        static_assert(sizeof(TObj) <= sizeof(place_), "Object is too big");
+        static_assert(sizeof(TObj) <= sizeof(m_place), "Object is too big");
 
-        new (&place_) TObj(std::forward<TArgs>(args)...);
+        new (&m_place) TObj(std::forward<TArgs>(args)...);
         Ptr obj(
-            reinterpret_cast<TInterface*>(&place_),
-            Deleter(id, idx, allocated_));
-        allocated_ = true;
+            reinterpret_cast<TInterface*>(&m_place),
+            Deleter(id, idx, m_allocated));
+        m_allocated = true;
         return obj;
     }
 
     /// @brief Inquire whether the object is already allocated.
     bool allocated() const
     {
-        return allocated_;
+        return m_allocated;
     }
 
     /// @brief Get address of the objects being allocated using this allocator
     const void* allocAddr() const
     {
-        return &place_;
+        return &m_place;
     }
 
     /// @brief Inquiry whether allocation is possible.
     bool canAllocate() const
     {
-        return !allocated_;
+        return !m_allocated;
     }
 
 private:
     using AlignedStorage = typename TupleAsAlignedUnion<TAllocMessages>::Type;
 
-    alignas(8) AlignedStorage place_;
-    bool allocated_ = false;
+    alignas(8) AlignedStorage m_place;
+    bool m_allocated = false;
 
 };
 
@@ -615,13 +615,13 @@ public:
     Ptr alloc(TArgs&&... args)
     {
         auto iter = std::find_if(
-            pool_.begin(), pool_.end(),
+            m_pool.begin(), m_pool.end(),
             [](const PoolElem& elem) -> bool
             {
                 return !elem.allocated();
             });
 
-        if (iter == pool_.end()) {
+        if (iter == m_pool.end()) {
             return Ptr();
         }
 
@@ -638,13 +638,13 @@ public:
     {
         auto iter =
             std::find_if(
-                pool_.begin(), pool_.end(),
+                m_pool.begin(), m_pool.end(),
                 [obj](const PoolElem& elem) -> bool
                 {
                     return elem.allocated() && (elem.allocAddr() == obj);
                 });
 
-        if (iter == pool_.end()) {
+        if (iter == m_pool.end()) {
             return Ptr();
         }
 
@@ -652,7 +652,7 @@ public:
     }
 
 private:
-    Pool pool_;
+    Pool m_pool;
 };
 
 namespace details

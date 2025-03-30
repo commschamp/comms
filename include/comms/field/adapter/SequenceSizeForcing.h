@@ -49,22 +49,22 @@ public:
     void forceReadElemCount(std::size_t val)
     {
         COMMS_ASSERT(val != Cleared);
-        forced_ = val;
+        m_forced = val;
     }
 
     void clearReadElemCount()
     {
-        forced_ = Cleared;
+        m_forced = Cleared;
     }
 
     template <typename TIter>
     comms::ErrorStatus read(TIter& iter, std::size_t len)
     {
-        if (forced_ == Cleared) {
+        if (m_forced == Cleared) {
             return BaseImpl::read(iter, len);
         }
 
-        return BaseImpl::readN(forced_, iter, len);
+        return BaseImpl::readN(m_forced, iter, len);
     }
 
     template <typename TIter>
@@ -74,12 +74,12 @@ public:
     template <typename TIter>
     void readNoStatus(TIter& iter)
     {
-        if (forced_ == Cleared) {
+        if (m_forced == Cleared) {
             BaseImpl::readNoStatus(iter);
             return;
         }
 
-        BaseImpl::readNoStatusN(forced_, iter);
+        BaseImpl::readNoStatusN(m_forced, iter);
     }
 
     template <typename TIter>
@@ -88,7 +88,7 @@ public:
 
 private:
     static const std::size_t Cleared = std::numeric_limits<std::size_t>::max();
-    std::size_t forced_ = Cleared;
+    std::size_t m_forced = Cleared;
 };
 
 }  // namespace adapter

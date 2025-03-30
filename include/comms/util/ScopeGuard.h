@@ -58,8 +58,8 @@ public:
     ///            destructed unless it is "released." Must provide move/copy
     ///            constructor.
     explicit ScopeGuard(TFunc&& func)
-        : func_(std::forward<TFunc>(func)),
-          engaged_(true)
+        : m_func(std::forward<TFunc>(func)),
+          m_engaged(true)
     {
     }
 
@@ -72,8 +72,8 @@ public:
     ///          provided guard.
     /// @param[in] guard The other scope guard of the same type.
     ScopeGuard(ScopeGuard&& guard)
-        : func_(std::move(guard.func_)),
-          engaged_(std::move(guard.engaged_))
+        : m_func(std::move(guard.m_func)),
+          m_engaged(std::move(guard.m_engaged))
     {
         guard.release();
     }
@@ -85,7 +85,7 @@ public:
     ~ScopeGuard() noexcept
     {
         if (!isReleased()) {
-            func_();
+            m_func();
         }
     }
 
@@ -96,19 +96,19 @@ public:
     /// @post The functor won't be called when the scope guard is out of scope.
     void release()
     {
-        engaged_ = false;
+        m_engaged = false;
     }
 
     /// @brief Check whether the functor is released.
     /// @return true in case of being released.
     bool isReleased() const
     {
-        return !engaged_;
+        return !m_engaged;
     }
 
 private:
-    typename std::remove_reference<TFunc>::type func_;
-    bool engaged_;
+    typename std::remove_reference<TFunc>::type m_func;
+    bool m_engaged;
 };
 
 /// @brief Create scope guard with provided functor.

@@ -33,12 +33,12 @@ public:
 
     AllFields& fields()
     {
-        return fields_;
+        return m_fields;
     }
 
     const AllFields& fields() const
     {
-        return fields_;
+        return m_fields;
     }
 
     static constexpr bool areFieldsVersionDependent()
@@ -413,7 +413,7 @@ private:
         return comms::field::details::FieldWriteNoStatusHelper<TIter>(iter);
     }
 
-    AllFields fields_;
+    AllFields m_fields;
 };
 
 // ------------------------------------------------------

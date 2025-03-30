@@ -60,8 +60,8 @@ public:
     static_assert(sizeof(CellType) == sizeof(T), "Type T must be padded");
 
     StaticVectorBase(CellType* dataPtr, std::size_t cap)
-      : data_(dataPtr),
-        capacity_(cap)
+      : m_data(dataPtr),
+        m_capacity(cap)
     {
     }
 
@@ -76,12 +76,12 @@ public:
 
     std::size_t size() const
     {
-        return size_;
+        return m_size;
     }
 
     std::size_t capacity() const
     {
-        return capacity_;
+        return m_capacity;
     }
 
     bool empty() const
@@ -94,7 +94,7 @@ public:
         COMMS_MSVC_WARNING_SUPPRESS(4189) // MSVC claims lastElem not referenced
         auto& lastElem = back();
         lastElem.~T();
-        --size_;
+        --m_size;
     }
 
     T& back()
@@ -134,7 +134,7 @@ public:
             }
 
             new (cellPtr(size())) T(*(reinterpret_cast<const T*>(&*iter)));
-            ++size_;
+            ++m_size;
         }
     }
 
@@ -145,14 +145,14 @@ public:
         for (auto idx = 0U; idx < count; ++idx) {
             new (cellPtr(idx)) T(value);
         }
-        size_ = count;
+        m_size = count;
     }
 
     void clear() {
         for (auto idx = 0U; idx < size(); ++idx) {
             elem(idx).~T();
         }
-        size_ = 0;
+        m_size = 0;
     }
 
 
@@ -361,7 +361,7 @@ public:
         for (auto iter = eraseFrom; iter != eraseTo; ++iter) {
             iter->~T();
         }
-        size_ -= eraseCount;
+        m_size -= eraseCount;
         return moveDest;
     }
 
@@ -370,7 +370,7 @@ public:
     {
         COMMS_ASSERT(size() < capacity());
         new (cellPtr(size())) T(std::forward<U>(value));
-        ++size_;
+        ++m_size;
     }
 
     template <typename... TArgs>
@@ -378,7 +378,7 @@ public:
     {
         COMMS_ASSERT(size() < capacity());
         new (cellPtr(size())) T(std::forward<TArgs>(args)...);
-        ++size_;
+        ++m_size;
     }
 
     void resize(std::size_t count, const T& value)
@@ -414,7 +414,7 @@ public:
                 new (other.cellPtr(idx)) T(std::move(elem(idx)));
             }
 
-            other.size_ = thisSize;
+            other.m_size = thisSize;
             erase(begin() + otherSize, end());
             return;
         }
@@ -423,7 +423,7 @@ public:
         for (auto idx = swapSize; idx < limit; ++idx) {
             new (cellPtr(idx)) T(std::move(other.elem(idx)));
         }
-        size_ = otherSize;
+        m_size = otherSize;
         other.erase(other.begin() + thisSize, other.end());
     }
 
@@ -431,19 +431,19 @@ private:
     CellType& cell(std::size_t idx)
     {
         COMMS_ASSERT(idx < capacity());
-        return data_[idx];
+        return m_data[idx];
     }
 
     const CellType& cell(std::size_t idx) const
     {
         COMMS_ASSERT(idx < capacity());
-        return data_[idx];
+        return m_data[idx];
     }
 
     CellType* cellPtr(std::size_t idx)
     {
         COMMS_ASSERT(idx < capacity());
-        return &data_[idx];
+        return &m_data[idx];
     }
 
     T& elem(std::size_t idx)
@@ -543,9 +543,9 @@ private:
     }
 
 
-    CellType* data_ = nullptr;
-    std::size_t capacity_ = 0;
-    std::size_t size_ = 0;
+    CellType* m_data = nullptr;
+    std::size_t m_capacity = 0;
+    std::size_t m_size = 0;
 };
 
 template <typename T, std::size_t TSize>
@@ -553,7 +553,7 @@ struct StaticVectorStorageBase
 {
     using ElementType = comms::util::AlignedStorage<sizeof(T), std::alignment_of<T>::value>; 
     using StorageType = std::array<ElementType, TSize>;
-    alignas(alignof(T)) StorageType data_;
+    alignas(alignof(T)) StorageType m_data;
 };
 
 template <typename T, std::size_t TSize>
@@ -578,18 +578,18 @@ public:
     using const_reverse_iterator = typename Base::const_reverse_iterator;
 
     StaticVectorGeneric()
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
     }
 
     StaticVectorGeneric(size_type count, const T& value)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         assign(count, value);
     }
 
     explicit StaticVectorGeneric(size_type count)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         COMMS_ASSERT(count < Base::capacity());
         while (0 < count) {
@@ -600,26 +600,26 @@ public:
 
     template <typename TIter>
     StaticVectorGeneric(TIter from, TIter to)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         assign(from, to);
     }
 
     template <std::size_t TOtherSize>
     StaticVectorGeneric(const StaticVectorGeneric<T, TOtherSize>& other)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         assign(other.begin(), other.end());
     }
 
     StaticVectorGeneric(const StaticVectorGeneric& other)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         assign(other.begin(), other.end());
     }
 
     StaticVectorGeneric(std::initializer_list<value_type> init)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         assign(init.begin(), init.end());
     }

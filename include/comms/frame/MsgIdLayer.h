@@ -13,14 +13,14 @@
 #include "comms/Assert.h"
 #include "comms/CompileControl.h"
 #include "comms/details/tag.h"
+#include "comms/dispatch.h"
+#include "comms/fields.h"
 #include "comms/frame/details/MsgIdLayerBase.h"
 #include "comms/frame/details/MsgIdLayerOptionsParser.h"
 #include "comms/MessageBase.h"
 #include "comms/MsgFactory.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/type_traits.h"
-#include "comms/dispatch.h"
-#include "comms/fields.h"
 
 #include <algorithm>
 #include <array>
