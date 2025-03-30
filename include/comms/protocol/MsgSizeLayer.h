@@ -11,6 +11,7 @@
 #pragma once
 
 #include "comms/frame/MsgSizeLayer.h"
+#include "comms/protocol/ProtocolLayerBase.h"
 
 namespace comms
 {
