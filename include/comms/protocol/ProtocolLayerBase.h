@@ -41,7 +41,7 @@ constexpr auto toFrameLayerBase(const ProtocolLayerBase<TField, TNextLayer, TDer
 
 /// @brief Same as @ref comms::frame::missingSize()
 /// @deprecated Use @ref comms::frame::missingSize() instead
-auto missingSize(std::size_t& val) -> decltype(comms::frame::missingSize(val))
+inline auto missingSize(std::size_t& val) -> decltype(comms::frame::missingSize(val))
 {
     return comms::frame::missingSize(val);
 }
@@ -56,7 +56,7 @@ auto msgId(TId& val) -> decltype(comms::frame::msgId(val))
 
 /// @brief Same as @ref comms::frame::msgIndex()
 /// @deprecated Use @ref comms::frame::msgIndex() instead
-auto msgIndex(std::size_t& val) -> decltype(comms::frame::msgIndex(val))
+inline auto msgIndex(std::size_t& val) -> decltype(comms::frame::msgIndex(val))
 {
     return comms::frame::msgIndex(val);
 }
