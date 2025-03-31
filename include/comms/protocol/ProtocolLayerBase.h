@@ -18,8 +18,8 @@ namespace comms
 namespace protocol
 {
 
-/// @brief Alias to the @ref comms::frame::ProtocolLayerBase
-/// @deprecated Use @ref comms::frame::ProtocolLayerBase class instead
+/// @brief Alias to the @ref comms::frame::FrameLayerBase
+/// @deprecated Use @ref comms::frame::FrameLayerBase class instead
 template <typename TField, typename TNextLayer, typename TDerived, typename...  TOptions>
 using ProtocolLayerBase = comms::frame::FrameLayerBase<TField, TNextLayer, TDerived, TOptions...>;
 
