@@ -621,6 +621,7 @@ private:
         auto& thisObj = BaseImpl::thisLayer();
         auto id = thisObj.getMsgIdFromField(field);
         BaseImpl::setMsgId(id, extraValues...);
+        BaseImpl::setMsgIndex(0U, extraValues...);
 
         using MsgType = typename std::decay<decltype(msg)>::type;
         if (id != getMsgId(msg, IdRetrieveTag<MsgType>())) {
