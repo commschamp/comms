@@ -1443,7 +1443,7 @@ void MsgIdLayerTestSuite::test31()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    using ProtFrame = Frame<BeField1, BeNonPolymorphicMessageBase>;
+    using ProtFrame = Frame<BeField1, BeNonPolymorphicMessageBase, Messages_1to5>;
 
     ProtFrame frame;
     CountHandler<BeNonPolymorphicMessageBase> handler;

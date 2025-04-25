@@ -461,10 +461,6 @@
 /// {
 ///     ...
 /// };
-///
-/// } // namespace message
-///
-/// } // namespace my_protocol
 /// @endcode
 ///
 /// It is equivalent to having the following types and @b NON-virtual functions defined

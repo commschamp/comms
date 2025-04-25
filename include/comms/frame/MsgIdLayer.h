@@ -616,6 +616,8 @@ private:
         TNextLayerReader&& nextLayerReader,
         TExtraValues... extraValues)
     {
+        static_assert((!details::hasMsgIndexRetriever<TExtraValues...>()) || (comms::details::allMessagesAreStrongSorted<AllMessages>()), 
+            "Message type index cannot be retrieved with direct message object invocation");
         auto& thisObj = BaseImpl::thisLayer();
         auto id = thisObj.getMsgIdFromField(field);
         BaseImpl::setMsgId(id, extraValues...);

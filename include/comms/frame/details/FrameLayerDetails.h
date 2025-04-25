@@ -188,6 +188,27 @@ constexpr bool isMsgIndexRetriever()
     return IsMsgIndexRetrieverHelper<T>::Value;
 }
 
+template <typename... TRetrievers>
+struct MsgIndexRetrieverDetector;
+
+template <typename T, typename... TRetrievers>
+struct MsgIndexRetrieverDetector<T, TRetrievers...>
+{
+    static const bool Detected = isMsgIndexRetriever<typename std::decay<T>::type>() || MsgIndexRetrieverDetector<TRetrievers...>::Detected;
+};
+
+template <typename... TRetrievers>
+constexpr bool hasMsgIndexRetriever()
+{
+    return MsgIndexRetrieverDetector<TRetrievers...>::Detected;
+}
+
+template <>
+struct MsgIndexRetrieverDetector<>
+{
+    static const bool Detected = false;
+};
+
 template <typename TIter>
 class MsgPayloadRetriever
 {
