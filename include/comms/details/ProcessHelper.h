@@ -104,7 +104,7 @@ struct ProcessHelper
         using MsgType = typename std::decay<decltype(msg)>::type;
         using FrameType = typename std::decay<decltype(frame)>::type;
         static_assert((!comms::isMessage<MsgType>()) || (details::allMessagesAreStrongSorted<typename FrameType::AllMessages>()),
-            "Cannot dispatch with Dispatcher when using pre-allocated message, use regular polymorphic dispatch with"
+            "Cannot dispatch with Dispatcher when using pre-allocated message, use regular polymorphic dispatch with "
             "comms::option::def::Handler option");
 
         using LocalMsgIdType = details::ProcessMsgIdType<MsgType>;
@@ -215,7 +215,7 @@ private:
             TMsg, THandler
         >;    
 
-        template <typename TBufIter, typename TFrame, typename TMsg, typename THandler, typename... TExtraValues, typename... TTagParams>
+        template <typename TBufIter, typename TFrame, typename TMsg, typename THandler, typename... TExtraValues>
         static comms::ErrorStatus processSingleWithDispatchInternal(
             TBufIter& bufIter,
             std::size_t len,
@@ -223,7 +223,7 @@ private:
             TMsg& msg,
             THandler& handler,
             TExtraValues... extraValues,
-            RegularDispatchTag<TTagParams...>)
+            RegularDispatchTag<>)
         {
             using MsgType = typename std::decay<decltype(msg)>::type;
             using FrameType = typename std::decay<decltype(frame)>::type;
@@ -256,7 +256,7 @@ private:
             return es;
         }
 
-        template <typename TBufIter, typename TFrame, typename TMsg, typename THandler, typename... TExtraValues, typename... TTagParams>
+        template <typename TBufIter, typename TFrame, typename TMsg, typename THandler, typename... TExtraValues>
         static comms::ErrorStatus processSingleWithDispatchInternal(
             TBufIter& bufIter,
             std::size_t len,
@@ -264,7 +264,7 @@ private:
             TMsg& msg,
             THandler& handler,
             TExtraValues... extraValues,
-            PolymorphicDispatchTag<TTagParams...>)
+            PolymorphicDispatchTag<>)
         {
             auto es =
                 processSingle(
