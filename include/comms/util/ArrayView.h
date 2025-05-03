@@ -278,6 +278,11 @@ public:
         std::swap(m_len, other.m_len);
     }
 
+    /// @brief Returns a pointer to the beginning of the underlying sequence. 
+    const_pointer data() const
+    {
+        return m_data;
+    }
 
 private:
     const_pointer m_data = nullptr;
