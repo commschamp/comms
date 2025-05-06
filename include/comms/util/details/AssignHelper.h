@@ -97,6 +97,9 @@ private:
     template <typename T, typename TIter, typename... TParams>
     static void assignInternal(T& obj, TIter from, TIter to, UseAssignTag<TParams...>)
     {
+        using ObjType = typename std::decay<decltype(obj)>::type;
+        auto len = static_cast<std::size_t>(std::distance(from, to));
+        reserveInternal(obj, len, ReserveTag<ObjType>());
         obj.assign(from, to);
     }
 
@@ -132,10 +135,8 @@ private:
         using ObjType = typename std::decay<decltype(obj)>::type;
         using ConstPointerType = typename ObjType::const_pointer;
         using PointerType = typename ObjType::pointer;
-        auto len = static_cast<std::size_t>(std::distance(from, to));
         auto fromPtr = const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*from)));
-        auto toPtr = fromPtr + len;
-        reserveInternal(obj, len, ReserveTag<ObjType>());
+        auto toPtr = fromPtr + std::distance(from, to);
         assignInternal(obj, fromPtr, toPtr, UsePtrSizeConstructorTag<TParams...>());
     }   
     
