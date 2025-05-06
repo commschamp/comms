@@ -49,6 +49,13 @@ private:
     template <typename... TParams>
     using UnknownTag = comms::details::tag::Tag4<>;   
 
+    template <typename... TParams>
+    using HasReserveTag = comms::details::tag::Tag5<>;      
+
+    template <typename... TParams>
+    using NoReserveTag = comms::details::tag::Tag6<>;      
+
+
     template <typename T>
     using ConstructorTag = 
         typename comms::util::LazyShallowConditional<
@@ -77,6 +84,15 @@ private:
             SpanConstructorTag,
             T
         >;    
+
+    template <typename T>
+    using ReserveTag =
+        typename comms::util::LazyShallowConditional<
+            comms::util::detect::hasReserveFunc<T>()
+        >::template Type<
+            HasReserveTag,
+            NoReserveTag
+        >;         
 
     template <typename T, typename TIter, typename... TParams>
     static void assignInternal(T& obj, TIter from, TIter to, UseAssignTag<TParams...>)
@@ -116,10 +132,25 @@ private:
         using ObjType = typename std::decay<decltype(obj)>::type;
         using ConstPointerType = typename ObjType::const_pointer;
         using PointerType = typename ObjType::pointer;
+        auto len = static_cast<std::size_t>(std::distance(from, to));
         auto fromPtr = const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*from)));
-        auto toPtr = fromPtr + std::distance(from, to); //const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*to)));
+        auto toPtr = fromPtr + len;
+        reserveInternal(obj, len, ReserveTag<ObjType>());
         assignInternal(obj, fromPtr, toPtr, UsePtrSizeConstructorTag<TParams...>());
-    }          
+    }   
+    
+    template <typename T, typename... TParams>
+    static void reserveInternal(T& obj, std::size_t len, HasReserveTag<TParams...>)
+    {
+        obj.reserve(len);
+    }     
+
+    template <typename T, typename... TParams>
+    static void reserveInternal(T& obj, std::size_t len, NoReserveTag<TParams...>)
+    {
+        static_cast<void>(obj);
+        static_cast<void>(len);
+    }      
 };
 
 } // namespace details
