@@ -227,7 +227,7 @@ private:
                 comms::frame::MsgDataLayer<>
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
@@ -249,7 +249,7 @@ private:
                 comms::option::InPlaceAllocation
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES(payload, id);
+        COMMS_FRAME_LAYERS_NAMES(payload, id);
     };
 
     template <typename TField, typename TMessage>
@@ -269,7 +269,7 @@ private:
                 comms::frame::MsgDataLayer<>
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
@@ -291,7 +291,7 @@ private:
                 comms::option::SupportGenericMessage<comms::GenericMessage<TMessage> >
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
@@ -315,7 +315,7 @@ private:
                 comms::option::InPlaceAllocation
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
@@ -337,7 +337,7 @@ private:
                 comms::option::ForceDispatchPolymorphic
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
@@ -359,7 +359,7 @@ private:
                 comms::option::ForceDispatchStaticBinSearch
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
@@ -381,7 +381,7 @@ private:
                 comms::option::ForceDispatchLinearSwitch
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TInterface>
@@ -564,7 +564,7 @@ private:
         >;
 
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
     };  
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
@@ -587,7 +587,7 @@ private:
         >;
 
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
     };        
 };
 

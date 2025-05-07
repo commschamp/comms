@@ -167,7 +167,7 @@ private:
                 comms::frame::MsgDataLayer<>
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
     };
 
     template <typename TInterface = Interface>
@@ -187,7 +187,7 @@ private:
                 comms::option::SupportGenericMessage<comms::GenericMessage<TInterface> >
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
     };    
 
     template <typename TInterface = Interface>
@@ -209,7 +209,7 @@ private:
                 comms::option::InPlaceAllocation
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
     };    
 };
 

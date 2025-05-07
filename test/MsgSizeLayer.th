@@ -300,7 +300,7 @@ private:
                 >
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_INNER(payload, id, size);
+        COMMS_FRAME_LAYERS_NAMES_INNER(payload, id, size);
     };
 
     template <typename TIdField, typename TSizeField, typename TMessage>
@@ -326,7 +326,7 @@ private:
                 >
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(id, size, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, size, payload);
     };
 
     template <typename TSizeField, typename TIdField, typename TMessage>

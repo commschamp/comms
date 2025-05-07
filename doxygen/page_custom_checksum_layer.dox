@@ -298,7 +298,7 @@
 ///     >
 /// {
 ///     // Generate convenience access functions for various layers
-///     COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(checksum, size, size, checksumType, payload);
+///     COMMS_FRAME_LAYERS_ACCESS_OUTER(checksum, size, size, checksumType, payload);
 /// };
 ///
 /// } // namespace my_prot
