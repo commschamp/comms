@@ -12,7 +12,7 @@
 namespace comms
 {
 
-namespace protocol
+namespace frame
 {
 
 namespace details
@@ -78,6 +78,6 @@ class ChecksumLayerOptionsParser<
 
 } // namespace details
 
-} // namespace protocol
+} // namespace frame
 
 } // namespace comms

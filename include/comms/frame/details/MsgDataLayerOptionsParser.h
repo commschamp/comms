@@ -14,7 +14,7 @@
 namespace comms
 {
 
-namespace protocol
+namespace frame
 {
 
 namespace details
@@ -70,6 +70,6 @@ class MsgDataLayerOptionsParser<
 
 } // namespace details
 
-} // namespace protocol
+} // namespace frame
 
 } // namespace comms

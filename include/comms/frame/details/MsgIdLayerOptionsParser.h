@@ -7,15 +7,16 @@
 
 #pragma once
 
-#include <tuple>
-#include "comms/util/type_traits.h"
 #include "comms/MsgFactory.h"
 #include "comms/options.h"
+#include "comms/util/type_traits.h"
+
+#include <tuple>
 
 namespace comms
 {
 
-namespace protocol
+namespace frame
 {
 
 namespace details
@@ -121,6 +122,6 @@ public:
 
 } // namespace details
 
-} // namespace protocol
+} // namespace frame
 
 } // namespace comms

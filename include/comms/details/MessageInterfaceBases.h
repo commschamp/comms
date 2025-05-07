@@ -7,16 +7,17 @@
 
 #pragma once
 
-#include <tuple>
-#include <cstddef>
-
-#include "comms/Field.h"
-#include "comms/util/access.h"
-#include "comms/util/type_traits.h"
-#include "comms/options.h"
 #include "comms/Assert.h"
 #include "comms/details/tag.h"
 #include "comms/ErrorStatus.h"
+#include "comms/Field.h"
+#include "comms/options.h"
+#include "comms/util/access.h"
+#include "comms/util/Tuple.h"
+#include "comms/util/type_traits.h"
+
+#include <cstddef>
+#include <tuple>
 
 namespace comms
 {
@@ -100,18 +101,18 @@ public:
 
     TransportFields& transportFields()
     {
-        return transportFields_;
+        return m_transportFields;
     }
 
     const TransportFields& transportFields() const
     {
-        return transportFields_;
+        return m_transportFields;
     }
 
 protected:
     ~MessageInterfaceExtraTransportFieldsBase() noexcept = default;
 private:
-    TransportFields transportFields_;
+    TransportFields m_transportFields;
 };
 
 // ------------------------------------------------------

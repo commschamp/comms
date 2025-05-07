@@ -7,15 +7,15 @@
 
 #pragma once
 
-#include <cstddef>
-#include <limits>
-#include <type_traits>
-#include <iterator>
-
 #include "comms/ErrorStatus.h"
 #include "comms/field/tag.h"
 #include "comms/util/type_traits.h"
 #include "comms/details/tag.h"
+
+#include <cstddef>
+#include <iterator>
+#include <limits>
+#include <type_traits>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4127) // Disable warning about constant conditional expressions

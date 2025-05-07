@@ -12,7 +12,7 @@
 namespace comms
 {
 
-namespace protocol
+namespace frame
 {
 
 namespace details
@@ -20,10 +20,10 @@ namespace details
 
 
 template <typename... TOptions>
-class ProtocolLayerBaseOptionsParser;
+class FrameLayerBaseOptionsParser;
 
 template <>
-class ProtocolLayerBaseOptionsParser<>
+class FrameLayerBaseOptionsParser<>
 {
 public:
     static constexpr bool HasForceReadUntilDataSplit = false;
@@ -31,39 +31,39 @@ public:
 };
 
 template <typename... TOptions>
-class ProtocolLayerBaseOptionsParser<
-    comms::option::def::ProtocolLayerForceReadUntilDataSplit, TOptions...> :
-        public ProtocolLayerBaseOptionsParser<TOptions...>
+class FrameLayerBaseOptionsParser<
+    comms::option::def::FrameLayerForceReadUntilDataSplit, TOptions...> :
+        public FrameLayerBaseOptionsParser<TOptions...>
 {
 public:
     static constexpr bool HasForceReadUntilDataSplit = true;
 };
 
 template <typename... TOptions>
-class ProtocolLayerBaseOptionsParser<
-    comms::option::def::ProtocolLayerDisallowReadUntilDataSplit, TOptions...> :
-        public ProtocolLayerBaseOptionsParser<TOptions...>
+class FrameLayerBaseOptionsParser<
+    comms::option::def::FrameLayerDisallowReadUntilDataSplit, TOptions...> :
+        public FrameLayerBaseOptionsParser<TOptions...>
 {
 public:
     static constexpr bool HasDisallowReadUntilDataSplit = true;
 };
 
 template <typename... TOptions>
-class ProtocolLayerBaseOptionsParser<
+class FrameLayerBaseOptionsParser<
     comms::option::app::EmptyOption,
-    TOptions...> : public ProtocolLayerBaseOptionsParser<TOptions...>
+    TOptions...> : public FrameLayerBaseOptionsParser<TOptions...>
 {
 };
 
 template <typename... TBundledOptions, typename... TOptions>
-class ProtocolLayerBaseOptionsParser<
+class FrameLayerBaseOptionsParser<
     std::tuple<TBundledOptions...>,
-    TOptions...> : public ProtocolLayerBaseOptionsParser<TBundledOptions..., TOptions...>
+    TOptions...> : public FrameLayerBaseOptionsParser<TBundledOptions..., TOptions...>
 {
 };
 
 } // namespace details
 
-} // namespace protocol
+} // namespace frame
 
 } // namespace comms

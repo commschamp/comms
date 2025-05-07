@@ -7,15 +7,15 @@
 
 #pragma once
 
-#include <iterator>
-#include <limits>
-#include <algorithm>
-
 #include "comms/Assert.h"
+#include "comms/details/tag.h"
 #include "comms/ErrorStatus.h"
 #include "comms/field/basic/CommonFuncs.h"
 #include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
+
+#include <algorithm>
+#include <iterator>
+#include <limits>
 
 namespace comms
 {
@@ -85,13 +85,13 @@ public:
     template <typename TIter>
     ErrorStatus readElement(ElementType& elem, TIter& iter, std::size_t& len) const
     {
-        COMMS_ASSERT(elemLen_ < MaxLengthLimit);
+        COMMS_ASSERT(m_elemLen < MaxLengthLimit);
 
-        if (len < elemLen_) {
+        if (len < m_elemLen) {
             return ErrorStatus::NotEnoughData;
         }
 
-        std::size_t elemLen = elemLen_;
+        std::size_t elemLen = m_elemLen;
         auto es = BaseImpl::readElement(elem, iter, elemLen);
         if (es == ErrorStatus::NotEnoughData) {
             return TStatus;
@@ -101,9 +101,9 @@ public:
             return es;
         }
 
-        COMMS_ASSERT(elemLen <= elemLen_);
+        COMMS_ASSERT(elemLen <= m_elemLen);
         std::advance(iter, elemLen);
-        len -= elemLen_;
+        len -= m_elemLen;
         return ErrorStatus::Success;
     }
 
@@ -114,7 +114,7 @@ public:
     comms::ErrorStatus read(TIter& iter, std::size_t len)
     {
         if (len == 0U) {
-            elemLen_ = 0U;
+            m_elemLen = 0U;
             return ErrorStatus::Success;
         }
                 
@@ -144,7 +144,7 @@ public:
             }
         }
         else {
-            elemLen_ = 0U;
+            m_elemLen = 0U;
         }
         return basic::CommonFuncs::readSequenceN(*this, count, iter, len);
     }
@@ -280,8 +280,8 @@ private:
         COMMS_ASSERT(diff <= len);
         len -= diff;
 
-        elemLen_ = static_cast<std::size_t>(lenField.getValue());
-        if (elemLen_ == MaxLengthLimit) {
+        m_elemLen = static_cast<std::size_t>(lenField.getValue());
+        if (m_elemLen == MaxLengthLimit) {
             return TStatus;
         }
 
@@ -319,7 +319,7 @@ private:
 
     static const std::size_t MaxLengthLimit =
         std::numeric_limits<std::size_t>::max();
-    std::size_t elemLen_ = MaxLengthLimit;
+    std::size_t m_elemLen = MaxLengthLimit;
 };
 
 }  // namespace adapter

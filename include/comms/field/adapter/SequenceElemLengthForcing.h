@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include <iterator>
-#include <limits>
-
 #include "comms/Assert.h"
 #include "comms/ErrorStatus.h"
 #include "comms/field/basic/CommonFuncs.h"
+
+#include <iterator>
+#include <limits>
 
 namespace comms
 {
@@ -51,18 +51,18 @@ public:
     void forceReadElemLength(std::size_t val)
     {
         COMMS_ASSERT(val != Cleared);
-        forced_ = val;
+        m_forced = val;
     }
 
     void clearReadElemLengthForcing()
     {
-        forced_ = Cleared;
+        m_forced = Cleared;
     }
 
     std::size_t length() const
     {
-        if (forced_ != Cleared) {
-            return BaseImpl::getValue().size() * forced_;
+        if (m_forced != Cleared) {
+            return BaseImpl::getValue().size() * m_forced;
         }
 
         return BaseImpl::length();
@@ -70,8 +70,8 @@ public:
 
     std::size_t elementLength(const ElementType& elem) const
     {
-        if (forced_ != Cleared) {
-            return forced_;
+        if (m_forced != Cleared) {
+            return m_forced;
         }
         return BaseImpl::elementLength(elem);
     }
@@ -89,18 +89,18 @@ public:
         static_assert(std::is_base_of<std::random_access_iterator_tag, IterTag>::value,
             "Only random access iterator for reading is supported with comms::option::def::SequenceElemLengthForcingEnabled option");
 
-        if (forced_ == Cleared) {
+        if (m_forced == Cleared) {
             return BaseImpl::readElement(elem, iter, len);
         }
 
-        if (len < forced_) {
+        if (len < m_forced) {
             return comms::ErrorStatus::NotEnoughData;
         }
 
         auto iterTmp = iter;
-        auto remLen = forced_;
-        std::advance(iter, forced_);
-        len -= forced_;
+        auto remLen = m_forced;
+        std::advance(iter, m_forced);
+        len -= m_forced;
         return BaseImpl::readElement(elem, iterTmp, remLen);
     }
 
@@ -112,7 +112,7 @@ public:
         static_assert(std::is_base_of<std::random_access_iterator_tag, IterTag>::value,
             "Only random access iterator for reading is supported with comms::option::def::SequenceElemLengthForcingEnabled option");
 
-        if (forced_ == Cleared) {
+        if (m_forced == Cleared) {
             return BaseImpl::readElementNoStatus(elem, iter);
         }
 
@@ -123,8 +123,8 @@ public:
         }
 
         auto consumed = std::distance(fromIter, iter);
-        if (consumed < forced_) {
-            std::advance(iter, forced_ - consumed);
+        if (consumed < m_forced) {
+            std::advance(iter, m_forced - consumed);
         }
     }
 
@@ -157,7 +157,7 @@ public:
 private:
 
     static const std::size_t Cleared = std::numeric_limits<std::size_t>::max();
-    std::size_t forced_ = Cleared;
+    std::size_t m_forced = Cleared;
 };
 
 }  // namespace adapter

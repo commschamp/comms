@@ -21,10 +21,11 @@ struct VersionStorage
 {
     TVersionType getVersion() const
     {
-        return version_;
+        return m_version;
     }
+    
 protected:
-    TVersionType version_ = TVersionType();
+    TVersionType m_version = TVersionType();
 };
 
 } // namespace details

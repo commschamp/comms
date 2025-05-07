@@ -7,13 +7,13 @@
 
 #pragma once
 
+#include "comms/details/tag.h"
+#include "comms/ErrorStatus.h"
+#include "comms/util/type_traits.h"
+
 #include <cstdint>
 #include <iterator>
 #include <type_traits>
-
-#include "comms/ErrorStatus.h"
-#include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
 
 namespace comms
 {

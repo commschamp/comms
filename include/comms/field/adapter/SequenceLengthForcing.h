@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include <limits>
-#include <algorithm>
-
 #include "comms/Assert.h"
 #include "comms/ErrorStatus.h"
+
+#include <algorithm>
+#include <limits>
 
 namespace comms
 {
@@ -50,40 +50,40 @@ public:
     void forceReadLength(std::size_t val)
     {
         COMMS_ASSERT(val != Cleared);
-        forced_ = val;
+        m_forced = val;
     }
 
     void clearReadLengthForcing()
     {
-        forced_ = Cleared;
+        m_forced = Cleared;
     }
 
     template <typename TIter>
     comms::ErrorStatus read(TIter& iter, std::size_t len)
     {
-        if (forced_ == Cleared) {
+        if (m_forced == Cleared) {
             return BaseImpl::read(iter, len);
         }
 
-        if (len < forced_) {
+        if (len < m_forced) {
             return comms::ErrorStatus::NotEnoughData;
         }
 
-        return BaseImpl::read(iter, forced_);
+        return BaseImpl::read(iter, m_forced);
     }
 
     template <typename TIter>
     ErrorStatus readN(std::size_t count, TIter& iter, std::size_t& len)
     {
-        if (forced_ == Cleared) {
+        if (m_forced == Cleared) {
             return BaseImpl::read(iter, len);
         }
 
-        if (len < forced_) {
+        if (len < m_forced) {
             return comms::ErrorStatus::NotEnoughData;
         }
 
-        return BaseImpl::readN(count, iter, forced_);
+        return BaseImpl::readN(count, iter, m_forced);
     }
 
     static constexpr bool hasReadNoStatus()
@@ -100,7 +100,7 @@ public:
 
 private:
     static const std::size_t Cleared = std::numeric_limits<std::size_t>::max();
-    std::size_t forced_ = Cleared;
+    std::size_t m_forced = Cleared;
 };
 
 }  // namespace adapter

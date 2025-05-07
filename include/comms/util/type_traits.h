@@ -10,8 +10,9 @@
 
 #pragma once
 
-#include <type_traits>
 #include "comms/util/details/type_traits.h"
+
+#include <type_traits>
 
 namespace comms
 {

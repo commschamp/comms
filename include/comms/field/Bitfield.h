@@ -11,9 +11,9 @@
 #pragma once
 
 #include "comms/ErrorStatus.h"
+#include "comms/field/basic/Bitfield.h"
+#include "comms/field/details/AdaptBasicField.h"
 #include "comms/options.h"
-#include "basic/Bitfield.h"
-#include "details/AdaptBasicField.h"
 
 namespace comms
 {

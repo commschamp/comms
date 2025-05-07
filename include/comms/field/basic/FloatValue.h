@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include <type_traits>
-#include <ratio>
-
 #include "comms/ErrorStatus.h"
-#include "comms/util/SizeToType.h"
 #include "comms/field/tag.h"
+#include "comms/util/SizeToType.h"
+
+#include <ratio>
+#include <type_traits>
 
 namespace comms
 {
@@ -39,7 +39,7 @@ public:
     FloatValue() = default;
 
     explicit FloatValue(ValueType val)
-      : value_(val)
+      : m_value(val)
     {
     }
 
@@ -52,12 +52,12 @@ public:
 
     const ValueType& value() const
     {
-        return value_;
+        return m_value;
     }
 
     ValueType& value()
     {
-        return value_;
+        return m_value;
     }
 
     const ValueType& getValue() const
@@ -89,15 +89,15 @@ public:
     static SerialisedType toSerialised(ValueType val)
     {
         CastUnion<> castUnion;
-        castUnion.value_ = val;
-        return castUnion.serValue_;
+        castUnion.m_value = val;
+        return castUnion.m_serValue;
     }
 
     static ValueType fromSerialised(SerialisedType val)
     {
         CastUnion<> castUnion;
-        castUnion.serValue_ = val;
-        return castUnion.value_;
+        castUnion.m_serValue = val;
+        return castUnion.m_value;
     }
 
     template <typename TIter>
@@ -116,7 +116,7 @@ public:
     {
         auto serialisedValue =
             BaseImpl::template readData<SerialisedType>(iter);
-        value_ = fromSerialised(serialisedValue);
+        m_value = fromSerialised(serialisedValue);
     }
 
     template <typename TIter>
@@ -133,18 +133,18 @@ public:
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        BaseImpl::writeData(toSerialised(value_), iter);
+        BaseImpl::writeData(toSerialised(m_value), iter);
     }
 
 private:
     template<typename...>
     union CastUnion
     {
-        ValueType value_;
-        SerialisedType serValue_;
+        ValueType m_value;
+        SerialisedType m_serValue;
     };
 
-    ValueType value_ = static_cast<ValueType>(0.0);
+    ValueType m_value = static_cast<ValueType>(0.0);
 };
 
 }  // namespace basic

@@ -1,15 +1,15 @@
-/// @page page_custom_id_layer Defining Custom Message ID Protocol Stack Layer
+/// @page page_custom_id_layer Defining Custom Message ID Frame Layer
 /// @tableofcontents
-/// The @b COMMS library provides default @ref comms::protocol::MsgIdLayer protocol 
-/// stack layer to manage message ID information in the protocol framing. 
+/// The @b COMMS library provides default @ref comms::frame::MsgIdLayer 
+/// frame layer to manage message ID information in the protocol framing. 
 /// However, it may be insufficient (or incorrect) for some particular use cases, such as
 /// using @b bitfield field to store both numeric message ID and some extra flags
 /// (like <a href="http://mqtt.org">MQTT</a> protocol does). 
-/// The @ref page_prot_stack_tutorial_new_layers section of the 
-/// @ref page_prot_stack_tutorial page explains how to define new (custom)
+/// The @ref page_frame_tutorial_new_layers section of the 
+/// @ref page_frame_tutorial page explains how to define new (custom)
 /// protocol layer. 
 ///
-/// @b NOTE, that @ref comms::protocol::MsgIdLayer class
+/// @b NOTE, that @ref comms::frame::MsgIdLayer class
 /// contains significant amount of compile time logic of choosing the best
 /// code based on provided options as well as available polymorphic interface
 /// messages being read and/or written. It is very impractical to try to 
@@ -17,7 +17,7 @@
 /// definition and introduce required changes.
 /// 
 /// Since @b v1.2 COMMS library provides an ability to extend the existing
-/// definition of @ref comms::protocol::MsgIdLayer and customize some bits
+/// definition of @ref comms::frame::MsgIdLayer and customize some bits
 /// and pieces. Let's implement the mentioned example of sharing the same byte
 /// for numeric ID and some flags.
 ///
@@ -106,7 +106,7 @@
 /// convenience access member functions for the listed names.
 ///
 /// Now it's time to actually extend the provided definition of 
-/// the @ref comms::protocol::MsgIdLayer and support usage of the defined
+/// the @ref comms::frame::MsgIdLayer and support usage of the defined
 /// earlier @b IdAndFlagsField field.
 /// @code
 /// namespace my_prot
@@ -114,18 +114,18 @@
 /// 
 /// template <typename TMessage, typename TAllMessages, typename TNextLayer, typename... TOptions>
 /// class MsgIdAndFlagsLayer : public
-///     comms::protocol::MsgIdLayer<
+///     comms::frame::MsgIdLayer<
 ///         IdAndFlagsField,   // Used field that contains message ID
 ///         TMessage,          // Common interface class
 ///         TAllMessages,      // std::tuple of all the supported input messages
-///         TNextLayer,        // Next layer in the protocol stack
+///         TNextLayer,        // Next layer in the frame
 ///         TOptions...,       // Application specific extension options
 ///         comms::option::def::ExtendingClass<MsgIdAndFlagsLayer<TMessage, TAllMessages, TNextLayer, TOptions...> >
-///                            // Make the comms::protocol::MsgIdLayer aware of it being extended
+///                            // Make the comms::frame::MsgIdLayer aware of it being extended
 ///     >
 /// {
 ///     // Repeat definition of the base class
-///     using Base = comms::protocol::MsgIdLayer<...>;
+///     using Base = comms::frame::MsgIdLayer<...>;
 ///
 /// public:
 ///     // Repeat types defined in the base class (not visible by default)
@@ -159,38 +159,38 @@
 ///
 /// } // namespace my_prot
 /// @endcode
-/// The @ref comms::protocol::MsgIdLayer doesn't have any virtual functions and
+/// The @ref comms::frame::MsgIdLayer doesn't have any virtual functions and
 /// as the result not able to provide any polymorphic behavior. In order to be
 /// able to extend its default functionality there is a need to use 
 /// <a href="https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously Recurring Template Pattern</a>.
 /// It is done by passing @ref comms::option::def::ExtendingClass extension option with
-/// the type of the layer class being defined to the @ref comms::protocol::MsgIdLayer.
+/// the type of the layer class being defined to the @ref comms::frame::MsgIdLayer.
 ///
 /// The extending class can customize the default behavior by overriding 
 /// the listed below functions. They do not
 /// necessarily need to be @b static, accessing inner private state of the layer object
 /// is also acceptable.
-/// @li @ref comms::protocol::MsgIdLayer::doReadField() "doReadField()" - Member
+/// @li @ref comms::frame::MsgIdLayer::doReadField() "doReadField()" - Member
 /// function that is invoked to read field's value.
-/// @li @ref comms::protocol::MsgIdLayer::doWriteField() "doWriteField()" - Member
+/// @li @ref comms::frame::MsgIdLayer::doWriteField() "doWriteField()" - Member
 /// function that is invoked to write field's value.
-/// @li @ref comms::protocol::MsgIdLayer::doFieldLength() "doFieldLength()" - Member
+/// @li @ref comms::frame::MsgIdLayer::doFieldLength() "doFieldLength()" - Member
 /// function that is invoked to calculate serialization length of the field.
-/// @li @ref comms::protocol::MsgIdLayer::getMsgIdFromField() "getMsgIdFromField()" - 
+/// @li @ref comms::frame::MsgIdLayer::getMsgIdFromField() "getMsgIdFromField()" - 
 /// Member function that is invoked to retrieve the
 /// numeric message ID out of the provided field object.
-/// @li @ref comms::protocol::MsgIdLayer::beforeRead() "beforeRead()" - 
+/// @li @ref comms::frame::MsgIdLayer::beforeRead() "beforeRead()" - 
 /// Member function that is invoked after appropriate
 /// message object has been created but the read operation has @b NOT yet been
 /// forwarded to the next protocol layer. It gives the developer a chance to
 /// update some extra transport fields accessible via message interface class.
-/// @li @ref comms::protocol::MsgIdLayer::prepareFieldForWrite() "prepareFieldForWrite()" - 
+/// @li @ref comms::frame::MsgIdLayer::prepareFieldForWrite() "prepareFieldForWrite()" - 
 /// Member function that is invoked to prepare
 /// the field value before its write (serialization). After the function returns,
-/// the @ref comms::protocol::MsgIdLayer will invoke @b write member function
+/// the @ref comms::frame::MsgIdLayer will invoke @b write member function
 /// of the passed field in order to serialize it.
 ///
-/// The newly defined custom protocol stack layer can be used instead of
-/// @ref comms::protocol::MsgIdLayer when defining 
-/// @ref page_prot_stack_tutorial "protocol stack" (framing) of the protocol.
+/// The newly defined custom frame layer can be used instead of
+/// @ref comms::frame::MsgIdLayer when defining 
+/// @ref page_frame_tutorial "framing" of the protocol.
 ///

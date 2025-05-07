@@ -11,10 +11,10 @@
 
 #pragma once
 
+#include "comms/Assert.h"
+
 #include <algorithm>
 #include <iterator>
-
-#include "comms/Assert.h"
 
 namespace comms
 {
@@ -99,40 +99,40 @@ public:
 
     /// @brief Constructor
     ArrayView(const_pointer data, size_type len) noexcept
-      : data_(data),
-        len_(len)
+      : m_data(data),
+        m_len(len)
     {
     }
 
     /// @brief Constructor
     template <typename TIter>
     ArrayView(TIter iter, size_type len) noexcept
-      : data_(reinterpret_cast<const_pointer>(&(*iter))),
-        len_(len)
+      : m_data(reinterpret_cast<const_pointer>(&(*iter))),
+        m_len(len)
     {
     }
 
     /// @brief Construct out of array of elements with known size
     template <std::size_t TN>
     ArrayView(const T (&data)[TN]) noexcept
-      : data_(data),
-        len_(TN)
+      : m_data(data),
+        m_len(TN)
     {
     }
 
     /// @brief Construct out of array of elements with known size
     template <std::size_t TN>
     ArrayView(T (&data)[TN]) noexcept
-      : data_(data),
-        len_(TN)
+      : m_data(data),
+        m_len(TN)
     {
     }
 
     /// @brief Construct out of iterators rande
     template <typename TIter>
     ArrayView(TIter first, TIter last) noexcept
-      : data_(reinterpret_cast<const_pointer>(&(*first))),
-        len_(static_cast<std::size_t>(std::distance(first, last)))
+      : m_data(reinterpret_cast<const_pointer>(&(*first))),
+        m_len(static_cast<std::size_t>(std::distance(first, last)))
     {
         COMMS_ASSERT(0 <= std::distance(first, last));
     }    
@@ -147,8 +147,8 @@ public:
     template <std::size_t TN>
     ArrayView& operator=(const T (&data)[TN])
     {
-        data_ = data;
-        len_ = TN;
+        m_data = data;
+        m_len = TN;
         return *this;
     }
 
@@ -156,15 +156,15 @@ public:
     template <std::size_t TN>
     ArrayView& operator=(T (&data)[TN])
     {
-        data_ = data;
-        len_ = TN;
+        m_data = data;
+        m_len = TN;
         return *this;
     }
 
     /// @brief Iterator to begining of the sequence.
     constexpr const_iterator begin() const noexcept
     {
-        return data_;
+        return m_data;
     }
 
     /// @brief Iterator to begining of the sequence.
@@ -176,7 +176,7 @@ public:
     /// @brief Iterator to the end of the sequence
     constexpr const_iterator end() const noexcept
     {
-        return begin() + len_;
+        return begin() + m_len;
     }
 
     /// @brief Iterator to the end of the sequence
@@ -212,35 +212,35 @@ public:
     /// @brief Element access operator
     constexpr const_reference operator[](size_type pos) const
     {
-        return data_[pos];
+        return m_data[pos];
     }
 
     /// @brief Element access with range check
     /// @details Checks the range with @ref COMMS_ASSERT() macro without throwing exception.
     const_reference at(size_type pos) const
     {
-        COMMS_ASSERT(pos < len_);
-        return data_[pos];
+        COMMS_ASSERT(pos < m_len);
+        return m_data[pos];
     }
 
     /// @brief Access the first element
     /// @pre The view is not empty
     constexpr const_reference front() const
     {
-        return data_[0];
+        return m_data[0];
     }
 
     /// @brief Access the last element
     /// @pre The view is not empty
     constexpr const_reference back() const
     {
-        return data_[len_ - 1U];
+        return m_data[m_len - 1U];
     }
 
     /// @brief Get number of element in the view.
     constexpr size_type size() const noexcept
     {
-        return len_;
+        return m_len;
     }
 
     /// @brief Same as ref size()
@@ -260,28 +260,33 @@ public:
     /// @pre @b n is less or equal to value returned by @ref size().
     void remove_prefix(size_type n)
     {
-        std::advance(data_, n);
-        len_ -= n;
+        std::advance(m_data, n);
+        m_len -= n;
     }
 
     /// @brief Narrow the view by dropping number of elements at the end.
     /// @pre @b n is less or equal to value returned by @ref size().
     void remove_suffix(size_type n)
     {
-        len_ -= n;
+        m_len -= n;
     }
 
     /// @brief Swap contents of two views
     void swap(ArrayView& other) noexcept
     {
-        std::swap(data_, other.data_);
-        std::swap(len_, other.len_);
+        std::swap(m_data, other.m_data);
+        std::swap(m_len, other.m_len);
     }
 
+    /// @brief Returns a pointer to the beginning of the underlying sequence. 
+    const_pointer data() const
+    {
+        return m_data;
+    }
 
 private:
-    const_pointer data_ = nullptr;
-    size_type len_ = 0;
+    const_pointer m_data = nullptr;
+    size_type m_len = 0;
 };
 
 /// @brief Lexicographical compare between the views.

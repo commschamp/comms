@@ -1,15 +1,15 @@
-/// @page page_custom_size_layer Defining Custom Message Size Protocol Stack Layer
+/// @page page_custom_size_layer Defining Custom Message Size Frame Layer
 /// @tableofcontents
-/// The @b COMMS library provides default @ref comms::protocol::MsgSizeLayer protocol 
-/// stack layer to handle remaining length information in the protocol framing. 
+/// The @b COMMS library provides default @ref comms::frame::MsgSizeLayer  
+/// frame layer to handle remaining length information in the protocol framing. 
 /// However, it may be insufficient (or incorrect) for some particular use cases, such as
 /// using @b bitfield field to store both remaining size (length) and some extra flags. 
-/// The @ref page_prot_stack_tutorial_new_layers section of the 
-/// @ref page_prot_stack_tutorial page explains how to define new (custom)
+/// The @ref page_frame_tutorial_new_layers section of the 
+/// @ref page_frame_tutorial page explains how to define new (custom)
 /// protocol layer. 
 ///
 /// However, since @b v1.2 COMMS library provides an ability to extend the existing
-/// definition of @ref comms::protocol::MsgSizeLayer and customize some bits
+/// definition of @ref comms::frame::MsgSizeLayer and customize some bits
 /// and pieces. Let's implement the mentioned example of sharing the same byte
 /// for message length and some flags.
 ///
@@ -105,7 +105,7 @@
 /// convenience access member functions for the listed names.
 ///
 /// Now it's time to actually extend the provided definition of 
-/// the @ref comms::protocol::MsgSizeLayer and support usage of the defined
+/// the @ref comms::frame::MsgSizeLayer and support usage of the defined
 /// earlier @b SizeAndFlagsField field.
 /// @code
 /// namespace my_prot
@@ -113,15 +113,15 @@
 /// 
 /// template <typename TNextLayer>
 /// class MsgSizeAndFlagsLayer : public
-///     comms::protocol::MsgSizeLayer<
+///     comms::frame::MsgSizeLayer<
 ///         SizeAndFlagsField,   // Used field that contains remaining length
-///         TNextLayer,          // Next layer in the protocol stack
+///         TNextLayer,          // Next layer in the frame
 ///         comms::option::def::ExtendingClass<MsgSizeAndFlagsLayer<TNextLayer> >
-///                              // Make the comms::protocol::MsgSizeLayer aware of it being extended
+///                              // Make the comms::frame::MsgSizeLayer aware of it being extended
 ///     >
 /// {
 ///     // Repeat definition of the base class
-///     using Base = comms::protocol::MsgSizeLayer<...>;
+///     using Base = comms::frame::MsgSizeLayer<...>;
 ///
 /// public:
 ///     // Repeat types defined in the base class (not visible by default)
@@ -159,45 +159,45 @@
 ///
 /// } // namespace my_prot
 /// @endcode
-/// The @ref comms::protocol::MsgSizeLayer doesn't have any virtual functions and
+/// The @ref comms::frame::MsgSizeLayer doesn't have any virtual functions and
 /// as the result not able to provide any polymorphic behavior. In order to be
 /// able to extend its default functionality there is a need to use 
 /// <a href="https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously Recurring Template Pattern</a>.
 /// It is done by passing @ref comms::option::def::ExtendingClass extension option with
-/// the type of the layer class being defined to the @ref comms::protocol::MsgSizeLayer.
+/// the type of the layer class being defined to the @ref comms::frame::MsgSizeLayer.
 ///
 /// The extending class can customize the default behavior by overriding 
 /// the listed below functions. They do not
 /// necessarily need to be @b static, accessing inner private state of the layer object
 /// is also acceptable.
-/// @li @ref comms::protocol::MsgSizeLayer::doReadField() "doReadField()" - Member
+/// @li @ref comms::frame::MsgSizeLayer::doReadField() "doReadField()" - Member
 /// function that is invoked to read field's value.
-/// @li @ref comms::protocol::MsgSizeLayer::doWriteField() "doWriteField()" - Member
+/// @li @ref comms::frame::MsgSizeLayer::doWriteField() "doWriteField()" - Member
 /// function that is invoked to write field's value.
-/// @li @ref comms::protocol::MsgSizeLayer::doFieldLength() "doFieldLength()" - Member
+/// @li @ref comms::frame::MsgSizeLayer::doFieldLength() "doFieldLength()" - Member
 /// function that is invoked to calculate serialization length of the field.
-/// @li @ref comms::protocol::MsgSizeLayer::getRemainingSizeFromField() "getRemainingSizeFromField()" - 
+/// @li @ref comms::frame::MsgSizeLayer::getRemainingSizeFromField() "getRemainingSizeFromField()" - 
 /// Member function that is invoked to retrieve the
 /// remaining length out of the provided field object.
-/// @li @ref comms::protocol::MsgSizeLayer::beforeRead() "beforeRead()" -
+/// @li @ref comms::frame::MsgSizeLayer::beforeRead() "beforeRead()" -
 /// Member function that is invoked before the read operation
 /// is forwarded to the next layer. It gives the developer a chance to
 /// update some extra transport fields accessible via message interface class (if 
 /// such exists). Note that the message object is passed by the pointer to allow
 /// cases when it is not created yet. In the example above @b ID layer precedes
 /// the @b SIZE, so the message object must already be created.
-/// @li @ref comms::protocol::MsgSizeLayer::prepareFieldForWrite() "prepareFieldForWrite()" - 
+/// @li @ref comms::frame::MsgSizeLayer::prepareFieldForWrite() "prepareFieldForWrite()" - 
 /// Member function that is invoked to prepare
 /// the field value before its write (serialization). After the function returns,
-/// the @ref comms::protocol::MsgSizeLayer will invoke @b write member function
+/// the @ref comms::frame::MsgSizeLayer will invoke @b write member function
 /// of the passed field in order to serialize it. Note, that the message object is
 /// passed by the pointer. There may be cases when @b doUpdate() member
 /// function is going to be called without having actual message object being
 /// present. In this case the @b msg parameter will be @b nullptr.
 ///
-/// The newly defined custom protocol stack layer can be used instead of
-/// @ref comms::protocol::MsgSizeLayer when defining 
-/// @ref page_prot_stack_tutorial "protocol stack" (framing) of the protocol.
+/// The newly defined custom frame layer can be used instead of
+/// @ref comms::frame::MsgSizeLayer when defining 
+/// @ref page_frame_tutorial "framing" of the protocol.
 /// For example:
 /// @code
 /// namespace my_prot
@@ -205,12 +205,12 @@
 /// 
 /// template <typename TMessage, typename TAllMessages>
 /// struct Frame1 : public 
-///     comms::protocol::MsgIdLayer<                     // ID
+///     comms::frame::MsgIdLayer<                     // ID
 ///         comms::feild::EnumValue<FieldBase, MsgId>,
 ///         TMessage,
 ///         TAllMessages,
 ///         MsgSizeAndFlagsLayer<                          // SIZE + FLAGS
-///             comms::protocol::MsgDataLayer<>          // PAYLOAD
+///             comms::frame::MsgDataLayer<>          // PAYLOAD
 ///         >
 ///     >
 /// {
@@ -227,41 +227,41 @@
 /// SIZE | ID | PAYLOAD
 /// @endcode
 /// The main problem with such scenario is that message object is created by
-/// the @b ID layer (@ref comms::protocol::MsgIdLayer), and is not available
-/// in @b beforeRead() member function the @ref comms::protocol::MsgSizeLayer
+/// the @b ID layer (@ref comms::frame::MsgIdLayer), and is not available
+/// in @b beforeRead() member function the @ref comms::frame::MsgSizeLayer
 /// invokes. @b However, the flags may influence the way the message payload
 /// is being processed, so the flags expected to be already assigned
 /// to message object before message body is being read (before read operation
-/// reaches @ref comms::protocol::MsgDataLayer).
+/// reaches @ref comms::frame::MsgDataLayer).
 ///
 /// In order to resolve such case there is a need to do a bit of cheating by
-/// introducing @b pseudo layer to manage @ref page_prot_stack_tutorial_transport_value
+/// introducing @b pseudo layer to manage @ref page_frame_tutorial_transport_value
 /// after the @b ID layer and before the @b PAYLOAD.
 /// @code
 /// SIZE | ID | FLAGS (pseudo) | PAYLOAD
 /// @endcode
 /// The @b SIZE layer will access and assign the flags value to 
 /// <b>FLAGS (pseudo)</b> layer, which will reassign it to the message object created later
-/// by the @b ID one. @b NOTE, that @b pseudo @ref page_prot_stack_tutorial_transport_value "transport value"
+/// by the @b ID one. @b NOTE, that @b pseudo @ref page_frame_tutorial_transport_value "transport value"
 /// layer does @b NOT serialize its field and as the result preserves binary
 /// compatibility of the protocol framing.
 /// 
-/// The extension to @ref comms::protocol::MsgSizeLayer may be implemented like this:
+/// The extension to @ref comms::frame::MsgSizeLayer may be implemented like this:
 /// @code
 /// namespace my_prot
 /// {
 /// 
 /// template <typename TNextLayer>
 /// class MsgSizeAndFlagsLayer : public
-///     comms::protocol::MsgSizeLayer<
+///     comms::frame::MsgSizeLayer<
 ///         SizeAndFlagsField,   // Used field that contains remaining length
-///         TNextLayer,          // Next layer in the protocol stack
+///         TNextLayer,          // Next layer in the frame
 ///         comms::option::def::ExtendingClass<MsgSizeAndFlagsLayer<TNextLayer> >
-///                              // Make the comms::protocol::MsgSizeLayer aware of it being extended
+///                              // Make the comms::frame::MsgSizeLayer aware of it being extended
 ///     >
 /// {
 ///     // Repeat definition of the base class
-///     using Base = comms::protocol::MsgSizeLayer<...>;
+///     using Base = comms::frame::MsgSizeLayer<...>;
 ///
 /// public:
 ///     // Repeat types defined in the base class (not visible by default)
@@ -299,7 +299,7 @@
 ///
 /// } // namespace my_prot
 /// @endcode
-/// The protocol stack (transport framing) itself needs to be defined like this:
+/// The transport framing itself needs to be defined like this:
 /// @code
 /// namespace my_prot
 /// {
@@ -307,14 +307,14 @@
 /// template <typename TMessage, typename TAllMessages>
 /// struct Frame2 : public 
 ///     MsgSizeAndFlagsLayer<                                        // SIZE + FLAGS 
-///         comms::protocol::MsgIdLayer<                             // ID
+///         comms::frame::MsgIdLayer<                             // ID
 ///             comms::feild::EnumValue<FieldBase, MsgId>
 ///             TMessage,
 ///             TAllMessages,
-///             comms::protocol::TransportValueLayer<                // FLAGS
+///             comms::frame::TransportValueLayer<                // FLAGS
 ///                 comms::field::IntValue<FieldBase, std::uint8_t>, 
 ///                 0U,                                              
-///                 comms::protocol::MsgDataLayer<>,                 // PAYLOAD      
+///                 comms::frame::MsgDataLayer<>,                 // PAYLOAD      
 ///                 comms::option::def::PseudoValue                  // Make flags "pseudo" 
 ///             >
 ///         >

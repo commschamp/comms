@@ -10,14 +10,14 @@
 
 #pragma once
 
-#include <tuple>
-#include <utility>
-#include <type_traits>
-
+#include "comms/Assert.h"
 #include "comms/CompileControl.h"
 #include "comms/util/type_traits.h"
 #include "comms/util/AlignedStorage.h"
-#include "comms/Assert.h"
+
+#include <tuple>
+#include <type_traits>
+#include <utility>
 
 COMMS_GNU_WARNING_PUSH
 COMMS_GNU_WARNING_DISABLE("-Wtype-limits")

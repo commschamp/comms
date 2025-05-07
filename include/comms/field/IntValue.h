@@ -10,17 +10,17 @@
 
 #pragma once
 
-#include <ratio>
-#include <limits>
-#include <type_traits>
-
 #include "comms/CompileControl.h"
 #include "comms/ErrorStatus.h"
+#include "comms/details/tag.h"
+#include "comms/field/basic/IntValue.h"
+#include "comms/field/details/AdaptBasicField.h"
 #include "comms/options.h"
 #include "comms/util/type_traits.h"
-#include "basic/IntValue.h"
-#include "details/AdaptBasicField.h"
-#include "comms/details/tag.h"
+
+#include <limits>
+#include <ratio>
+#include <type_traits>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4127) // Disable warning about constant conditional expressions

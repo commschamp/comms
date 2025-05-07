@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include <type_traits>
-#include <iterator>
-
-#include "comms/util/detect.h"
-#include "comms/util/type_traits.h"
 #include "comms/Assert.h"
 #include "comms/details/tag.h"
+#include "comms/util/detect.h"
+#include "comms/util/type_traits.h"
+
+#include <iterator>
+#include <type_traits>
 
 namespace comms
 {
@@ -49,6 +49,13 @@ private:
     template <typename... TParams>
     using UnknownTag = comms::details::tag::Tag4<>;   
 
+    template <typename... TParams>
+    using HasReserveTag = comms::details::tag::Tag5<>;      
+
+    template <typename... TParams>
+    using NoReserveTag = comms::details::tag::Tag6<>;      
+
+
     template <typename T>
     using ConstructorTag = 
         typename comms::util::LazyShallowConditional<
@@ -78,9 +85,21 @@ private:
             T
         >;    
 
+    template <typename T>
+    using ReserveTag =
+        typename comms::util::LazyShallowConditional<
+            comms::util::detect::hasReserveFunc<T>()
+        >::template Type<
+            HasReserveTag,
+            NoReserveTag
+        >;         
+
     template <typename T, typename TIter, typename... TParams>
     static void assignInternal(T& obj, TIter from, TIter to, UseAssignTag<TParams...>)
     {
+        using ObjType = typename std::decay<decltype(obj)>::type;
+        auto len = static_cast<std::size_t>(std::distance(from, to));
+        reserveInternal(obj, len, ReserveTag<ObjType>());
         obj.assign(from, to);
     }
 
@@ -101,6 +120,12 @@ private:
         }
 
         using ObjType = typename std::decay<decltype(obj)>::type;
+
+        if (diff == 0) {
+            obj = ObjType();
+            return;
+        }
+        
         obj = ObjType(&(*from), static_cast<std::size_t>(diff));
     } 
 
@@ -111,9 +136,22 @@ private:
         using ConstPointerType = typename ObjType::const_pointer;
         using PointerType = typename ObjType::pointer;
         auto fromPtr = const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*from)));
-        auto toPtr = const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*to)));
+        auto toPtr = fromPtr + std::distance(from, to);
         assignInternal(obj, fromPtr, toPtr, UsePtrSizeConstructorTag<TParams...>());
-    }          
+    }   
+    
+    template <typename T, typename... TParams>
+    static void reserveInternal(T& obj, std::size_t len, HasReserveTag<TParams...>)
+    {
+        obj.reserve(len);
+    }     
+
+    template <typename T, typename... TParams>
+    static void reserveInternal(T& obj, std::size_t len, NoReserveTag<TParams...>)
+    {
+        static_cast<void>(obj);
+        static_cast<void>(len);
+    }      
 };
 
 } // namespace details

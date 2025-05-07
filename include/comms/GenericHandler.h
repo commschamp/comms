@@ -10,12 +10,12 @@
 
 #pragma once
 
-#include <tuple>
-#include <type_traits>
-
+#include "comms/details/tag.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
+
+#include <tuple>
+#include <type_traits>
 
 namespace comms
 {

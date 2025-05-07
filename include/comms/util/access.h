@@ -10,15 +10,15 @@
 
 #pragma once
 
+#include "comms/CompileControl.h"
+#include "comms/details/tag.h"
+#include "comms/util/type_traits.h"
+
 #include <cstddef>
 #include <cstdint>
-#include <type_traits>
-#include <limits>
 #include <iterator>
-
-#include "comms/CompileControl.h"
-#include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
+#include <limits>
+#include <type_traits>
 
 COMMS_GNU_WARNING_PUSH
 

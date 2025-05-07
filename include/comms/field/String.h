@@ -10,24 +10,23 @@
 
 #pragma once
 
-#include <vector>
-
 #include "comms/CompileControl.h"
+#include "comms/ErrorStatus.h"
+#include "comms/details/tag.h"
+#include "comms/field/basic/String.h"
+#include "comms/field/details/AdaptBasicField.h"
+#include "comms/field/details/OptionsParser.h"
+#include "comms/options.h"
+#include "comms/util/detect.h"
+#include "comms/util/StaticString.h"
+#include "comms/util/StringView.h"
+#include "comms/util/type_traits.h"
 
 #if COMMS_HAS_CPP17_STRING_VIEW
 #include <string_view>
 #endif // #if COMMS_HAS_CPP17_STRING_VIEW
 
-#include "comms/ErrorStatus.h"
-#include "comms/options.h"
-#include "comms/util/StaticString.h"
-#include "comms/util/StringView.h"
-#include "comms/util/detect.h"
-#include "comms/util/type_traits.h"
-#include "comms/field/basic/String.h"
-#include "comms/field/details/AdaptBasicField.h"
-#include "comms/field/details/OptionsParser.h"
-#include "comms/details/tag.h"
+#include <vector>
 
 namespace comms
 {

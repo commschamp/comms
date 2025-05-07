@@ -13,8 +13,8 @@
 #include <iomanip>
 
 #include "comms/comms.h"
-#include "comms/protocol/checksum/BasicSum.h"
-#include "comms/protocol/checksum/Crc.h"
+#include "comms/frame/checksum/BasicSum.h"
+#include "comms/frame/checksum/Crc.h"
 
 #include "CommsTestCommon.h"
 
@@ -142,18 +142,18 @@ private:
           typename TNextLayer,
           typename... TOptions>
     class CustomChecksumPrefixLayer : public
-        comms::protocol::ChecksumPrefixLayer<
+        comms::frame::ChecksumPrefixLayer<
             TField,
-            comms::protocol::checksum::Crc_16,
+            comms::frame::checksum::Crc_16,
             TNextLayer,
             comms::option::ExtendingClass<CustomChecksumPrefixLayer<TField, TNextLayer, TOptions...> >,
             TOptions...
         >
     {
         using Base = 
-            comms::protocol::ChecksumPrefixLayer<
+            comms::frame::ChecksumPrefixLayer<
                 TField,
-                comms::protocol::checksum::Crc_16,
+                comms::frame::checksum::Crc_16,
                 TNextLayer,
                 comms::option::ExtendingClass<CustomChecksumPrefixLayer<TField, TNextLayer, TOptions...> >,
                 TOptions...
@@ -225,7 +225,7 @@ private:
             }
 
             checksumValid = true;
-            using Calc = comms::protocol::checksum::BasicSum<std::uint8_t>;
+            using Calc = comms::frame::checksum::BasicSum<std::uint8_t>;
             return Calc()(iter, len);
         }    
     };    
@@ -235,18 +235,18 @@ private:
           typename TNextLayer,
           typename... TOptions>
     class OptionalChecksumPrefixLayer : public
-        comms::protocol::ChecksumPrefixLayer<
+        comms::frame::ChecksumPrefixLayer<
             TField,
-            comms::protocol::checksum::Crc_16,
+            comms::frame::checksum::Crc_16,
             TNextLayer,
             comms::option::ExtendingClass<OptionalChecksumPrefixLayer<TField, TNextLayer, TOptions...> >,
             TOptions...
         >
     {
         using Base = 
-            comms::protocol::ChecksumPrefixLayer<
+            comms::frame::ChecksumPrefixLayer<
                 TField,
-                comms::protocol::checksum::Crc_16,
+                comms::frame::checksum::Crc_16,
                 TNextLayer,
                 comms::option::ExtendingClass<OptionalChecksumPrefixLayer<TField, TNextLayer, TOptions...> >,
                 TOptions...
@@ -329,35 +329,35 @@ private:
         typename TIdField, 
         typename TChecksumField, 
         typename TMessage>
-    struct CustomChecksumProtocolStack : public
-        comms::protocol::SyncPrefixLayer<
+    struct CustomChecksumFrame : public
+        comms::frame::SyncPrefixLayer<
             TSyncField,
-            comms::protocol::MsgSizeLayer<
+            comms::frame::MsgSizeLayer<
                 TSizeField,
-                comms::protocol::MsgIdLayer<
+                comms::frame::MsgIdLayer<
                     TIdField,
                     TMessage,
                     AllTestMessages<TMessage>,
                     CustomChecksumPrefixLayer<
                         TChecksumField,
-                        comms::protocol::MsgDataLayer<>
+                        comms::frame::MsgDataLayer<>
                     >
                 >
             >
         >
     {
         using Base =
-            comms::protocol::SyncPrefixLayer<
+            comms::frame::SyncPrefixLayer<
                 TSyncField,
-                comms::protocol::MsgSizeLayer<
+                comms::frame::MsgSizeLayer<
                     TSizeField,
-                    comms::protocol::MsgIdLayer<
+                    comms::frame::MsgIdLayer<
                         TIdField,
                         TMessage,
                         AllTestMessages<TMessage>,
                         CustomChecksumPrefixLayer<
                             TChecksumField,
-                            comms::protocol::MsgDataLayer<>
+                            comms::frame::MsgDataLayer<>
                         >
                     >
                 >
@@ -372,35 +372,35 @@ private:
         typename TIdField, 
         typename TChecksumField, 
         typename TMessage>
-    struct OptionalChecksumProtocolStack : public
-        comms::protocol::SyncPrefixLayer<
+    struct OptionalChecksumFrame : public
+        comms::frame::SyncPrefixLayer<
             TSyncField,
-            comms::protocol::MsgSizeLayer<
+            comms::frame::MsgSizeLayer<
                 TSizeField,
-                comms::protocol::MsgIdLayer<
+                comms::frame::MsgIdLayer<
                     TIdField,
                     TMessage,
                     AllTestMessages<TMessage>,
                     OptionalChecksumPrefixLayer<
                         TChecksumField,
-                        comms::protocol::MsgDataLayer<>
+                        comms::frame::MsgDataLayer<>
                     >
                 >
             >
         >
     {
         using Base =
-            comms::protocol::SyncPrefixLayer<
+            comms::frame::SyncPrefixLayer<
                 TSyncField,
-                comms::protocol::MsgSizeLayer<
+                comms::frame::MsgSizeLayer<
                     TSizeField,
-                    comms::protocol::MsgIdLayer<
+                    comms::frame::MsgIdLayer<
                         TIdField,
                         TMessage,
                         AllTestMessages<TMessage>,
                         OptionalChecksumPrefixLayer<
                             TChecksumField,
-                            comms::protocol::MsgDataLayer<>
+                            comms::frame::MsgDataLayer<>
                         >
                     >
                 >
@@ -423,16 +423,16 @@ void CustomChecksumPrefixLayerTestSuite::test1()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     typedef
-        CustomChecksumProtocolStack<
+        CustomChecksumFrame<
             BeSyncField2,
             BeSizeField20,
             BeIdField1,
             BeChecksumField2,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
@@ -452,16 +452,16 @@ void CustomChecksumPrefixLayerTestSuite::test2()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     typedef
-        CustomChecksumProtocolStack<
+        CustomChecksumFrame<
             BeSyncField2,
             BeSizeField20,
             BeIdField1,
             BeChecksumField2,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType9);
     auto* msg = dynamic_cast<BeMsg9*>(msgPtr.get());
@@ -481,16 +481,16 @@ void CustomChecksumPrefixLayerTestSuite::test3()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     typedef
-        OptionalChecksumProtocolStack<
+        OptionalChecksumFrame<
             BeSyncField2,
             BeSizeField20,
             BeIdField1,
             BeOptChecksumField2,
             BeMsgBase
-        > Stack;
+        > TestFrame;
 
-    Stack stack;
-    auto msgPtr = commonReadWriteMsgTest(stack, &Buf[0], BufSize);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType9);
     auto* msg = dynamic_cast<BeMsg9*>(msgPtr.get());

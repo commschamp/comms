@@ -7,26 +7,26 @@
 
 #pragma once
 
-#include <type_traits>
-#include <algorithm>
-#include <limits>
-#include <numeric>
-
-#include "comms/CompileControl.h"
 #include "comms/Assert.h"
+#include "comms/CompileControl.h"
+#include "comms/details/detect.h"
+#include "comms/details/tag.h"
 #include "comms/ErrorStatus.h"
+#include "comms/field/basic/CommonFuncs.h"
+#include "comms/field/details/VersionStorage.h"
+#include "comms/field/tag.h"
 #include "comms/util/access.h"
 #include "comms/util/assign.h"
+#include "comms/util/detect.h"
 #include "comms/util/MaxSizeOf.h"
 #include "comms/util/StaticVector.h"
 #include "comms/util/StaticString.h"
-#include "comms/util/detect.h"
 #include "comms/util/type_traits.h"
-#include "comms/details/detect.h"
-#include "comms/details/tag.h"
-#include "comms/field/details/VersionStorage.h"
-#include "comms/field/tag.h"
-#include "CommonFuncs.h"
+
+#include <algorithm>
+#include <limits>
+#include <numeric>
+#include <type_traits>
 
 namespace comms
 {
@@ -124,12 +124,12 @@ public:
     ArrayList() = default;
 
     explicit ArrayList(const ValueType& val)
-      : value_(val)
+      : m_value(val)
     {
     }
 
     explicit ArrayList(ValueType&& val)
-      : value_(std::move(val))
+      : m_value(std::move(val))
     {
     }
 
@@ -141,12 +141,12 @@ public:
 
     const ValueType& value() const
     {
-        return value_;
+        return m_value;
     }
 
     ValueType& value()
     {
-        return value_;
+        return m_value;
     }
 
     const ValueType& getValue() const
@@ -162,10 +162,10 @@ public:
 
     ElementType& createBack()
     {
-        COMMS_ASSERT(value_.size() < value_.max_size());
-        value_.emplace_back();
-        updateElemVersion(value_.back(), VersionTag<>());
-        return value_.back();
+        COMMS_ASSERT(m_value.size() < m_value.max_size());
+        m_value.emplace_back();
+        updateElemVersion(m_value.back(), VersionTag<>());
+        return m_value.back();
     }
 
     void clear()
@@ -173,7 +173,7 @@ public:
         static_assert(comms::util::detect::hasClearFunc<ValueType>(),
             "The used storage type for ArrayList must have clear() member function");
 
-        value_.clear();
+        m_value.clear();
     }
 
     constexpr std::size_t length() const
@@ -426,20 +426,20 @@ private:
     template <typename... TParams>
     constexpr std::size_t lengthInternal(IntegralElemTag<TParams...>) const
     {
-        return value_.size() * sizeof(ElementType);
+        return m_value.size() * sizeof(ElementType);
     }
 
     template <typename... TParams>
     constexpr std::size_t fieldLength(FixedLengthTag<TParams...>) const
     {
-        return ElementType().length() * value_.size();
+        return ElementType().length() * m_value.size();
     }
 
     template <typename... TParams>
     std::size_t fieldLength(VarLengthTag<TParams...>) const
     {
         return
-            std::accumulate(value_.begin(), value_.end(), std::size_t(0),
+            std::accumulate(m_value.begin(), m_value.end(), std::size_t(0),
                 [](std::size_t sum, typename ValueType::const_reference e) -> std::size_t
                 {
                     return sum + e.length();
@@ -581,7 +581,7 @@ private:
     constexpr bool validInternal(FieldElemTag<TParams...>) const
     {
         return std::all_of(
-            value_.begin(), value_.end(),
+            m_value.begin(), m_value.end(),
             [](const ElementType& e) -> bool
             {
                 return e.valid();
@@ -599,7 +599,7 @@ private:
     {
         return
             std::accumulate(
-                value_.begin(), value_.end(), false,
+                m_value.begin(), m_value.end(), false,
                 [](bool prev, typename ValueType::reference elem) -> bool
                 {
                     return elem.refresh() || prev;
@@ -653,7 +653,7 @@ private:
     {
         static_assert(comms::util::detect::hasClearFunc<ValueType>(),
             "The used storage type for ArrayList must have clear() member function");
-        value_.clear();
+        m_value.clear();
         auto remLen = len;
         while (0 < remLen) {
             auto es = createAndReadNextElementInternal(iter, remLen);
@@ -704,7 +704,7 @@ private:
     {
         clear();
         while (0 < count) {
-            if (value_.size() < value_.max_size()) {
+            if (m_value.size() < m_value.max_size()) {
                 auto& elem = createBack();
                 readElementNoStatus(elem, iter);
             }
@@ -725,7 +725,7 @@ private:
     template <typename... TParams>
     bool updateElemVersion(ElementType& elem, VersionDependentTag<TParams...>)
     {
-        return elem.setVersion(VersionBaseImpl::version_);
+        return elem.setVersion(VersionBaseImpl::m_version);
     }
 
     template <typename... TParams>
@@ -737,7 +737,7 @@ private:
     template <typename... TParams>
     bool setVersionInternal(VersionType version, VersionDependentTag<TParams...>)
     {
-        VersionBaseImpl::version_ = version;
+        VersionBaseImpl::m_version = version;
         bool updated = false;
         for (auto& elem : value()) {
             updated = elem.setVersion(version) || updated;
@@ -780,11 +780,11 @@ private:
     template <typename TIter>
     comms::ErrorStatus createAndReadNextElementInternal(TIter& iter, std::size_t& len)
     {
-        if (value_.size() < value_.max_size()) {
+        if (m_value.size() < m_value.max_size()) {
             auto& elem = createBack();
             auto es = readElement(elem, iter, len);
             if (es != ErrorStatus::Success) {
-                value_.pop_back();
+                m_value.pop_back();
             }
 
             return es;
@@ -794,7 +794,7 @@ private:
         return readElement(elem, iter, len);
     }
 
-    ValueType value_;
+    ValueType m_value;
 };
 
 }  // namespace basic

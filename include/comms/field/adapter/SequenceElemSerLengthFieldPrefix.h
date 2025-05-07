@@ -7,15 +7,15 @@
 
 #pragma once
 
-#include <iterator>
-#include <limits>
-#include <algorithm>
-
 #include "comms/Assert.h"
+#include "comms/details/tag.h"
 #include "comms/ErrorStatus.h"
 #include "comms/field/basic/CommonFuncs.h"
 #include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
+
+#include <algorithm>
+#include <iterator>
+#include <limits>
 
 namespace comms
 {

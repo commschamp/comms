@@ -7,16 +7,16 @@
 
 #pragma once
 
+#include "comms/CompileControl.h"
+#include "comms/field/details/adapters.h"
+#include "comms/field/details/MembersVersionDependency.h"
+#include "comms/field/tag.h"
+#include "comms/options.h"
+#include "comms/util/type_traits.h"
+
 #include <limits>
 #include <ratio>
 #include <tuple>
-
-#include "comms/options.h"
-#include "comms/CompileControl.h"
-#include "comms/util/type_traits.h"
-#include "comms/field/tag.h"
-#include "comms/field/details/adapters.h"
-#include "comms/field/details/MembersVersionDependency.h"
 
 namespace comms
 {

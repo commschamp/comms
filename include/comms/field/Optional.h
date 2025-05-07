@@ -12,10 +12,10 @@
 
 #include "comms/Assert.h"
 #include "comms/ErrorStatus.h"
-#include "details/OptionsParser.h"
-#include "OptionalMode.h"
-#include "basic/Optional.h"
-#include "details/AdaptBasicField.h"
+#include "comms/field/basic/Optional.h"
+#include "comms/field/details/AdaptBasicField.h"
+#include "comms/field/details/OptionsParser.h"
+#include "comms/field/OptionalMode.h"
 
 namespace comms
 {

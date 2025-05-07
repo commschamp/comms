@@ -11,13 +11,13 @@
 
 #pragma once
 
+#include "comms/Assert.h"
+#include "comms/util/ArrayView.h"
+
 #include <algorithm>
 #include <iterator>
 #include <limits>
 #include <string>
-
-#include "comms/Assert.h"
-#include "ArrayView.h"
 
 namespace comms
 {

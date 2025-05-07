@@ -7,11 +7,13 @@
 
 #pragma once
 
-#include <type_traits>
-#include <limits>
 
 #include "comms/CompileControl.h"
 #include "comms/ErrorStatus.h"
+
+#include <cstdint>
+#include <limits>
+#include <type_traits>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4100) // Disable warning about unreferenced parameters
@@ -166,32 +168,32 @@ template <typename TIter>
 class FieldReadHelper
 {
 public:
-    FieldReadHelper(ErrorStatus& es, TIter& iter, std::size_t& len)
-      : es_(es),
-        iter_(iter),
-        len_(len)
+    FieldReadHelper(ErrorStatus& es, TIter& iter, std::size_t& len) :
+        m_es(es),
+        m_iter(iter),
+        m_len(len)
     {
     }
 
     template <typename TField>
     void operator()(TField& field)
     {
-        if (es_ != comms::ErrorStatus::Success) {
+        if (m_es != comms::ErrorStatus::Success) {
             return;
         }
 
-        auto fromIter = iter_;
-        es_ = field.read(iter_, len_);
-        if (es_ == comms::ErrorStatus::Success) {
-            len_ -= static_cast<std::size_t>(std::distance(fromIter, iter_));
+        auto fromIter = m_iter;
+        m_es = field.read(m_iter, m_len);
+        if (m_es == comms::ErrorStatus::Success) {
+            m_len -= static_cast<std::size_t>(std::distance(fromIter, m_iter));
         }
     }
 
 
 private:
-    ErrorStatus& es_;
-    TIter& iter_;
-    std::size_t& len_;
+    ErrorStatus& m_es;
+    TIter& m_iter;
+    std::size_t& m_len;
 };
 
 template <typename TIter>
@@ -199,18 +201,18 @@ class FieldReadNoStatusHelper
 {
 public:
     FieldReadNoStatusHelper(TIter& iter)
-      : iter_(iter)
+      : m_iter(iter)
     {
     }
 
     template <typename TField>
     void operator()(TField& field)
     {
-        field.readNoStatus(iter_);
+        field.readNoStatus(m_iter);
     }
 
 private:
-    TIter& iter_;
+    TIter& m_iter;
 };
 
 template <typename TIter>
@@ -218,29 +220,29 @@ class FieldWriteHelper
 {
 public:
     FieldWriteHelper(ErrorStatus& es, TIter& iter, std::size_t len)
-      : es_(es),
-        iter_(iter),
-        len_(len)
+      : m_es(es),
+        m_iter(iter),
+        m_len(len)
     {
     }
 
     template <typename TField>
     void operator()(const TField& field)
     {
-        if (es_ != comms::ErrorStatus::Success) {
+        if (m_es != comms::ErrorStatus::Success) {
             return;
         }
 
-        es_ = field.write(iter_, len_);
-        if (es_ == comms::ErrorStatus::Success) {
-            len_ -= field.length();
+        m_es = field.write(m_iter, m_len);
+        if (m_es == comms::ErrorStatus::Success) {
+            m_len -= field.length();
         }
     }
 
 private:
-    ErrorStatus& es_;
-    TIter& iter_;
-    std::size_t len_;
+    ErrorStatus& m_es;
+    TIter& m_iter;
+    std::size_t m_len;
 };
 
 template <typename TIter>
@@ -248,18 +250,18 @@ class FieldWriteNoStatusHelper
 {
 public:
     FieldWriteNoStatusHelper(TIter& iter)
-      : iter_(iter)
+      : m_iter(iter)
     {
     }
 
     template <typename TField>
     void operator()(const TField& field)
     {
-        field.writeNoStatus(iter_);
+        field.writeNoStatus(m_iter);
     }
 
 private:
-    TIter& iter_;
+    TIter& m_iter;
 };
 
 template <typename...>
@@ -307,17 +309,17 @@ struct FieldCanWriteCheckHelper
 template <typename TVersionType>
 struct FieldVersionUpdateHelper
 {
-    FieldVersionUpdateHelper(TVersionType version) : version_(version) {}
+    FieldVersionUpdateHelper(TVersionType version) : m_version(version) {}
 
     template <typename TField>
     bool operator()(bool updated, TField& field) const
     {
         using FieldVersionType = typename std::decay<decltype(field)>::type::VersionType;
-        return field.setVersion(static_cast<FieldVersionType>(version_)) || updated;
+        return field.setVersion(static_cast<FieldVersionType>(m_version)) || updated;
     }
 
 private:
-    const TVersionType version_ = static_cast<TVersionType>(0);
+    const TVersionType m_version = static_cast<TVersionType>(0);
 };
     
 } // namespace details

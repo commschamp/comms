@@ -1,16 +1,16 @@
-/// @page page_custom_transport_value_layer Defining Custom Transport Value Protocol Stack Layer
+/// @page page_custom_transport_value_layer Defining Custom Transport Value Frame Layer
 /// @tableofcontents
-/// The @b COMMS library provides default @ref comms::protocol::TransportValueLayer protocol 
-/// stack layer to handle extra value in transport framing and re-assigning it to the 
+/// The @b COMMS library provides default @ref comms::frame::TransportValueLayer 
+/// frame layer to handle extra value in transport framing and re-assigning it to the 
 /// message object. 
 /// However, it may be insufficient (or incorrect) for some particular use cases, such as
 /// using @b bitfield field to store both protocol version and some extra flags. 
-/// The @ref page_prot_stack_tutorial_new_layers section of the 
-/// @ref page_prot_stack_tutorial page explains how to define new (custom)
+/// The @ref page_frame_tutorial_new_layers section of the 
+/// @ref page_frame_tutorial page explains how to define new (custom)
 /// protocol layer. 
 ///
 /// However, since @b v3.2 COMMS library provides an ability to extend the existing
-/// definition of @ref comms::protocol::TransportValueLayer and customize some bits
+/// definition of @ref comms::frame::TransportValueLayer and customize some bits
 /// and pieces. Let's implement the mentioned example of sharing the same byte
 /// for message version and some flags.
 ///
@@ -125,7 +125,7 @@
 /// convenience access member functions for the listed names.
 ///
 /// Now it's time to actually extend the provided definition of 
-/// the @ref comms::protocol::TransportValueLayer and support usage of the defined
+/// the @ref comms::frame::TransportValueLayer and support usage of the defined
 /// earlier @b VersionAndFlagsField field.
 /// @code
 /// namespace my_prot
@@ -133,20 +133,20 @@
 /// 
 /// template <typename TNextLayer>
 /// class VersionAndFlagsLayer : public
-///     comms::protocol::TransportValueLayer<
+///     comms::frame::TransportValueLayer<
 ///         VersionAndFlagsField,   // Used field that contains version and flags
 ///         std::numeric_limit<std::size_t>::max(), 
 ///                              // Index inside the field inside message's transportFields(), 
 ///                              // irrelevant for this situation, because the interface splits
 ///                              // the information into two separate fields.
 ///
-///         TNextLayer,          // Next layer in the protocol stack
+///         TNextLayer,          // Next layer in the frame
 ///         comms::option::def::ExtendingClass<VersionAndFlagsLayer<TNextLayer> >
-///                              // Make the comms::protocol::TransportValueLayer aware of it being extended
+///                              // Make the comms::frame::TransportValueLayer aware of it being extended
 ///     >
 /// {
 ///     // Repeat definition of the base class
-///     using Base = comms::protocol::TransportValueLayer<...>;
+///     using Base = comms::frame::TransportValueLayer<...>;
 ///
 /// public:
 ///     // Repeat types defined in the base class (not visible by default)
@@ -176,35 +176,35 @@
 ///
 /// } // namespace my_prot
 /// @endcode
-/// The @ref comms::protocol::TransportValueLayer doesn't have any virtual functions and
+/// The @ref comms::frame::TransportValueLayer doesn't have any virtual functions and
 /// as the result not able to provide any polymorphic behavior. In order to be
 /// able to extend its default functionality there is a need to use 
 /// <a href="https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously Recurring Template Pattern</a>.
 /// It is done by passing @ref comms::option::def::ExtendingClass extension option with
-/// the type of the layer class being defined to the @ref comms::protocol::TransportValueLayer.
+/// the type of the layer class being defined to the @ref comms::frame::TransportValueLayer.
 ///
 /// The extending class can customize the default behavior by overriding 
 /// the listed below functions. They do not
 /// necessarily need to be @b static, accessing inner private state of the layer object
 /// is also acceptable.
-/// @li @ref comms::protocol::TransportValueLayer::doReadField() "doReadField()" - Member
+/// @li @ref comms::frame::TransportValueLayer::doReadField() "doReadField()" - Member
 /// function that is invoked to read field's value.
-/// @li @ref comms::protocol::TransportValueLayer::doWriteField() "doWriteField()" - Member
+/// @li @ref comms::frame::TransportValueLayer::doWriteField() "doWriteField()" - Member
 /// function that is invoked to write field's value.
-/// @li @ref comms::protocol::TransportValueLayer::doFieldLength() "doFieldLength()" - Member
+/// @li @ref comms::frame::TransportValueLayer::doFieldLength() "doFieldLength()" - Member
 /// function that is invoked to calculate serialization length of the field.
-/// @li @ref comms::protocol::TransportValueLayer::reassignFieldValueToMsg() "reassignFieldValueToMsg()" -
+/// @li @ref comms::frame::TransportValueLayer::reassignFieldValueToMsg() "reassignFieldValueToMsg()" -
 /// Member function that is invoked to re-assign the transport field value to 
 /// the appropriate transport field(s) in the message object.
-/// @li @ref comms::protocol::TransportValueLayer::prepareFieldForWrite() "prepareFieldForWrite()" - 
+/// @li @ref comms::frame::TransportValueLayer::prepareFieldForWrite() "prepareFieldForWrite()" - 
 /// Member function that is invoked to prepare
 /// the field value before its write (serialization). After the function returns,
-/// the @ref comms::protocol::TransportValueLayer will invoke @b write member function
+/// the @ref comms::frame::TransportValueLayer will invoke @b write member function
 /// of the passed field in order to serialize it. 
 ///
-/// The newly defined custom protocol stack layer can be used instead of
-/// @ref comms::protocol::TransportValueLayer when defining 
-/// @ref page_prot_stack_tutorial "protocol stack" (framing) of the protocol.
+/// The newly defined custom frame layer can be used instead of
+/// @ref comms::frame::TransportValueLayer when defining 
+/// @ref page_frame_tutorial "framing" of the protocol.
 /// For example:
 /// @code
 /// namespace my_prot
@@ -212,14 +212,14 @@
 /// 
 /// template <typename TMessage, typename TAllMessages>
 /// struct Frame1 : public 
-///     comms::protocol::MsgSizeLayer<                   // SIZE
+///     comms::frame::MsgSizeLayer<                   // SIZE
 ///         common::field::IntValue<FieldBase, std::uint16_t>,
-///         comms::protocol::MsgIdLayer<                 // ID
+///         comms::frame::MsgIdLayer<                 // ID
 ///             comms::feild::EnumValue<FieldBase, MsgId>,
 ///             TMessage,
 ///             TAllMessages,
 ///             VersionAndFlagsLayer<                    // VERSION + FLAGS
-///                 comms::protocol::MsgDataLayer<>      // PAYLOAD
+///                 comms::frame::MsgDataLayer<>      // PAYLOAD
 ///             >
 ///         >
 ///     >

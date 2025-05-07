@@ -7,24 +7,24 @@
 
 #pragma once
 
-#include <type_traits>
+#include "comms/Assert.h"
+#include "comms/CompileControl.h"
+#include "comms/details/tag.h"
+#include "comms/ErrorStatus.h"
+#include "comms/field/basic/CommonFuncs.h"
+#include "comms/field/tag.h"
+#include "comms/util/access.h"
+#include "comms/util/assign.h"
+#include "comms/util/detect.h"
+#include "comms/util/MaxSizeOf.h"
+#include "comms/util/StaticString.h"
+#include "comms/util/StaticVector.h"
+#include "comms/util/type_traits.h"
+
 #include <algorithm>
 #include <limits>
 #include <numeric>
-
-#include "comms/CompileControl.h"
-#include "comms/Assert.h"
-#include "comms/ErrorStatus.h"
-#include "comms/util/access.h"
-#include "comms/util/assign.h"
-#include "comms/util/MaxSizeOf.h"
-#include "comms/util/StaticVector.h"
-#include "comms/util/StaticString.h"
-#include "comms/util/detect.h"
-#include "comms/util/type_traits.h"
-#include "comms/details/tag.h"
-#include "comms/field/tag.h"
-#include "CommonFuncs.h"
+#include <type_traits>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4100)
@@ -72,12 +72,12 @@ public:
     String() = default;
 
     explicit String(const ValueType& val)
-      : value_(val)
+      : m_value(val)
     {
     }
 
     explicit String(ValueType&& val)
-      : value_(std::move(val))
+      : m_value(std::move(val))
     {
     }
 
@@ -89,12 +89,12 @@ public:
 
     const ValueType& value() const
     {
-        return value_;
+        return m_value;
     }
 
     ValueType& value()
     {
-        return value_;
+        return m_value;
     }
 
     const ValueType& getValue() const
@@ -110,20 +110,20 @@ public:
 
     ValueType& createBack()
     {
-        value_.push_back(ValueType());
-        return value_.back();
+        m_value.push_back(ValueType());
+        return m_value.back();
     }
 
     void clear()
     {
         static_assert(comms::util::detect::hasClearFunc<ValueType>(),
                 "The string type must have clear() member function");
-        value_.clear();
+        m_value.clear();
     }
 
     constexpr std::size_t length() const
     {
-        return value_.size() * sizeof(ElementType);
+        return m_value.size() * sizeof(ElementType);
     }
 
     static constexpr std::size_t minLength()
@@ -188,8 +188,8 @@ public:
         using ConstPointer = typename ValueType::const_pointer;
         auto* str = reinterpret_cast<ConstPointer>(&(*iter));
         auto endStr = str;
-        std::advance(endStr, std::min(len, comms::util::maxSizeOf(value_)));
-        comms::util::assign(value_, str, endStr);
+        std::advance(endStr, std::min(len, comms::util::maxSizeOf(m_value)));
+        comms::util::assign(m_value, str, endStr);
         std::advance(iter, len);
         return ErrorStatus::Success;
     }
@@ -250,14 +250,14 @@ public:
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        std::copy_n(value_.begin(), value_.size(), iter);
-        doAdvance(iter, value_.size());
+        std::copy_n(m_value.begin(), m_value.size(), iter);
+        doAdvance(iter, m_value.size());
     }
 
     template <typename TIter>
     ErrorStatus writeN(std::size_t count, TIter& iter, std::size_t& len) const
     {
-        count = std::min(count, value_.size());
+        count = std::min(count, m_value.size());
 
         if (len < count) {
             return comms::ErrorStatus::BufferOverflow;
@@ -270,8 +270,8 @@ public:
     template <typename TIter>
     void writeNoStatusN(std::size_t count, TIter& iter) const
     {
-        count = std::min(count, value_.size());
-        std::copy_n(value_.begin(), count, iter);
+        count = std::min(count, m_value.size());
+        std::copy_n(m_value.begin(), count, iter);
         doAdvance(iter, count);
     }
 
@@ -310,7 +310,7 @@ private:
     {
     }
 
-    ValueType value_;
+    ValueType m_value;
 };
 
 }  // namespace basic

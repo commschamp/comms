@@ -11,10 +11,10 @@
 #pragma once
 
 #include "comms/ErrorStatus.h"
+#include "comms/field/basic/FloatValue.h"
+#include "comms/field/details/AdaptBasicField.h"
+#include "comms/field/tag.h"
 #include "comms/options.h"
-#include "basic/FloatValue.h"
-#include "details/AdaptBasicField.h"
-#include "tag.h"
 
 namespace comms
 {

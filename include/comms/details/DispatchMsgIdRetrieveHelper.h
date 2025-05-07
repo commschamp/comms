@@ -7,16 +7,16 @@
 
 #pragma once
 
-#include <type_traits>
-#include <limits>
-
+#include "comms/CompileControl.h"
+#include "comms/details/message_check.h"
+#include "comms/details/tag.h"
 #include "comms/Message.h"
 #include "comms/MessageBase.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/type_traits.h"
-#include "comms/details/message_check.h"
-#include "comms/CompileControl.h"
-#include "comms/details/tag.h"
+
+#include <limits>
+#include <type_traits>
 
 namespace comms
 {

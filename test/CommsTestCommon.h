@@ -983,18 +983,18 @@ void verifyFrameLengthIfPossible(TFrame& frame, const TMsg& msg, std::size_t exp
     return details::verifyFrameLengthIfPossible(frame, msg, expLength, Tag());
 }
 
-template <typename TProtStack>
-typename TProtStack::MsgPtr commonReadWriteMsgTest(
-    TProtStack& stack,
+template <typename TFrame>
+typename TFrame::MsgPtr commonReadWriteMsgTest(
+    TFrame& frame,
     const char* const buf,
     std::size_t bufSize,
     comms::ErrorStatus expectedEs = comms::ErrorStatus::Success)
 {
-    using MsgPtr = typename TProtStack::MsgPtr;
+    using MsgPtr = typename TFrame::MsgPtr;
 
     MsgPtr msg;
     auto readIter = comms::readIteratorFor(msg, buf);
-    auto es = stack.read(msg, readIter, bufSize);
+    auto es = frame.read(msg, readIter, bufSize);
     TS_ASSERT_EQUALS(es, expectedEs);
     if (es != comms::ErrorStatus::Success) {
         return msg;
@@ -1003,10 +1003,10 @@ typename TProtStack::MsgPtr commonReadWriteMsgTest(
     TS_ASSERT(msg);
 
     auto actualBufSize = static_cast<std::size_t>(std::distance(buf, readIter));
-    verifyFrameLengthIfPossible(stack, *msg, actualBufSize);
+    verifyFrameLengthIfPossible(frame, *msg, actualBufSize);
     std::unique_ptr<char []> outCheckBuf(new char[actualBufSize]);
     auto writeIter = comms::writeIteratorFor(msg, &outCheckBuf[0]);
-    es = stack.write(*msg, writeIter, actualBufSize);
+    es = frame.write(*msg, writeIter, actualBufSize);
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     bool buffersEqual = std::equal(buf, buf + actualBufSize, static_cast<const char*>(&outCheckBuf[0]));
     if (!buffersEqual) {
@@ -1020,19 +1020,19 @@ typename TProtStack::MsgPtr commonReadWriteMsgTest(
     return msg;
 }
 
-template <typename TProtStack>
-typename TProtStack::MsgPtr commonReadWriteMsgTest(
-    TProtStack& stack,
-    typename TProtStack::AllFields& fields,
+template <typename TFrame>
+typename TFrame::MsgPtr commonReadWriteMsgTest(
+    TFrame& frame,
+    typename TFrame::AllFields& fields,
     const char* const buf,
     std::size_t bufSize,
     comms::ErrorStatus expectedEs = comms::ErrorStatus::Success)
 {
-    using MsgPtr = typename TProtStack::MsgPtr;
+    using MsgPtr = typename TFrame::MsgPtr;
 
     MsgPtr msg;
     auto readIter = comms::readIteratorFor(msg, buf);
-    auto es = stack.readFieldsCached(fields, msg, readIter, bufSize);
+    auto es = frame.readFieldsCached(fields, msg, readIter, bufSize);
     TS_ASSERT_EQUALS(es, expectedEs);
     if (es != comms::ErrorStatus::Success) {
         return msg;
@@ -1041,29 +1041,29 @@ typename TProtStack::MsgPtr commonReadWriteMsgTest(
     TS_ASSERT(msg);
 
     auto actualBufSize = static_cast<std::size_t>(std::distance(buf, readIter));
-    TS_ASSERT_EQUALS(actualBufSize, stack.length(*msg));
+    TS_ASSERT_EQUALS(actualBufSize, frame.length(*msg));
     std::unique_ptr<char []> outCheckBuf(new char[actualBufSize]);
     auto writeIter = comms::writeIteratorFor(msg, &outCheckBuf[0]);
-    typename TProtStack::AllFields writtenFields;
-    es = stack.writeFieldsCached(writtenFields, *msg, writeIter, actualBufSize);
+    typename TFrame::AllFields writtenFields;
+    es = frame.writeFieldsCached(writtenFields, *msg, writeIter, actualBufSize);
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT(std::equal(buf, buf + actualBufSize, static_cast<const char*>(&outCheckBuf[0])));
     TS_ASSERT_EQUALS(fields, writtenFields);
     return msg;
 }
 
-template <typename TProtStack>
-typename TProtStack::MsgPtr vectorBackInsertReadWriteMsgTest(
-    TProtStack& stack,
+template <typename TFrame>
+typename TFrame::MsgPtr vectorBackInsertReadWriteMsgTest(
+    TFrame& frame,
     const char* const buf,
     std::size_t bufSize,
     comms::ErrorStatus expectedEs = comms::ErrorStatus::Success)
 {
-    using MsgPtr = typename TProtStack::MsgPtr;
+    using MsgPtr = typename TFrame::MsgPtr;
 
     MsgPtr msg;
     auto readIter = comms::readIteratorFor(msg, buf);
-    auto es = stack.read(msg, readIter, bufSize);
+    auto es = frame.read(msg, readIter, bufSize);
     TS_ASSERT_EQUALS(es, expectedEs);
     if (es != comms::ErrorStatus::Success) {
         return msg;
@@ -1072,18 +1072,18 @@ typename TProtStack::MsgPtr vectorBackInsertReadWriteMsgTest(
     TS_ASSERT(msg);
 
     auto actualBufSize = static_cast<std::size_t>(std::distance(buf, readIter));
-    TS_ASSERT_EQUALS(actualBufSize, stack.length(*msg));
+    TS_ASSERT_EQUALS(actualBufSize, frame.length(*msg));
     std::vector<char> outCheckBuf;
     auto writeIter = comms::writeIteratorFor(*msg, std::back_inserter(outCheckBuf));
-    es = stack.write(*msg, writeIter, actualBufSize);
+    es = frame.write(*msg, writeIter, actualBufSize);
     if (es == comms::ErrorStatus::UpdateRequired) {
         assert(!outCheckBuf.empty());
         auto updateIter = &outCheckBuf[0];
-        es = stack.update(*msg, updateIter, actualBufSize);
+        es = frame.update(*msg, updateIter, actualBufSize);
     }
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT_EQUALS(outCheckBuf.size(), actualBufSize);
-    TS_ASSERT_EQUALS(outCheckBuf.size(), stack.length(*msg));
+    TS_ASSERT_EQUALS(outCheckBuf.size(), frame.length(*msg));
     bool resultAsExpected = std::equal(buf, buf + actualBufSize, outCheckBuf.cbegin());
     if (!resultAsExpected) {
         std::cout << "Original buffer:\n\t" << std::hex;
@@ -1097,9 +1097,9 @@ typename TProtStack::MsgPtr vectorBackInsertReadWriteMsgTest(
 }
 
 
-template <typename TProtStack, typename TMessage>
+template <typename TFrame, typename TMessage>
 void commonWriteReadMsgTest(
-    TProtStack& stack,
+    TFrame& frame,
     TMessage msg,
     char* buf,
     std::size_t bufSize,
@@ -1107,7 +1107,7 @@ void commonWriteReadMsgTest(
     comms::ErrorStatus expectedEs = comms::ErrorStatus::Success)
 {
     auto writeIter = comms::writeIteratorFor(msg, buf);
-    auto es = stack.write(msg, writeIter, bufSize);
+    auto es = frame.write(msg, writeIter, bufSize);
     TS_ASSERT_EQUALS(es, expectedEs);
     if (es != comms::ErrorStatus::Success) {
         return;
@@ -1117,10 +1117,10 @@ void commonWriteReadMsgTest(
     auto constBuf = static_cast<const char*>(buf);
     TS_ASSERT(std::equal(constBuf, constBuf + bufSize, &expectedBuf[0]));
 
-    using MsgPtr = typename TProtStack::MsgPtr;
+    using MsgPtr = typename TFrame::MsgPtr;
     MsgPtr msgPtr;
     auto readIter = comms::readIteratorFor(msgPtr, expectedBuf);
-    es = stack.read(msgPtr, readIter, bufSize);
+    es = frame.read(msgPtr, readIter, bufSize);
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), msg.getId());
@@ -1129,9 +1129,9 @@ void commonWriteReadMsgTest(
     TS_ASSERT_EQUALS(*castedMsg, msg);
 }
 
-template <typename TProtStack, typename TMessage>
+template <typename TFrame, typename TMessage>
 void vectorBackInsertWriteReadMsgTest(
-    TProtStack& stack,
+    TFrame& frame,
     TMessage msg,
     const char* expectedBuf,
     std::size_t bufSize,
@@ -1139,7 +1139,7 @@ void vectorBackInsertWriteReadMsgTest(
 {
     std::vector<char> buf;
     auto writeIter = comms::writeIteratorFor(msg, std::back_inserter(buf));
-    auto es = stack.write(msg, writeIter, buf.max_size());
+    auto es = frame.write(msg, writeIter, buf.max_size());
     if (expectedEs != comms::ErrorStatus::Success) {
         TS_ASSERT_EQUALS(es, expectedEs);
         return;
@@ -1147,7 +1147,7 @@ void vectorBackInsertWriteReadMsgTest(
 
     if (es == comms::ErrorStatus::UpdateRequired) {
         auto updateIter = &buf[0];
-        es = stack.update(updateIter, buf.size());
+        es = frame.update(updateIter, buf.size());
         TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     }
 
@@ -1168,10 +1168,10 @@ void vectorBackInsertWriteReadMsgTest(
     }
     TS_ASSERT(bufEquals);
 
-    using MsgPtr = typename TProtStack::MsgPtr;
+    using MsgPtr = typename TFrame::MsgPtr;
     MsgPtr msgPtr;
     const char* readIter = comms::readIteratorFor(msgPtr, &buf[0]);
-    es = stack.read(msgPtr, readIter, buf.size());
+    es = frame.read(msgPtr, readIter, buf.size());
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT(msgPtr);
     TS_ASSERT_EQUALS(msgPtr->getId(), msg.getId());
@@ -1180,52 +1180,52 @@ void vectorBackInsertWriteReadMsgTest(
     TS_ASSERT_EQUALS(*castedMsg, msg);
 }
 
-template <typename TProtStack, typename TMsg>
+template <typename TFrame, typename TMsg>
 void commonReadWriteMsgDirectTest(
-    TProtStack& stack,
+    TFrame& frame,
     TMsg& msg,
     const char* const buf,
     std::size_t bufSize,
     comms::ErrorStatus expectedEs = comms::ErrorStatus::Success)
 {
     auto readIter = comms::readIteratorFor(msg, buf);
-    auto es = stack.read(msg, readIter, bufSize);
+    auto es = frame.read(msg, readIter, bufSize);
     TS_ASSERT_EQUALS(es, expectedEs);
     if (es != comms::ErrorStatus::Success) {
         return;
     }
 
     auto actualBufSize = static_cast<std::size_t>(std::distance(buf, readIter));
-    TS_ASSERT_EQUALS(actualBufSize, stack.length(msg));
+    TS_ASSERT_EQUALS(actualBufSize, frame.length(msg));
     std::unique_ptr<char []> outCheckBuf(new char[actualBufSize]);
     auto writeIter = comms::writeIteratorFor(msg, &outCheckBuf[0]);
-    es = stack.write(msg, writeIter, actualBufSize);
+    es = frame.write(msg, writeIter, actualBufSize);
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT(std::equal(buf, buf + actualBufSize, static_cast<const char*>(&outCheckBuf[0])));
 }
 
-template <typename TProtStack, typename TMsg>
+template <typename TFrame, typename TMsg>
 void commonReadWriteMsgDirectTest(
-    TProtStack& stack,
-    typename TProtStack::AllFields& fields,
+    TFrame& frame,
+    typename TFrame::AllFields& fields,
     TMsg& msg,
     const char* const buf,
     std::size_t bufSize,
     comms::ErrorStatus expectedEs = comms::ErrorStatus::Success)
 {
     auto readIter = comms::readIteratorFor(msg, buf);
-    auto es = stack.readFieldsCached(fields, msg, readIter, bufSize);
+    auto es = frame.readFieldsCached(fields, msg, readIter, bufSize);
     TS_ASSERT_EQUALS(es, expectedEs);
     if (es != comms::ErrorStatus::Success) {
         return;
     }
 
     auto actualBufSize = static_cast<std::size_t>(std::distance(buf, readIter));
-    TS_ASSERT_EQUALS(actualBufSize, stack.length(msg));
+    TS_ASSERT_EQUALS(actualBufSize, frame.length(msg));
     std::unique_ptr<char []> outCheckBuf(new char[actualBufSize]);
-    typename TProtStack::AllFields writtenFields;
+    typename TFrame::AllFields writtenFields;
     auto writeIter = comms::writeIteratorFor(msg, &outCheckBuf[0]);
-    es = stack.writeFieldsCached(writtenFields, msg, writeIter, actualBufSize);
+    es = frame.writeFieldsCached(writtenFields, msg, writeIter, actualBufSize);
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT_EQUALS(fields, writtenFields);
     TS_ASSERT(std::equal(buf, buf + actualBufSize, static_cast<const char*>(&outCheckBuf[0])));

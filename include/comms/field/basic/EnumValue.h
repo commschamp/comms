@@ -7,12 +7,11 @@
 
 #pragma once
 
-#include <type_traits>
-
 #include "comms/ErrorStatus.h"
+#include "comms/field/basic/IntValue.h"
 #include "comms/field/tag.h"
 
-#include "IntValue.h"
+#include <type_traits>
 
 namespace comms
 {
@@ -33,7 +32,7 @@ class EnumValue : public TFieldBase
     using BaseImpl = TFieldBase;
 
     using IntValueField =
-        IntValue<
+        comms::field::basic::IntValue<
             BaseImpl,
             UnderlyingType
         >;
@@ -52,7 +51,7 @@ public:
     EnumValue() = default;
 
     explicit EnumValue(ValueType val)
-      : value_(val)
+      : m_value(val)
     {
     }
 
@@ -65,12 +64,12 @@ public:
 
     const ValueType& value() const
     {
-        return value_;
+        return m_value;
     }
 
     ValueType& value()
     {
-        return value_;
+        return m_value;
     }
 
     const ValueType& getValue() const
@@ -115,7 +114,7 @@ public:
         IntValueField intField;
         auto es = intField.read(iter, size);
         if (es == ErrorStatus::Success) {
-            value_ = static_cast<decltype(value_)>(intField.value());
+            m_value = static_cast<decltype(m_value)>(intField.value());
         }
         return es;
     }
@@ -125,23 +124,23 @@ public:
     {
         IntValueField intField;
         intField.readNoStatus(iter);
-        value_ = static_cast<decltype(value_)>(intField.value());
+        m_value = static_cast<decltype(m_value)>(intField.value());
     }
 
     template <typename TIter>
     ErrorStatus write(TIter& iter, std::size_t size) const
     {
-        return IntValueField(static_cast<IntValueType>(value_)).write(iter, size);
+        return IntValueField(static_cast<IntValueType>(m_value)).write(iter, size);
     }
 
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        IntValueField(static_cast<IntValueType>(value_)).writeNoStatus(iter);
+        IntValueField(static_cast<IntValueType>(m_value)).writeNoStatus(iter);
     }
 
 private:
-    ValueType value_ = static_cast<ValueType>(0);
+    ValueType m_value = static_cast<ValueType>(0);
 };
 
 }  // namespace basic

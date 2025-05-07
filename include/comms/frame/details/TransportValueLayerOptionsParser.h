@@ -8,18 +8,16 @@
 #pragma once
 
 #include "comms/options.h"
-#include "TransportValueLayerBases.h"
-#include "ProtocolLayerDetails.h"
+#include "comms/frame/details/TransportValueLayerAllBases.h"
 
 namespace comms
 {
 
-namespace protocol
+namespace frame
 {
 
 namespace details
 {
-
 
 template <typename... TOptions>
 class TransportValueLayerOptionsParser;
@@ -42,10 +40,10 @@ public:
     template <typename TNextLayer>
     using ForceReadUntilDataSplitIfNeeded = 
         typename comms::util::Conditional<
-            std::is_void<typename ProtocolLayerMsgPtr<TNextLayer>::Type>::value
+            std::is_void<typename FrameLayerMsgPtr<TNextLayer>::Type>::value
         >::template Type <
             comms::option::app::EmptyOption,
-            comms::option::def::ProtocolLayerForceReadUntilDataSplit
+            comms::option::def::FrameLayerForceReadUntilDataSplit
             // If the MsgPtr is not defined, then the MsgIdLayer is 
             // probably an outer layer, as the result the message 
             // object is properly allocated when transport value
@@ -78,7 +76,7 @@ public:
 
 template <typename... TOptions>
 class TransportValueLayerOptionsParser<
-    comms::option::def::ProtocolLayerSuppressReadUntilDataSplitForcing, 
+    comms::option::def::FrameLayerSuppressReadUntilDataSplitForcing, 
     TOptions...> :
         public TransportValueLayerOptionsParser<TOptions...>
 {
@@ -103,6 +101,6 @@ class TransportValueLayerOptionsParser<
 
 } // namespace details
 
-} // namespace protocol
+} // namespace frame
 
 } // namespace comms

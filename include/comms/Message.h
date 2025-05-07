@@ -11,20 +11,19 @@
 
 #pragma once
 
+#include "comms/Assert.h"
+#include "comms/details/detect.h"
+#include "comms/details/field_alias.h"
+#include "comms/details/MessageIdTypeRetriever.h"
+#include "comms/details/MessageInterfaceBuilder.h"
+#include "comms/details/transport_fields_access.h"
+#include "comms/ErrorStatus.h"
+#include "comms/Field.h"
+#include "comms/util/type_traits.h"
+
 #include <cstdint>
 #include <memory>
 #include <type_traits>
-
-#include "comms/ErrorStatus.h"
-#include "comms/Assert.h"
-#include "comms/Field.h"
-
-#include "comms/util/type_traits.h"
-#include "comms/details/MessageInterfaceBuilder.h"
-#include "comms/details/transport_fields_access.h"
-#include "comms/details/detect.h"
-#include "comms/details/MessageIdTypeRetriever.h"
-#include "comms/details/field_alias.h"
 
 namespace comms
 {

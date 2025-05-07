@@ -7,14 +7,14 @@
 
 #pragma once
 
-#include <tuple>
-#include <cstddef>
-
-#include "comms/ErrorStatus.h"
-#include "comms/util/Tuple.h"
 #include "comms/details/tag.h"
+#include "comms/ErrorStatus.h"
 #include "comms/field/basic/CommonFuncs.h"
 #include "comms/field/details/FieldOpHelpers.h"
+#include "comms/util/Tuple.h"
+
+#include <cstddef>
+#include <tuple>
 
 namespace comms
 {
@@ -33,12 +33,12 @@ public:
 
     AllFields& fields()
     {
-        return fields_;
+        return m_fields;
     }
 
     const AllFields& fields() const
     {
-        return fields_;
+        return m_fields;
     }
 
     static constexpr bool areFieldsVersionDependent()
@@ -413,7 +413,7 @@ private:
         return comms::field::details::FieldWriteNoStatusHelper<TIter>(iter);
     }
 
-    AllFields fields_;
+    AllFields m_fields;
 };
 
 // ------------------------------------------------------

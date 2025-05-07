@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include <type_traits>
-#include <iterator>
-
 #include "comms/ErrorStatus.h"
-#include "comms/util/Tuple.h"
 #include "comms/field/details/FieldOpHelpers.h"
+#include "comms/util/Tuple.h"
+
+#include <iterator>
+#include <type_traits>
 
 namespace comms
 {

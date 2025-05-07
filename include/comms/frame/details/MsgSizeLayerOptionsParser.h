@@ -7,13 +7,14 @@
 
 #pragma once
 
-#include <tuple>
 #include "comms/options.h"
+
+#include <tuple>
 
 namespace comms
 {
 
-namespace protocol
+namespace frame
 {
 
 namespace details
@@ -63,6 +64,6 @@ class MsgSizeLayerOptionsParser<
 
 } // namespace details
 
-} // namespace protocol
+} // namespace frame
 
 } // namespace comms

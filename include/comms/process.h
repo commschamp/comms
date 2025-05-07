@@ -10,19 +10,9 @@
 
 #pragma once
 
-#include <type_traits>
-#include <iterator>
+#include "comms/details/ProcessHelper.h"
 
-#include "comms/ErrorStatus.h"
-#include "comms/iterator.h"
-#include "comms/dispatch.h"
-#include "comms/Message.h"
-#include "comms/Assert.h"
-#include "comms/MsgDispatcher.h"
-#include "comms/details/detect.h"
-#include "comms/details/process.h"
-#include "comms/util/ScopeGuard.h"
-#include "comms/protocol/ProtocolLayerBase.h"
+#include <cstddef>
 
 namespace  comms
 {
@@ -35,16 +25,16 @@ namespace  comms
 ///     calculating the distance between originally passed value and the one after
 ///     function returns.
 /// @param[in] len Number of remaining bytes in input buffer.
-/// @param[in] frame Protocol frame / stack (see @ref page_use_prot_transport) that
+/// @param[in] frame Protocol frame (see @ref page_use_prot_transport) that
 ///     is used to process the raw input.
-/// @param[in, out] msg Smart pointer (see @ref comms::protocol::ProtocolLayerBase::MsgPtr "MsgPtr"
+/// @param[in, out] msg Smart pointer (see @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr"
 ///     defintion of the @ref page_use_prot_transport) to message object to be allocated,
-///     or reference to actual message object (extending @ref comms::MessageBase) when
+///     or reference to actual message object (extending @ref comms::Message) when
 ///     such is known.
 /// @param[in, out] extraValues Extra values that are passed as variadic parameters to
-///     @ref comms::protocol::ProtocolLayerBase::read() "read()" member function
-///     of the protocol frame / stack.
-/// @return ErrorStatus of the protocol frame / stack @ref comms::protocol::ProtocolLayerBase::read() "read()"
+///     @ref comms::frame::FrameLayerBase::read() "read()" member function
+///     of the protocol frame.
+/// @return ErrorStatus of the protocol frame @ref comms::frame::FrameLayerBase::read() "read()"
 ///     operation.
 /// @note Defined in comms/process.h
 /// @see @ref page_dispatch
@@ -56,36 +46,7 @@ comms::ErrorStatus processSingle(
     TMsg& msg,
     TExtraValues... extraValues)
 {
-    std::size_t consumed = 0U;
-    auto onExit =
-        comms::util::makeScopeGuard(
-            [&bufIter, &consumed]()
-            {
-                std::advance(bufIter, consumed);
-            });
-    static_cast<void>(onExit);
-
-    while (consumed < len) {
-        auto begIter = comms::readIteratorFor(msg, bufIter + consumed);
-        auto iter = begIter;
-
-        // Do the read
-        auto es = frame.read(msg, iter, len - consumed, extraValues...);
-        if (es == comms::ErrorStatus::NotEnoughData) {
-            return es;
-        }
-
-        if (es == comms::ErrorStatus::ProtocolError) {
-            // Something is not right with the data, remove one character and try again
-           ++consumed;
-            continue;
-        }
-
-        consumed += static_cast<decltype(consumed)>(std::distance(begIter, iter));
-        return es;
-    }
-
-    return comms::ErrorStatus::NotEnoughData;
+    return details::ProcessHelper::processSingle(bufIter, len, std::forward<TFrame>(frame), msg, std::forward<TExtraValues>(extraValues)...);
 }
 
 /// @brief Process input until first message is recognized, its object is created
@@ -97,18 +58,18 @@ comms::ErrorStatus processSingle(
 ///     calculating the distance between originally passed value and the one after
 ///     function returns.
 /// @param[in] len Number of remaining bytes in input buffer.
-/// @param[in] frame Protocol frame / stack (see @ref page_use_prot_transport) that
+/// @param[in] frame Protocol frame (see @ref page_use_prot_transport) that
 ///     is used to process the raw input.
-/// @param[in, out] msg Smart pointer (see @ref comms::protocol::ProtocolLayerBase::MsgPtr "MsgPtr"
+/// @param[in, out] msg Smart pointer (see @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr"
 ///     defintion of the @ref page_use_prot_transport) to message object to be allocated,
-///     or reference to actual message object (extending @ref comms::MessageBase) when
+///     or reference to actual message object (extending @ref comms::Message) when
 ///     such is known.
 /// @param[in] handler Handler to handle message object when dispatched. The dispatch
 ///     is performed using @ref comms::dispatchMsg() function.
 /// @param[in, out] extraValues Extra values that are passed as variadic parameters to
-///     @ref comms::protocol::ProtocolLayerBase::read() "read()" member function
-///     of the protocol frame / stack.
-/// @return ErrorStatus of the protocol frame / stack @ref comms::protocol::ProtocolLayerBase::read() "read()"
+///     @ref comms::frame::FrameLayerBase::read() "read()" member function
+///     of the protocol frame.
+/// @return ErrorStatus of the protocol frame @ref comms::frame::FrameLayerBase::read() "read()"
 ///     operation.
 /// @note Defined in comms/process.h
 /// @note If default dispatch behaviour of the @ref comms::dispatchMsg()
@@ -124,30 +85,7 @@ comms::ErrorStatus processSingleWithDispatch(
     THandler& handler,
     TExtraValues... extraValues)
 {
-    using LocalMsgIdType = details::ProcessMsgIdType<typename std::decay<decltype(msg)>::type>;
-    LocalMsgIdType id = LocalMsgIdType();
-    std::size_t idx = 0U;
-
-    auto es =
-        processSingle(
-            bufIter,
-            len,
-            std::forward<TFrame>(frame),
-            msg,
-            comms::protocol::msgId(id),
-            comms::protocol::msgIndex(idx),
-            extraValues...);
-
-    if (es != comms::ErrorStatus::Success) {
-        return es;
-    }
-
-    static_cast<void>(handler);
-    using FrameType = typename std::decay<decltype(frame)>::type;
-    using AllMessagesType = typename FrameType::AllMessages;
-    auto& msgObj = details::processMsgCastToMsgObj(msg);
-    comms::dispatchMsg<AllMessagesType>(id, idx, msgObj, handler);
-    return es;
+    return details::ProcessHelper::processSingleWithDispatch(bufIter, len, std::forward<TFrame>(frame), msg, handler, std::forward<TExtraValues>(extraValues)...);
 }
 
 /// @brief Process input until first message is recognized, its object is created
@@ -163,18 +101,18 @@ comms::ErrorStatus processSingleWithDispatch(
 ///     calculating the distance between originally passed value and the one after
 ///     function returns.
 /// @param[in] len Number of remaining bytes in input buffer.
-/// @param[in] frame Protocol frame / stack (see @ref page_use_prot_transport) that
+/// @param[in] frame Protocol frame (see @ref page_use_prot_transport) that
 ///     is used to process the raw input.
-/// @param[in, out] msg Smart pointer (see @ref comms::protocol::ProtocolLayerBase::MsgPtr "MsgPtr"
+/// @param[in, out] msg Smart pointer (see @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr"
 ///     defintion of the @ref page_use_prot_transport) to message object to be allocated,
-///     or reference to actual message object (extending @ref comms::MessageBase) when
+///     or reference to actual message object (extending @ref comms::Message) when
 ///     such is known.
 /// @param[in] handler Handler to handle message object when dispatched. The dispatch
 ///     is performed via provded @b TDispatcher class (see @ref comms::MsgDispatcher).
 /// @param[in, out] extraValues Extra values that are passed as variadic parameters to
-///     @ref comms::protocol::ProtocolLayerBase::read() "read()" member function
-///     of the protocol frame / stack.
-/// @return ErrorStatus of the protocol frame / stack @ref comms::protocol::ProtocolLayerBase::read() "read()"
+///     @ref comms::frame::FrameLayerBase::read() "read()" member function
+///     of the protocol frame.
+/// @return ErrorStatus of the protocol frame @ref comms::frame::FrameLayerBase::read() "read()"
 ///     operation.
 /// @note Defined in comms/process.h
 /// @see @ref comms::processSingleWithDispatch().
@@ -189,35 +127,7 @@ comms::ErrorStatus processSingleWithDispatchViaDispatcher(
     THandler& handler,
     TExtraValues... extraValues)
 {
-    using LocalMsgIdType = details::ProcessMsgIdType<typename std::decay<decltype(msg)>::type>;
-    static_assert(!std::is_void<LocalMsgIdType>(), "Invalid type of msg param");
-
-    LocalMsgIdType id = LocalMsgIdType();
-    std::size_t idx = 0U;
-
-    auto es =
-        processSingle(
-            bufIter,
-            len,
-            std::forward<TFrame>(frame),
-            msg,
-            comms::protocol::msgId(id),
-            comms::protocol::msgIndex(idx),
-            extraValues...);
-
-    if (es != comms::ErrorStatus::Success) {
-        return es;
-    }
-
-    using FrameType = typename std::decay<decltype(frame)>::type;
-    using AllMessagesType = typename FrameType::AllMessages;
-    static_assert(
-        comms::isMsgDispatcher<TDispatcher>(),
-        "TDispatcher is expected to be a variant of comms::MsgDispatcher");
-
-    auto& msgObj = details::processMsgCastToMsgObj(msg);
-    TDispatcher::template dispatch<AllMessagesType>(id, idx, msgObj, handler);
-    return es;
+    return details::ProcessHelper::processSingleWithDispatchViaDispatcher<TDispatcher>(bufIter, len, std::forward<TFrame>(frame), msg, handler, std::forward<TExtraValues>(extraValues)...);
 }
 
 /// @brief Process all available input and dispatch all created message objects
@@ -228,7 +138,7 @@ comms::ErrorStatus processSingleWithDispatchViaDispatcher(
 ///     when buffer is iterated over (unlike @ref comms::processSingle(),
 ///     @ref comms::processSingleWithDispatch(), @ref comms::processSingleWithDispatchViaDispatcher()).
 /// @param[in] len Number of remaining bytes in input buffer.
-/// @param[in] frame Protocol frame / stack (see @ref page_use_prot_transport) that
+/// @param[in] frame Protocol framek (see @ref page_use_prot_transport) that
 ///     is used to process the raw input.
 /// @param[in] handler Handler to handle message object when dispatched. The dispatch
 ///     is performed using @ref comms::dispatchMsg() function.
@@ -249,23 +159,7 @@ std::size_t processAllWithDispatch(
     TFrame&& frame,
     THandler& handler)
 {
-    std::size_t consumed = 0U;
-    using FrameType = typename std::decay<decltype(frame)>::type;
-    using MsgPtr = typename FrameType::MsgPtr;
-    while (consumed < len) {
-        auto begIter = bufIter + consumed;
-        auto iter = begIter;
-
-        MsgPtr msg;
-        auto es = processSingleWithDispatch(iter, len - consumed, std::forward<TFrame>(frame), msg, handler);
-        consumed += static_cast<decltype(consumed)>(std::distance(begIter, iter));
-        if (es == comms::ErrorStatus::NotEnoughData) {
-            break;
-        }
-        COMMS_ASSERT(consumed <= len);
-    }
-
-    return consumed;
+    return details::ProcessHelper::processAllWithDispatch(bufIter, len, std::forward<TFrame>(frame), handler);
 }
 
 /// @brief Process all available input and dispatch all created message objects
@@ -281,7 +175,7 @@ std::size_t processAllWithDispatch(
 ///     when buffer is iterated over (unlike @ref comms::processSingle(),
 ///     @ref comms::processSingleWithDispatch(), @ref comms::processSingleWithDispatchViaDispatcher()).
 /// @param[in] len Number of remaining bytes in input buffer.
-/// @param[in] frame Protocol frame / stack (see @ref page_use_prot_transport) that
+/// @param[in] frame Protocol frame (see @ref page_use_prot_transport) that
 ///     is used to process the raw input.
 /// @param[in] handler Handler to handle message object when dispatched. The dispatch
 ///     is performed via provded @b TDispatcher class (see @ref comms::MsgDispatcher).
@@ -298,23 +192,7 @@ std::size_t processAllWithDispatchViaDispatcher(
     TFrame&& frame,
     THandler& handler)
 {
-    std::size_t consumed = 0U;
-    using FrameType = typename std::decay<decltype(frame)>::type;
-    using MsgPtr = typename FrameType::MsgPtr;
-    while (consumed < len) {
-        auto begIter = bufIter + consumed;
-        auto iter = begIter;
-
-        MsgPtr msg;
-        auto es = processSingleWithDispatchViaDispatcher<TDispatcher>(iter, len - consumed, std::forward<TFrame>(frame), msg, handler);
-        consumed += static_cast<decltype(consumed)>(std::distance(begIter, iter));
-        if (es == comms::ErrorStatus::NotEnoughData) {
-            break;
-        }
-        COMMS_ASSERT(consumed <= len);
-    }
-
-    return consumed;
+    return details::ProcessHelper::processAllWithDispatchViaDispatcher<TDispatcher>(bufIter, len, std::forward<TFrame>(frame), handler);
 }
 
 } // namespace  comms

@@ -12,7 +12,7 @@
 namespace comms
 {
 
-namespace protocol
+namespace frame
 {
 
 namespace details
@@ -62,6 +62,6 @@ class SyncPrefixLayerOptionsParser<
 
 } // namespace details
 
-} // namespace protocol
+} // namespace frame
 
 } // namespace comms

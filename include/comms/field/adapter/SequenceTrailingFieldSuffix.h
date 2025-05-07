@@ -51,7 +51,7 @@ public:
 
     constexpr std::size_t length() const
     {
-        return trailField_.length() + BaseImpl::length();
+        return m_trailField.length() + BaseImpl::length();
     }
 
     static constexpr std::size_t minLength()
@@ -66,7 +66,7 @@ public:
 
     bool valid() const
     {
-        return trailField_.valid() && BaseImpl::valid();
+        return m_trailField.valid() && BaseImpl::valid();
     }
 
     template <typename TIter>
@@ -77,7 +77,7 @@ public:
             return es;
         }
 
-        return trailField_.read(iter, len - BaseImpl::length());
+        return m_trailField.read(iter, len - BaseImpl::length());
     }
 
     static constexpr bool hasReadNoStatus()
@@ -91,24 +91,24 @@ public:
     template <typename TIter>
     comms::ErrorStatus write(TIter& iter, std::size_t len) const
     {
-        auto trailLen = trailField_.length();
+        auto trailLen = m_trailField.length();
         auto es = BaseImpl::write(iter, len - trailLen);
         if (es != comms::ErrorStatus::Success) {
             return es;
         }
 
-        return trailField_.write(iter, trailLen);
+        return m_trailField.write(iter, trailLen);
     }
 
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
         BaseImpl::writeNoStatus(iter);
-        trailField_.writeNoStatus(iter);
+        m_trailField.writeNoStatus(iter);
     }
 
 private:
-    TrailField trailField_;
+    TrailField m_trailField;
 };
 
 }  // namespace adapter

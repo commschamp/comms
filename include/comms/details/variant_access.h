@@ -7,12 +7,13 @@
 
 #pragma once
 
+
+#include "comms/details/base_detection.h"
+#include "comms/details/gen_enum.h"
+#include "comms/details/macro_common.h"
+
 #include <tuple>
 #include <type_traits>
-
-#include "macro_common.h"
-#include "gen_enum.h"
-#include "base_detection.h"
 
 #ifdef COMMS_MUST_DEFINE_BASE
 #define COMMS_AS_VARIANT_FUNC Base& asVariant()

@@ -7,27 +7,31 @@
 
 #pragma once
 
-#include "comms/protocol/ProtocolLayerBase.h"
-
 namespace comms
 {
 
-namespace protocol
+namespace frame
 {
 
 namespace details
 {
 
-template <
-    typename TField,
-    typename TNextLayer,
-    typename TDerived,
-    typename...  TOptions>
-using ProtocolLayerBase = 
-    comms::protocol::ProtocolLayerBase<TField, TNextLayer, TDerived, TOptions...>;
+template <bool TValidPtr>
+struct MsgSizeLayerConstNullPtrCastHelper
+{
+    template <typename TPtr>
+    using Type = const typename TPtr::element_type*;
+};
+
+template <>
+struct MsgSizeLayerConstNullPtrCastHelper<false>
+{
+    template <typename TPtr>
+    using Type = const void*;
+};
 
 } // namespace details
 
-} // namespace protocol
+} // namespace frame
 
 } // namespace comms

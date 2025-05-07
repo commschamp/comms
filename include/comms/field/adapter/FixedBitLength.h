@@ -7,15 +7,15 @@
 
 #pragma once
 
-#include <type_traits>
-#include <limits>
-
 #include "comms/Assert.h"
+#include "comms/details/tag.h"
+#include "comms/ErrorStatus.h"
 #include "comms/util/SizeToType.h"
 #include "comms/util/BitSizeToByteSize.h"
 #include "comms/util/type_traits.h"
-#include "comms/ErrorStatus.h"
-#include "comms/details/tag.h"
+
+#include <limits>
+#include <type_traits>
 
 namespace comms
 {

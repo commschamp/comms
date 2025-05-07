@@ -60,19 +60,19 @@ public:
 
     Assert* reset(Assert* newAssert = nullptr)
     {
-        auto prevAssert = assert_;
-        assert_ = newAssert;
+        auto prevAssert = m_assert;
+        m_assert = newAssert;
         return prevAssert;
     }
 
     Assert* getAssert()
     {
-        return assert_;
+        return m_assert;
     }
 
     bool hasAssertRegistered() const
     {
-        return (assert_ != nullptr);
+        return (m_assert != nullptr);
     }
 
     static void infiniteLoop()
@@ -81,9 +81,9 @@ public:
     }
 
 private:
-    AssertManager() : assert_(nullptr) {}
+    AssertManager() : m_assert(nullptr) {}
 
-    Assert* assert_;
+    Assert* m_assert;
 };
 
 /// @endcond
@@ -111,8 +111,8 @@ public:
     /// @param args Arguments to pass to the assertion class constructor.
     template<typename... TParams>
     EnableAssert(TParams&&... args)
-        : assert_(std::forward<TParams>(args)...),
-          prevAssert_(AssertManager::instance().reset(&assert_))
+        : m_assert(std::forward<TParams>(args)...),
+          m_prevAssert(AssertManager::instance().reset(&m_assert))
     {
     }
 
@@ -121,7 +121,7 @@ public:
     ///          the instantiation of this object.
     ~EnableAssert() noexcept
     {
-        AssertManager::instance().reset(prevAssert_);
+        AssertManager::instance().reset(m_prevAssert);
     }
 
 
@@ -129,12 +129,12 @@ public:
     /// @return Reference to object of type TAssert.
     AssertType& getAssert()
     {
-        return assert_;
+        return m_assert;
     }
 
 private:
-    AssertType assert_;
-    Assert* prevAssert_;
+    AssertType m_assert;
+    Assert* m_prevAssert;
 };
 
 

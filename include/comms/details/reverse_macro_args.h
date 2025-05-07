@@ -7,8 +7,7 @@
 
 #pragma once
 
-#include "macro_common.h"
-
+#include "comms/details/macro_common.h"
 
 //#define COMMS_DO_REVERSE_MACRO_ARGS_0()
 #define COMMS_DO_REVERSE_MACRO_ARGS_1(n_) COMMS_EXPAND(n_)

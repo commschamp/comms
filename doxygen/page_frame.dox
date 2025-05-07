@@ -1,6 +1,6 @@
-/// @page page_prot_stack_tutorial Protocol Stack Definition Tutorial
+/// @page page_frame_tutorial Frame Definition Tutorial
 /// @tableofcontents
-/// @section page_prot_stack_tutorial_intro Introduction
+/// @section page_frame_tutorial_intro Introduction
 /// In addition to definition of the messages and their contents, every 
 /// communication protocol must ensure that the message is successfully delivered
 /// over the I/O link to the other side. The serialised message payload must
@@ -37,13 +37,13 @@
 /// value, as separate class. Every such layer class will use @b field abstraction
 /// (see @ref page_field_tutorial) to wrap the value it handles.
 /// The layer classes are stacked together by wrapping
-/// one another. When combined together they are called <b>Protocol Stack</b>.
+/// one another. When combined together they are called <b>Frame</b>.
 ///
 /// The wrapping for the example above will look like this:
-/// @diafile protocol_stack.dia
+/// @diafile frame.dia
 ///
 /// When presented as actual stack, it may look like this:
-/// @diafile protocol_stack_layers.dia
+/// @diafile frame_layers.dia
 ///
 /// Please note that @b CHECKSUM layer lays between @b SYNC and @b SIZE. This is
 /// a bit counter intuitive, because @b SIZE follows @b SYNC in the protocol
@@ -52,35 +52,35 @@
 /// @b SIZE, @b ID, and @b PAYLOAD areas, i.e. it must wrap the all three.
 ///
 /// The COMMS library provides multiple classes to define various layers when
-/// assembling the full <b>protocol stack</b> of layers. All these classes reside in
-/// comms::protocol namespace.
+/// assembling the full <b>frame</b> of layers. All these classes reside in
+/// comms::frame namespace.
 /// The following sections will cover all the layer classes required to
-/// assemble the protocol stack described above.
+/// assemble the frame described above.
 ///
-/// @section page_prot_stack_tutorial_payload PAYLOAD Layer
+/// @section page_frame_tutorial_payload PAYLOAD Layer
 /// The top layer, that is responsible to read/write the payload of the message
-/// is called @b PAYLOAD. It is implemented by comms::protocol::MsgDataLayer
+/// is called @b PAYLOAD. It is implemented by comms::frame::MsgDataLayer
 /// class in the COMMS library. 
 /// @code
-/// using MyMsgData = comms::protocol::MsgDataLayer<>;
+/// using MyMsgData = comms::frame::MsgDataLayer<>;
 /// @endcode
-/// @b NOTE, that @ref comms::protocol::MsgDataLayer receives a template parameter of the extending options.
+/// @b NOTE, that @ref comms::frame::MsgDataLayer receives a template parameter of the extending options.
 /// In the normal operation, when transport frame fields are not stored anywhere,
 /// it is never used. However, there is way to perform @b read operation while
-/// caching transport fields (by using @ref comms::protocol::MsgDataLayer::readFieldsCached() "readFieldsCached()")
+/// caching transport fields (by using @ref comms::frame::MsgDataLayer::readFieldsCached() "readFieldsCached()")
 /// The default payload field is defined to be @b comms::field::ArrayList of raw data
-/// (see @ref comms::protocol::MsgDataLayer::Field). It is possible to override
+/// (see @ref comms::frame::MsgDataLayer::Field). It is possible to override
 /// the default definition of some other variant of the @b comms::field::ArrayList:
 /// @code
 /// using CustomDataField = comms::field::ArrayList<...>;
 ///
-/// using MyMsgData = comms::protocol::MsgDataLayer<comms::option::def::FieldType<CustomDataField>>;
+/// using MyMsgData = comms::frame::MsgDataLayer<comms::option::def::FieldType<CustomDataField>>;
 /// @endcode
 ///
-/// @section page_prot_stack_tutorial_id ID Layer
+/// @section page_frame_tutorial_id ID Layer
 /// The @b ID layer is responsible to process the ID of the message
 /// and based on this ID, create proper message object. The COMMS library implements
-/// this functionality in comms::protocol::MsgIdLayer class. It receives 
+/// this functionality in comms::frame::MsgIdLayer class. It receives 
 /// <b>at least</b> four template parameters. The first one is a type of the
 /// field that can be used to read/write the ID information. The @ref
 /// page_define_prot_interface section described @b my_protocol::MsgId enum
@@ -134,7 +134,7 @@
 ///     typename TInputMessages = AllMessages<TMessage> // Input messages that need to be recognised
 /// >
 /// using MyMsgId = 
-///     comms::protocol::MsgIdLayer<
+///     comms::frame::MsgIdLayer<
 ///         MsgIdField, 
 ///         TMessage, 
 ///         TInputMessages, 
@@ -151,19 +151,19 @@
 /// try to read all the messages with the found ID one by one <b>in
 /// order</b> of their definition until success is reported.
 ///
-/// The comms::protocol::MsgIdLayer defines @ref comms::protocol::MsgIdLayer::MsgPtr "MsgPtr"
+/// The comms::frame::MsgIdLayer defines @ref comms::frame::MsgIdLayer::MsgPtr "MsgPtr"
 /// internal type, which is
 /// smart pointer (@b std::unique_ptr) to the input message interface
 /// class (@b TMessage) provided as second template parameter.
 ///
-/// During the normal @b read operation, the comms::protocol::MsgIdLayer will
+/// During the normal @b read operation, the comms::frame::MsgIdLayer will
 /// dynamically allocate the proper message object.
 ///
-/// The comms::protocol::MsgIdLayer can also be used in <b>bare metal</b> systems,
+/// The comms::frame::MsgIdLayer can also be used in <b>bare metal</b> systems,
 /// that do NOT use dynamic memory allocation. In order to prevent this layer 
 /// from using dynamic memory allocation, the @ref comms::option::app::InPlaceAllocation
 /// option needs to be passed as fifth template parameter to the
-/// comms::protocol::MsgIdLayer class. However, an ability to use this option
+/// comms::frame::MsgIdLayer class. However, an ability to use this option
 /// needs to be provided to the application itself only if needed. In order to
 /// achive that additional template parameter needs to be used.
 /// @code
@@ -173,7 +173,7 @@
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
 /// using MyMsgId = 
-///     comms::protocol::MsgIdLayer<
+///     comms::frame::MsgIdLayer<
 ///         MsgIdField, 
 ///         TMessage, 
 ///         TInputMessages, 
@@ -181,12 +181,12 @@
 ///         TAllocationOptions
 ///     >;
 /// @endcode 
-/// In this case, the comms::protocol::MsgIdLayer will statically allocate 
+/// In this case, the comms::frame::MsgIdLayer will statically allocate 
 /// internal buffer in its private data members, big enough to hold any message object
 /// of any type listed in @b AllMessages bundle. It means that only one message
 /// object can be allocated and used at a time, i.e. the previous object must
 /// be deleted prior to new one being allocated. @n
-/// Also, the @ref comms::protocol::MsgIdLayer::MsgPtr "MsgPtr" will still be a variant of
+/// Also, the @ref comms::frame::MsgIdLayer::MsgPtr "MsgPtr" will still be a variant of
 /// @b std::unique_ptr, but with custom deleter (defined by COMMS library itself),
 /// which will make sure the proper destruction of the message object and
 /// release of the internal buffer for next allocation. In case new allocation
@@ -204,7 +204,7 @@
 /// cannot be used. The @b COMMS library provides @ref comms::GenericMessage 
 /// message definition which has a single variable length data field 
 /// (defined using @ref comms::field::ArrayList class). The @ref
-/// comms::protocol::MsgIdLayer may also receive @ref comms::option::app::SupportGenericMessage
+/// comms::frame::MsgIdLayer may also receive @ref comms::option::app::SupportGenericMessage
 /// option specifying type of the GenericMessage. 
 /// In this case, if the appropriate message type hasn't been found in 
 /// @b AllMessages bundle, the appropriate @ref comms::GenericMessage object
@@ -224,11 +224,11 @@
 ///         comms::option::app::InPlaceAllocation
 ///     >;
 /// @endcode
-/// When constructed, the comms::protocol::MsgIdLayer creates an array of
+/// When constructed, the comms::frame::MsgIdLayer creates an array of
 /// statically allocated factory methods, which are responsible to allocate
 /// right message objects. This array is used as a map of message ID to the
 /// factory method. The COMMS library contains inner logic that analyses a tuple of all @b input message
-/// types provided to @ref comms::protocol::MsgIdLayer. If the IDs of the messages
+/// types provided to @ref comms::frame::MsgIdLayer. If the IDs of the messages
 /// are sequential ones starting from a low number such as 0 or 1, and the highest
 /// ID value do not significantly exceed the total number of message types in the tuple,
 /// then the one-to-one mapping is generated, i.e. to access the right factory 
@@ -237,25 +237,25 @@
 /// is executed to get appropriate factory method having the numeric message ID 
 /// value (O(log(n))).
 ///
-/// @b NOTE, that comms::protocol::MsgIdLayer doesn't use any dynamic memory
+/// @b NOTE, that comms::frame::MsgIdLayer doesn't use any dynamic memory
 /// allocation to store internal factory methods, that create proper message
 /// object given the ID of the message, which makes it possible and safe to
 /// use in bare-metal environment without any HEAP.
 ///
-/// It may happen that @b comms::protocol::MsgIdLayer class as-is is not really
+/// It may happen that @b comms::frame::MsgIdLayer class as-is is not really
 /// suitable for implementing message identification and creation of message
 /// object when implementing custom protocol. 
 /// It is possible to implement a new custom layer (see @ref
-/// page_prot_stack_tutorial_new_layers section below) with the required
+/// page_frame_tutorial_new_layers section below) with the required
 /// functionality. However, it is recommended
 /// to use @ref comms::MsgFactory object internally. It will help in creation the proper
 /// message object once the ID value is known.
 ///
-/// @section page_prot_stack_tutorial_size SIZE Layer
+/// @section page_frame_tutorial_size SIZE Layer
 /// The @b SIZE layer is responsible to process information on the remaining
 /// message length, and forward the @b read/write operations to the upper layer
 /// in case it is safe to do so. The COMMS library provides 
-/// @ref comms::protocol::MsgSizeLayer class for that purpose.
+/// @ref comms::frame::MsgSizeLayer class for that purpose.
 /// @code
 /// namespace my_protocol
 /// {
@@ -273,14 +273,14 @@
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
 /// using MyMsgSize = 
-///     comms::protocol::MsgSizeLayer<
+///     comms::frame::MsgSizeLayer<
 ///         RemSizeField, 
 ///         MyMsgId<TMessage, TInputMessages, TAllocationOptions> 
 ///     >;
 /// 
 /// } // namespace my_protocol
 /// @endcode
-/// The @ref comms::protocol::MsgSizeLayer receives <b>at least</b> two template parameters. The first
+/// The @ref comms::frame::MsgSizeLayer receives <b>at least</b> two template parameters. The first
 /// one is the definition of the @b field (see @ref page_field_tutorial for details)
 /// that is responsible to read/write the remaining length information. The
 /// second template parameter is an upper layer that is being wrapped. The third
@@ -293,13 +293,13 @@
 /// (@b sizeof(std::uint16_t)) when serialising the length of wrapped fields.
 /// See also @ref sec_field_tutorial_int_value_ser_offset for more details.
 ///
-/// @section page_prot_stack_tutorial_checksum CHECKSUM Layer
+/// @section page_frame_tutorial_checksum CHECKSUM Layer
 /// The @b CHECKSUM layer is responsible to calculate and verify the checksum
 /// on the data read and/or written by the upper layers it wraps.
-/// The COMMS library provides comms::protocol::ChecksumLayer and
-/// comms::protocol::ChecksumPrefixLayer for this purpose. They are very similar.
-/// The only difference is that comms::protocol::ChecksumLayer appends the 
-/// checksum value, while comms::protocol::ChecksumPrefixLayer prepends it.
+/// The COMMS library provides comms::frame::ChecksumLayer and
+/// comms::frame::ChecksumPrefixLayer for this purpose. They are very similar.
+/// The only difference is that comms::frame::ChecksumLayer appends the 
+/// checksum value, while comms::frame::ChecksumPrefixLayer prepends it.
 /// @code
 /// namespace my_protocol
 /// {
@@ -312,9 +312,9 @@
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
 /// using MyChecksum =
-///     comms::protocol::ChecksumLayer<
+///     comms::frame::ChecksumLayer<
 ///         ChecksumField,
-///         comms::protocol::checksum::Crc_CCITT
+///         comms::frame::checksum::Crc_CCITT
 ///         MyMsgSize<TMessage, TInputMessages, TAllocationOptions>
 ///     >;
 /// 
@@ -325,17 +325,17 @@
 ///
 /// The second template parameter is a checksum calculator class which is used
 /// to calculate a checksum value. Please refer to the documentation of
-/// @ref comms::protocol::ChecksumLayer or @ref comms::protocol::ChecksumPrefixLayer class 
+/// @ref comms::frame::ChecksumLayer or @ref comms::frame::ChecksumPrefixLayer class 
 /// for the details on the interface this
 /// checksum calculator class must provide. The example above uses 
-/// @ref comms::protocol::checksum::Crc_CCITT, which calculates the the standard
+/// @ref comms::frame::checksum::Crc_CCITT, which calculates the the standard
 /// CRC-CCITT value. All the checksum calculators the COMMS library provides reside
-/// in comms::protocol::checksum namespace. 
+/// in comms::frame::checksum namespace. 
 ///
 /// The third template parameter is an upper layer that is being wrapped.
 ///
-/// By default both @ref comms::protocol::ChecksumLayer and 
-/// @ref comms::protocol::ChecksumPrefixLayer allow inner (upper) layers to 
+/// By default both @ref comms::frame::ChecksumLayer and 
+/// @ref comms::frame::ChecksumPrefixLayer allow inner (upper) layers to 
 /// complete their read operation before calculating and verifying checksum on
 /// read data. However, there may be protocols that may allow checksum verification
 /// before attempting to read message contents. In this case 
@@ -350,9 +350,9 @@
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
 /// using MyChecksum =
-///     comms::protocol::ChecksumLayer<
+///     comms::frame::ChecksumLayer<
 ///         ChecksumField,
-///         comms::protocol::checksum::Crc_CCITT
+///         comms::frame::checksum::Crc_CCITT
 ///         MyMsgSize<TMessage, TInputMessages, TAllocationOptions>,
 ///         comms::option::def::ChecksumLayerVerifyBeforeRead
 ///     >;
@@ -360,10 +360,10 @@
 /// } // namespace my_protocol
 /// @endcode
 ///
-/// @section page_prot_stack_tutorial_sync SYNC Layer
+/// @section page_frame_tutorial_sync SYNC Layer
 /// The @b SYNC layer is responsible to recognise the synchronisation byte(s)
 /// in the input stream as well as write appropriate value when the write
-/// operation takes place. The COMMS library provides @ref comms::protocol::SyncPrefixLayer
+/// operation takes place. The COMMS library provides @ref comms::frame::SyncPrefixLayer
 /// class that helps with this task.
 /// @code
 /// namespace my_protocol
@@ -384,21 +384,21 @@
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
 /// using MySyncPrefix = 
-///     comms::protocol::SyncPrefixLayer<
+///     comms::frame::SyncPrefixLayer<
 ///         SyncField, 
 ///         MyChecksum<TMessage, TInputMessages, TAllocationOptions> 
 ///     >;
 /// 
 /// } // namespace my_protocol
 /// @endcode
-/// The comms::protocol::SyncPrefixLayer class receives two template parameters.
+/// The comms::frame::SyncPrefixLayer class receives two template parameters.
 /// The first one is the type of the @b field, that is responsible to read/write
 /// the synchronisation byte(s). Please note the usage of @ref comms::option::def::DefaultNumValue
 /// option when defining the @b field type. It insures that the default constructed
 /// field will have the required value. @n
 /// The second template parameter is the upper layer being wrapped.
 ///
-/// @section page_prot_stack_tutorial_transport_value Extra Transport Values
+/// @section page_frame_tutorial_transport_value Extra Transport Values
 /// Some protocol may use extra values as part of the transport information. Such
 /// values may have an influence on how the message payload is read and/or on
 /// how the message object is handled. As an example let's define the following
@@ -410,19 +410,19 @@
 /// object may have some extra fields, which were introduced in later version of
 /// the protocol, and it needs to take into account the provided @b VERSION info.
 ///
-/// The COMMS library provides @ref comms::protocol::TransportValueLayer to handle
+/// The COMMS library provides @ref comms::frame::TransportValueLayer to handle
 /// such fields. @b HOWEVER it requires extra support from common message interface class.
 /// The latter must use @ref comms::option::def::ExtraTransportFields option in order
 /// to define expected interface (please refer to @ref page_define_prot_interface_extra_transport
 /// for details).
 ///
-/// The @ref comms::protocol::TransportValueLayer class receives three 
+/// The @ref comms::frame::TransportValueLayer class receives three 
 /// template parameters. The first one is the field used to read / write the
 /// value. The second parameter is index of the relevant extra transport field
 /// in the @ref comms::Message::TransportFields tuple. And the third parameter
 /// is the next layer.
 ///
-/// The whole protocol stack definition may look like this:
+/// The whole frame definition may look like this:
 /// @code
 /// // Base class of all the fields
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
@@ -430,14 +430,14 @@
 /// // Field describing protocol version.
 /// using MyVersionField = comms::field::IntValue<MyFieldBase, std::uint16_t>;
 ///
-/// using MyMsgData = comms::protocol::MsgDataLayer<>;
+/// using MyMsgData = comms::frame::MsgDataLayer<>;
 ///
 /// // Version control layer
 /// template <
 ///     typename TMessage // common interface class defined by the application
 /// >
 /// using MyVersion = 
-///     comms::protocol::TransportValueLayer<
+///     comms::frame::TransportValueLayer<
 ///         MyVersionField, 
 ///         TMessage::TransportFieldIdx_version, 
 ///         MyMsgData<>
@@ -450,7 +450,7 @@
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
 /// using MyMsgId = 
-///     comms::protocol::MsgIdLayer<
+///     comms::frame::MsgIdLayer<
 ///         MsgIdField, 
 ///         TMessage, 
 ///         TInputMessages, 
@@ -465,7 +465,7 @@
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
 /// using MyMsgSize = 
-///     comms::protocol::MsgSizeLayer<
+///     comms::frame::MsgSizeLayer<
 ///         RemSizeField, 
 ///         MyMsgId<TMessage, TInputMessages, TAllocationOptions> 
 ///     >;
@@ -483,25 +483,25 @@
 /// update created message object (if necessary) before
 /// the read operation is forwarded to the final (PAYLOAD) layer.
 ///
-/// Unfortunatelly there are layers (@ref comms::protocol::ChecksumLayer,
-/// @ref comms::protocol::ChecksumPrefixLayer, and @ref comms::protocol::MsgSizeLayer),
+/// Unfortunatelly there are layers (@ref comms::frame::ChecksumLayer,
+/// @ref comms::frame::ChecksumPrefixLayer, and @ref comms::frame::MsgSizeLayer),
 /// that cannot complete their read operation, without read of the PAYLOAD data
 /// being complete as well. As the result these layers do not support being wrapped by 
-/// @ref comms::protocol::TransportValueLayer and will fail compilation with
+/// @ref comms::frame::TransportValueLayer and will fail compilation with
 /// static assert if such wrapping is attempted.
 ///
-/// @section page_prot_stack_tutorial_pseudo_transport_value Pseudo Transport Values
+/// @section page_frame_tutorial_pseudo_transport_value Pseudo Transport Values
 /// Some protocols may report one of the values (such as protocol version) in
 /// one of the messages used to establish connection. After that, the reported
 /// value may have influence on how other message contents are being read. Handling
-/// such case is very similar to @ref page_prot_stack_tutorial_transport_value.
+/// such case is very similar to @ref page_frame_tutorial_transport_value.
 /// The only difference is passing @ref comms::option::def::PseudoValue option to
-/// @ref comms::protocol::TransportValueLayer layer class. It will cause the 
+/// @ref comms::frame::TransportValueLayer layer class. It will cause the 
 /// transport value not actually being (de)serialised during @b read / @b write
 /// operations. The pseudo field value is going to be stored as private member
-/// of @ref comms::protocol::TransportValueLayer and can be accessed (and updated) using
-/// @ref comms::protocol::TransportValueLayer::pseudoField() "pseudoField()" member function(s).
-/// During the @b read operation the comms::protocol::TransportValueLayer behaves
+/// of @ref comms::frame::TransportValueLayer and can be accessed (and updated) using
+/// @ref comms::frame::TransportValueLayer::pseudoField() "pseudoField()" member function(s).
+/// During the @b read operation the comms::frame::TransportValueLayer behaves
 /// as if the value stored in this field was actually read.
 /// @code
 /// // Version control layer
@@ -509,7 +509,7 @@
 ///     typename TMessage // common interface class defined by the application
 /// >
 /// using MyVersion = 
-///     comms::protocol::TransportValueLayer<
+///     comms::frame::TransportValueLayer<
 ///         MyVersionField, 
 ///         TMessage::TransportFieldIdx_version, 
 ///         MyMsgData<>,
@@ -517,12 +517,12 @@
 ///     >;
 /// @endcode
 /// 
-/// @section page_prot_stack_tutorial_summary Layers Summary
+/// @section page_frame_tutorial_summary Layers Summary
 /// The earlier examples show that layer classes wrap one another, which creates
 /// the following picture:
-/// @diafile protocol_stack.dia
+/// @diafile frame.dia
 ///
-/// The outermost (or bottom) layer defines a full <b>protocol stack</b>. It 
+/// The outermost (or bottom) layer defines a full <b>frame</b>. It 
 /// should be typedef-ed or extended to avoid any confusion:
 /// @code
 /// template <
@@ -530,10 +530,10 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
-/// using ProtocolStack = MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> ;
+/// using Frame = MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> ;
 /// @endcode
 /// Every protocol layer provides an ability to access the next one using
-/// @ref comms::protocol::ProtocolLayerBase::nextLayer() "nextLayer()" member function.
+/// @ref comms::frame::FrameLayerBase::nextLayer() "nextLayer()" member function.
 /// It is strongly recommended to generate convenience access functions using
 /// #COMMS_PROTOCOL_LAYERS_ACCESS() macro.
 /// @code
@@ -542,7 +542,7 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
-/// struct ProtocolStack : public 
+/// struct Frame : public 
 ///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
 ///     COMMS_PROTOCOL_LAYERS_ACCESS(payload, id, size, checksum, sync);
@@ -555,7 +555,7 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
-/// struct ProtocolStack : public 
+/// struct Frame : public 
 ///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
 ///     // Access to PAYLOAD layer
@@ -601,14 +601,14 @@
 /// #COMMS_PROTOCOL_LAYERS_ACCESS() macro
 /// even though it contains valid C++11 code. If the compilation failure 
 /// happens there is a need to define inner @b Base type which specifies exact type
-/// of the protocol stack base class.
+/// of the frame base class.
 /// @code
 /// template <
 ///     typename TMessage, // common interface class defined by the application
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
-/// class ProtocolStack : public 
+/// class Frame : public 
 ///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
 ///     using Base = MySyncPrefix<TMessage, TInputMessages, TAllocationOptions>;
@@ -627,7 +627,7 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
-/// class ProtocolStack : public 
+/// class Frame : public 
 ///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
 /// #ifdef COMMS_MUST_DEFINE_BASE
@@ -648,7 +648,7 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
-/// class ProtocolStack : public
+/// class Frame : public
 ///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions>
 /// {
 ///     // Base type definition is a requirement
@@ -664,7 +664,7 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
-/// struct ProtocolStack : public
+/// struct Frame : public
 ///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions>
 /// {
 ///     using Layer_payload = ...;
@@ -689,7 +689,7 @@
 /// };
 /// @endcode
 ///
-/// @section page_prot_stack_tutorial_new_layers Implementing New Layers
+/// @section page_frame_tutorial_new_layers Implementing New Layers
 /// Every protocol is unique, and there is a chance that COMMS library doesn't
 /// provide all the necessary layer classes required to implement custom logic
 /// of the protocol. The COMMS library allows implementation and usage of 
@@ -704,16 +704,16 @@
 /// @li @ref page_custom_checksum_layer
 /// @li @ref page_custom_sync_prefix_layer
 ///
-/// In case absolutely new and independent protocol stack layer needs to be
+/// In case absolutely new and independent frame layer needs to be
 /// implemented, please follow the instructions below.
 ///
-/// It is strongly recommended to inherit from comms::protocol::ProtocolLayerBase
+/// It is strongly recommended to inherit from comms::frame::FrameLayerBase
 /// and implement missing functionality
 /// @code
 /// // Must receive the next layer type as template parameter
 /// template <typename TField, typename TNextLayer>
 /// class MyLayer : public 
-///     comms::protocol::ProtocolLayerBase<
+///     comms::frame::FrameLayerBase<
 ///         TField, 
 ///         TNextLayer,
 ///         MyLayer<TField, TNextLayer>
@@ -724,7 +724,7 @@
 ///     template <typename TMsg, typename TIter, typename TNextLayerReader>
 ///     comms::ErrorStatus doRead(
 ///         Field& field,
-///         TMsg& msg, // can be either smart pointer (ProtocolStack::MsgPtr) or message object itself
+///         TMsg& msg, // can be either smart pointer (Frame::MsgPtr) or message object itself
 ///         TIter& iter,
 ///         std::size_t size,
 ///         std::size_t* missingSize,
@@ -765,37 +765,37 @@
 ///     }
 /// };
 /// @endcode
-/// Note that the third template parameter to the comms::protocol::ProtocolLayerBase
+/// Note that the third template parameter to the comms::frame::FrameLayerBase
 /// base class is the inheriting class itself.
 ///
-/// The comms::protocol::ProtocolLayerBase implements @ref 
-/// comms::protocol::ProtocolLayerBase::read() "read()" and @ref
-/// comms::protocol::ProtocolLayerBase::readFieldsCached() "readFieldsCached()" member functions which
+/// The comms::frame::FrameLayerBase implements @ref 
+/// comms::frame::FrameLayerBase::read() "read()" and @ref
+/// comms::frame::FrameLayerBase::readFieldsCached() "readFieldsCached()" member functions which
 /// are actual "read" interface, they invoke the @b doRead() member function implemented
 /// the derived layer class, while providing the "nextLayerReader" object to be
 /// used to forward the read operation to the next layer. The signature of the
 /// @b nextLayerReader.read() function is the same as @ref 
-/// comms::protocol::ProtocolLayerBase::read() "read()". @b NOTE, that @b msg parameter
+/// comms::frame::FrameLayerBase::read() "read()". @b NOTE, that @b msg parameter
 /// to the @b doRead() member function can be either reference to a smart pointer
-/// (@ref comms::protocol::ProtocolLayerBase::MsgPtr "MsgPtr") or a reference to the message
+/// (@ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr") or a reference to the message
 /// object itself (one that extends @ref comms::MessageBase). If the message object contents
 /// need to be accessed, then it is necessary to know what exactly is passed as
 /// @b msg parameter to the @b doRead() function. The @ref
-/// comms::protocol::ProtocolLayerBase::isMessageObjRef() "isMessageObjRef()" 
+/// comms::frame::FrameLayerBase::isMessageObjRef() "isMessageObjRef()" 
 /// member function can be used to help in such task
 /// and "tag dispatch idiom" can be used to perform right functionality.
 /// @code
 /// // Must receive the next layer type as template parameter
 /// template <typename TField, typename TNextLayer>
-/// class MyLayer : public comms::protocol::ProtocolLayerBase<...>
+/// class MyLayer : public comms::frame::FrameLayerBase<...>
 /// {
-///     using Base = comms::protocol::ProtocolLayerBase<...>;
+///     using Base = comms::frame::FrameLayerBase<...>;
 /// public:
 ///     // Implement read
 ///     template <typename TMsg, typename TIter, typename TNextLayerReader>
 ///     comms::ErrorStatus doRead(
 ///         Field& field,
-///         TMsg& msg, // can be either smart pointer (ProtocolStack::MsgPtr) or message object itself
+///         TMsg& msg, // can be either smart pointer (Frame::MsgPtr) or message object itself
 ///         TIter& iter,
 ///         std::size_t size,
 ///         std::size_t* missingSize,
@@ -838,14 +838,14 @@
 /// };
 /// @endcode
 ///
-/// In similar way comms::protocol::ProtocolLayerBase implements @ref 
-/// comms::protocol::ProtocolLayerBase::write() "write()" and @ref
-/// comms::protocol::ProtocolLayerBase::writeFieldsCached() "writeFieldsCached()" member functions which
+/// In similar way comms::frame::FrameLayerBase implements @ref 
+/// comms::frame::FrameLayerBase::write() "write()" and @ref
+/// comms::frame::FrameLayerBase::writeFieldsCached() "writeFieldsCached()" member functions which
 /// are actual "write" interface, they invoke the @b doWrite() member function implemented
 /// the derived layer class, while providing the "nextLayerWriter" object to be
 /// used to forward the read operation to the next layer. The signature of the
 /// @b nextLayerWriter.write() function is the same as @ref 
-/// comms::protocol::ProtocolLayerBase::write() "write()". If the @b doWrite() function
+/// comms::frame::FrameLayerBase::write() "write()". If the @b doWrite() function
 /// requires modification to the used iterator (moving it back and force), it
 /// must determine type of the iterators (using @b std::iterator_traits). In case
 /// the used iterator is @b output one (not @b random-access), then such update
@@ -854,12 +854,12 @@
 /// It will indicate to the client application that invocation of @b update
 /// functionality with random access iterator needs to follow the @b write operation.
 ///
-/// The comms::protocol::ProtocolLayerBase base class defines also "update"
-/// interface functions @ref comms::protocol::ProtocolLayerBase::update() "update()" and
-/// @ref comms::protocol::ProtocolLayerBase::updateFieldsCached() "updateFieldsCached()", which in the
+/// The comms::frame::FrameLayerBase base class defines also "update"
+/// interface functions @ref comms::frame::FrameLayerBase::update() "update()" and
+/// @ref comms::frame::FrameLayerBase::updateFieldsCached() "updateFieldsCached()", which in the
 /// similar way invoke @b doUpdate(). However, @ref
-/// comms::protocol::ProtocolLayerBase class provides a default implementation
-/// of @ref comms::protocol::ProtocolLayerBase::doUpdate() "doUpdate()"
+/// comms::frame::FrameLayerBase class provides a default implementation
+/// of @ref comms::frame::FrameLayerBase::doUpdate() "doUpdate()"
 /// member function, which does nothing, just advances the iterator. If there
 /// is a need for a custom update functionality, please provide it in you
 /// layer class by implementing the custom version of @b doUpdate() member function.
@@ -867,7 +867,7 @@
 /// // Must receive the next layer type as template parameter
 /// template <typename TField, typename TNextLayer>
 /// class MyLayer : public 
-///     comms::protocol::ProtocolLayerBase<
+///     comms::frame::FrameLayerBase<
 ///         TField, 
 ///         TNextLayer,
 ///         MyLayer<TField, TNextLayer>
@@ -896,7 +896,7 @@
 /// @endcode
 /// The signature of the
 /// @b nextLayerUpdater.update() function is the same as @ref 
-/// comms::protocol::ProtocolLayerBase::update() "update()".
+/// comms::frame::FrameLayerBase::update() "update()".
 ///
 /// There may be cases when update functionality requires also knowledge about
 /// message object being written. In this case there is a need to provide overloaded
@@ -905,7 +905,7 @@
 /// // Must receive the next layer type as template parameter
 /// template <typename TField, typename TNextLayer>
 /// class MyLayer : public 
-///     comms::protocol::ProtocolLayerBase<...>
+///     comms::frame::FrameLayerBase<...>
 /// {
 /// public:
 ///     ...
@@ -922,14 +922,14 @@
 /// };
 /// @endcode
 /// 
-/// If the new layer being implemented is similar to @ref comms::protocol::MsgIdLayer,
+/// If the new layer being implemented is similar to @ref comms::frame::MsgIdLayer,
 /// i.e. creates message objects when id of the message is known, then it must
-/// also override (hide) the inherited @ref comms::protocol::ProtocolLayerBase::createMsg() "createMsg()"
+/// also override (hide) the inherited @ref comms::frame::FrameLayerBase::createMsg() "createMsg()"
 /// and implement its own version:
 /// @code
 /// template <typename TField, typename TNextLayer>
 /// class MyLayer : public 
-///     comms::protocol::ProtocolLayerBase<
+///     comms::frame::FrameLayerBase<
 ///         TField, 
 ///         TNextLayer,
 ///         MyLayer<TField, TNextLayer>

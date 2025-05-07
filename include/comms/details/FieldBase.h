@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "comms/traits.h"
 #include "comms/options.h"
+#include "comms/traits.h"
 
 namespace comms
 {

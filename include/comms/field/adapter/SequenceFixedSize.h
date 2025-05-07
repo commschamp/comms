@@ -7,13 +7,14 @@
 
 #pragma once
 
-#include <cstddef>
 #include "comms/Assert.h"
-#include "comms/ErrorStatus.h"
-#include "comms/util/detect.h"
-#include "comms/field/basic/CommonFuncs.h"
-#include "comms/util/type_traits.h"
 #include "comms/details/tag.h"
+#include "comms/ErrorStatus.h"
+#include "comms/field/basic/CommonFuncs.h"
+#include "comms/util/detect.h"
+#include "comms/util/type_traits.h"
+
+#include <cstddef>
 
 namespace comms
 {
@@ -34,19 +35,19 @@ public:
     using ElementType = typename BaseImpl::ElementType;
 
     explicit SequenceFixedSizeBase(std::size_t maxSize)
-      : fixedSize_(maxSize)
+      : m_fixedSize(maxSize)
     {
     }
 
     SequenceFixedSizeBase(std::size_t maxSize, const ValueType& val)
       : BaseImpl(val),
-        fixedSize_(maxSize)
+        m_fixedSize(maxSize)
     {
     }
 
     SequenceFixedSizeBase(std::size_t maxSize, ValueType&& val)
       : BaseImpl(std::move(val)),
-        fixedSize_(maxSize)
+        m_fixedSize(maxSize)
     {
     }
 
@@ -58,12 +59,12 @@ public:
     std::size_t length() const
     {
         auto currSize = BaseImpl::getValue().size();
-        if (currSize == fixedSize_) {
+        if (currSize == m_fixedSize) {
             return BaseImpl::length();
         }
 
-        if (currSize < fixedSize_) {
-            auto remSize = fixedSize_ - currSize;
+        if (currSize < m_fixedSize) {
+            auto remSize = m_fixedSize - currSize;
             auto dummyElem = ElementType();
             return BaseImpl::length() + (remSize * BaseImpl::elementLength(dummyElem));
         }
@@ -82,25 +83,25 @@ public:
     template <typename TIter>
     comms::ErrorStatus read(TIter& iter, std::size_t len)
     {
-        return BaseImpl::readN(fixedSize_, iter, len);
+        return BaseImpl::readN(m_fixedSize, iter, len);
     }
 
     template <typename TIter>
     void readNoStatus(TIter& iter)
     {
-        return BaseImpl::readNoStatusN(fixedSize_, iter);
+        return BaseImpl::readNoStatusN(m_fixedSize, iter);
     }
 
     template <typename TIter>
     comms::ErrorStatus write(TIter& iter, std::size_t len) const
     {
-        auto writeCount = std::min(BaseImpl::getValue().size(), fixedSize_);
+        auto writeCount = std::min(BaseImpl::getValue().size(), m_fixedSize);
         auto es = BaseImpl::writeN(writeCount, iter, len);
         if (es != comms::ErrorStatus::Success) {
             return es;
         }
 
-        auto remCount = fixedSize_ - writeCount;
+        auto remCount = m_fixedSize - writeCount;
         if (remCount == 0) {
             return es;
         }
@@ -121,10 +122,10 @@ public:
     template <typename TIter>
     void writeNoStatus(TIter& iter) const
     {
-        auto writeCount = std::min(BaseImpl::getValue().size(), fixedSize_);
+        auto writeCount = std::min(BaseImpl::getValue().size(), m_fixedSize);
         BaseImpl::writeNoStatusN(writeCount, iter);
 
-        auto remCount = fixedSize_ - writeCount;
+        auto remCount = m_fixedSize - writeCount;
         if (remCount == 0) {
             return;
         }
@@ -138,7 +139,7 @@ public:
 
     bool valid() const
     {
-        return BaseImpl::valid() && (BaseImpl::getValue().size() <= fixedSize_);
+        return BaseImpl::valid() && (BaseImpl::getValue().size() <= m_fixedSize);
     }
 
     bool refresh()
@@ -193,20 +194,20 @@ private:
     template <typename... TParams>
     std::size_t recalcLen(HasRawDataTag<TParams...>) const
     {
-        return fixedSize_;
+        return m_fixedSize;
     }
 
     template <typename... TParams>
     std::size_t recalcLen(HasFixedLengthElemsTag<TParams...>) const
     {
-        return fixedSize_ * ElementType::minLength();
+        return m_fixedSize * ElementType::minLength();
     }
 
     template <typename... TParams>
     std::size_t recalcLen(HasVarLengthElemsTag<TParams...>) const
     {
         std::size_t result = 0U;
-        auto count = fixedSize_;
+        auto count = m_fixedSize;
         for (auto& elem : BaseImpl::getValue()) {
             if (count == 0U) {
                 break;
@@ -221,11 +222,11 @@ private:
     template <typename... TParams>
     bool doRefresh(HasResizeTag<TParams...>)
     {
-        if (BaseImpl::getValue().size() == fixedSize_) {
+        if (BaseImpl::getValue().size() == m_fixedSize) {
             return false;
         }
 
-        BaseImpl::value().resize(fixedSize_);
+        BaseImpl::value().resize(m_fixedSize);
         return true;
     }
 
@@ -235,7 +236,7 @@ private:
         return false;
     }
 
-    std::size_t fixedSize_ = 0;
+    std::size_t m_fixedSize = 0;
 };
 
 template <std::size_t TSize, typename TBase>

@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include <limits>
+#include "comms/details/macro_common.h"
 
-#include "macro_common.h"
+#include <limits>
 
 #define COMMS_WRAP_ENUM(p_, v_) COMMS_CONCATENATE(p_, v_)
 

@@ -10,12 +10,12 @@
 
 #pragma once
 
-#include <type_traits>
-
 #include "comms/Assert.h"
 #include "comms/MessageBase.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/type_traits.h"
+
+#include <type_traits>
 
 namespace comms
 {

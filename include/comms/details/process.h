@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include <type_traits>
-
 #include "comms/Message.h"
 #include "comms/details/detect.h"
+
+#include <type_traits>
 
 namespace  comms
 {

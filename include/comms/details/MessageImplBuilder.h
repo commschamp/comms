@@ -7,17 +7,17 @@
 
 #pragma once
 
-#include <type_traits>
-#include <cstddef>
-#include <tuple>
-
 #include "comms/CompileControl.h"
 #include "comms/Assert.h"
+#include "comms/details/MessageImplOptionsParser.h"
+#include "comms/ErrorStatus.h"
 #include "comms/util/access.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/type_traits.h"
-#include "comms/ErrorStatus.h"
-#include "MessageImplOptionsParser.h"
+
+#include <cstddef>
+#include <tuple>
+#include <type_traits>
 
 namespace comms
 {

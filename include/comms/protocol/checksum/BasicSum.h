@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include "comms/frame/checksum/BasicSum.h"
 
 namespace comms
 {
@@ -21,36 +21,10 @@ namespace protocol
 namespace checksum
 {
 
-/// @brief Summary of all bytes checksum calculator.
-/// @details The checksum calculator class that sums all the bytes and
-///     returns the result as a checksum value.
-/// @tparam TResult Type of the checksum result value.
-/// @tparam TInitValue Initial value
-/// @headerfile comms/protocol/checksum/BasicSum.h
+/// @brief Alias to the @ref comms::frame::checksum::BasicSum
+/// @deprecated Use @ref comms::frame::checksum::BasicSum class instead
 template <typename TResult = std::uint8_t, TResult TInitValue = 0>
-class BasicSum
-{
-public:
-    /// @brief Operator that is invoked to calculate the checksum value
-    /// @param[in, out] iter Input iterator,
-    /// @param[in] len Number of bytes to summarise.
-    /// @return The checksum value.
-    /// @post The iterator is advanced by number of bytes read (len).
-    template <typename TIter>
-    TResult operator()(TIter& iter, std::size_t len) const
-    {
-        using ByteType = typename std::make_unsigned<
-            typename std::decay<decltype(*iter)>::type
-        >::type;
-
-        TResult checksum = TInitValue;
-        for (auto idx = 0U; idx < len; ++idx) {
-            checksum = static_cast<TResult>(checksum + static_cast<ByteType>(*iter));
-            ++iter;
-        }
-        return checksum;
-    }
-};
+using BasicSum = comms::frame::checksum::BasicSum<TResult, TInitValue>;
 
 }  // namespace checksum
 

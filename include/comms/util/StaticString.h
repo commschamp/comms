@@ -10,14 +10,14 @@
 
 #pragma once
 
+#include "comms/Assert.h"
+#include "comms/CompileControl.h"
+#include "comms/util/StaticVector.h"
+
 #include <algorithm>
+#include <initializer_list>
 #include <iterator>
 #include <string>
-#include <initializer_list>
-
-#include "comms/CompileControl.h"
-#include "comms/Assert.h"
-#include "StaticVector.h"
 
 namespace comms
 {
@@ -38,7 +38,7 @@ protected:
     static const auto npos = static_cast<std::size_t>(-1);
 
     StaticStringBase(TChar* buf, std::size_t cap)
-      : vec_(reinterpret_cast<CellType*>(buf), cap)
+      : m_vec(reinterpret_cast<CellType*>(buf), cap)
     {
         endString();
     }
@@ -47,8 +47,8 @@ protected:
     {
         COMMS_ASSERT(count <= capacity());
         auto countLimit = std::min(count, capacity());
-        vec_.clear();
-        std::fill_n(std::back_inserter(vec_), countLimit, ch);
+        m_vec.clear();
+        std::fill_n(std::back_inserter(m_vec), countLimit, ch);
         endString();
     }
 
@@ -62,17 +62,17 @@ protected:
         COMMS_ASSERT(&other != this);
         auto updatedCount = std::min(other.size() - pos, count);
         auto countLimit = std::min(updatedCount, capacity());
-        vec_.clear();
-        std::copy_n(other.cbegin() + pos, countLimit, std::back_inserter(vec_));
+        m_vec.clear();
+        std::copy_n(other.cbegin() + pos, countLimit, std::back_inserter(m_vec));
         endString();
     }
 
     void assign(const TChar* str, std::size_t count)
     {
-        vec_.clear();
+        m_vec.clear();
         auto countLimit = std::min(count, capacity());
-        while ((vec_.size() < countLimit) && (*str != Ends)) {
-            vec_.push_back(*str);
+        while ((m_vec.size() < countLimit) && (*str != Ends)) {
+            m_vec.push_back(*str);
             ++str;
         }
         endString();
@@ -86,7 +86,7 @@ protected:
     template <typename TIter>
     void assign(TIter first, TIter last)
     {
-        vec_.assign(first, last);
+        m_vec.assign(first, last);
         endString();
     }
 
@@ -104,52 +104,52 @@ protected:
 
     TChar& operator[](std::size_t pos)
     {
-        return vec_[pos];
+        return m_vec[pos];
     }
 
     const TChar& operator[](std::size_t pos) const
     {
-        return vec_[pos];
+        return m_vec[pos];
     }
 
     TChar& front()
     {
         COMMS_ASSERT(!empty());
-        return vec_.front();
+        return m_vec.front();
     }
 
     const TChar& front() const
     {
         COMMS_ASSERT(!empty());
-        return vec_.front();
+        return m_vec.front();
     }
 
     TChar& back()
     {
         COMMS_ASSERT(!empty());
-        return vec_[size() - 1];
+        return m_vec[size() - 1];
     }
 
     const TChar& back() const
     {
         COMMS_ASSERT(!empty());
-        return vec_[size() - 1];
+        return m_vec[size() - 1];
     }
 
     const TChar* data() const
     {
-        COMMS_ASSERT(!vec_.empty());
-        return vec_.data();
+        COMMS_ASSERT(!m_vec.empty());
+        return m_vec.data();
     }
 
     TChar* begin()
     {
-        return vec_.begin();
+        return m_vec.begin();
     }
 
     const TChar* cbegin() const
     {
-        return vec_.cbegin();
+        return m_vec.cbegin();
     }
 
     TChar* end()
@@ -169,44 +169,44 @@ protected:
 
     std::size_t size() const
     {
-        COMMS_ASSERT(!vec_.empty());
-        return vec_.size() - 1;
+        COMMS_ASSERT(!m_vec.empty());
+        return m_vec.size() - 1;
     }
 
     std::size_t capacity() const
     {
-        return vec_.capacity() - 1;
+        return m_vec.capacity() - 1;
     }
 
     void clear()
     {
-        vec_.clear();
+        m_vec.clear();
         endString();
     }
 
     void insert(std::size_t idx, std::size_t count, TChar ch)
     {
         COMMS_ASSERT(idx <= size());
-        vec_.insert(vec_.begin() + idx, count, ch);
+        m_vec.insert(m_vec.begin() + idx, count, ch);
     }
 
     void insert(std::size_t idx, const TChar* str)
     {
         COMMS_ASSERT(idx <= size());
-        vec_.insert(vec_.begin() + idx, str, str + strlen(str));
+        m_vec.insert(m_vec.begin() + idx, str, str + strlen(str));
     }
 
     void insert(std::size_t idx, const TChar* str, std::size_t count)
     {
         COMMS_ASSERT(idx <= size());
         auto endStr = str + count;
-        vec_.insert(vec_.begin() + idx, str, endStr);
+        m_vec.insert(m_vec.begin() + idx, str, endStr);
     }
 
     void insert(std::size_t idx, const StaticStringBase& other)
     {
         COMMS_ASSERT(idx <= size());
-        vec_.insert(vec_.begin() + idx, other.cbegin(), other.cend());
+        m_vec.insert(m_vec.begin() + idx, other.cbegin(), other.cend());
     }
 
     void insert(std::size_t idx, const StaticStringBase& str, std::size_t str_idx, std::size_t count)
@@ -215,23 +215,23 @@ protected:
         COMMS_ASSERT(str_idx < str.size());
         auto begIter = str.cbegin() + str_idx;
         auto endIter = begIter + std::min((str.size() - str_idx), count);
-        vec_.insert(vec_.begin() + idx, begIter, endIter);
+        m_vec.insert(m_vec.begin() + idx, begIter, endIter);
     }
 
     TChar* insert(const TChar* pos, TChar ch)
     {
-        return vec_.insert(pos, ch);
+        return m_vec.insert(pos, ch);
     }
 
     TChar* insert(const TChar* pos, std::size_t count, TChar ch)
     {
-        return vec_.insert(pos, count, ch);
+        return m_vec.insert(pos, count, ch);
     }
 
     template <typename TIter>
     TChar* insert(const TChar* pos, TIter first, TIter last)
     {
-        return vec_.insert(pos, first, last);
+        return m_vec.insert(pos, first, last);
     }
 
     void erase(std::size_t idx, std::size_t count)
@@ -239,18 +239,18 @@ protected:
         COMMS_ASSERT(idx < size());
         auto begIter = begin() + idx;
         auto endIter = begIter + std::min(count, size() - idx);
-        vec_.erase(begIter, endIter);
-        COMMS_ASSERT(!vec_.empty()); // Must contain '\0'
+        m_vec.erase(begIter, endIter);
+        COMMS_ASSERT(!m_vec.empty()); // Must contain '\0'
     }
 
     TChar* erase(const TChar* pos)
     {
-        return vec_.erase(pos, pos + 1);
+        return m_vec.erase(pos, pos + 1);
     }
 
     TChar* erase(const TChar* first, const TChar* last)
     {
-        return vec_.erase(first, last);
+        return m_vec.erase(first, last);
     }
 
     void push_back(TChar ch)
@@ -258,7 +258,7 @@ protected:
         static constexpr bool The_string_is_full = false;
         static_cast<void>(The_string_is_full);
         COMMS_ASSERT((size() < capacity()) || The_string_is_full);
-        vec_.insert(end(), ch);
+        m_vec.insert(end(), ch);
     }
 
     void pop_back()
@@ -266,7 +266,7 @@ protected:
         static constexpr bool The_string_is_empty = false;
         static_cast<void>(The_string_is_empty);        
         COMMS_ASSERT((!empty()) || The_string_is_empty);
-        vec_.erase(end() - 1, end());
+        m_vec.erase(end() - 1, end());
     }
 
     int compare(
@@ -353,7 +353,7 @@ protected:
         auto endIter = begin() + std::distance(cbegin(), last);
         for (auto iter = begIter; iter != endIter; ++iter) {
             if (last2 <= first2) {
-                vec_.erase(iter, endIter);
+                m_vec.erase(iter, endIter);
                 return;
             }
 
@@ -366,7 +366,7 @@ protected:
             ++first2;
         }
 
-        vec_.insert(last, first2, last2);
+        m_vec.insert(last, first2, last2);
     }
 
     void replace(
@@ -381,7 +381,7 @@ protected:
         auto endIter = begin() + std::distance(cbegin(), last);
         for (auto iter = begIter; iter != endIter; ++iter) {
             if (*str == Ends) {
-                vec_.erase(iter, endIter);
+                m_vec.erase(iter, endIter);
                 return;
             }
 
@@ -392,7 +392,7 @@ protected:
         auto remCapacity = capacity() - size();
         auto endStr = str + remCapacity;
         auto lastStrIter = std::find(str, endStr, TChar(Ends));
-        vec_.insert(last, str, lastStrIter);
+        m_vec.insert(last, str, lastStrIter);
     }
 
     void replace(
@@ -409,11 +409,11 @@ protected:
         auto fillIter = begin() + std::distance(cbegin(), first);
         std::fill_n(fillIter, fillDist, ch);
         if (count2 <= dist) {
-            vec_.erase(first + fillDist, last);
+            m_vec.erase(first + fillDist, last);
             return;
         }
 
-        vec_.insert(last, count2 - fillDist, ch);
+        m_vec.insert(last, count2 - fillDist, ch);
     }
 
     std::size_t copy(TChar* dest, std::size_t count, std::size_t pos) const
@@ -432,18 +432,18 @@ protected:
     void resize(std::size_t count, TChar ch)
     {
         if (count <= size()) {
-            vec_.erase(cbegin() + count, cend());
-            COMMS_ASSERT(vec_[size()] == Ends);
+            m_vec.erase(cbegin() + count, cend());
+            COMMS_ASSERT(m_vec[size()] == Ends);
             COMMS_ASSERT(size() == count);
             return;
         }
 
-        vec_.insert(end(), count - size(), ch);
+        m_vec.insert(end(), count - size(), ch);
     }
 
     void swap(StaticStringBase& other)
     {
-        vec_.swap(other.vec_);
+        m_vec.swap(other.m_vec);
     }
 
     std::size_t find(const TChar* str, std::size_t pos, std::size_t count) const
@@ -456,7 +456,7 @@ protected:
 
         auto maxPos = size() - count;
         for (auto idx = pos; idx <= maxPos; ++idx) {
-            auto thisStrBeg = &vec_[idx];
+            auto thisStrBeg = &m_vec[idx];
             auto thisStrEnd = thisStrBeg + count;
             if (std::equal(thisStrBeg, thisStrEnd, str)) {
                 return idx;
@@ -500,7 +500,7 @@ protected:
         pos = std::min(pos, size() - 1);
         auto startIdx = static_cast<int>(std::min(pos, size() - count));
         for (auto idx = startIdx; 0 <= idx; --idx) {
-            auto thisStrBeg = &vec_[static_cast<std::size_t>(idx)];
+            auto thisStrBeg = &m_vec[static_cast<std::size_t>(idx)];
             auto thisStrEnd = thisStrBeg + count;
             if (std::equal(thisStrBeg, thisStrEnd, str)) {
                 return static_cast<std::size_t>(idx);
@@ -688,7 +688,7 @@ protected:
                 return false;
             }
 
-            auto ch = vec_[idx];
+            auto ch = m_vec[idx];
 
             if (ch < *str) {
                 return true;
@@ -711,7 +711,7 @@ protected:
                 return true;
             }
 
-            auto ch = vec_[idx];
+            auto ch = m_vec[idx];
             if (*str < ch) {
                 return true;
             }
@@ -732,7 +732,7 @@ protected:
                 return false;
             }
 
-            auto ch = vec_[idx];
+            auto ch = m_vec[idx];
             if (*str != ch) {
                 return false;
             }
@@ -746,7 +746,7 @@ protected:
 private:
     void endString()
     {
-        vec_.push_back(TChar(Ends));
+        m_vec.push_back(TChar(Ends));
     }
 
     std::size_t strlen(const TChar* str) const
@@ -760,14 +760,14 @@ private:
     }
 
     static const TChar Ends = static_cast<TChar>('\0');
-    StaticVectorBase<TChar> vec_;
+    StaticVectorBase<TChar> m_vec;
 };
 
 template <typename TChar, std::size_t TSize>
 struct StaticStringStorageBase
 {
     using StorageType = std::array<TChar, TSize>;
-    StorageType data_;
+    StorageType m_data;
 };
 
 
@@ -820,14 +820,14 @@ public:
     /// @brief Default constructor
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString()
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
     }
 
     /// @brief Constructor variant
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(size_type count, value_type ch)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         assign(count, ch);
     }
@@ -840,7 +840,7 @@ public:
         const StaticString<TOtherSize, TChar>& other,
         size_type pos,
         size_type count = npos)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         assign(other, pos, count);
     }
@@ -848,7 +848,7 @@ public:
     /// @brief Constructor variant.
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(const_pointer str, size_type count)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         assign(str, count);
     }
@@ -856,7 +856,7 @@ public:
     /// @brief Constructor variant.
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(const_pointer str)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         assign(str);
     }
@@ -865,7 +865,7 @@ public:
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     template <typename TIter>
     StaticString(TIter first, TIter last)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         assign(first, last);
     }
@@ -873,7 +873,7 @@ public:
     /// @brief Copy constructor.
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(const StaticString& other)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         assign(other);
     }
@@ -882,7 +882,7 @@ public:
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     template <std::size_t TOtherSize>
     explicit StaticString(const StaticString<TOtherSize, TChar>& other)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         assign(other);
     }
@@ -890,7 +890,7 @@ public:
     /// @brief Constructor variant.
     /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/basic_string">Reference</a>
     StaticString(std::initializer_list<value_type> init)
-      : Base(StorageBase::data_.data(), StorageBase::data_.size())
+      : Base(StorageBase::m_data.data(), StorageBase::m_data.size())
     {
         assign(init.begin(), init.end());
     }
