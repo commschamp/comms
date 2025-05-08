@@ -468,7 +468,7 @@ private:
                 >
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(sync, checksum, size, id, checksumType, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(sync, checksum, size, id, checksumType, payload);
     };
 
     template <
@@ -520,7 +520,7 @@ private:
                 >
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(sync, size, id, checksumFlags, checksum, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(sync, size, id, checksumFlags, checksum, payload);
     };    
 };
 

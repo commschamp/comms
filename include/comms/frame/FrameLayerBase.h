@@ -1662,48 +1662,48 @@ details::MsgPayloadRetriever<TIter> msgPayload(TIter& iter, std::size_t& len)
 ///     (@ref comms::frame::MsgDataLayer), while the last one
 ///     is the name for the outermost one.
 /// @related comms::frame::FrameLayerBase
-#define COMMS_PROTOCOL_LAYERS_ACCESS(...) \
+#define COMMS_FRAME_LAYERS_ACCESS(...) \
     COMMS_DO_ACCESS_LAYER_ACC_FUNC(__VA_ARGS__)
 
 /// @brief Provide names and convenience access functions to protocol
 ///     layers.
-/// @details Similar to #COMMS_PROTOCOL_LAYERS_ACCESS() but
+/// @details Similar to #COMMS_FRAME_LAYERS_ACCESS() but
 ///     defines "Layer_<name>" type names.
 /// @pre Requires definition of inner "Base" type aliasing the base class.
 /// @related comms::frame::FrameLayerBase
-#define COMMS_PROTOCOL_LAYERS_NAMES(...) \
+#define COMMS_FRAME_LAYERS_NAMES(...) \
     COMMS_DO_LAYER_TYPE_ALIAS(Base, __VA_ARGS__) \
     COMMS_DO_ACCESS_LAYER_ACC_FUNC(__VA_ARGS__)
 
 
-/// @brief Same as #COMMS_PROTOCOL_LAYERS_ACCESS()
+/// @brief Same as #COMMS_FRAME_LAYERS_ACCESS()
 /// @related comms::frame::FrameLayerBase
-#define COMMS_PROTOCOL_LAYERS_ACCESS_INNER(...) \
-    COMMS_PROTOCOL_LAYERS_ACCESS(__VA_ARGS__)
+#define COMMS_FRAME_LAYERS_ACCESS_INNER(...) \
+    COMMS_FRAME_LAYERS_ACCESS(__VA_ARGS__)
 
-/// @brief Same as #COMMS_PROTOCOL_LAYERS_NAMES()
+/// @brief Same as #COMMS_FRAME_LAYERS_NAMES()
 /// @related comms::frame::FrameLayerBase
-#define COMMS_PROTOCOL_LAYERS_NAMES_INNER(...) \
-    COMMS_PROTOCOL_LAYERS_NAMES(__VA_ARGS__)    
+#define COMMS_FRAME_LAYERS_NAMES_INNER(...) \
+    COMMS_FRAME_LAYERS_NAMES(__VA_ARGS__)    
 
 /// @brief Provide convenience access functions to protocol
 ///     layers.
-/// @details Similar to #COMMS_PROTOCOL_LAYERS_ACCESS(), but
+/// @details Similar to #COMMS_FRAME_LAYERS_ACCESS(), but
 ///     the arguments are expected to be in reverse order, i.e.
 ///     the first argument is the name of the outermost layer, while
 ///     the last one is the name for the innermost one
 ///     (@ref comms::frame::MsgDataLayer)
 /// @related comms::frame::FrameLayerBase
-#define COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(...) \
-    COMMS_PROTOCOL_LAYERS_ACCESS(COMMS_EXPAND(COMMS_REVERSE_MACRO_ARGS(__VA_ARGS__)))
+#define COMMS_FRAME_LAYERS_ACCESS_OUTER(...) \
+    COMMS_FRAME_LAYERS_ACCESS(COMMS_EXPAND(COMMS_REVERSE_MACRO_ARGS(__VA_ARGS__)))
 
 /// @brief Provide names and convenience access functions to protocol
 ///     layers.
-/// @details Similar to #COMMS_PROTOCOL_LAYERS_ACCESS_OUTER() but
+/// @details Similar to #COMMS_FRAME_LAYERS_ACCESS_OUTER() but
 ///     defines "Layer_<name>" type names.
 /// @pre Requires definition of inner "Base" type aliasing the base class.
 /// @related comms::frame::FrameLayerBase
-#define COMMS_PROTOCOL_LAYERS_NAMES_OUTER(...) \
-    COMMS_PROTOCOL_LAYERS_NAMES(COMMS_EXPAND(COMMS_REVERSE_MACRO_ARGS(__VA_ARGS__)))
+#define COMMS_FRAME_LAYERS_NAMES_OUTER(...) \
+    COMMS_FRAME_LAYERS_NAMES(COMMS_EXPAND(COMMS_REVERSE_MACRO_ARGS(__VA_ARGS__)))
 
 COMMS_MSVC_WARNING_POP

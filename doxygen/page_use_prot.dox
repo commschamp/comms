@@ -2238,7 +2238,7 @@
 /// struct Frame : public 
 ///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
-///     COMMS_PROTOCOL_LAYERS_ACCESS(...);
+///     COMMS_FRAME_LAYERS_ACCESS(...);
 /// };
 ///
 /// } // namespace my_protocol
@@ -2300,7 +2300,7 @@
 /// struct Frame : public 
 ///     MySyncPrefix<TMessage, TInputMessages, TOpt> 
 /// {
-///     COMMS_PROTOCOL_LAYERS_ACCESS(...);
+///     COMMS_FRAME_LAYERS_ACCESS(...);
 /// };
 ///
 /// } // namespace my_protocol
@@ -2574,7 +2574,7 @@
 /// one another. Access to the appropriate layer may be obtained using a 
 /// sequence of calls to @b nextLayer() member functions (see 
 /// @ref comms::frame::FrameLayerBase::nextLayer()). Alternatively, the frame
-/// definition is also expected to use #COMMS_PROTOCOL_LAYERS_ACCESS()
+/// definition is also expected to use #COMMS_FRAME_LAYERS_ACCESS()
 /// macro to generate a convenience access functions. For example
 /// @code
 /// namespace my_protocol
@@ -2588,7 +2588,7 @@
 /// struct Frame : public 
 ///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
-///     COMMS_PROTOCOL_LAYERS_ACCESS(payload, id, size, checksum, sync);
+///     COMMS_FRAME_LAYERS_ACCESS(payload, id, size, checksum, sync);
 /// };
 ///
 /// } // namespace my_protocol
@@ -3129,7 +3129,7 @@
 /// struct Frame : public 
 ///     MySizePrefix<TMessage, TInputMessages, TAllocationOptions> 
 /// {
-///     COMMS_PROTOCOL_LAYERS_ACCESS(payload, version, id, size);
+///     COMMS_FRAME_LAYERS_ACCESS(payload, version, id, size);
 /// };
 ///
 /// } // namespace my_protocol

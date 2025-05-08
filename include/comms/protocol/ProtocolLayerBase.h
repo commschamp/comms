@@ -72,3 +72,27 @@ auto msgPayload(TIter& iter, std::size_t& len) -> decltype(comms::frame::msgPayl
 }  // namespace protocol
 
 }  // namespace comms
+
+/// @brief Same as #COMMS_FRAME_LAYERS_ACCESS()
+/// @deprecated Use #COMMS_FRAME_LAYERS_ACCESS() instead
+#define COMMS_PROTOCOL_LAYERS_ACCESS(...) COMMS_FRAME_LAYERS_ACCESS(__VA_ARGS__)
+
+/// @brief Same as #COMMS_FRAME_LAYERS_NAMES()
+/// @deprecated Use #COMMS_FRAME_LAYERS_NAMES() instead
+#define COMMS_PROTOCOL_LAYERS_NAMES(...) COMMS_FRAME_LAYERS_NAMES(__VA_ARGS__)
+
+/// @brief Same as #COMMS_FRAME_LAYERS_ACCESS_INNER()
+/// @deprecated Use #COMMS_FRAME_LAYERS_ACCESS_INNER() instead
+#define COMMS_PROTOCOL_LAYERS_ACCESS_INNER(...) COMMS_FRAME_LAYERS_ACCESS_INNER(__VA_ARGS__)
+
+/// @brief Same as #COMMS_FRAME_LAYERS_NAMES_INNER()
+/// @deprecated Use #COMMS_FRAME_LAYERS_NAMES_INNER() instead
+#define COMMS_PROTOCOL_LAYERS_NAMES_INNER(...) COMMS_FRAME_LAYERS_NAMES_INNER(__VA_ARGS__)    
+
+/// @brief Same as #COMMS_FRAME_LAYERS_ACCESS_OUTER()
+/// @deprecated Use #COMMS_FRAME_LAYERS_ACCESS_OUTER() instead
+#define COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(...) COMMS_FRAME_LAYERS_ACCESS_OUTER(__VA_ARGS__)
+
+/// @brief Same as #COMMS_FRAME_LAYERS_NAMES_OUTER()
+/// @deprecated Use #COMMS_FRAME_LAYERS_NAMES_OUTER() instead
+#define COMMS_PROTOCOL_LAYERS_NAMES_OUTER(...) COMMS_FRAME_LAYERS_NAMES_OUTER(__VA_ARGS__)

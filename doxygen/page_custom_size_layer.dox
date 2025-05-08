@@ -215,7 +215,7 @@
 ///     >
 /// {
 ///     // Generate convenience access functions for various layers
-///     COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(id, size, payload);
+///     COMMS_FRAME_LAYERS_ACCESS_OUTER(id, size, payload);
 /// };
 ///
 /// } // namespace my_prot
@@ -321,7 +321,7 @@
 ///     >
 /// {
 ///     // Generate convenience access functions for various layers
-///     COMMS_PROTOCOL_LAYERS_ACCESS_OUTER(size, id, flags, payload);
+///     COMMS_FRAME_LAYERS_ACCESS_OUTER(size, id, flags, payload);
 /// };
 ///
 /// } // namespace my_prot

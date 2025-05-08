@@ -200,7 +200,7 @@ private:
                 >
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES_OUTER(sync, checksum, size, id, payload);
+        COMMS_FRAME_LAYERS_NAMES_OUTER(sync, checksum, size, id, payload);
     };
 
     template <typename TSyncField, typename TChecksumField, typename TSizeField, typename TIdField, typename TMessage>
@@ -260,7 +260,7 @@ private:
                 >
             >;
     public:
-        COMMS_PROTOCOL_LAYERS_NAMES(payload, id, size, checksum, sync);
+        COMMS_FRAME_LAYERS_NAMES(payload, id, size, checksum, sync);
         static_assert(comms::frame::isSyncPrefixLayer<Layer_sync>(), "Invalid type");
         static_assert(comms::frame::isChecksumPrefixLayer<Layer_checksum>(), "Invalid type");
         static_assert(comms::frame::isMsgSizeLayer<Layer_size>(), "Invalid type");
