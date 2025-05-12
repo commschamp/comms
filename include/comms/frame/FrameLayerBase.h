@@ -18,6 +18,7 @@
 #include "comms/ErrorStatus.h"
 #include "comms/frame/details/FrameLayerBaseOptionsParser.h"
 #include "comms/frame/details/FrameLayerDetails.h"
+#include "comms/Message.h"
 #include "comms/options.h"
 #include "comms/util/Tuple.h"
 #include "comms/util/type_traits.h"
