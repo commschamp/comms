@@ -11,6 +11,7 @@
 #include "comms/cast.h"
 #include "comms/details/tag.h"
 #include "comms/ErrorStatus.h"
+#include "comms/traits.h"
 #include "comms/util/SizeToType.h"
 #include "comms/util/access.h"
 #include "comms/util/type_traits.h"
