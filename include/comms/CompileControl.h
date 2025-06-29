@@ -97,20 +97,10 @@
 #define COMMS_COMPILER_GCC47
 #endif
 
-#if COMMS_IS_MSVC
-#define COMMS_MSVC_IS_CPP17 (defined(_MSVC_LANG) && (_MSVC_LANG >= 201703L))
-#define COMMS_MSVC_IS_CPP20 (defined(_MSVC_LANG) && (_MSVC_LANG >= 202002L))
-#define COMMS_MSVC_IS_CPP23 (defined(_MSVC_LANG) && (_MSVC_LANG >= 202302L))
-#else // #if COMMS_IS_MSVC
-#define COMMS_MSVC_IS_CPP17 false
-#define COMMS_MSVC_IS_CPP20 false
-#define COMMS_MSVC_IS_CPP23 false
-#endif // #if COMMS_IS_MSVC
-
 #define COMMS_IS_CPP14 (__cplusplus >= 201402L)
-#define COMMS_IS_CPP17 ((__cplusplus >= 201703L) || COMMS_MSVC_IS_CPP17)
-#define COMMS_IS_CPP20 ((__cplusplus >= 202002L) || COMMS_MSVC_IS_CPP20)
-#define COMMS_IS_CPP23 ((__cplusplus >= 202302L) || COMMS_MSVC_IS_CPP23)
+#define COMMS_IS_CPP17 (__cplusplus >= 201703L)
+#define COMMS_IS_CPP20 (__cplusplus >= 202002L)
+#define COMMS_IS_CPP23 (__cplusplus >= 202302L)
 
 #if COMMS_IS_MSVC_2019_OR_BELOW // Visual Studio 2019
 #undef COMMS_IS_CPP20
