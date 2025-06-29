@@ -29,18 +29,18 @@
 #else // #ifdef COMMS_MUST_DEFINE_BASE
 #define COMMS_FIELD_VALUE_ACCESS_FUNC FUNC_AUTO_REF_RETURN(value, decltype(comms::field::toFieldBase(*this).value()))
 #define COMMS_FIELD_VALUE_ACCESS_CONST_FUNC FUNC_AUTO_REF_RETURN_CONST(value, decltype(comms::field::toFieldBase(*this).value()))
-#define COMMS_ACCESS_MEMBER_FIELD_FUNC(T_, t_, n_) FUNC_AUTO_REF_RETURN(COMMS_CONCATENATE(field_, n_), decltype(static_cast<std::size_t>(std::get<COMMS_CONCATENATE(FieldIdx_, n_))>(t_)))
-#define COMMS_ACCESS_MEMBER_FIELD_CONST_FUNC(T_, t_, n_) FUNC_AUTO_REF_RETURN_CONST(COMMS_CONCATENATE(field_, n_), decltype(std::get<static_cast<std::size_t>(COMMS_CONCATENATE(FieldIdx_, n_))>(t_)))
+#define COMMS_ACCESS_MEMBER_FIELD_FUNC(T_, t_, n_) FUNC_AUTO_REF_RETURN(COMMS_CONCATENATE(field_, n_), decltype(std::get<COMMS_CONCATENATE(FieldIdx_, n_)>(t_)))
+#define COMMS_ACCESS_MEMBER_FIELD_CONST_FUNC(T_, t_, n_) FUNC_AUTO_REF_RETURN_CONST(COMMS_CONCATENATE(field_, n_), decltype(std::get<COMMS_CONCATENATE(FieldIdx_, n_)>(t_)))
 #define COMMS_MSG_FIELDS_ACCESS_FUNC FUNC_AUTO_REF_RETURN(fields, decltype(comms::toMessageBase(*this).fields()))
 #define COMMS_MSG_FIELDS_ACCESS_CONST_FUNC FUNC_AUTO_REF_RETURN_CONST(fields, decltype(comms::toMessageBase(*this).fields()))
 #endif // #ifdef COMMS_MUST_DEFINE_BASE
 
 #define COMMS_FIELD_ACC_FUNC(T_, t_, n_) \
     COMMS_ACCESS_MEMBER_FIELD_FUNC(T_, t_, n_) {\
-        return std::get<static_cast<std::size_t>(COMMS_CONCATENATE(FieldIdx_, n_))>(t_); \
+        return std::get<COMMS_CONCATENATE(FieldIdx_, n_)>(t_); \
     } \
     COMMS_ACCESS_MEMBER_FIELD_CONST_FUNC(T_, t_, n_) {\
-        return std::get<static_cast<std::size_t>(COMMS_CONCATENATE(FieldIdx_, n_))>(t_); \
+        return std::get<COMMS_CONCATENATE(FieldIdx_, n_)>(t_); \
     }
 
 #define COMMS_FIELD_ACC_FUNC_1(T_, t_, n_) COMMS_FIELD_ACC_FUNC(T_, t_, n_)
@@ -353,10 +353,10 @@
 
 #define COMMS_FIELD_ACC_FUNC_NOTEMPLATE(n_) \
     typename std::tuple_element<COMMS_CONCATENATE(FieldIdx_, n_), ValueType>::type& COMMS_CONCATENATE(field_, n_)() {\
-        return std::get<static_cast<std::size_t>(COMMS_CONCATENATE(FieldIdx_, n_))>(value()); \
+        return std::get<COMMS_CONCATENATE(FieldIdx_, n_)>(value()); \
     } \
     const typename std::tuple_element<COMMS_CONCATENATE(FieldIdx_, n_), ValueType>::type& COMMS_CONCATENATE(field_, n_)() const {\
-        return std::get<static_cast<std::size_t>(COMMS_CONCATENATE(FieldIdx_, n_))>(value()); \
+        return std::get<COMMS_CONCATENATE(FieldIdx_, n_)>(value()); \
     }
 
 #define COMMS_FIELD_ACC_FUNC_NOTEMPLATE_1(n_) COMMS_FIELD_ACC_FUNC_NOTEMPLATE(n_)

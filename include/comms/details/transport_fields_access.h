@@ -25,18 +25,18 @@
     const typename Base::TransportFields& transportFields() const
 
 #else // #ifdef COMMS_MUST_DEFINE_BASE
-#define COMMS_ACCESS_TRANSPORT_FIELD_FUNC(T_, t_, n_) FUNC_AUTO_REF_RETURN(COMMS_CONCATENATE(transportField_, n_), decltype(std::get<static_cast<std::size_t>(COMMS_CONCATENATE(TransportFieldIdx_, n_))>(t_)))
-#define COMMS_ACCESS_TRANSPORT_FIELD_CONST_FUNC(T_, t_, n_) FUNC_AUTO_REF_RETURN_CONST(COMMS_CONCATENATE(transportField_, n_), decltype(std::get<static_cast<std::size_t>(COMMS_CONCATENATE(TransportFieldIdx_, n_))>(t_)))
+#define COMMS_ACCESS_TRANSPORT_FIELD_FUNC(T_, t_, n_) FUNC_AUTO_REF_RETURN(COMMS_CONCATENATE(transportField_, n_), decltype(std::get<COMMS_CONCATENATE(TransportFieldIdx_, n_)>(t_)))
+#define COMMS_ACCESS_TRANSPORT_FIELD_CONST_FUNC(T_, t_, n_) FUNC_AUTO_REF_RETURN_CONST(COMMS_CONCATENATE(transportField_, n_), decltype(std::get<COMMS_CONCATENATE(TransportFieldIdx_, n_)>(t_)))
 #define COMMS_MSG_TRANSPORT_FIELDS_ACCESS_FUNC FUNC_AUTO_REF_RETURN(transportFields, decltype(comms::toMessage(*this).transportFields()))
 #define COMMS_MSG_TRANSPORT_FIELDS_ACCESS_CONST_FUNC FUNC_AUTO_REF_RETURN_CONST(transportFields, decltype(comms::toMessage(*this).transportFields()))
 #endif // #ifdef COMMS_MUST_DEFINE_BASE
 
 #define COMMS_TRANSPORT_FIELD_ACC_FUNC(T_, t_, n_) \
     COMMS_ACCESS_TRANSPORT_FIELD_FUNC(T_, t_, n_) {\
-        return std::get<static_cast<std::size_t>(COMMS_CONCATENATE(TransportFieldIdx_, n_))>(t_); \
+        return std::get<COMMS_CONCATENATE(TransportFieldIdx_, n_)>(t_); \
     } \
     COMMS_ACCESS_TRANSPORT_FIELD_CONST_FUNC(T_, t_, n_) {\
-        return std::get<static_cast<std::size_t>(COMMS_CONCATENATE(TransportFieldIdx_, n_))>(t_); \
+        return std::get<COMMS_CONCATENATE(TransportFieldIdx_, n_)>(t_); \
     }
 
 #define COMMS_TRANSPORT_FIELD_ACC_FUNC_1(T_, t_, n_) COMMS_TRANSPORT_FIELD_ACC_FUNC(T_, t_, n_)
