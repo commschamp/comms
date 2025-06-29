@@ -135,6 +135,10 @@ target_include_directories(comms INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
+target_compile_options(comms INTERFACE
+    $<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>
+) 
+
 install (
     FILES ${LIB_COMMS_CMAKE_FILES}
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/LibComms/cmake/
