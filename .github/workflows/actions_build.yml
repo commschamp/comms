@@ -195,7 +195,6 @@ jobs:
       run: make doc_comms 
 
   build_msvc_2022:
-    if: false
     runs-on: windows-2022
     strategy:
       fail-fast: false
