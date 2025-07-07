@@ -10,6 +10,7 @@
 #include "comms/ErrorStatus.h"
 #include "comms/field/tag.h"
 
+#include <ratio>
 #include <type_traits>
 
 namespace comms

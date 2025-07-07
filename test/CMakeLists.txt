@@ -20,6 +20,13 @@ function (test_func test_suite_name)
     endif ()    
 
     cc_cxxtest_add_test (NAME ${name} SRC ${tests} ${valgrand_args})
+
+    if ("${CMAKE_CXX_STANDARD}" STREQUAL "23")
+        # Visual Studio 2025 doesn't seem to properly detect C++23
+        target_compile_definitions(${name} PRIVATE
+            $<$<CXX_COMPILER_ID:MSVC>:_SILENCE_ALL_CXX23_DEPRECATION_WARNINGS>
+        )
+    endif ()
 endfunction ()
 
 #################################################################

@@ -88,6 +88,9 @@
 #define COMMS_IS_CLANG_16_OR_ABOVE (COMMS_IS_CLANG && (__clang_major__ >= 16))
 #define COMMS_IS_CLANG_18_OR_BELOW (COMMS_IS_CLANG && (__clang_major__ <= 18))
 #define COMMS_IS_CLANG_19_OR_BELOW (COMMS_IS_CLANG && (__clang_major__ <= 19))
+#define COMMS_IS_MSVC_2025 (COMMS_IS_MSVC && (_MSC_VER >= 1940) && (_MSC_VER < 1949))
+#define COMMS_IS_MSVC_2025_OR_BELOW (COMMS_IS_MSVC && (_MSC_VER < 1950))
+#define COMMS_IS_MSVC_2022 (COMMS_IS_MSVC && (_MSC_VER >= 1930) && (_MSC_VER < 1939))
 #define COMMS_IS_MSVC_2019 (COMMS_IS_MSVC && (_MSC_VER >= 1920) && (_MSC_VER < 1930))
 #define COMMS_IS_MSVC_2019_OR_BELOW (COMMS_IS_MSVC && (_MSC_VER < 1930))
 #define COMMS_IS_MSVC_2017_OR_BELOW (COMMS_IS_MSVC && (_MSC_VER < 1920))
@@ -102,7 +105,12 @@
 #define COMMS_IS_CPP20 (__cplusplus >= 202002L)
 #define COMMS_IS_CPP23 (__cplusplus >= 202302L)
 
-#if COMMS_IS_MSVC_2019_OR_BELOW // Visual Studio 2019
+#if COMMS_IS_MSVC_2025_OR_BELOW 
+#undef COMMS_IS_CPP23
+#define COMMS_IS_CPP23 (__cplusplus >= 202003L)
+#endif
+
+#if COMMS_IS_MSVC_2019_OR_BELOW 
 #undef COMMS_IS_CPP20
 #define COMMS_IS_CPP20 (__cplusplus >= 201704L)
 #endif

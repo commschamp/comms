@@ -190,14 +190,14 @@ jobs:
       shell: bash
       run: make doc_comms 
 
-  build_msvc_2019:
-    runs-on: windows-2019
+  build_msvc_2022:
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
         type: [Debug, Release]
         arch: [Win32, x64]
-        cpp: [11, 14, 17]
+        cpp: [11, 14, 17, 20]
 
     steps:
     - uses: actions/checkout@v4
@@ -224,14 +224,15 @@ jobs:
       shell: cmd
       run: ctest -V 
 
-  build_msvc_2022:
-    runs-on: windows-2022
+
+  build_msvc_2025:
+    runs-on: windows-2025
     strategy:
       fail-fast: false
       matrix:
         type: [Debug, Release]
         arch: [Win32, x64]
-        cpp: [11, 14, 17, 20]
+        cpp: [11, 14, 17, 20, 23]
 
     steps:
     - uses: actions/checkout@v4
