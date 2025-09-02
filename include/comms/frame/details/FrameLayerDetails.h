@@ -52,7 +52,7 @@ struct FrameLayerHasDoGetIdHelper;
 template <typename T>
 struct FrameLayerHasDoGetIdHelper<T, true>
 {
-    static const bool Value = T::hasStaticMsgId();
+    static const bool Value = T::hasDoGetId();
 };
 
 template <typename T>

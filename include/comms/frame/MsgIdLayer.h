@@ -601,9 +601,10 @@ private:
         using MsgType = typename std::decay<decltype(msg)>::type;
         static_assert(comms::isMessageBase<MsgType>(),
             "The message class is expected to inherit from comms::MessageBase");
-        static_assert(MsgType::hasStaticMsgId(),
+        static_assert(MsgType::hasDoGetId(),
             "The message class must expose direct ID retrieval functionality, "
-            "use comms::option::app::StaticNumIdImpl option to define it.");        
+            "use comms::option::app::StaticNumIdImpl option to define it or "
+            "comms::option::app::HasDoGetId option to mark the class as providing one");        
         return msg.doGetId();
     }
 
