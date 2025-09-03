@@ -210,7 +210,7 @@ private:
             >;
     public:
         COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-    };    
+    };   
 };
 
 void CustomMsgIdLayerTestSuite::test1()

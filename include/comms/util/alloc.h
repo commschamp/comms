@@ -24,6 +24,7 @@
 #include <array>
 #include <memory>
 #include <type_traits>
+#include <utility>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4324) // Disable warning about alignment padding

@@ -184,7 +184,13 @@ public:
     static constexpr bool hasCustomName()
     {
         return ImplOptions::HasName;
-    }     
+    }  
+    
+    /// @brief Compile type inquiry whether the class provides @ref doGetId() member function.
+    static constexpr bool hasDoGetId()
+    {
+        return ImplOptions::HasStaticMsgId || ImplOptions::HasDoGetId;
+    }        
 
 #ifdef FOR_DOXYGEN_DOC_ONLY
 

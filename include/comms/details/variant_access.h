@@ -14,6 +14,7 @@
 
 #include <tuple>
 #include <type_traits>
+#include <utility>
 
 #ifdef COMMS_MUST_DEFINE_BASE
 #define COMMS_AS_VARIANT_FUNC Base& asVariant()

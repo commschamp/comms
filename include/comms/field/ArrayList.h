@@ -10,22 +10,22 @@
 
 #pragma once
 
+#include "basic/ArrayList.h"
 #include "comms/CompileControl.h"
-
-#include <vector>
-
-#if COMMS_HAS_CPP20_SPAN
-#include <span>
-#endif // #if COMMS_HAS_CPP20_SPAN
-
 #include "comms/ErrorStatus.h"
 #include "comms/options.h"
 #include "comms/util/StaticVector.h"
 #include "comms/util/ArrayView.h"
 #include "comms/util/type_traits.h"
-#include "basic/ArrayList.h"
 #include "details/AdaptBasicField.h"
 #include "details/OptionsParser.h"
+
+#include <vector>
+#include <utility>
+
+#if COMMS_HAS_CPP20_SPAN
+#include <span>
+#endif // #if COMMS_HAS_CPP20_SPAN
 
 namespace comms
 {
