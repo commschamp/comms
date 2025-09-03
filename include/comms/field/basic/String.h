@@ -25,6 +25,7 @@
 #include <limits>
 #include <numeric>
 #include <type_traits>
+#include <utility>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4100)

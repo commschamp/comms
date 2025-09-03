@@ -21,6 +21,7 @@
 #include <array>
 #include <limits>
 #include <type_traits>
+#include <utility>
 
 namespace comms
 {

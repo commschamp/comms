@@ -16,6 +16,7 @@
 #include "comms/util/type_traits.h"
 
 #include <type_traits>
+#include <utility>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4702) // Gives warning about unreachable code

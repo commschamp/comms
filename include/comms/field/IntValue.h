@@ -21,6 +21,7 @@
 #include <limits>
 #include <ratio>
 #include <type_traits>
+#include <utility>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4127) // Disable warning about constant conditional expressions

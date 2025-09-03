@@ -27,6 +27,7 @@
 #include <limits>
 #include <numeric>
 #include <type_traits>
+#include <utility>
 
 namespace comms
 {

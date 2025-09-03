@@ -27,6 +27,7 @@
 #endif // #if COMMS_HAS_CPP17_STRING_VIEW
 
 #include <vector>
+#include <utility>
 
 namespace comms
 {
