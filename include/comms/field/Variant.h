@@ -76,19 +76,19 @@ template <typename TFieldBase, typename TMembers, typename... TOptions>
 class Variant : public
     details::AdaptBasicFieldT<
         basic::Variant<
-            TFieldBase, 
+            TFieldBase,
             details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
             TMembers
-        >, 
+        >,
         TOptions...>
 {
-    using BaseImpl = 
+    using BaseImpl =
         details::AdaptBasicFieldT<
         basic::Variant<
-            TFieldBase, 
+            TFieldBase,
             details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
             TMembers
-        >, 
+        >,
         TOptions...>;
 
     static_assert(comms::util::IsTuple<TMembers>::Value,
@@ -124,10 +124,10 @@ public:
     ///     of all the wrapped fields.
     using Members = typename BaseImpl::Members;
 
-    /// @brief Type of actual extending field specified via 
+    /// @brief Type of actual extending field specified via
     ///     @ref comms::option::def::FieldType.
     /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
-    using FieldType = typename ParsedOptions::FieldType;    
+    using FieldType = typename ParsedOptions::FieldType;
 
     /// @brief Default constructor
     /// @details Invokes default constructor of every wrapped field
@@ -164,28 +164,28 @@ public:
     static constexpr bool hasEmptySerialization()
     {
         return ParsedOptions::HasEmptySerialization;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
     ///     has been used.
     static constexpr bool hasFieldType()
     {
         return ParsedOptions::HasFieldType;
-    }  
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
     ///     has been used.
     static constexpr bool hasFixedValue()
     {
         return ParsedOptions::HasFixedValue;
-    }   
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
     ///     has been used.
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
-    }       
+    }
 
     /// @brief Get access to the internal storage buffer.
     /// @details Should not be used in normal operation.
@@ -214,7 +214,7 @@ public:
     void setValue(U&& val)
     {
         BaseImpl::setValue(std::forward<U>(val));
-    }          
+    }
 
     /// @brief Get length required to serialise contained fields.
     /// @details If the field doesn't contain a valid instance of other
@@ -552,9 +552,9 @@ private:
     static_assert(!ParsedOptions::HasInvalidByDefault,
             "comms::option::def::InvalidByDefault option is not applicable to Variant field");
     static_assert(!ParsedOptions::HasMissingOnReadFail,
-            "comms::option::def::MissingOnReadFail option is not applicable to Variant field");   
+            "comms::option::def::MissingOnReadFail option is not applicable to Variant field");
     static_assert(!ParsedOptions::HasMissingOnInvalid,
-            "comms::option::def::MissingOnInvalid option is not applicable to Variant field");              
+            "comms::option::def::MissingOnInvalid option is not applicable to Variant field");
 };
 
 namespace details
@@ -674,7 +674,7 @@ bool operator<(
 
     if (!field2.currentFieldValid()) {
         return false;
-    }    
+    }
 
     if (field1.currentField() < field2.currentField()) {
         return true;
@@ -686,7 +686,7 @@ bool operator<(
 
     if (&field1 == &field2) {
         return false;
-    }    
+    }
 
     bool result = false;
     field1.currentFieldExec(details::makeVariantLessCompHelper(field2, result));
@@ -779,7 +779,6 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
         return var; \
     } \
     COMMS_DO_VARIANT_MEM_ACC_FUNC(asVariant(), __VA_ARGS__)
-
 
 /// @brief Similar to COMMS_VARIANT_MEMBERS_ACCESS(), but dedicated for
 ///     non-template classes.
@@ -949,9 +948,7 @@ toFieldBase(const Variant<TFieldBase, TMembers, TOptions...>& field)
     COMMS_EXPAND(COMMS_VARIANT_MEMBERS_ACCESS(__VA_ARGS__)) \
     COMMS_EXPAND(COMMS_DO_FIELD_TYPEDEF(typename Base::Members, Field_, FieldIdx_, __VA_ARGS__))
 
-
 }  // namespace field
 
 }  // namespace comms
-
 

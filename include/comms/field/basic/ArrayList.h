@@ -60,7 +60,7 @@ struct ArrayListMaxLengthRetrieveHelper<comms::util::StaticString<TSize> >
 };
 
 template <typename TElem>
-using ArrayListFieldHasVarLengthBoolType = 
+using ArrayListFieldHasVarLengthBoolType =
     typename comms::util::LazyDeepConditional<
         std::is_integral<TElem>::value
     >::template Type<
@@ -70,7 +70,7 @@ using ArrayListFieldHasVarLengthBoolType =
     >;
 
 template <typename TElem>
-using HasArrayListElemNonDefaultRefreshBoolType = 
+using HasArrayListElemNonDefaultRefreshBoolType =
     typename comms::util::LazyDeepConditional<
         std::is_integral<TElem>::value
     >::template Type<
@@ -80,7 +80,7 @@ using HasArrayListElemNonDefaultRefreshBoolType =
     >;
 
 template <typename TElem>
-using IsArrayListElemVersionDependentBoolType = 
+using IsArrayListElemVersionDependentBoolType =
     typename comms::util::LazyDeepConditional<
         std::is_integral<TElem>::value
     >::template Type<
@@ -90,7 +90,7 @@ using IsArrayListElemVersionDependentBoolType =
     >;
 
 template <typename TFieldBase, typename TStorage>
-using ArrayListVersionStorageBase = 
+using ArrayListVersionStorageBase =
     typename comms::util::LazyShallowConditional<
         IsArrayListElemVersionDependentBoolType<typename TStorage::value_type>::value
     >::template Type<
@@ -114,13 +114,13 @@ public:
     using VersionType = typename BaseImpl::VersionType;
     using ElementType = typename TStorage::value_type;
     using ValueType = TStorage;
-    using CommsTag = 
+    using CommsTag =
         typename comms::util::Conditional<
             std::is_integral<ElementType>::value
         >::template Type<
             comms::field::tag::RawArrayList,
             comms::field::tag::ArrayList
-        >;    
+        >;
 
     ArrayList() = default;
 
@@ -159,7 +159,7 @@ public:
     void setValue(T&& val)
     {
         value() = std::forward<T>(val);
-    }    
+    }
 
     ElementType& createBack()
     {
@@ -387,13 +387,13 @@ private:
     using RawDataTag = comms::details::tag::Tag5<>;
 
     template <typename... TParams>
-    using VersionDependentTag = comms::details::tag::Tag6<>;    
+    using VersionDependentTag = comms::details::tag::Tag6<>;
 
     template <typename... TParams>
     using NoVersionDependencyTag = comms::details::tag::Tag7<>;
 
     template <typename... TParams>
-    using ElemTag = 
+    using ElemTag =
         typename comms::util::Conditional<
             std::is_integral<ElementType>::value
         >::template Type<
@@ -413,7 +413,7 @@ private:
     template <typename... TParams>
     constexpr std::size_t lengthInternal(FieldElemTag<TParams...>) const
     {
-        using Tag = 
+        using Tag =
             typename comms::util::LazyShallowConditional<
                 details::ArrayListFieldHasVarLengthBoolType<ElementType>::value
             >::template Type<
@@ -790,7 +790,7 @@ private:
 
             return es;
         }
-        
+
         ElementType elem;
         return readElement(elem, iter, len);
     }
@@ -803,5 +803,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
 

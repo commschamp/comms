@@ -18,7 +18,6 @@ namespace frame
 namespace details
 {
 
-
 template <typename... TOptions>
 class ChecksumLayerOptionsParser;
 
@@ -47,7 +46,7 @@ public:
     static constexpr bool HasVerifyBeforeRead = true;
 
     template <typename TOpt>
-    using SuppressForVerifyBeforeRead = comms::option::app::EmptyOption;    
+    using SuppressForVerifyBeforeRead = comms::option::app::EmptyOption;
 };
 
 template <typename T, typename... TOptions>
@@ -59,7 +58,7 @@ public:
     using ExtendingClass = T;
 
     template <typename TLayer>
-    using DefineExtendingClass = ExtendingClass;    
+    using DefineExtendingClass = ExtendingClass;
 };
 
 template <typename... TOptions>

@@ -89,12 +89,12 @@ public:
 
     /// @brief Scaling ratio determined by the forced units via the @b comms::option::def::Units* option.
     /// @details Equals to <b>std::ratio&lt;1, 1&gt;</b> if the option hasn't been used.
-    using UnitsRatio = typename ParsedOptions::UnitsRatio;    
+    using UnitsRatio = typename ParsedOptions::UnitsRatio;
 
-    /// @brief Type of actual extending field specified via 
+    /// @brief Type of actual extending field specified via
     ///     @ref comms::option::def::FieldType.
     /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
-    using FieldType = typename ParsedOptions::FieldType;    
+    using FieldType = typename ParsedOptions::FieldType;
 
     /// @brief Default constructor
     /// @details Initialises internal value to 0.
@@ -125,35 +125,35 @@ public:
     static constexpr bool hasEmptySerialization()
     {
         return ParsedOptions::HasEmptySerialization;
-    }    
+    }
 
     /// @brief Compile type inquiry of whether units have been set via any of the
     ///     @b comms::option::def::Units* options.
     static constexpr bool hasUnits()
     {
         return ParsedOptions::HasUnits;
-    }        
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
     ///     has been used.
     static constexpr bool hasFieldType()
     {
         return ParsedOptions::HasFieldType;
-    }   
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
     ///     has been used.
     static constexpr bool hasFixedValue()
     {
         return ParsedOptions::HasFixedValue;
-    }   
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
     ///     has been used.
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
-    } 
+    }
 
     /// @brief Get access to floating point value storage.
     const ValueType& value() const
@@ -180,7 +180,7 @@ public:
     void setValue(U&& val)
     {
         BaseImpl::setValue(std::forward<U>(val));
-    }          
+    }
 
     /// @brief Get length required to serialise the current field value.
     /// @return Number of bytes it will take to serialise the field value.
@@ -346,9 +346,9 @@ private:
     static_assert(!ParsedOptions::HasVersionsRange,
         "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to FloatValue field");
     static_assert(!ParsedOptions::HasMissingOnReadFail,
-            "comms::option::def::MissingOnReadFail option is not applicable to FloatValue field");           
+            "comms::option::def::MissingOnReadFail option is not applicable to FloatValue field");
     static_assert(!ParsedOptions::HasMissingOnInvalid,
-            "comms::option::def::MissingOnInvalid option is not applicable to FloatValue field");    
+            "comms::option::def::MissingOnInvalid option is not applicable to FloatValue field");
 };
 
 /// @brief Equality comparison operator.
@@ -426,6 +426,4 @@ toFieldBase(const FloatValue<TFieldBase, T, TOptions...>& field)
 }  // namespace field
 
 }  // namespace comms
-
-
 

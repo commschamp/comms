@@ -66,7 +66,7 @@ class MsgDispatcher
 
     using ParsedOptionsInternal = details::MsgDispatcherOptionsParser<TOptions...>;
 
-    using Tag = 
+    using Tag =
         typename comms::util::Conditional<
             ParsedOptionsInternal::HasForcedDispatch
         >::template Type<
@@ -303,7 +303,6 @@ struct IsMsgDispatcher<MsgDispatcher<TOptions...> >
     static constexpr bool Value = true;
 };
 
-
 } // namespace details
 
 /// @brief Compile time check whether the provided class is a variant of @ref comms::MsgDispatcher.
@@ -311,8 +310,8 @@ struct IsMsgDispatcher<MsgDispatcher<TOptions...> >
 template <typename T>
 constexpr bool isMsgDispatcher()
 {
-    return 
-        details::IsMsgDispatcher<T>::Value || 
+    return
+        details::IsMsgDispatcher<T>::Value ||
         details::hasMsgDispatcherTag<T>();
 }
 

@@ -29,7 +29,7 @@ namespace comms
 /// @param[in] id ID of the message known at runtime.
 /// @param[in] msg Message object held by reference to its interface class.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_object section of the 
+///     is explained in @ref page_dispatch_message_object section of the
 ///     @ref page_dispatch tutorial page
 /// @return What the called @b handle() member function of handler object returns.
 /// @note Defined in comms/dispatch.h
@@ -44,7 +44,7 @@ auto dispatchMsgPolymorphic(TId&& id, TMsg& msg, THandler& handler) ->
 {
     using MsgType = typename std::decay<decltype(msg)>::type;
     static_assert(comms::isMessage<MsgType>(), "msg param must be a valid message");
-    return 
+    return
         details::DispatchMsgPolymorphicHelper<>::template
             dispatch<TAllMessages>(std::forward<TId>(id), msg, handler);
 }
@@ -57,7 +57,7 @@ auto dispatchMsgPolymorphic(TId&& id, TMsg& msg, THandler& handler) ->
 /// @param[in] index Index (or offset) of the message type among those having the same ID.
 /// @param[in] msg Message object held by reference to its interface class.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_object section of the 
+///     is explained in @ref page_dispatch_message_object section of the
 ///     @ref page_dispatch tutorial page
 /// @return What the called @b handle() member function of handler object returns.
 /// @note Defined in comms/dispatch.h
@@ -72,7 +72,7 @@ auto dispatchMsgPolymorphic(TId&& id, std::size_t index, TMsg& msg, THandler& ha
 {
     using MsgType = typename std::decay<decltype(msg)>::type;
     static_assert(comms::isMessage<MsgType>(), "msg param must be a valid message");
-    return 
+    return
         details::DispatchMsgPolymorphicHelper<>::template
             dispatch<TAllMessages>(std::forward<TId>(id), index, msg, handler);
 }
@@ -83,7 +83,7 @@ auto dispatchMsgPolymorphic(TId&& id, std::size_t index, TMsg& msg, THandler& ha
 ///     ascending order by their numeric IDs.
 /// @param[in] msg Message object held by reference to its interface class.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_object section of the 
+///     is explained in @ref page_dispatch_message_object section of the
 ///     @ref page_dispatch tutorial page.
 /// @return What the called @b handle() member function of handler object returns.
 /// @note Defined in comms/dispatch.h
@@ -97,7 +97,7 @@ auto dispatchMsgPolymorphic(TMsg& msg, THandler& handler) ->
 {
     using MsgType = typename std::decay<decltype(msg)>::type;
     static_assert(comms::isMessage<MsgType>(), "msg param must be a valid message");
-    return 
+    return
         details::DispatchMsgPolymorphicHelper<>::template
             dispatch<TAllMessages>(msg, handler);
 }
@@ -108,7 +108,7 @@ auto dispatchMsgPolymorphic(TMsg& msg, THandler& handler) ->
 ///     ascending order by their numeric IDs.
 /// @param[in] id ID of the message known at runtime.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_type section of the 
+///     is explained in @ref page_dispatch_message_type section of the
 ///     @ref page_dispatch tutorial page.
 /// @return @b true in case the appropriate @b handle() member function of the
 ///     handler object has been called, @b false otherwise.
@@ -117,9 +117,9 @@ template <
     typename TAllMessages,
     typename TId,
     typename THandler>
-bool dispatchMsgTypePolymorphic(TId&& id, THandler& handler) 
+bool dispatchMsgTypePolymorphic(TId&& id, THandler& handler)
 {
-    return 
+    return
         details::DispatchMsgTypePolymorphicHelper<>::template
             dispatch<TAllMessages>(std::forward<TId>(id), handler);
 }
@@ -131,7 +131,7 @@ bool dispatchMsgTypePolymorphic(TId&& id, THandler& handler)
 /// @param[in] id ID of the message known at runtime.
 /// @param[in] index Index (or offset) of the message type among those having the same ID.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_type section of the 
+///     is explained in @ref page_dispatch_message_type section of the
 ///     @ref page_dispatch tutorial page.
 /// @return @b true in case the appropriate @b handle() member function of the
 ///     handler object has been called, @b false otherwise.
@@ -142,7 +142,7 @@ template <
     typename THandler>
 bool dispatchMsgTypePolymorphic(TId&& id, std::size_t index, THandler& handler)
 {
-    return 
+    return
         details::DispatchMsgTypePolymorphicHelper<>::template
             dispatch<TAllMessages>(std::forward<TId>(id), index, handler);
 }
@@ -155,7 +155,7 @@ bool dispatchMsgTypePolymorphic(TId&& id, std::size_t index, THandler& handler)
 /// @param[in] index Index (or offset) of the message type among those having the same ID.
 /// @param[in] msg Message object held by reference to its interface class.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_object section of the 
+///     is explained in @ref page_dispatch_message_object section of the
 ///     @ref page_dispatch tutorial page
 /// @return What the called @b handle() member function of handler object returns.
 /// @note Defined in comms/dispatch.h
@@ -168,10 +168,10 @@ auto dispatchMsgStaticBinSearch(TId&& id, std::size_t index, TMsg& msg, THandler
     details::MessageInterfaceDispatchRetType<
         typename std::decay<decltype(handler)>::type>
 {
-    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(), 
+    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(),
         "All messages in the provided tuple must statically define their numeric ID");
 
-    return 
+    return
         details::DispatchMsgStaticBinSearchHelper<>::template dispatch<TAllMessages>(
             std::forward<TId>(id),
             index,
@@ -186,7 +186,7 @@ auto dispatchMsgStaticBinSearch(TId&& id, std::size_t index, TMsg& msg, THandler
 /// @param[in] id ID of the message known at runtime.
 /// @param[in] msg Message object held by reference to its interface class.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_object section of the 
+///     is explained in @ref page_dispatch_message_object section of the
 ///     @ref page_dispatch tutorial page.
 /// @return What the called @b handle() member function of handler object returns.
 /// @note Defined in comms/dispatch.h
@@ -199,10 +199,10 @@ auto dispatchMsgStaticBinSearch(TId&& id, TMsg& msg, THandler& handler) ->
     details::MessageInterfaceDispatchRetType<
         typename std::decay<decltype(handler)>::type>
 {
-    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(), 
+    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(),
         "All messages in the provided tuple must statically define their numeric ID");
 
-    return 
+    return
         details::DispatchMsgStaticBinSearchHelper<>::template dispatch<TAllMessages>(
             std::forward<TId>(id),
             msg,
@@ -215,7 +215,7 @@ auto dispatchMsgStaticBinSearch(TId&& id, TMsg& msg, THandler& handler) ->
 ///     ascending order by their numeric IDs.
 /// @param[in] msg Message object held by reference to its interface class.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_object section of the 
+///     is explained in @ref page_dispatch_message_object section of the
 ///     @ref page_dispatch tutorial page.
 /// @return What the called @b handle() member function of handler object returns.
 /// @note Defined in comms/dispatch.h
@@ -227,13 +227,13 @@ auto dispatchMsgStaticBinSearch(TMsg& msg, THandler& handler) ->
     details::MessageInterfaceDispatchRetType<
         typename std::decay<decltype(handler)>::type>
 {
-    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(), 
+    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(),
         "All messages in the provided tuple must statically define their numeric ID");
     using MsgType = typename std::decay<decltype(msg)>::type;
-    static_assert(MsgType::hasGetId(), 
+    static_assert(MsgType::hasGetId(),
         "The used message object must provide polymorphic ID retrieval function");
 
-    return 
+    return
         details::DispatchMsgStaticBinSearchHelper<>::template dispatch<TAllMessages>(
             msg,
             handler);
@@ -245,7 +245,7 @@ auto dispatchMsgStaticBinSearch(TMsg& msg, THandler& handler) ->
 ///     ascending order by their numeric IDs.
 /// @param[in] id ID of the message known at runtime.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_type section of the 
+///     is explained in @ref page_dispatch_message_type section of the
 ///     @ref page_dispatch tutorial page.
 /// @return @b true in case the appropriate @b handle() member function of the
 ///     handler object has been called, @b false otherwise.
@@ -254,12 +254,12 @@ template <
     typename TAllMessages,
     typename TId,
     typename THandler>
-bool dispatchMsgTypeStaticBinSearch(TId&& id, THandler& handler) 
+bool dispatchMsgTypeStaticBinSearch(TId&& id, THandler& handler)
 {
-    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(), 
+    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(),
         "All messages in the provided tuple must statically define their numeric ID");
 
-    return 
+    return
         details::DispatchMsgStaticBinSearchHelper<>::template
             dispatchType<TAllMessages>(std::forward<TId>(id), handler);
 }
@@ -271,7 +271,7 @@ bool dispatchMsgTypeStaticBinSearch(TId&& id, THandler& handler)
 /// @param[in] id ID of the message known at runtime.
 /// @param[in] index Index (or offset) of the message type among those having the same ID.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_type section of the 
+///     is explained in @ref page_dispatch_message_type section of the
 ///     @ref page_dispatch tutorial page.
 /// @return @b true in case the appropriate @b handle() member function of the
 ///     handler object has been called, @b false otherwise.
@@ -282,10 +282,10 @@ template <
     typename THandler>
 bool dispatchMsgTypeStaticBinSearch(TId&& id, std::size_t index, THandler& handler)
 {
-    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(), 
+    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(),
         "All messages in the provided tuple must statically define their numeric ID");
 
-    return 
+    return
         details::DispatchMsgStaticBinSearchHelper<>::template
             dispatchType<TAllMessages>(std::forward<TId>(id), index, handler);
 }
@@ -297,12 +297,12 @@ bool dispatchMsgTypeStaticBinSearch(TId&& id, std::size_t index, THandler& handl
 /// @param[in] id ID of the message known at runtime.
 /// @note Defined in comms/dispatch.h
 template <typename TAllMessages, typename TId>
-std::size_t dispatchMsgTypeCountStaticBinSearch(TId&& id) 
+std::size_t dispatchMsgTypeCountStaticBinSearch(TId&& id)
 {
-    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(), 
+    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(),
         "All messages in the provided tuple must statically define their numeric ID");
 
-    return 
+    return
         details::DispatchMsgStaticBinSearchHelper<>::template
             dispatchTypeCount<TAllMessages>(std::forward<TId>(id));
 }
@@ -314,7 +314,7 @@ std::size_t dispatchMsgTypeCountStaticBinSearch(TId&& id)
 /// @param[in] id ID of the message known at runtime.
 /// @param[in] msg Message object held by reference to its interface class.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_object section of the 
+///     is explained in @ref page_dispatch_message_object section of the
 ///     @ref page_dispatch tutorial page.
 /// @return What the called @b handle() member function of handler object returns.
 /// @note Defined in comms/dispatch.h
@@ -327,10 +327,10 @@ auto dispatchMsgLinearSwitch(TId&& id, TMsg& msg, THandler& handler) ->
     details::MessageInterfaceDispatchRetType<
         typename std::decay<decltype(handler)>::type>
 {
-    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(), 
+    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(),
         "All messages in the provided tuple must statically define their numeric ID");
 
-    return 
+    return
         details::DispatchMsgLinearSwitchHelper<>::template dispatch<TAllMessages>(
             std::forward<TId>(id),
             msg,
@@ -345,7 +345,7 @@ auto dispatchMsgLinearSwitch(TId&& id, TMsg& msg, THandler& handler) ->
 /// @param[in] index Index (or offset) of the message type among those having the same ID.
 /// @param[in] msg Message object held by reference to its interface class.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_object section of the 
+///     is explained in @ref page_dispatch_message_object section of the
 ///     @ref page_dispatch tutorial page.
 /// @return What the called @b handle() member function of handler object returns.
 /// @note Defined in comms/dispatch.h
@@ -358,11 +358,10 @@ auto dispatchMsgLinearSwitch(TId&& id, std::size_t index, TMsg& msg, THandler& h
     details::MessageInterfaceDispatchRetType<
         typename std::decay<decltype(handler)>::type>
 {
-    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(), 
+    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(),
         "All messages in the provided tuple must statically define their numeric ID");
 
-
-    return 
+    return
         details::DispatchMsgLinearSwitchHelper<>::template dispatch<TAllMessages>(
             std::forward<TId>(id),
             index,
@@ -376,7 +375,7 @@ auto dispatchMsgLinearSwitch(TId&& id, std::size_t index, TMsg& msg, THandler& h
 ///     ascending order by their numeric IDs.
 /// @param[in] msg Message object held by reference to its interface class.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_object section of the 
+///     is explained in @ref page_dispatch_message_object section of the
 ///     @ref page_dispatch tutorial page.
 /// @return What the called @b handle() member function of handler object returns.
 /// @note Defined in comms/dispatch.h
@@ -388,13 +387,13 @@ auto dispatchMsgLinearSwitch(TMsg& msg, THandler& handler) ->
     details::MessageInterfaceDispatchRetType<
         typename std::decay<decltype(handler)>::type>
 {
-    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(), 
+    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(),
         "All messages in the provided tuple must statically define their numeric ID");
     using MsgType = typename std::decay<decltype(msg)>::type;
-    static_assert(MsgType::hasGetId(), 
+    static_assert(MsgType::hasGetId(),
         "The used message object must provide polymorphic ID retrieval function");
 
-    return 
+    return
         details::DispatchMsgLinearSwitchHelper<>::template dispatch<TAllMessages>(
             msg,
             handler);
@@ -406,7 +405,7 @@ auto dispatchMsgLinearSwitch(TMsg& msg, THandler& handler) ->
 ///     ascending order by their numeric IDs.
 /// @param[in] id ID of the message known at runtime.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_type section of the 
+///     is explained in @ref page_dispatch_message_type section of the
 ///     @ref page_dispatch tutorial page.
 /// @return @b true in case the appropriate @b handle() member function of the
 ///     handler object has been called, @b false otherwise.
@@ -415,12 +414,12 @@ template <
     typename TAllMessages,
     typename TId,
     typename THandler>
-bool dispatchMsgTypeLinearSwitch(TId&& id, THandler& handler) 
+bool dispatchMsgTypeLinearSwitch(TId&& id, THandler& handler)
 {
-    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(), 
+    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(),
         "All messages in the provided tuple must statically define their numeric ID");
 
-    return 
+    return
         details::DispatchMsgLinearSwitchHelper<>::template
             dispatchType<TAllMessages>(std::forward<TId>(id), handler);
 }
@@ -432,7 +431,7 @@ bool dispatchMsgTypeLinearSwitch(TId&& id, THandler& handler)
 /// @param[in] id ID of the message known at runtime.
 /// @param[in] index Index (or offset) of the message type among those having the same ID.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_type section of the 
+///     is explained in @ref page_dispatch_message_type section of the
 ///     @ref page_dispatch tutorial page.
 /// @return @b true in case the appropriate @b handle() member function of the
 ///     handler object has been called, @b false otherwise.
@@ -443,10 +442,10 @@ template <
     typename THandler>
 bool dispatchMsgTypeLinearSwitch(TId&& id, std::size_t index, THandler& handler)
 {
-    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(), 
+    static_assert(details::allMessagesHaveStaticNumId<TAllMessages>(),
         "All messages in the provided tuple must statically define their numeric ID");
 
-    return 
+    return
         details::DispatchMsgLinearSwitchHelper<>::template
             dispatchType<TAllMessages>(std::forward<TId>(id), index, handler);
 }
@@ -507,7 +506,7 @@ public:
     }
 
     template <typename TId, typename THandler>
-    static bool dispatchMsgType(TId&& id, THandler& handler) 
+    static bool dispatchMsgType(TId&& id, THandler& handler)
     {
         return dispatchMsgTypeInternal(std::forward<TId>(id), handler, Tag<>());
     }
@@ -548,7 +547,7 @@ private:
     using StaticBinSearchTag = comms::details::tag::Tag2<>;
 
     template <typename...>
-    using Tag = 
+    using Tag =
         typename comms::util::LazyShallowConditional<
             dispatchMsgPolymorphicIsDirectSuitable<TAllMessages>() || (!allMessagesHaveStaticNumId<TAllMessages>())
         >::template Type<
@@ -614,13 +613,13 @@ private:
     }
 
     template <typename TId, typename THandler, typename... TParams>
-    static bool dispatchMsgTypeInternal(TId&& id, THandler& handler, PolymorphicTag<TParams...>) 
+    static bool dispatchMsgTypeInternal(TId&& id, THandler& handler, PolymorphicTag<TParams...>)
     {
         return comms::dispatchMsgTypePolymorphic<TAllMessages>(std::forward<TId>(id), handler);
     }
 
     template <typename TId, typename THandler, typename... TParams>
-    static bool dispatchMsgTypeInternal(TId&& id, THandler& handler, StaticBinSearchTag<TParams...>) 
+    static bool dispatchMsgTypeInternal(TId&& id, THandler& handler, StaticBinSearchTag<TParams...>)
     {
         return comms::dispatchMsgTypeStaticBinSearch<TAllMessages>(std::forward<TId>(id), handler);
     }
@@ -650,7 +649,7 @@ private:
 /// @param[in] id ID of the message known at runtime.
 /// @param[in] msg Message object held by reference to its interface class.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_object section of the 
+///     is explained in @ref page_dispatch_message_object section of the
 ///     @ref page_dispatch tutorial page.
 /// @return What the called @b handle() member function of handler object returns.
 /// @note Defined in comms/dispatch.h
@@ -666,7 +665,7 @@ auto dispatchMsg(TId&& id, TMsg& msg, THandler& handler) ->
     details::MessageInterfaceDispatchRetType<
         typename std::decay<decltype(handler)>::type>
 {
-    return details::DispatchMsgHelper<TAllMessages>::dispatchMsg(std::forward<TId>(id), msg, handler); 
+    return details::DispatchMsgHelper<TAllMessages>::dispatchMsg(std::forward<TId>(id), msg, handler);
 }
 
 /// @brief Dispatch message object into appropriate @b handle() function in the
@@ -680,7 +679,7 @@ auto dispatchMsg(TId&& id, TMsg& msg, THandler& handler) ->
 /// @param[in] index Index (or offset) of the message type among those having the same ID.
 /// @param[in] msg Message object held by reference to its interface class.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_object section of the 
+///     is explained in @ref page_dispatch_message_object section of the
 ///     @ref page_dispatch tutorial page.
 /// @return What the called @b handle() member function of handler object returns.
 /// @note Defined in comms/dispatch.h
@@ -708,7 +707,7 @@ auto dispatchMsg(TId&& id, std::size_t index, TMsg& msg, THandler& handler) ->
 ///     ascending order by their numeric IDs.
 /// @param[in] msg Message object held by reference to its interface class.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_object section of the 
+///     is explained in @ref page_dispatch_message_object section of the
 ///     @ref page_dispatch tutorial page.
 /// @return What the called @b handle() member function of handler object returns.
 /// @note Defined in comms/dispatch.h
@@ -723,7 +722,7 @@ auto dispatchMsg(TMsg& msg, THandler& handler) ->
     details::MessageInterfaceDispatchRetType<
         typename std::decay<decltype(handler)>::type>
 {
-    return details::DispatchMsgHelper<TAllMessages>::dispatchMsg(msg, handler); 
+    return details::DispatchMsgHelper<TAllMessages>::dispatchMsg(msg, handler);
 }
 
 /// @brief Dispatch message id into appropriate @b handle() function in the
@@ -735,7 +734,7 @@ auto dispatchMsg(TMsg& msg, THandler& handler) ->
 ///     ascending order by their numeric IDs.
 /// @param[in] id ID of the message known at runtime.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_type section of the 
+///     is explained in @ref page_dispatch_message_type section of the
 ///     @ref page_dispatch tutorial page.
 /// @return @b true in case the appropriate @b handle() member function of the
 ///     handler object has been called, @b false otherwise.
@@ -745,7 +744,7 @@ auto dispatchMsg(TMsg& msg, THandler& handler) ->
 template <typename TAllMessages, typename TId, typename THandler>
 bool dispatchMsgType(TId&& id, THandler& handler)
 {
-    return details::DispatchMsgHelper<TAllMessages>::dispatchMsgType(std::forward<TId>(id), handler); 
+    return details::DispatchMsgHelper<TAllMessages>::dispatchMsgType(std::forward<TId>(id), handler);
 }
 
 /// @brief Dispatch message id into appropriate @b handle() function in the
@@ -758,7 +757,7 @@ bool dispatchMsgType(TId&& id, THandler& handler)
 /// @param[in] id ID of the message known at runtime.
 /// @param[in] index Index (or offset) of the message type among those having the same ID.
 /// @param[in] handler Handler object, it's required public interface
-///     is explained in @ref page_dispatch_message_type section of the 
+///     is explained in @ref page_dispatch_message_type section of the
 ///     @ref page_dispatch tutorial page
 /// @return @b true in case the appropriate @b handle() member function of the
 ///     handler object has been called, @b false otherwise.
@@ -780,7 +779,7 @@ bool dispatchMsgType(TId&& id, std::size_t index, THandler& handler)
 template <typename TAllMessages>
 constexpr bool dispatchMsgTypeIsPolymorphic()
 {
-    return details::DispatchMsgHelper<TAllMessages>::isPolymorphic(); 
+    return details::DispatchMsgHelper<TAllMessages>::isPolymorphic();
 }
 
 /// @brief Compile time check whether the @ref dispatchMsg()
@@ -820,7 +819,7 @@ constexpr bool dispatchMsgIsPolymorphic(TMsg&& msg, THandler&& handler)
 template <typename TAllMessages>
 constexpr bool dispatchMsgTypeIsStaticBinSearch()
 {
-    return details::DispatchMsgHelper<TAllMessages>::isStaticBinSearch(); 
+    return details::DispatchMsgHelper<TAllMessages>::isStaticBinSearch();
 }
 
 /// @brief Compile time check whether the @ref dispatchMsg()

@@ -52,7 +52,6 @@ template <typename TOptionsBundle>
 using BitmaskUndertlyingTypeT =
     typename BitmaskUndertlyingType<TOptionsBundle::HasFixedLengthLimit>::template Type<TOptionsBundle>;
 
-
 }  // namespace details
 
 /// @brief Bitmask value field.
@@ -138,10 +137,10 @@ public:
     ///     mask determined by the @ref comms::option::def::FixedLength option.
     using ValueType = typename IntValueField::ValueType;
 
-    /// @brief Type of actual extending field specified via 
+    /// @brief Type of actual extending field specified via
     ///     @ref comms::option::def::FieldType.
     /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
-    using FieldType = typename ParsedOptions::FieldType;    
+    using FieldType = typename ParsedOptions::FieldType;
 
     /// @brief Default constructor.
     /// @brief Initial bitmask has all bits cleared (equals 0)
@@ -189,21 +188,21 @@ public:
     static constexpr bool hasFieldType()
     {
         return ParsedOptions::HasFieldType;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
     ///     has been used.
     static constexpr bool hasFixedValue()
     {
         return ParsedOptions::HasFixedValue;
-    }  
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
     ///     has been used.
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
-    }         
+    }
 
     /// @brief Get access to underlying mask value storage.
     /// @return Const reference to the underlying stored value.
@@ -230,7 +229,7 @@ public:
     void setValue(U&& val)
     {
         m_intValue.setValue(std::forward<U>(val));
-    }        
+    }
 
     /// @brief Get length required to serialise the current field value.
     /// @return Number of bytes it will take to serialise the field value.
@@ -410,7 +409,7 @@ public:
     /// @brief Force serialization length of the field.
     /// @details Available only when @ref comms::option::def::AvailableLengthLimit
     ///     option is used for field definition.
-    /// @param[in] len Forced serialization length. 
+    /// @param[in] len Forced serialization length.
     ///     @li 0 means default serialization length determined by the storage type
     ///     @li positive value means limit of the serialization length
     ///     @li negative value means the length is determined by the stored value
@@ -424,7 +423,7 @@ public:
     int getForcedLength() const
     {
         return m_intValue.getForcedLength();
-    }    
+    }
 
 protected:
     using BaseImpl::readData;
@@ -475,9 +474,9 @@ private:
     static_assert(!ParsedOptions::HasInvalidByDefault,
         "comms::option::def::InvalidByDefault option is not applicable to BitmaskValue field");
     static_assert(!ParsedOptions::HasMissingOnReadFail,
-            "comms::option::def::MissingOnReadFail option is not applicable to BitmaskValue field");   
+            "comms::option::def::MissingOnReadFail option is not applicable to BitmaskValue field");
     static_assert(!ParsedOptions::HasMissingOnInvalid,
-            "comms::option::def::MissingOnInvalid option is not applicable to BitmaskValue field");                
+            "comms::option::def::MissingOnInvalid option is not applicable to BitmaskValue field");
     IntValueField m_intValue;
 };
 
@@ -554,7 +553,6 @@ toFieldBase(const BitmaskValue<TFieldBase, TOptions...>& field)
 {
     return field;
 }
-
 
 /// @brief Provide names for bits in comms::field::BitmaskValue field.
 /// @details Defines BitIdx enum with all the provided values prefixed with
@@ -720,7 +718,6 @@ toFieldBase(const BitmaskValue<TFieldBase, TOptions...>& field)
 #define COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE(...) \
     COMMS_DO_BIT_ACC_FUNC((*this), __VA_ARGS__)
 
-
 /// @brief Combine usage of #COMMS_BITMASK_BITS() and #COMMS_BITMASK_BITS_ACCESS().
 /// @details When assigned bit names start at bit 0 and go sequentially without
 ///     any gaps in the middle, i.e. don't have any @b =val suffixes, then use
@@ -809,9 +806,7 @@ toFieldBase(const BitmaskValue<TFieldBase, TOptions...>& field)
     COMMS_BITMASK_BITS(__VA_ARGS__) \
     COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE(__VA_ARGS__)
 
-
 }  // namespace field
 
 }  // namespace comms
-
 

@@ -108,7 +108,7 @@ public:
     /// @details Equals to <b>std::ratio&lt;1, 1&gt;</b> if the option hasn't been used.
     using UnitsRatio = typename ParsedOptions::UnitsRatio;
 
-    /// @brief Type of actual extending field specified via 
+    /// @brief Type of actual extending field specified via
     ///     @ref comms::option::def::FieldType.
     /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
     using FieldType = typename ParsedOptions::FieldType;
@@ -144,7 +144,7 @@ public:
     static constexpr bool hasIgnoreInvalid()
     {
         return ParsedOptions::HasIgnoreInvalid;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::EmptySerialization option
     ///     has been used.
@@ -158,7 +158,7 @@ public:
     static constexpr bool hasUnits()
     {
         return ParsedOptions::HasUnits;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether scaling ratio has been provided via
     ///     @ref comms::option::def::ScalingRatio option.
@@ -172,35 +172,35 @@ public:
     static constexpr bool hasFieldType()
     {
         return ParsedOptions::HasFieldType;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::VarLength option
     ///     has been used.
     static constexpr bool hasVarLength()
     {
         return ParsedOptions::HasVarLengthLimits;
-    }     
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
     ///     has been used.
     static constexpr bool hasFixedValue()
     {
         return ParsedOptions::HasFixedValue;
-    }      
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::DisplayOffset option
     ///     has been used.
     static constexpr bool hasDisplayOffset()
     {
         return ParsedOptions::HasDisplayOffset;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
     ///     has been used.
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
-    }                  
+    }
 
     /// @brief Scales value according to ratio specified in provided
     ///     @ref comms::option::def::ScalingRatio option.
@@ -212,7 +212,7 @@ public:
     template <typename TRet>
     constexpr TRet getScaled() const
     {
-        using TagTmp = 
+        using TagTmp =
             typename comms::util::LazyShallowConditional<
                 ParsedOptions::HasScalingRatio
             >::template Type<
@@ -237,7 +237,7 @@ public:
     template <typename TScaled>
     void setScaled(TScaled val)
     {
-        using TagTmp = 
+        using TagTmp =
             typename comms::util::LazyShallowConditional<
                 ParsedOptions::HasScalingRatio
             >::template Type<
@@ -273,7 +273,7 @@ public:
     void setValue(U&& val)
     {
         BaseImpl::setValue(std::forward<U>(val));
-    }        
+    }
 
     /// @brief Get display value
     /// @details Retrieving value by taking into account the display offset provided by the @ref comms::option::def::DisplayOffset option
@@ -302,7 +302,7 @@ public:
     static constexpr ValueType minValue()
     {
         return std::numeric_limits<ValueType>::min();
-    }    
+    }
 
     /// @brief Get length required to serialise the current field value.
     /// @return Number of bytes it will take to serialise the field value.
@@ -431,7 +431,7 @@ public:
     /// @brief Force serialization length of the field.
     /// @details Available only when @ref comms::option::def::AvailableLengthLimit
     ///     option is used for field definition.
-    /// @param[in] len Forced serialization length. 
+    /// @param[in] len Forced serialization length.
     ///     @li 0 means default serialization length determined by the storage type
     ///     @li positive value means limit of the serialization length
     ///     @li negative value means the length is determined by the stored value
@@ -445,7 +445,7 @@ public:
     int getForcedLength() const
     {
         return BaseImpl::getForcedLength();
-    }    
+    }
 
 protected:
     using BaseImpl::readData;
@@ -467,7 +467,7 @@ private:
     template <typename TRet, typename... TParams>
     TRet scaleAsInternal(HasScalingRatioTag<TParams...>) const
     {
-        using TagTmp = 
+        using TagTmp =
             typename comms::util::LazyShallowConditional<
                 std::is_floating_point<TRet>::value
             >::template Type<
@@ -492,7 +492,7 @@ private:
         static_assert(std::is_integral<TRet>::value,
             "TRet is expected to be integral type");
 
-        using CastType = 
+        using CastType =
             typename comms::util::Conditional<
                 std::is_signed<TRet>::value
             >::template Type<
@@ -514,7 +514,7 @@ private:
     template <typename TScaled, typename... TParams>
     void setScaledInternal(TScaled val, HasScalingRatioTag<TParams...>)
     {
-        using TagTmp = 
+        using TagTmp =
             typename comms::util::LazyShallowConditional<
                 std::is_floating_point<typename std::decay<decltype(val)>::type>::value
             >::template Type<
@@ -550,7 +550,7 @@ private:
     template <typename TScaled, typename... TParams>
     void setScaledInternal(TScaled val, ScaleAsIntTag<TParams...>)
     {
-        using CastType = 
+        using CastType =
             typename comms::util::Conditional<
                 std::is_signed<typename std::decay<decltype(val)>::type>::value
             >::template Type<
@@ -600,11 +600,10 @@ private:
     static_assert(!ParsedOptions::HasVersionsRange,
         "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to IntValue field");
     static_assert(!ParsedOptions::HasMissingOnReadFail,
-            "comms::option::def::MissingOnReadFail option is not applicable to IntValue field");           
+            "comms::option::def::MissingOnReadFail option is not applicable to IntValue field");
     static_assert(!ParsedOptions::HasMissingOnInvalid,
-            "comms::option::def::MissingOnInvalid option is not applicable to IntValue field");                
+            "comms::option::def::MissingOnInvalid option is not applicable to IntValue field");
 };
-
 
 /// @brief Equality comparison operator.
 /// @param[in] field1 First field.

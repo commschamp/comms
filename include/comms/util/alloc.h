@@ -9,7 +9,6 @@
 /// @brief This file contains various generic allocator classes that may be used
 ///     to allocate objects using dynamic memory or "in-place" allocations.
 
-
 #pragma once
 
 #include "comms/CompileControl.h"
@@ -292,7 +291,6 @@ private:
     bool* m_allocated = nullptr;
 };
 
-
 }  // namespace details
 
 /// @brief Dynamic memory allocator
@@ -433,7 +431,7 @@ public:
         static_assert(std::is_base_of<TInterface, TObj>::value,
             "TObj does not inherit from TInterface");
 
-        static_assert(comms::util::IsInTuple<TAllTypes>::template Type<TObj>::value, 
+        static_assert(comms::util::IsInTuple<TAllTypes>::template Type<TObj>::value,
             "TObj must be in provided tuple of supported types");
 
         static_assert(
@@ -676,9 +674,9 @@ struct InPlaceSingleNoVirtualDestructorDeepCondWrap
         typename TId,
         typename TDefaultType,
         typename...>
-    using Type = 
+    using Type =
         comms::util::alloc::InPlaceSingleNoVirtualDestructor<
-            TInterface, 
+            TInterface,
             TAllocMessages,
             TOrigMessages,
             TId,
@@ -697,21 +695,20 @@ template <typename...>
 struct DynMemoryNoVirtualDestructorDeepCondWrap
 {
     template <
-        typename TInterface, 
-        typename TAllMessages, 
-        typename TId, 
+        typename TInterface,
+        typename TAllMessages,
+        typename TId,
         typename TDefaultType,
         typename...
     >
-    using Type = 
+    using Type =
         comms::util::alloc::DynMemoryNoVirtualDestructor<
             TInterface,
             TAllMessages,
-            TId, 
+            TId,
             TDefaultType
         >;
 };
-
 
 } // namespace details
 

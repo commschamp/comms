@@ -5,7 +5,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// @file 
+/// @file
 /// @brief Contains definition of @ref comms::frame::ChecksumLayer
 
 #pragma once
@@ -43,7 +43,7 @@ namespace frame
 ///     ResultType operator()(TIter& iter, std::size_t len) const;
 ///     @endcode
 ///     It is up to the checksum calculator to choose the "ResultType" it
-///     returns. The @b setValue() member function is going to be used to 
+///     returns. The @b setValue() member function is going to be used to
 ///     assign the field's value.@n
 ///     Available checksum algorithms provided by the COMMS library reside in
 ///     @ref comms::frame::checksum namespace (`comms/frame/checkum` folder).
@@ -76,7 +76,7 @@ public:
     /// @brief Type of real extending class
     /// @details Updated when @ref comms::option::ExtendingClass extension option us used,
     ///    aliasing @b void if the options is not used.
-    using ExtendingClass = typename ParsedOptionsInternal::ExtendingClass;    
+    using ExtendingClass = typename ParsedOptionsInternal::ExtendingClass;
 
     /// @brief Default constructor.
     ChecksumLayer() = default;
@@ -96,21 +96,21 @@ public:
     /// @brief Move assignment
     ChecksumLayer& operator=(ChecksumLayer&&) = default;
 
-    /// @brief Compile time inquiry of whether this class was extended via 
+    /// @brief Compile time inquiry of whether this class was extended via
     ///    @ref comms::option::ExtendingClass option.
     /// @details If @b true is returned, the @ref SyncPrefixLayer::ExtendingClass "ExtendingClass"
     ///     type aliasing the real layer type.
     static constexpr bool hasExtendingClass()
     {
         return ParsedOptionsInternal::HasExtendingClass;
-    }   
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::ChecksumLayerVerifyBeforeRead
     ///     options has been used.
     static constexpr bool hasVerifyBeforeRead()
     {
         return ParsedOptionsInternal::HasVerifyBeforeRead;
-    }     
+    }
 
     /// @brief Customized read functionality, invoked by @ref read().
     /// @details First, executes the read() member function of the next layer.
@@ -155,13 +155,13 @@ public:
         static_assert(std::is_same<typename std::iterator_traits<IterType>::iterator_category, std::random_access_iterator_tag>::value,
             "The read operation is expected to use random access iterator");
 
-        using VerifyTag = 
+        using VerifyTag =
             typename comms::util::LazyShallowConditional<
                 ParsedOptionsInternal::HasVerifyBeforeRead
             >::template Type<
                 VerifyBeforeReadTag,
                 VerifyAfterReadTag
-            >;        
+            >;
 
         return
             readInternal(
@@ -274,7 +274,7 @@ public:
 
 protected:
     /// @brief Read the checksum field.
-    /// @details The default implementation invokes @b read() operation of the 
+    /// @details The default implementation invokes @b read() operation of the
     ///     passed field object. The function can be overriden by the extending class.
     /// @param[in] msgPtr Pointer to message object (if available), can be nullptr.
     /// @param[out] field Field object value of which needs to be populated
@@ -289,14 +289,14 @@ protected:
     }
 
     /// @brief Write the checksum field.
-    /// @details The default implementation invokes @b write() operation of the 
+    /// @details The default implementation invokes @b write() operation of the
     ///     passed field object. The function can be overriden by the extending class.
     /// @param[in] msgPtr Pointer to message object (if available), can be nullptr.
     /// @param[out] field Field object value of which needs to be written
     /// @param[in, out] iter Iterator used for writing, expected to be advanced
     /// @param[in] len Length of the output buffer
     /// @note May be static in the extending class, but needs to be const.
-    /// @deprecated Override @ref comms::frame::ChecksumLayer::doWriteField() "doWriteField()" instead    
+    /// @deprecated Override @ref comms::frame::ChecksumLayer::doWriteField() "doWriteField()" instead
     template <typename TMsg, typename TIter>
     comms::ErrorStatus writeField(const TMsg* msgPtr, const Field& field, TIter& iter, std::size_t len) const
     {
@@ -305,12 +305,12 @@ protected:
 
     /// @brief Calculate checksum.
     /// @details The default implementation invokes @b operator() of provided
-    ///     calculation algorithm (@b TCalc template parameter). 
+    ///     calculation algorithm (@b TCalc template parameter).
     ///     The function can be overriden by the extending class.
     /// @param[in] msg Pointer to message object (if available), can be nullptr.
     /// @param[in, out] iter Iterator used for reading data, expected to be advanced
     /// @param[in] len Length of the output buffer
-    /// @param[out] checksumValid Indication of whether the return checksum is valid, 
+    /// @param[out] checksumValid Indication of whether the return checksum is valid,
     ///     must be populated.
     /// @return The checksum value.
     /// @note May be non-static in the extending class, but needs to be const.
@@ -335,7 +335,7 @@ protected:
     }
 
     /// @brief Prepare field for writing
-    /// @details Must assign provided checksum value. 
+    /// @details Must assign provided checksum value.
     ///     May be overridden by the extending class if some complex functionality is required.
     ///     The default implementation is:
     ///     @code
@@ -377,14 +377,14 @@ private:
         }
         auto toIter = fromIter + (size - fieldLen);
         auto len = static_cast<std::size_t>(std::distance(fromIter, toIter));
-        
+
         auto checksumEs = thisObj.readField(msgPtr, field, toIter, fieldLen);
         if (checksumEs != ErrorStatus::Success) {
             return checksumEs;
         }
 
         bool checksumValid = false;
-        auto checksum = 
+        auto checksum =
             thisObj.calculateChecksum(
                 msgPtr,
                 fromIter,
@@ -443,7 +443,7 @@ private:
         }
 
         bool checksumValid = false;
-        auto checksum = 
+        auto checksum =
             thisObj.calculateChecksum(
                 BaseImpl::toMsgPtr(msg),
                 fromIter,
@@ -535,7 +535,7 @@ private:
         }
 
         bool checksumValid = false;
-        auto checksum = 
+        auto checksum =
             thisObj.calculateChecksum(
                 &msg,
                 fromIter,
@@ -603,15 +603,15 @@ private:
         auto len = static_cast<std::size_t>(std::distance(from, to));
         auto& thisObj = BaseImpl::thisLayer();
         if (msgPtr != nullptr) {
-            COMMS_ASSERT(len == (size - thisObj.doFieldLength(*msgPtr)));    
+            COMMS_ASSERT(len == (size - thisObj.doFieldLength(*msgPtr)));
         }
         else {
-            COMMS_ASSERT(len == (size - Field::maxLength()));    
+            COMMS_ASSERT(len == (size - Field::maxLength()));
         }
         auto remSize = size - len;
 
         bool checksumValid = false;
-        auto checksum = 
+        auto checksum =
             thisObj.calculateChecksum(
                 msgPtr,
                 from,

@@ -45,7 +45,7 @@ public:
 
     using ValueType = typename BaseImpl::ValueType;
 
-    using SerialisedType = 
+    using SerialisedType =
         typename comms::util::Conditional<
             (Length < sizeof(BaseSerialisedType))
         >::template Type<
@@ -133,16 +133,16 @@ private:
     using UnsignedTag = comms::details::tag::Tag1<>;
 
     template <typename... TParams>
-    using SignedTag = comms::details::tag::Tag2<>;    
+    using SignedTag = comms::details::tag::Tag2<>;
 
     template <typename... TParams>
-    using NoSignExtTag = comms::details::tag::Tag3<>;      
+    using NoSignExtTag = comms::details::tag::Tag3<>;
 
     template <typename... TParams>
-    using MustSignExtTag = comms::details::tag::Tag4<>;         
+    using MustSignExtTag = comms::details::tag::Tag4<>;
 
     template <typename...>
-    using HasSignTag = 
+    using HasSignTag =
         typename comms::util::LazyShallowConditional<
             TSignExtend && std::is_signed<SerialisedType>::value
         >::template Type<
@@ -177,7 +177,7 @@ private:
     template <typename... TParams>
     static BaseSerialisedType adjustFromSerialised(SerialisedType val, SignedTag<TParams...>)
     {
-        auto valueTmp = 
+        auto valueTmp =
             static_cast<UnsignedSerialisedType>(
                 static_cast<UnsignedSerialisedType>(val) & UnsignedValueMask);
         return
@@ -187,7 +187,7 @@ private:
 
     static SerialisedType signExtUnsignedSerialised(UnsignedSerialisedType val)
     {
-        using SignExtTag = 
+        using SignExtTag =
             typename comms::util::LazyShallowConditional<
                 BitLength < static_cast<std::size_t>(std::numeric_limits<UnsignedSerialisedType>::digits)
             >::template Type<
@@ -234,5 +234,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
 

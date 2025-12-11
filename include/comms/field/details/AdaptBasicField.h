@@ -63,7 +63,6 @@ class AdaptBasicField
             ParsedOptions::HasEmptySerialization ||
             ParsedOptions::HasMissingOnReadFail;
 
-
     static const bool VarLengthIncompatible =
             ParsedOptions::HasFixedLengthLimit ||
             ParsedOptions::HasFixedBitLengthLimit ||
@@ -127,107 +126,107 @@ class AdaptBasicField
             "The following options are incompatible, cannot be used together: "
             "SequenceFixedSizeUseFixedSizeStorage, FixedSizeStorage");
 
-    using FieldTypeAdapted = 
-        typename ParsedOptions::template AdaptFieldType<TBasic>;            
+    using FieldTypeAdapted =
+        typename ParsedOptions::template AdaptFieldType<TBasic>;
 
-    using InvalidByDefaultAdapted = 
+    using InvalidByDefaultAdapted =
         typename ParsedOptions::template AdaptInvalidByDefault<FieldTypeAdapted>;
-        
-    using VersionStorageAdapted = 
+
+    using VersionStorageAdapted =
         typename ParsedOptions::template AdaptVersionStorage<InvalidByDefaultAdapted>;
-    
-    using SerOffsetAdapted = 
+
+    using SerOffsetAdapted =
         typename ParsedOptions::template AdaptSerOffset<VersionStorageAdapted>;
 
-    using DisplayOffsetAdapted = 
+    using DisplayOffsetAdapted =
         typename ParsedOptions::template AdaptDisplayOffset<SerOffsetAdapted>;
 
-    using VersionsRangeAdapted = 
+    using VersionsRangeAdapted =
         typename ParsedOptions::template AdaptVersionsRange<DisplayOffsetAdapted>;
 
-    using FixedLengthLimitAdapted = 
+    using FixedLengthLimitAdapted =
         typename ParsedOptions::template AdaptFixedLengthLimit<VersionsRangeAdapted>;
 
-    using FixedBitLengthLimitAdapted = 
+    using FixedBitLengthLimitAdapted =
         typename ParsedOptions::template AdaptFixedBitLengthLimit<FixedLengthLimitAdapted>;
 
-    using VarLengthLimitsAdapted = 
+    using VarLengthLimitsAdapted =
         typename ParsedOptions::template AdaptVarLengthLimits<FixedBitLengthLimitAdapted>;
 
     using AvailableLengthLimitAdapted =
-        typename ParsedOptions::template AdaptAvailableLengthLimit<VarLengthLimitsAdapted>;       
+        typename ParsedOptions::template AdaptAvailableLengthLimit<VarLengthLimitsAdapted>;
 
-    using SequenceElemLengthForcingAdapted = 
+    using SequenceElemLengthForcingAdapted =
         typename ParsedOptions::template AdaptSequenceElemLengthForcing<AvailableLengthLimitAdapted>;
-    
-    using SequenceElemSerLengthFieldPrefixAdapted = 
+
+    using SequenceElemSerLengthFieldPrefixAdapted =
         typename ParsedOptions::template AdaptSequenceElemSerLengthFieldPrefix<SequenceElemLengthForcingAdapted>;
 
-    using SequenceElemFixedSerLengthFieldPrefixAdapted = 
+    using SequenceElemFixedSerLengthFieldPrefixAdapted =
         typename ParsedOptions::template AdaptSequenceElemFixedSerLengthFieldPrefix<SequenceElemSerLengthFieldPrefixAdapted>;
 
-    using SequenceSizeForcingAdapted = 
+    using SequenceSizeForcingAdapted =
         typename ParsedOptions::template AdaptSequenceSizeForcing<SequenceElemFixedSerLengthFieldPrefixAdapted>;
 
-    using SequenceLengthForcingAdapted = 
+    using SequenceLengthForcingAdapted =
         typename ParsedOptions::template AdaptSequenceLengthForcing<SequenceSizeForcingAdapted>;
-        
-    using SequenceFixedSizeAdapted = 
+
+    using SequenceFixedSizeAdapted =
         typename ParsedOptions::template AdaptSequenceFixedSize<SequenceLengthForcingAdapted>;
 
-    using SequenceSizeFieldPrefixAdapted = 
+    using SequenceSizeFieldPrefixAdapted =
         typename ParsedOptions::template AdaptSequenceSizeFieldPrefix<SequenceFixedSizeAdapted>;
 
-    using SequenceSerLengthFieldPrefixAdapted = 
+    using SequenceSerLengthFieldPrefixAdapted =
         typename ParsedOptions::template AdaptSequenceSerLengthFieldPrefix<SequenceSizeFieldPrefixAdapted>;
-    
-    using SequenceTrailingFieldSuffixAdapted = 
+
+    using SequenceTrailingFieldSuffixAdapted =
         typename ParsedOptions::template AdaptSequenceTrailingFieldSuffix<SequenceSerLengthFieldPrefixAdapted>;
-    
-    using SequenceTerminationFieldSuffixAdapted = 
+
+    using SequenceTerminationFieldSuffixAdapted =
         typename ParsedOptions::template AdaptSequenceTerminationFieldSuffix<SequenceTrailingFieldSuffixAdapted>;
-    
-     using RemLengthMemberFieldAdapted = 
+
+     using RemLengthMemberFieldAdapted =
         typename ParsedOptions::template AdaptRemLengthMemberField<SequenceTerminationFieldSuffixAdapted>;
 
-    using DefaultValueInitialiserAdapted = 
+    using DefaultValueInitialiserAdapted =
         typename ParsedOptions::template AdaptDefaultValueInitialiser<RemLengthMemberFieldAdapted>;
 
-    using MultiRangeValidationAdapted = 
+    using MultiRangeValidationAdapted =
         typename ParsedOptions::template AdaptMultiRangeValidation<DefaultValueInitialiserAdapted>;
-    
-    using CustomValidatorAdapted = 
+
+    using CustomValidatorAdapted =
         typename ParsedOptions::template AdaptCustomValidator<MultiRangeValidationAdapted>;
 
-    using FailOnInvalidAdapted = 
+    using FailOnInvalidAdapted =
         typename ParsedOptions::template AdaptFailOnInvalid<CustomValidatorAdapted>;
 
-    using IgnoreInvalidAdapted = 
+    using IgnoreInvalidAdapted =
         typename ParsedOptions::template AdaptIgnoreInvalid<FailOnInvalidAdapted>;
 
-    using EmptySerializationAdapted = 
+    using EmptySerializationAdapted =
         typename ParsedOptions::template AdaptEmptySerialization<IgnoreInvalidAdapted>;
 
-    using CustomReadWrapAdapted = 
+    using CustomReadWrapAdapted =
         typename ParsedOptions::template AdaptCustomRead<EmptySerializationAdapted>;
 
-    using CustomRefreshWrapAdapted = 
+    using CustomRefreshWrapAdapted =
         typename ParsedOptions::template AdaptCustomRefresh<CustomReadWrapAdapted>;
 
-    using CustomWriteWrapAdapted = 
+    using CustomWriteWrapAdapted =
         typename ParsedOptions::template AdaptCustomWrite<CustomRefreshWrapAdapted>;
 
-    using MissingOnInvalidAdapted = 
+    using MissingOnInvalidAdapted =
         typename ParsedOptions::template AdaptMissingOnInvalid<CustomWriteWrapAdapted>;
 
-    using MissingOnReadFailAdapted = 
+    using MissingOnReadFailAdapted =
         typename ParsedOptions::template AdaptMissingOnReadFail<MissingOnInvalidAdapted>;
 
-    using VariantResetOnDestructAdapted = 
+    using VariantResetOnDestructAdapted =
         typename ParsedOptions::template AdaptVariantResetOnDestruct<MissingOnReadFailAdapted>;
 
-    using FixedValueAdapted = 
-        typename ParsedOptions::template AdaptFixedValue<VariantResetOnDestructAdapted>;        
+    using FixedValueAdapted =
+        typename ParsedOptions::template AdaptFixedValue<VariantResetOnDestructAdapted>;
 
 public:
     using Type = FixedValueAdapted;
@@ -241,5 +240,4 @@ using AdaptBasicFieldT = typename AdaptBasicField<TBasic, TOptions...>::Type;
 }  // namespace field
 
 }  // namespace comms
-
 

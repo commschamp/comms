@@ -21,7 +21,7 @@ enum MembersVersionDependency
     MembersVersionDependency_NotSpecified,
     MembersVersionDependency_Independent,
     MembersVersionDependency_Dependent
-}; 
+};
 
 }  // namespace details
 

@@ -5,7 +5,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-
 #pragma once
 
 #include "comms/details/base_detection.h"
@@ -178,18 +177,4 @@
 #define COMMS_CHOOSE_BIT_ACC_FUNC(N, f_, ...) COMMS_EXPAND(COMMS_CHOOSE_BIT_ACC_FUNC_(N, f_, __VA_ARGS__))
 #define COMMS_DO_BIT_ACC_FUNC(f_, ...) \
     COMMS_EXPAND(COMMS_CHOOSE_BIT_ACC_FUNC(COMMS_NUM_ARGS(__VA_ARGS__), f_, __VA_ARGS__))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -5,7 +5,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// @file 
+/// @file
 /// @brief Contains definition of @ref comms::frame::MsgDataLayer
 
 #pragma once
@@ -448,7 +448,7 @@ public:
 
     /// @brief Update recently written (using writeFieldsCached()) message data as
     ///     well as cached transport information fields.
-    /// @details Very similar to other @ref updateFieldsCached() member function, 
+    /// @details Very similar to other @ref updateFieldsCached() member function,
     ///     but adds "msg" parameter to reference message object if needed.
     /// @tparam TAllFields std::tuple of all the transport fields, must be
     ///     @ref AllFields type defined in the last layer class that defines
@@ -501,7 +501,7 @@ public:
             comms::isMessage<MsgType>(),
             "The provided message object must inherit from comms::Message");
 
-        using Tag = 
+        using Tag =
             typename comms::util::LazyShallowConditional<
                 details::FrameLayerHasFieldsImpl<MsgType>::Value
             >::template Type<
@@ -536,19 +536,19 @@ private:
     using MsgNoLengthTag = comms::details::tag::Tag2<>;
 
     template <typename... TParams>
-    using MsgDirectLengthTag = comms::details::tag::Tag3<>;    
+    using MsgDirectLengthTag = comms::details::tag::Tag3<>;
 
     template <typename... TParams>
-    using DirectOpTag = comms::details::tag::Tag4<>;     
+    using DirectOpTag = comms::details::tag::Tag4<>;
 
     template <typename... TParams>
-    using InterfaceOpTag = comms::details::tag::Tag5<>;    
+    using InterfaceOpTag = comms::details::tag::Tag5<>;
 
     template <typename... TParams>
-    using PointerOpTag = comms::details::tag::Tag6<>; 
+    using PointerOpTag = comms::details::tag::Tag6<>;
 
     template <typename... TParams>
-    using OtherOpTag = comms::details::tag::Tag7<>;              
+    using OtherOpTag = comms::details::tag::Tag7<>;
 
     template <typename TMsg, typename TIter>
     static ErrorStatus writeWithFieldCachedInternal(
@@ -666,7 +666,7 @@ private:
         auto result = msg.read(static_cast<ReadIter>(iter), size);
         if ((result == ErrorStatus::NotEnoughData) &&
             missingSizeRequiredInternal(extraValues...)) {
-            using Tag = 
+            using Tag =
                 typename comms::util::LazyShallowConditional<
                     MsgType::hasLength()
                 >::template Type<
@@ -962,6 +962,4 @@ toFrameLayerBase(const MsgDataLayer<TExtraOpts...>& layer)
 }  // namespace frame
 
 }  // namespace comms
-
-
 

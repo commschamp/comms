@@ -120,7 +120,7 @@ public:
     const TermField& terminationFieldSuffix() const
     {
         return m_termField;
-    }    
+    }
 
 private:
     template <typename... TParams>
@@ -192,7 +192,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
-
-
 

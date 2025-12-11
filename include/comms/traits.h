@@ -9,7 +9,6 @@
 /// @brief This file contains all the classes necessary to properly
 /// define message traits.
 
-
 #pragma once
 
 #include "comms/util/access.h"

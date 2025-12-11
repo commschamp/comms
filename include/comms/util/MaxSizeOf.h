@@ -31,7 +31,7 @@ public:
     static std::size_t maxSizeOf(const T& val)
     {
         using DecayedType = typename std::decay<decltype(val)>::type;
-        using Tag = 
+        using Tag =
             typename comms::util::LazyShallowConditional<
                 comms::util::detect::hasMaxSizeFunc<DecayedType>()
             >::template Type<
@@ -47,20 +47,20 @@ private:
     using HasMaxSizeTag = comms::details::tag::Tag1<>;
 
     template <typename... TParams>
-    using NoMaxSizeTag = comms::details::tag::Tag2<>;    
+    using NoMaxSizeTag = comms::details::tag::Tag2<>;
 
     template <typename T, typename... TParams>
     static std::size_t maxSizeOfInternal(const T& val, HasMaxSizeTag<>)
     {
         return val.max_size();
-    }    
+    }
 
     template <typename T, typename... TParams>
     static std::size_t maxSizeOfInternal(const T& val, NoMaxSizeTag<>)
     {
         static_cast<void>(val);
         return std::numeric_limits<std::size_t>::max();
-    }       
+    }
 };
 
 } // namespace details
@@ -77,5 +77,4 @@ std::size_t maxSizeOf(const T& val)
 }  // namespace util
 
 }  // namespace comms
-
 

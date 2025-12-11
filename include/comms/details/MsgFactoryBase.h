@@ -52,9 +52,9 @@ class MsgFactoryBase
     static const bool InterfaceHasVirtualDestructor =
         std::has_virtual_destructor<TMsgBase>::value;
 
-    using AllMessagesInternal = 
+    using AllMessagesInternal =
         typename ParsedOptionsInternal::template AllMessages<TAllMessages>;
-    using GenericMessageInternal = typename ParsedOptionsInternal::GenericMessage; 
+    using GenericMessageInternal = typename ParsedOptionsInternal::GenericMessage;
 
     template <typename...>
     struct InPlaceAllocDeepCondWrap
@@ -65,8 +65,8 @@ class MsgFactoryBase
             typename TOrigMessages,
             typename TId,
             typename TDefaultType,
-            typename...>        
-        using Type = 
+            typename...>
+        using Type =
             typename comms::util::LazyDeepConditional<
                 InterfaceHasVirtualDestructor
             >::template Type<
@@ -89,8 +89,8 @@ class MsgFactoryBase
             typename TOrigMessages,
             typename TId,
             typename TDefaultType,
-            typename...>        
-        using Type = 
+            typename...>
+        using Type =
             typename comms::util::LazyDeepConditional<
                 InterfaceHasVirtualDestructor
             >::template Type<
@@ -101,7 +101,7 @@ class MsgFactoryBase
                 TId,
                 TDefaultType
             >;
-    };    
+    };
 
     using Alloc =
         typename comms::util::LazyDeepConditional<
@@ -143,10 +143,10 @@ public:
 
             reasonTmp = CreateFailureReason::AllocFailure;
         } while (false);
-        
+
         if (reason != nullptr) {
             *reason = reasonTmp;
-        }        
+        }
 
         return msg;
     }
@@ -240,22 +240,22 @@ private:
     using AllocGenericTag = comms::details::tag::Tag1<>;
 
     template <typename... TParams>
-    using NoAllocTag = comms::details::tag::Tag2<>;    
+    using NoAllocTag = comms::details::tag::Tag2<>;
 
     template <typename... TParams>
-    using ForcedTag = comms::details::tag::Tag3<>;    
+    using ForcedTag = comms::details::tag::Tag3<>;
 
     template <typename... TParams>
-    using StandardTag = comms::details::tag::Tag4<>; 
+    using StandardTag = comms::details::tag::Tag4<>;
 
     template <typename... TParams>
-    using VirtualDestructorTag = comms::details::tag::Tag5<>; 
+    using VirtualDestructorTag = comms::details::tag::Tag5<>;
 
     template <typename... TParams>
-    using NonVirtualDestructorTag = comms::details::tag::Tag6<>;              
+    using NonVirtualDestructorTag = comms::details::tag::Tag6<>;
 
     template <typename...>
-    using DispatchTag = 
+    using DispatchTag =
         typename comms::util::LazyShallowConditional<
             ParsedOptions::HasForcedDispatch
         >::template Type<
@@ -360,49 +360,49 @@ private:
     template <typename THandler>
     static bool dispatchMsgTypeInternal(MsgIdParamType id, unsigned idx, THandler& handler, comms::traits::dispatch::Polymorphic)
     {
-        return comms::dispatchMsgTypePolymorphic<AllMessages>(id, idx, handler);    
+        return comms::dispatchMsgTypePolymorphic<AllMessages>(id, idx, handler);
     }
 
     template <typename THandler>
     static bool dispatchMsgTypeInternal(MsgIdParamType id, unsigned idx, THandler& handler, comms::traits::dispatch::StaticBinSearch)
     {
-        return comms::dispatchMsgTypeStaticBinSearch<AllMessages>(id, idx, handler);    
+        return comms::dispatchMsgTypeStaticBinSearch<AllMessages>(id, idx, handler);
     }
 
     template <typename THandler>
     static bool dispatchMsgTypeInternal(MsgIdParamType id, unsigned idx, THandler& handler, comms::traits::dispatch::LinearSwitch)
     {
-        return comms::dispatchMsgTypeStaticBinSearch<AllMessages>(id, idx, handler);    
+        return comms::dispatchMsgTypeStaticBinSearch<AllMessages>(id, idx, handler);
     }
 
     template <typename... TParams>
     static constexpr bool isDispatchPolymorphicInternal(ForcedTag<TParams...>)
     {
-        return std::is_same<comms::traits::dispatch::Polymorphic, typename ParsedOptions::ForcedDispatch>::value; 
+        return std::is_same<comms::traits::dispatch::Polymorphic, typename ParsedOptions::ForcedDispatch>::value;
     }
 
     template <typename... TParams>
     static constexpr bool isDispatchPolymorphicInternal(StandardTag<TParams...>)
     {
-        return dispatchMsgTypeIsPolymorphic<AllMessages>(); 
+        return dispatchMsgTypeIsPolymorphic<AllMessages>();
     }
 
     template <typename... TParams>
     static constexpr bool isDispatchStaticBinSearchInternal(ForcedTag<TParams...>)
     {
-        return std::is_same<comms::traits::dispatch::StaticBinSearch, typename ParsedOptions::ForcedDispatch>::value; 
+        return std::is_same<comms::traits::dispatch::StaticBinSearch, typename ParsedOptions::ForcedDispatch>::value;
     }
 
     template <typename... TParams>
     static constexpr bool isDispatchStaticBinSearchInternal(StandardTag<TParams...>)
     {
-        return dispatchMsgTypeIsStaticBinSearch<AllMessages>(); 
+        return dispatchMsgTypeIsStaticBinSearch<AllMessages>();
     }
 
     template <typename... TParams>
     static constexpr bool isDispatchLinearSwitchInternal(ForcedTag<TParams...>)
     {
-        return std::is_same<comms::traits::dispatch::LinearSwitch, typename ParsedOptions::ForcedDispatch>::value; 
+        return std::is_same<comms::traits::dispatch::LinearSwitch, typename ParsedOptions::ForcedDispatch>::value;
     }
 
     template <typename... TParams>
@@ -430,9 +430,7 @@ private:
     mutable Alloc m_alloc;
 };
 
-
 }  // namespace details
 
 }  // namespace comms
-
 

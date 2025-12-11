@@ -37,12 +37,12 @@ template<bool TEmpty>
 struct AccumulateLoop
 {
     template <
-        template<typename...> class TAlg, 
-        template<typename...> class TTransformOp, 
-        template<typename...> class TBinaryOp, 
-        typename TStart, 
+        template<typename...> class TAlg,
+        template<typename...> class TTransformOp,
+        template<typename...> class TBinaryOp,
+        typename TStart,
         typename... TRest
-    > 
+    >
     using Type = typename TAlg<>::template Type<TTransformOp, TBinaryOp, TStart, TRest...>;
 };
 
@@ -50,12 +50,12 @@ template<>
 struct AccumulateLoop<true>
 {
     template <
-        template<typename...> class TAlg, 
-        template<typename...> class TTransformOp, 
-        template<typename...> class TBinaryOp, 
-        typename TStart, 
+        template<typename...> class TAlg,
+        template<typename...> class TTransformOp,
+        template<typename...> class TBinaryOp,
+        typename TStart,
         typename... TRest
-    > 
+    >
     using Type = TStart;
 };
 
@@ -65,12 +65,12 @@ struct AccumulateFromUntilLoop
     template <
         std::size_t TFrom,
         std::size_t TUntil,
-        template<typename...> class TAlg, 
-        template<typename...> class TTransformOp, 
-        template<typename...> class TBinaryOp, 
-        typename TStart, 
+        template<typename...> class TAlg,
+        template<typename...> class TTransformOp,
+        template<typename...> class TBinaryOp,
+        typename TStart,
         typename... TRest
-    > 
+    >
     using Type = typename TAlg<>::template Type<TFrom, TUntil, TTransformOp, TBinaryOp, TStart, TRest...>;
 };
 
@@ -79,33 +79,32 @@ struct AccumulateFromUntilLoop<true>
 {
     template <
         std::size_t TFrom,
-        std::size_t TUntil,    
-        template<typename...> class TAlg, 
-        template<typename...> class TTransformOp, 
-        template<typename...> class TBinaryOp, 
-        typename TStart, 
+        std::size_t TUntil,
+        template<typename...> class TAlg,
+        template<typename...> class TTransformOp,
+        template<typename...> class TBinaryOp,
+        typename TStart,
         typename... TRest
-    > 
+    >
     using Type = TStart;
 };
-
 
 template <bool TEmpty>
 struct AccumulateImpl
 {
     template <
         template<typename...> class TTransformOp,
-        template<typename...> class TBinaryOp, 
+        template<typename...> class TBinaryOp,
         typename TStart,
-        typename T, 
+        typename T,
         typename... TRest>
-    using Type = 
+    using Type =
         typename AccumulateLoop<0U == sizeof...(TRest)>::template Type<
-            comms::util::Accumulate, 
-            TTransformOp, 
-            TBinaryOp, 
+            comms::util::Accumulate,
+            TTransformOp,
+            TBinaryOp,
             typename TBinaryOp<>::template Type<
-                TStart, 
+                TStart,
                 typename TTransformOp<>::template Type<T>
             >,
             TRest...>;
@@ -116,7 +115,7 @@ struct AccumulateImpl<true>
 {
     template <
         template<typename...> class TTransformOp,
-        template<typename...> class TBinaryOp, 
+        template<typename...> class TBinaryOp,
         typename TStart,
         typename...>
     using Type = TStart;
@@ -129,19 +128,19 @@ struct AccumulateFromUntilImpl
         std::size_t TFrom,
         std::size_t TUntil,
         template<typename...> class TTransformOp,
-        template<typename...> class TBinaryOp, 
+        template<typename...> class TBinaryOp,
         typename TStart,
-        typename T, 
+        typename T,
         typename... TRest>
-    using Type = 
+    using Type =
         typename Conditional<
             0U < TFrom
         >::template Type<
             typename AccumulateFromUntilImpl<
                 0U == sizeof...(TRest)
             >::template Type<
-                TFrom - 1U, 
-                TUntil - 1U, 
+                TFrom - 1U,
+                TUntil - 1U,
                 TTransformOp,
                 TBinaryOp,
                 TStart,
@@ -152,11 +151,11 @@ struct AccumulateFromUntilImpl
             >::template Type<
                 0U,
                 TUntil - 1,
-                comms::util::AccumulateFromUntil, 
-                TTransformOp, 
-                TBinaryOp, 
+                comms::util::AccumulateFromUntil,
+                TTransformOp,
+                TBinaryOp,
                 typename TBinaryOp<>::template Type<
-                    TStart, 
+                    TStart,
                     typename TTransformOp<>::template Type<T>
                 >,
                 TRest...>
@@ -168,9 +167,9 @@ struct AccumulateFromUntilImpl<true>
 {
     template <
         std::size_t TFrom,
-        std::size_t TUntil,    
+        std::size_t TUntil,
         template<typename...> class TTransformOp,
-        template<typename...> class TBinaryOp, 
+        template<typename...> class TBinaryOp,
         typename TStart,
         typename...>
     using Type = TStart;
@@ -180,7 +179,7 @@ template <bool THasFixedBitLength>
 struct FieldBitLengthIntTypeImpl
 {
     template <typename T>
-    using Type = 
+    using Type =
         std::integral_constant<std::size_t, T::ParsedOptions::FixedBitLength>;
 };
 
@@ -189,9 +188,9 @@ struct FieldBitLengthIntTypeImpl<false>
 {
 public:
     template <typename T>
-    using Type = 
+    using Type =
         std::integral_constant<
-            std::size_t, 
+            std::size_t,
             T::maxLength() * std::numeric_limits<std::uint8_t>::digits>;
 };
 

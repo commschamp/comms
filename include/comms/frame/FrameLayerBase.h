@@ -5,7 +5,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// @file 
+/// @file
 /// @brief Contains definition of @ref comms::frame::FrameLayerBase
 
 #pragma once
@@ -89,7 +89,7 @@ public:
     /// @brief Type of message factory.
     /// @details Same as NextLayer::AllMessages or void if such doesn't exist.
     ///     Expected to be overrided by @ref comms::frame::MsgIdLayer
-    using MsgFactory = typename NextLayer::MsgFactory;    
+    using MsgFactory = typename NextLayer::MsgFactory;
 
     /// @brief Type of pointer to the message.
     /// @details Same as NextLayer::MsgPtr or void if such doesn't exist.
@@ -657,7 +657,7 @@ public:
 
     /// @brief Update recently written (using writeFieldsCached()) message data as
     ///     well as cached transport information fields.
-    /// @details Very similar to other @ref updateFieldsCached() member function, 
+    /// @details Very similar to other @ref updateFieldsCached() member function,
     ///     but adds "msg" parameter to access message object if needed.@n
     ///     The function will also invoke the same @b doUpdate() member function
     ///     provided by the derived class, as described with @ref write().
@@ -752,7 +752,7 @@ public:
     ///     @code
     ///     Field::minLength();
     ///     @endcode
-    /// @note Can be overriden by the extending class.    
+    /// @note Can be overriden by the extending class.
     template <typename TMsg>
     static constexpr std::size_t doFieldLength(const TMsg&)
     {
@@ -793,7 +793,7 @@ public:
 
 protected:
     /// @brief Read the layer field.
-    /// @details The default implementation invokes @b read() operation of the 
+    /// @details The default implementation invokes @b read() operation of the
     ///     passed field object. The function can be overriden by the extending class.
     /// @param[in] msgPtr Pointer to message object (if available), can be nullptr.
     /// @param[out] field Field object value of which needs to be populated
@@ -808,7 +808,7 @@ protected:
     }
 
     /// @brief Write the layer field.
-    /// @details The default implementation invokes @b write() operation of the 
+    /// @details The default implementation invokes @b write() operation of the
     ///     passed field object. The function can be overriden by the extending class.
     /// @param[in] msgPtr Pointer to message object (if available), can be nullptr.
     /// @param[out] field Field object value of which needs to be written
@@ -843,10 +843,10 @@ protected:
 
 private:
     template <typename... TParams>
-    using MessageObjTag = comms::details::tag::Tag5<>;  
+    using MessageObjTag = comms::details::tag::Tag5<>;
 
     template <typename... TParams>
-    using SmartPtrTag = comms::details::tag::Tag6<>;     
+    using SmartPtrTag = comms::details::tag::Tag6<>;
 
     template <typename TMsg>
     using MsgTypeTag =
@@ -855,7 +855,7 @@ private:
         >::template Type<
             MessageObjTag,
             SmartPtrTag
-        >;  
+        >;
 
     template <typename TMsg, typename... TParams>
     static auto toMsgPtrInternal(TMsg& msg, MessageObjTag<TParams...>) -> decltype(&msg)
@@ -867,7 +867,7 @@ private:
     static auto toMsgPtrInternal(TMsg& msg, SmartPtrTag<TParams...>) -> decltype(msg.get())
     {
         return msg.get();
-    }      
+    }
 
 protected:
     /// @brief Get a pointer to the message object.
@@ -878,7 +878,7 @@ protected:
     static auto toMsgPtr(TMsg& msg) -> decltype(toMsgPtrInternal(msg, MsgTypeTag<typename std::decay<decltype(msg)>::type>()))
     {
         return toMsgPtrInternal(msg, MsgTypeTag<typename std::decay<decltype(msg)>::type>());
-    }    
+    }
 
     /// @brief Update the missing size information if such is requested.
     /// @details Calculates the minimal required length to be yet read.
@@ -989,7 +989,7 @@ protected:
     static constexpr std::size_t MaxFieldLength = Field::maxLength();
 
     template <typename...>
-    using LengthTag = 
+    using LengthTag =
         typename comms::util::LazyShallowConditional<
             (MinFieldLength == MaxFieldLength)
         >::template Type<
@@ -1676,7 +1676,6 @@ details::MsgPayloadRetriever<TIter> msgPayload(TIter& iter, std::size_t& len)
     COMMS_DO_LAYER_TYPE_ALIAS(Base, __VA_ARGS__) \
     COMMS_DO_ACCESS_LAYER_ACC_FUNC(__VA_ARGS__)
 
-
 /// @brief Same as #COMMS_FRAME_LAYERS_ACCESS()
 /// @related comms::frame::FrameLayerBase
 #define COMMS_FRAME_LAYERS_ACCESS_INNER(...) \
@@ -1685,7 +1684,7 @@ details::MsgPayloadRetriever<TIter> msgPayload(TIter& iter, std::size_t& len)
 /// @brief Same as #COMMS_FRAME_LAYERS_NAMES()
 /// @related comms::frame::FrameLayerBase
 #define COMMS_FRAME_LAYERS_NAMES_INNER(...) \
-    COMMS_FRAME_LAYERS_NAMES(__VA_ARGS__)    
+    COMMS_FRAME_LAYERS_NAMES(__VA_ARGS__)
 
 /// @brief Provide convenience access functions to protocol
 ///     layers.

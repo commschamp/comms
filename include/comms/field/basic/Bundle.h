@@ -53,10 +53,9 @@ struct BundleVersionDependencyDetectHelper<comms::field::details::MembersVersion
 };
 
 } // namespace details
-    
 
 template <typename TFieldBase, comms::field::details::MembersVersionDependency TVersionDependency, typename TMembers>
-class Bundle;    
+class Bundle;
 
 template <typename TFieldBase, comms::field::details::MembersVersionDependency TVersionDependency, typename... TMembers>
 class Bundle<TFieldBase, TVersionDependency, std::tuple<TMembers...> > : public TFieldBase
@@ -104,7 +103,7 @@ public:
     void setValue(T&& val)
     {
         value() = std::forward<T>(val);
-    }    
+    }
 
     constexpr std::size_t length() const
     {
@@ -144,7 +143,7 @@ public:
 
     static constexpr std::size_t minLength()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulate<Members>(
                 std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>());
     }
@@ -152,7 +151,7 @@ public:
     template <std::size_t TFromIdx>
     static constexpr std::size_t minLengthFrom()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulateFromUntil<TFromIdx, std::tuple_size<ValueType>::value, Members>(
                 std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>());
     }
@@ -160,7 +159,7 @@ public:
     template <std::size_t TUntilIdx>
     static constexpr std::size_t minLengthUntil()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulateFromUntil<0, TUntilIdx, Members>(
                 std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>());
     }
@@ -168,30 +167,30 @@ public:
     template <std::size_t TFromIdx, std::size_t TUntilIdx>
     static constexpr std::size_t minLengthFromUntil()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulateFromUntil<TFromIdx, TUntilIdx, Members>(
                 std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>());
     }
 
     static constexpr std::size_t maxLength()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulate<Members>(
-                std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>());        
+                std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>());
     }
 
     template <std::size_t TFromIdx>
     static constexpr std::size_t maxLengthFrom()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulateFromUntil<TFromIdx, std::tuple_size<ValueType>::value, Members>(
-                std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>());      
+                std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>());
     }
 
     template <std::size_t TUntilIdx>
     static constexpr std::size_t maxLengthUntil()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulateFromUntil<0, TUntilIdx, Members>(
                 std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>());
     }
@@ -199,7 +198,7 @@ public:
     template <std::size_t TFromIdx, std::size_t TUntilIdx>
     static constexpr std::size_t maxLengthFromUntil()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulateFromUntil<TFromIdx, TUntilIdx, Members>(
                 std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>());
     }
@@ -234,7 +233,7 @@ public:
         auto es = ErrorStatus::Success;
         comms::util::template tupleForEachFrom<TFromIdx>(value(), makeReadHelper(es, iter, len));
         return es;
-    }    
+    }
 
     template <std::size_t TUntilIdx, typename TIter>
     ErrorStatus readUntil(TIter& iter, std::size_t len)
@@ -248,7 +247,7 @@ public:
         auto es = ErrorStatus::Success;
         comms::util::template tupleForEachUntil<TUntilIdx>(value(), makeReadHelper(es, iter, len));
         return es;
-    }    
+    }
 
     template <std::size_t TFromIdx, std::size_t TUntilIdx, typename TIter>
     ErrorStatus readFromUntil(TIter& iter, std::size_t len)
@@ -262,7 +261,7 @@ public:
         auto es = ErrorStatus::Success;
         comms::util::template tupleForEachFromUntil<TFromIdx, TUntilIdx>(value(), makeReadHelper(es, iter, len));
         return es;
-    }    
+    }
 
     static constexpr bool hasReadNoStatus()
     {
@@ -295,7 +294,7 @@ public:
 
     bool canWrite() const
     {
-        return 
+        return
             comms::util::tupleAccumulate(
                 value(), true, comms::field::details::FieldCanWriteCheckHelper<>());
     }
@@ -410,5 +409,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
 

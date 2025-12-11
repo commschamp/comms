@@ -31,7 +31,7 @@ class MsgSizeLayerBaseHelper
 {
     using ParsedOptionsInternal = comms::frame::details::MsgSizeLayerOptionsParser<TOptions...>;
     using ActualLayer = typename ParsedOptionsInternal::template DefineExtendingClass<MsgSizeLayer<TField, TNextLayer, TOptions...>>;
-    using TopBase = 
+    using TopBase =
         comms::frame::FrameLayerBase<
             TField,
             TNextLayer,

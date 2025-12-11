@@ -5,7 +5,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// @file 
+/// @file
 /// @brief Contains definition of @ref comms::frame::SyncPrefixLayer
 
 #pragma once
@@ -68,7 +68,7 @@ public:
     /// @brief Destructor
     ~SyncPrefixLayer() noexcept = default;
 
-    /// @brief Compile time inquiry of whether this class was extended via 
+    /// @brief Compile time inquiry of whether this class was extended via
     ///    @ref comms::option::ExtendingClass option.
     /// @details If @b true is returned, the @ref SyncPrefixLayer::ExtendingClass "ExtendingClass"
     ///     type aliasing the real layer type.
@@ -182,7 +182,7 @@ protected:
     static bool verifyFieldValue(const Field& field)
     {
         return field == Field();
-    }    
+    }
 
     /// @brief Prepare field for writing.
     /// @details Default implementation does nothing. @n

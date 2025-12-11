@@ -159,7 +159,6 @@ protected:
         return (*this)[m_count - 1];
     }
 
-
     void popFront()
     {
         COMMS_ASSERT(!empty()); // Queue musn't be empty
@@ -606,11 +605,10 @@ protected:
         static_assert(std::is_base_of<StaticQueueBase, typename std::decay<TOther>::type>::value,
             "Assignment works only on the same types");
 
-
         using DecayedQueueType = typename std::decay<decltype(other)>::type;
         using NonRefQueueType = typename std::remove_reference<decltype(other)>::type;
 
-        using QueueValueType = 
+        using QueueValueType =
             typename comms::util::Conditional<
                 std::is_const<NonRefQueueType>::value
             >::template Type<
@@ -618,7 +616,7 @@ protected:
                 typename DecayedQueueType::ValueType
             >;
 
-        using ElemRefType = 
+        using ElemRefType =
             typename comms::util::Conditional<
                 std::is_rvalue_reference<decltype(other)>::value
             >::template Type<
@@ -1205,7 +1203,6 @@ public:
         return ConstIterator(Base::getQueue(), Base::getIterator());
     }
 };
-
 
 template <typename TWrapperElemType, typename TQueueElemType>
 class CastWrapperQueueBase : public StaticQueueBase<TQueueElemType>
@@ -1828,7 +1825,6 @@ protected:
     StaticQueueBaseOptimised& operator=(StaticQueueBaseOptimised&& other) = default;
 };
 
-
 }  // namespace details
 
 /// @cond SKIP_DOC
@@ -1954,7 +1950,6 @@ public:
         Base::assignElements(std::move(queue));
     }
 
-
     /// @brief Pseudo copy constructor
     /// @details Copies all the elements from a queue of any static size using
     ///          copy constructor of the elements.
@@ -2025,7 +2020,6 @@ public:
     {
         return static_cast<StaticQueue&>(Base::operator=(std::move(queue)));
     }
-
 
     /// @brief Pseudo copy assignment operator.
     /// @details Copies all the elements from the provided queue of any static
@@ -2272,7 +2266,6 @@ public:
     {
         return Base::insert(pos, std::forward<U>(value));
     }
-
 
     /// @brief Provides reference to the front element.
     /// @return Reference to the front element.
@@ -2683,7 +2676,6 @@ public:
         return *(static_cast<Iterator*>(&iter));
     }
 
-
     /// @brief Returns iterator to the beginning.
     /// @details This iterator works on the non-linearised queue. It has extra
     ///          overhead to check for wrap arounds.
@@ -2752,7 +2744,6 @@ public:
     {
         return Base::operator!=(other);
     }
-
 
 private:
     using ArrayType = std::array<StorageType, TSize>;

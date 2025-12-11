@@ -76,7 +76,7 @@ class MessageInterfaceIdTypeBase : public TBase
 {
 public:
     using MsgIdType = TId;
-    using MsgIdParamType = 
+    using MsgIdParamType =
         typename comms::util::Conditional<
             std::is_integral<MsgIdType>::value || std::is_enum<MsgIdType>::value
         >::template Type<
@@ -267,7 +267,6 @@ struct MessageInterfaceDispatchRetTypeHelper<T, typename MessageInterfaceIfHasRe
 
 template <class T>
 using MessageInterfaceDispatchRetType = typename MessageInterfaceDispatchRetTypeHelper<T>::Type;
-
 
 template <typename TBase, typename THandler>
 class MessageInterfaceHandlerBase : public TBase

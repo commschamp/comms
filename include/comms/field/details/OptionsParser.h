@@ -177,16 +177,16 @@ public:
     using AdaptCustomWrite = TField;
 
     template <typename TField>
-    using AdaptFieldType = TField;    
+    using AdaptFieldType = TField;
 
     template <typename TField>
-    using AdaptMissingOnReadFail = TField; 
+    using AdaptMissingOnReadFail = TField;
 
     template <typename TField>
-    using AdaptMissingOnInvalid = TField; 
+    using AdaptMissingOnInvalid = TField;
 
     template <typename TField>
-    using AdaptVariantResetOnDestruct = 
+    using AdaptVariantResetOnDestruct =
         typename comms::util::Conditional<
             std::is_same<typename TField::CommsTag, comms::field::tag::Variant>::value
         >::template Type<
@@ -198,7 +198,7 @@ public:
     using AdaptFixedValue = TField;
 
     template <typename TField>
-    using AdaptDisplayOffset = TField;    
+    using AdaptDisplayOffset = TField;
 };
 
 template <typename... TOptions>
@@ -237,12 +237,12 @@ public:
     static constexpr bool FixedLengthSignExtend = TSignExtend;
 
     template <typename TField>
-    using AdaptFixedLengthLimit = 
+    using AdaptFixedLengthLimit =
         comms::field::adapter::FixedLength<
             FixedLength,
             FixedLengthSignExtend,
             TField
-        >;            
+        >;
 };
 
 template <std::size_t TLen, bool TSignExtend, typename... TOptions>
@@ -256,9 +256,9 @@ public:
     static constexpr bool FixedBitLengthSignExtend = TSignExtend;
 
     template <typename TField>
-    using AdaptFixedBitLengthLimit = 
+    using AdaptFixedBitLengthLimit =
         comms::field::adapter::FixedBitLength<
-            FixedBitLength, 
+            FixedBitLength,
             FixedBitLengthSignExtend,
             TField>;
 };
@@ -274,7 +274,7 @@ public:
     static constexpr std::size_t MaxVarLength = TMaxLen;
 
     template <typename TField>
-    using AdaptVarLengthLimits = 
+    using AdaptVarLengthLimits =
         comms::field::adapter::VarLength<MinVarLength, MaxVarLength, TField>;
 };
 
@@ -287,7 +287,7 @@ public:
     static constexpr bool HasAvailableLengthLimit = true;
 
     template <typename TField>
-    using AdaptAvailableLengthLimit = 
+    using AdaptAvailableLengthLimit =
         comms::field::adapter::AvailableLength<TField>;
 };
 
@@ -373,12 +373,12 @@ public:
     static constexpr comms::ErrorStatus SequenceSerLengthFieldReadErrorStatus = TReadErrorStatus;
 
     template <typename TWrappedField>
-    using AdaptSequenceSerLengthFieldPrefix = 
+    using AdaptSequenceSerLengthFieldPrefix =
         comms::field::adapter::SequenceSerLengthFieldPrefix<
             SequenceSerLengthFieldPrefix,
             SequenceSerLengthFieldReadErrorStatus,
             TWrappedField
-        >;    
+        >;
 };
 
 template <typename TField, comms::ErrorStatus TReadErrorStatus, typename... TOptions>
@@ -411,12 +411,12 @@ public:
     static constexpr comms::ErrorStatus SequenceElemFixedSerLengthFieldReadErrorStatus = TReadErrorStatus;
 
     template <typename TWrappedField>
-    using AdaptSequenceElemFixedSerLengthFieldPrefix = 
+    using AdaptSequenceElemFixedSerLengthFieldPrefix =
         comms::field::adapter::SequenceElemFixedSerLengthFieldPrefix<
             SequenceElemFixedSerLengthFieldPrefix,
             SequenceElemFixedSerLengthFieldReadErrorStatus,
             TWrappedField
-        >;    
+        >;
 };
 
 template <typename TTrailField, typename... TOptions>
@@ -442,7 +442,7 @@ public:
     using SequenceTerminationFieldSuffix = TTermField;
 
     template <typename TField>
-    using AdaptSequenceTerminationFieldSuffix = 
+    using AdaptSequenceTerminationFieldSuffix =
         comms::field::adapter::SequenceTerminationFieldSuffix<SequenceTerminationFieldSuffix, TField>;
 };
 
@@ -456,7 +456,7 @@ public:
     using DefaultValueInitialiser = TInitialiser;
 
     template <typename TField>
-    using AdaptDefaultValueInitialiser = 
+    using AdaptDefaultValueInitialiser =
         comms::field::adapter::DefaultValueInitialiser<DefaultValueInitialiser, TField>;
 };
 
@@ -482,7 +482,7 @@ public:
     static constexpr bool HasCustomRefresh = true;
 
     template <typename TField>
-    using AdaptCustomRefresh = comms::field::adapter::CustomRefreshWrap<TField>;    
+    using AdaptCustomRefresh = comms::field::adapter::CustomRefreshWrap<TField>;
 };
 
 template <comms::ErrorStatus TStatus, typename... TOptions>
@@ -614,7 +614,6 @@ struct MultiRangeAssembler<true>
         >::type;
 };
 
-
 template <typename TBase, typename T, T TMinValue, T TMaxValue>
 using MultiRangeAssemblerT =
     typename MultiRangeAssembler<TBase::HasMultiRangeValidation>::template Type<TBase, T, TMinValue, TMaxValue>;
@@ -636,7 +635,7 @@ public:
     static constexpr bool HasMultiRangeValidation = true;
 
     template <typename TField>
-    using AdaptMultiRangeValidation = 
+    using AdaptMultiRangeValidation =
         comms::field::adapter::NumValueMultiRangeValidator<MultiRangeValidationRanges, TField>;
 };
 
@@ -653,7 +652,6 @@ public:
     template <typename TField>
     using AdaptMultiRangeValidation = TField;
 };
-
 
 template <std::uintmax_t TMinValue, std::uintmax_t TMaxValue, typename... TOptions>
 class OptionsParser<
@@ -672,8 +670,8 @@ public:
     static constexpr bool HasMultiRangeValidation = true;
 
     template <typename TField>
-    using AdaptMultiRangeValidation = 
-        comms::field::adapter::NumValueMultiRangeValidator<MultiRangeValidationRanges, TField>;    
+    using AdaptMultiRangeValidation =
+        comms::field::adapter::NumValueMultiRangeValidator<MultiRangeValidationRanges, TField>;
 };
 
 template <typename... TOptions>
@@ -696,7 +694,7 @@ public:
     static constexpr std::uintmax_t ExistsUntilVersion = TUntil;
 
     template <typename TField>
-    using AdaptVersionsRange = 
+    using AdaptVersionsRange =
         comms::field::adapter::ExistsBetweenVersions<ExistsFromVersion, ExistsUntilVersion, TField>;
 };
 
@@ -709,7 +707,7 @@ public:
     static constexpr bool HasVersionStorage = true;
 
     template <typename TField>
-    using AdaptVersionStorage = comms::field::adapter::VersionStorage<TField>;    
+    using AdaptVersionStorage = comms::field::adapter::VersionStorage<TField>;
 };
 
 template <std::size_t TIdx, typename... TOptions>
@@ -718,14 +716,14 @@ class OptionsParser<
     TOptions...> : public OptionsParser<TOptions...>
 {
     using BaseImpl = OptionsParser<TOptions...>;
-    static_assert(!BaseImpl::HasRemLengthMemberField, 
+    static_assert(!BaseImpl::HasRemLengthMemberField,
         "Option comms::def::option::RemLengthMemberField used multiple times");
 public:
     static constexpr bool HasRemLengthMemberField = true;
     static constexpr std::size_t RemLengthMemberFieldIdx = TIdx;
 
     template <typename TField>
-    using AdaptRemLengthMemberField = 
+    using AdaptRemLengthMemberField =
         comms::field::adapter::RemLengthMemberField<RemLengthMemberFieldIdx, TField>;
 };
 
@@ -763,7 +761,7 @@ public:
     static constexpr bool HasMissingOnReadFail = true;
 
     template <typename TField>
-    using AdaptMissingOnReadFail = comms::field::adapter::MissingOnReadFail<TField>;       
+    using AdaptMissingOnReadFail = comms::field::adapter::MissingOnReadFail<TField>;
 };
 
 template <typename... TOptions>
@@ -775,7 +773,7 @@ public:
     static constexpr bool HasMissingOnInvalid = true;
 
     template <typename TField>
-    using AdaptMissingOnInvalid = comms::field::adapter::MissingOnInvalid<TField>;       
+    using AdaptMissingOnInvalid = comms::field::adapter::MissingOnInvalid<TField>;
 };
 
 template <typename... TOptions>
@@ -787,7 +785,7 @@ public:
     static constexpr bool HasVariantCustomResetOnDestruct = true;
 
     template <typename TField>
-    using AdaptVariantResetOnDestruct = TField;    
+    using AdaptVariantResetOnDestruct = TField;
 };
 
 template <bool TVersionDependent, typename... TOptions>
@@ -797,7 +795,7 @@ class OptionsParser<
 {
 public:
     static constexpr bool HasVersionDependentMembersForced = true;
-    static constexpr MembersVersionDependency ForcedMembersVersionDependency = 
+    static constexpr MembersVersionDependency ForcedMembersVersionDependency =
         TVersionDependent ? MembersVersionDependency_Dependent : MembersVersionDependency_Independent;
 };
 
@@ -810,7 +808,7 @@ public:
     static constexpr bool HasFixedValue = true;
 
     template <typename TField>
-    using AdaptFixedValue = comms::field::adapter::FixedValue<TField>;       
+    using AdaptFixedValue = comms::field::adapter::FixedValue<TField>;
 };
 
 template <std::intmax_t TOffset, typename... TOptions>
@@ -823,7 +821,7 @@ public:
     static constexpr std::intmax_t DisplayOffset = TOffset;
 
     template <typename TField>
-    using AdaptDisplayOffset = comms::field::adapter::DisplayOffset<TOffset, TField>;       
+    using AdaptDisplayOffset = comms::field::adapter::DisplayOffset<TOffset, TField>;
 };
 
 template <typename... TOptions>
@@ -854,5 +852,4 @@ class OptionsParser<
 }  // namespace field
 
 }  // namespace comms
-
 

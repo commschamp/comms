@@ -26,7 +26,7 @@ public:
     }
 
     template <typename TIter>
-    void readNoStatus(TIter& iter) = delete;    
+    void readNoStatus(TIter& iter) = delete;
 };
 
 }  // namespace adapter
@@ -34,7 +34,4 @@ public:
 }  // namespace field
 
 }  // namespace comms
-
-
-
 

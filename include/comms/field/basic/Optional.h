@@ -98,7 +98,7 @@ public:
     void setValue(T&& val)
     {
         value() = std::forward<T>(val);
-    }    
+    }
 
     Mode getMode() const
     {
@@ -229,5 +229,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
 

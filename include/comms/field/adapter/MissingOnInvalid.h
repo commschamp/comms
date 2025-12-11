@@ -71,7 +71,7 @@ public:
 
         BaseImpl::setMode(mode);
         return true;
-    }    
+    }
 };
 
 }  // namespace adapter
@@ -79,7 +79,4 @@ public:
 }  // namespace field
 
 }  // namespace comms
-
-
-
 

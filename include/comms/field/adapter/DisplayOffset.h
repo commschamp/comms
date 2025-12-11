@@ -19,7 +19,6 @@ namespace field
 namespace adapter
 {
 
-
 template <std::intmax_t TOffset, typename TBase>
 class DisplayOffset : public TBase
 {
@@ -30,7 +29,7 @@ public:
     static constexpr DisplayOffsetType displayOffset()
     {
         return static_cast<DisplayOffsetType>(TOffset);
-    }    
+    }
 };
 
 }  // namespace adapter
@@ -38,7 +37,4 @@ public:
 }  // namespace field
 
 }  // namespace comms
-
-
-
 

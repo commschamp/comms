@@ -5,7 +5,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// @file 
+/// @file
 /// @brief Contains definition of @ref comms::protocol::checksum::BasicSum
 
 #pragma once
@@ -31,6 +31,4 @@ using BasicSum = comms::frame::checksum::BasicSum<TResult, TInitValue>;
 }  // namespace protocol
 
 }  // namespace comms
-
-
 

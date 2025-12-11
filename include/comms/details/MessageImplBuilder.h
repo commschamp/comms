@@ -32,41 +32,41 @@ class MessageImplBuilder
 
     static_assert(ParsedOptions::HasFieldsImpl, "Option comms::option::def::FieldsImpl must be used");
 
-    using FieldsBase = 
+    using FieldsBase =
         typename ParsedOptions::template BuildFieldsImpl<TMessage>;
 
-    using FailOnInvalidBase = 
-        typename ParsedOptions::template BuildFailOnInvalidImpl<FieldsBase>;        
+    using FailOnInvalidBase =
+        typename ParsedOptions::template BuildFailOnInvalidImpl<FieldsBase>;
 
-    using VersionBase = 
+    using VersionBase =
         typename ParsedOptions::template BuildVersionImpl<FailOnInvalidBase>;
 
-    using FieldsReadImplBase = 
+    using FieldsReadImplBase =
         typename ParsedOptions::template BuildReadImpl<VersionBase>;
 
-    using FieldsWriteImplBase = 
+    using FieldsWriteImplBase =
         typename ParsedOptions::template BuildWriteImpl<FieldsReadImplBase>;
 
-    using FieldsValidBase = 
+    using FieldsValidBase =
         typename ParsedOptions::template BuildValidImpl<FieldsWriteImplBase>;
 
-    using FieldsLengthBase = 
+    using FieldsLengthBase =
         typename ParsedOptions::template BuildLengthImpl<FieldsValidBase>;
 
-    using RefreshBase = 
+    using RefreshBase =
         typename ParsedOptions::template BuildRefreshImpl<FieldsLengthBase>;
 
-    using DispatchBase = 
-        typename ParsedOptions::template BuildDispatchImpl<RefreshBase>;        
+    using DispatchBase =
+        typename ParsedOptions::template BuildDispatchImpl<RefreshBase>;
 
-    using StaticNumIdBase = 
-        typename ParsedOptions::template BuildStaticMsgId<DispatchBase>;  
+    using StaticNumIdBase =
+        typename ParsedOptions::template BuildStaticMsgId<DispatchBase>;
 
-    using PolymorphicStaticNumIdBase = 
-        typename ParsedOptions::template BuildMsgIdImpl<StaticNumIdBase>;  
+    using PolymorphicStaticNumIdBase =
+        typename ParsedOptions::template BuildMsgIdImpl<StaticNumIdBase>;
 
-    using NameBase = 
-        typename ParsedOptions::template BuildNameImpl<PolymorphicStaticNumIdBase>;  
+    using NameBase =
+        typename ParsedOptions::template BuildNameImpl<PolymorphicStaticNumIdBase>;
 
 public:
     using Options = ParsedOptions;
@@ -80,5 +80,4 @@ using MessageImplBuilderT =
 }  // namespace details
 
 }  // namespace comms
-
 

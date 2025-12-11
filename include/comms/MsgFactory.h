@@ -69,10 +69,10 @@ namespace comms
 ///         (see @ref comms::MsgFactory::createMsg()). The dispatch methods
 ///         are properly described in @ref page_dispatch tutorial page.
 ///         If none of these options are provided, then the MsgFactory
-///         used a default way, which is equivalent to calling 
+///         used a default way, which is equivalent to calling
 ///         @ref comms::dispatchMsgType() (see also @ref page_dispatch_message_type_default).
 ///         To inquire what actual dispatch type is used, please use one
-///         of the following constexpr member functions: 
+///         of the following constexpr member functions:
 ///         @ref comms::MsgFactory::isDispatchPolymorphic(),
 ///         @ref comms::MsgFactory::isDispatchStaticBinSearch(), and
 ///         @ref comms::MsgFactory::isDispatchLinearSwitch()
@@ -119,7 +119,7 @@ public:
     using GenericMessage = typename ParsedOptions::GenericMessage;
 
     /// @brief Create message object given the ID of the message.
-    /// @details The id to mapping is performed using the chosen (or default) 
+    /// @details The id to mapping is performed using the chosen (or default)
     ///     @b dispatch policy described in the class options.
     /// @param id ID of the message.
     /// @param idx Relative index (or offset) of the message with the same ID. In case
@@ -178,7 +178,7 @@ public:
         return Base::hasUniqueIds();
     }
 
-    /// @brief Compile time inquiry whether polymorphic dispatch tables are 
+    /// @brief Compile time inquiry whether polymorphic dispatch tables are
     ///     generated internally to map message ID to actual type.
     /// @see @ref page_dispatch
     /// @see @ref comms::MsgFactory::isDispatchStaticBinSearch()
@@ -188,7 +188,7 @@ public:
         return Base::isDispatchPolymorphic();
     }
 
-    /// @brief Compile time inquiry whether static binary search dispatch is 
+    /// @brief Compile time inquiry whether static binary search dispatch is
     ///     generated internally to map message ID to actual type.
     /// @see @ref page_dispatch
     /// @see @ref comms::MsgFactory::isDispatchPolymorphic()
@@ -198,7 +198,7 @@ public:
         return Base::isDispatchStaticBinSearch();
     }
 
-    /// @brief Compile time inquiry whether linear switch dispatch is 
+    /// @brief Compile time inquiry whether linear switch dispatch is
     ///     generated internally to map message ID to actual type.
     /// @see @ref page_dispatch
     /// @see @ref comms::MsgFactory::isDispatchStaticBinSearch()
@@ -225,9 +225,8 @@ public:
     static constexpr bool hasForcedDispatch()
     {
         return ParsedOptions::HasForcedDispatch;
-    }    
+    }
 };
-
 
 }  // namespace comms
 

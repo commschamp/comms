@@ -5,7 +5,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-
 #pragma once
 
 #include "comms/CompileControl.h"
@@ -33,7 +32,6 @@
 #define COMMS_ALIAS_ALL_MEM_ACC(N, prefix_, ...) COMMS_EXPAND(COMMS_ALIAS_ALL_MEM_ACC_(N, prefix_, __VA_ARGS__))
 #define COMMS_DO_ALIAS_ALL_MEM_ACC(prefix_, ...) \
     COMMS_EXPAND(COMMS_ALIAS_ALL_MEM_ACC(COMMS_NUM_ARGS(__VA_ARGS__), prefix_, __VA_ARGS__))
-
 
 #if COMMS_IS_CPP14
 

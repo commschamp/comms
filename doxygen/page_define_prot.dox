@@ -5,7 +5,7 @@
 /// what types of fields are available and how to define them.
 ///
 /// @section page_define_prot_headers Headers and Libraries
-/// COMMS is a headers only library without any object files to link against. 
+/// COMMS is a headers only library without any object files to link against.
 /// In order to include the whole functionality of the library please use
 /// single include statement:
 /// @code
@@ -25,23 +25,23 @@
 /// @endcode
 ///
 /// @section page_define_prot_conditions Checking pre- and post- Conditions
-/// The COMMS library is intended to be used in embedded systems (including 
+/// The COMMS library is intended to be used in embedded systems (including
 /// bare metal), which may have standard library excluded from the compilation.
 /// In order to check pre- and post- conditions as well as inner assumptions, please
-/// use @ref COMMS_ASSERT macro (instead of standard @b assert()). 
+/// use @ref COMMS_ASSERT macro (instead of standard @b assert()).
 /// It gives and ability to the application being developed
 /// in the future to choose and use its own means to report assertion failures.
 ///
 /// @section page_define_prot_options Configuration Options
 /// Many classes provided by the @b COMMS library allow change and/or extention
 /// of their default functionality using various options. The option classes and/or
-/// types that can (and should) be used to define a protocol reside in 
+/// types that can (and should) be used to define a protocol reside in
 /// @ref comms::option::def namespace. All option classes / types that intended to be used by
 /// the end application for its own customization reside in @ref comms::option::app
 /// namespace and should @b NOT be used in protocol definition.
 ///
 /// @section page_define_prot_interface Common Interface Class
-/// Protocol definition needs to be started by defining all the available 
+/// Protocol definition needs to be started by defining all the available
 /// numeric IDs of the messages as separate enum. For example in file @b MsgId.h
 /// @code
 /// // file MsgId.h
@@ -65,21 +65,21 @@
 /// see @ref sec_field_tutorial_enum_value for more details).
 ///
 /// After the numeric IDs are specified, there is a need to define common
-/// message interface class by extending @ref comms::Message. 
-/// The defined class / type needs to pin the type used for message IDs 
+/// message interface class by extending @ref comms::Message.
+/// The defined class / type needs to pin the type used for message IDs
 /// with @ref comms::option::def::MsgIdType and defined
 /// earlier enum. It also should specify the serialisation endian with either
 /// @ref comms::option::def::BigEndian or @ref comms::option::def::LittleEndian options.
 /// However it must also
-/// allow extension with other options by the application. 
+/// allow extension with other options by the application.
 /// @code
 /// // file Message.h
 /// #pragma once
 /// namespace my_protocol
 /// {
-/// 
+///
 /// template <typename... TOptions>
-/// using Message = 
+/// using Message =
 ///     comms::Message<
 ///         comms::option::def::BigEndian,
 ///         comms::option::def::MsgIdType<MsgId>,
@@ -93,7 +93,7 @@
 ///
 /// @subsection page_define_prot_interface_extra_transport Extra Transport Values
 /// Some protocols may use extra values in their transport information, which
-/// may influence the way how message payload is being read and/or message 
+/// may influence the way how message payload is being read and/or message
 /// object being handled. Good example would be having a protocol version, which
 /// defines what message payload fields were serialised and which were not (because
 /// they were introduced in later version of the protocol). Another example is
@@ -106,9 +106,9 @@
 /// #pragma once
 /// namespace my_protocol
 /// {
-/// 
+///
 /// template <typename... TOptions>
-/// class MyMessage : public 
+/// class MyMessage : public
 ///     comms::Message<
 ///         comms::option::def::BigEndian,
 ///         comms::option::def::MsgIdType<MsgId>,
@@ -130,8 +130,8 @@
 /// @b HOWEVER, it will require implementation of a custom protocol transport layer
 /// (See @ref page_frame_tutorial_new_layers) that read the required values
 /// and re-assign them to the message object using appropriate API function. The
-/// COMMS library has a built-in way to automate such assignments (see 
-/// @ref page_frame_tutorial_transport_value section in @ref page_frame_tutorial). 
+/// COMMS library has a built-in way to automate such assignments (see
+/// @ref page_frame_tutorial_transport_value section in @ref page_frame_tutorial).
 /// In order to support usage
 /// of @ref comms::frame::TransportValueLayer the message interface class must
 /// define "extra transport fields".
@@ -141,7 +141,7 @@
 /// @code
 /// namespace my_protocol
 /// {
-/// 
+///
 /// // Base class of all the fields
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///
@@ -160,12 +160,12 @@
 ///
 /// } // namespace my_protocol
 /// @endcode
-/// Second, provide the defined tuple to message interface class using 
+/// Second, provide the defined tuple to message interface class using
 /// @ref comms::option::def::ExtraTransportFields option.
 /// @code
 /// namespace my_protocol
 /// {
-/// 
+///
 /// template <typename... TOptions>
 /// class Message : public
 ///     comms::Message<
@@ -183,9 +183,9 @@
 /// @code
 /// namespace my_protocol
 /// {
-/// 
+///
 /// template <typename... TOptions>
-/// class MyMessage : public 
+/// class MyMessage : public
 ///     comms::Message<
 ///         comms::option::def::BigEndian,
 ///         comms::option::def::MsgIdType<MsgId>,
@@ -230,7 +230,7 @@
 /// @ref page_define_prot_message_base_custom_read and acted accordingly.
 ///
 /// @b NOTE, that example above accesses the index of the field within the holding
-/// tuple. For convenience, the COMMS library defines 
+/// tuple. For convenience, the COMMS library defines
 /// #COMMS_MSG_TRANSPORT_FIELDS_NAMES() macro which allows providing meaningful
 /// names to the extra transport fields:
 /// @code
@@ -299,8 +299,8 @@
 ///     using TransportField_flags = ...;
 /// };
 /// @endcode
-/// @b NOTE, that the defined "extra transport fields" are there to attach 
-/// some extra information, delivered as part of transport framing, to message 
+/// @b NOTE, that the defined "extra transport fields" are there to attach
+/// some extra information, delivered as part of transport framing, to message
 /// object itself. These fields are @b NOT getting serialised / deserialised when message
 /// object being read / written.
 ///
@@ -323,7 +323,7 @@
 ///     COMMS_MSG_TRANSPORT_FIELDS_ACCESS(version, flags)
 /// };
 /// @endcode
-/// In fact #COMMS_MSG_TRANSPORT_FIELDS_NAMES() is implemented as the wrapper 
+/// In fact #COMMS_MSG_TRANSPORT_FIELDS_NAMES() is implemented as the wrapper
 /// around #COMMS_MSG_TRANSPORT_FIELDS_ACCESS().
 ///
 /// @subsection page_define_prot_interface_version Version in Extra Transport Values
@@ -358,7 +358,7 @@
 ///     ...
 ///     // Type used for version storage
 ///     using VersionType = ...;
-/// 
+///
 ///     // Convenience access to the version value
 ///     VersionType& version();
 ///     const VersionType& version() const;
@@ -366,17 +366,17 @@
 /// @endcode
 /// If message contents depend on the version of the protocol, this information
 /// will be used inside @ref page_define_prot_message_base (described below) to
-/// properly implement various functionalities. More details in @ref 
-/// page_define_prot_message_version section below. 
+/// properly implement various functionalities. More details in @ref
+/// page_define_prot_message_version section below.
 ///
 /// @section page_define_prot_message_base Message Implementation Class
 /// The next stage is to define protocol messages with their fields.
-/// 
+///
 /// <b>Recommended Practice</b>
 /// @li Use separate header file for every message class.
 /// @li Use separate folder and/or namespace for all the messages (for example @b message)
-/// @li Define all the relevant to the message fields in the same file, but 
-///     in separate scope (struct), that has the same name as the message, but 
+/// @li Define all the relevant to the message fields in the same file, but
+///     in separate scope (struct), that has the same name as the message, but
 ///     has extra suffix (@b *Fields).
 /// @li Define inner type (for example @b All) that bundles all the defined fields
 ///     in single @b std::tuple.
@@ -391,7 +391,7 @@
 ///
 /// namespace my_protocol
 /// {
-/// 
+///
 /// namespace message
 /// {
 ///
@@ -402,7 +402,7 @@
 ///     using field3 = ...
 ///
 ///     // bunding type
-///     using All = 
+///     using All =
 ///         std::tuple<
 ///             field1,
 ///             field2,
@@ -412,7 +412,7 @@
 ///
 /// // Definition of the message itself, described and explained later
 /// template <typename TBase>
-/// class Message1 : public comms::MessageBase<TBase, ...> 
+/// class Message1 : public comms::MessageBase<TBase, ...>
 /// {
 ///     ...
 /// };
@@ -426,14 +426,14 @@
 /// at least one template parameter, that is passed as first one to @ref comms::MessageBase.
 /// @code
 /// template <typename TBase>
-/// class Message1 : comms::MessageBase<TBase, ...> 
+/// class Message1 : comms::MessageBase<TBase, ...>
 /// {
 ///     ...
 /// };
 /// @endcode
-/// The @b TBase template parameter is chosen by the application being developed. 
+/// The @b TBase template parameter is chosen by the application being developed.
 /// It is expected to be a variant of @ref page_define_prot_interface (@b my_protocol::Message),
-/// which specifies polymorphic interface that needs to be implemented. 
+/// which specifies polymorphic interface that needs to be implemented.
 /// The @ref comms::MessageBase class in turn will publicly inherit
 /// from the provided common interface class. As the result the full class inheritance graph may look
 /// like this:
@@ -452,9 +452,9 @@
 /// ...
 ///
 /// template <typename TBase>
-/// class Message1 : public 
+/// class Message1 : public
 ///     comms::MessageBase<
-///         TBase, 
+///         TBase,
 ///         comms::option::def::StaticNumIdImpl<MsgId_Message1>,
 ///         comms::option::def::FieldsImpl<Message1Fields::All>,
 ///         comms::option::def::MsgType<Message1<TBase> > // type of the message being defined
@@ -471,7 +471,7 @@
 /// public:
 ///     // Redefining the provided std::tuple of fields as internal type
 ///     using AllFields = ... /* std::tuple of fields */;
-///     
+///
 ///     // Access the stored std::tuple of fields
 ///     AllFields& fields()
 ///     {
@@ -554,7 +554,7 @@
 /// @subsection page_define_prot_message_base_field_names Providing Names to the Fields
 /// When preparing message object to send or when handling received message, the
 /// fields it contains need to be accessed to set or get their values. The default
-/// (build-in) way of achieving that is to get access to the fields tuple 
+/// (build-in) way of achieving that is to get access to the fields tuple
 /// using inherited comms::MessageBase::fields() member function and then using
 /// @b std::get() function to access the fields inside the tuple.
 /// @code
@@ -666,7 +666,7 @@
 ///     COMMS_MSG_FIELDS_ACCESS(value1, value2, value3);
 /// };
 /// @endcode
-/// In fact #COMMS_MSG_FIELDS_NAMES() is implemented as the wrapper 
+/// In fact #COMMS_MSG_FIELDS_NAMES() is implemented as the wrapper
 /// around #COMMS_MSG_FIELDS_ACCESS().
 ///
 /// @subsection page_define_prot_message_base_custom_read Custom Read Functionality
@@ -675,9 +675,9 @@
 /// if all the invocations returned @b success.
 /// Sometimes such default implementation may be incomplete or incorrect and may require
 /// additional or different implementation. It is very easy to fix by defining
-/// new @b doRead() public member function with updated functionality. The 
+/// new @b doRead() public member function with updated functionality. The
 /// @ref comms::MessageBase class contains inner "magic" to call the provided @b doRead()
-/// instead of default one when implementing virtual @ref comms::MessageBase::readImpl(). 
+/// instead of default one when implementing virtual @ref comms::MessageBase::readImpl().
 /// As an example let's define new message
 /// type (@b Message2), which has two fields. The first one is a 1 byte bitmask,
 /// the least significant bit of which defines whether the second field exists.
@@ -686,25 +686,25 @@
 /// // file Message2.h
 ///
 /// #include "comms/comms.h"
-/// 
+///
 /// #include "MyFieldBase.h" // Defines MyFieldBase common base class for all the fields
 ///
 /// namespace my_protocol
 /// {
-/// 
+///
 /// namespace message
 /// {
 ///
 /// class Message2Fields
 /// {
-///     using field1 =     
+///     using field1 =
 ///         comms::field::BitmaskValue<
-///             MyFieldBase, 
+///             MyFieldBase,
 ///             comms::option::def::FixedLength<1>,
-///             comms::option::def::BitmaskReservedBits<0xfe, 0> 
+///             comms::option::def::BitmaskReservedBits<0xfe, 0>
 ///         >;
 ///
-///     using field2 = 
+///     using field2 =
 ///         comms::field::Optional<
 ///             comms::field::IntValue<MyFieldBase, std::uint16_t>,
 ///             comms::option::def::MissingByDefault
@@ -720,24 +720,24 @@
 /// template <typename TBase>
 /// class Message2 : public
 ///     comms::MessageBase<
-///         TBase, 
-///         comms::option::def::StaticNumIdImpl<MsgId_Message2>, 
+///         TBase,
+///         comms::option::def::StaticNumIdImpl<MsgId_Message2>,
 ///         comms::option::def::FieldsImpl<Message2Fields::All>,
 ///         comms::option::def::MsgType<Message2<TBase> >
 ///     >
 /// {
 ///     // Redefinition of the base class as inner Base type, required
 ///     // by COMMS_MSG_FIELDS_NAMES() macro.
-///     using Base = 
+///     using Base =
 ///         comms::MessageBase<
-///             TBase, 
-///             comms::option::def::StaticNumIdImpl<MsgId_Message2>, 
+///             TBase,
+///             comms::option::def::StaticNumIdImpl<MsgId_Message2>,
 ///             comms::option::def::FieldsImpl<Message2Fields::All>,
 ///             comms::option::def::MsgType<Message2<TBase> >
 ///         >;
 /// public:
 ///     COMMS_MSG_FIELDS_NAMES(flags, data);
-///     
+///
 ///     template <typename TIter>
 ///     comms::ErrorStatus doRead(TIter& iter, std::size_t len)
 ///     {
@@ -756,7 +756,7 @@
 ///         else {
 ///             field_data().setMissing();
 ///         }
-///     
+///
 ///         // Read the rest of the fields
 ///         return Base::template doReadFrom<FieldIdx_data>(iter, len);
 ///     }
@@ -765,7 +765,7 @@
 /// Please @b note, that due to the fact that defined message class is a template one, the member
 /// functions defined in @ref comms::MessageBase are not accessible directly, there
 /// is a need to specify the base class scope. If there is no inner @b Base
-/// type defined in the class scope (required to support clang and earlier versions of gcc), 
+/// type defined in the class scope (required to support clang and earlier versions of gcc),
 /// it is possible to use @ref comms::toMessageBase()
 /// function to detect it.
 ///
@@ -782,12 +782,12 @@
 /// The default refresh functionality implemented by @ref comms::MessageBase::doRefresh()
 /// is to invoke @b refresh() member function of every field. The function will
 /// return @b true (indicating that at message contents have been updated) if
-/// at least one of the fields returns @b true. 
+/// at least one of the fields returns @b true.
 /// Let's take a look again at the definition of @b Message2 mentioned earlier, where
 /// the existence of second field (@b data) depends on the value of the least
 /// significant bit in the first field (@b flags). During read operation the
 /// mode of the @b data is updated after value of the @b flags is read. However,
-/// when preparing the same message for write, there is a chance that message 
+/// when preparing the same message for write, there is a chance that message
 /// contents are going to be put in invalid state:
 /// @code
 /// Message2<SomeInterface> msg;
@@ -811,7 +811,7 @@
 ///     using Base = comms::MessageBase<... /* options here */>;
 /// public:
 ///     COMMS_MSG_FIELDS_NAMES(flags, data);
-///     
+///
 ///     bool doRefresh()
 ///     {
 ///         auto expectedDataMode = comms::field::OptionalMode::Missing;
@@ -850,9 +850,9 @@
 /// template <typename TBase>
 /// class Message2 : public
 ///     comms::MessageBase<
-///         TBase, 
-///         comms::option::def::StaticNumIdImpl<MyMsgId_Message2>, 
-///         comms::option::def::MsgType<Message2<TMessage> >, 
+///         TBase,
+///         comms::option::def::StaticNumIdImpl<MyMsgId_Message2>,
+///         comms::option::def::MsgType<Message2<TMessage> >,
 ///         comms::option::def::FieldsImpl<Message2Fields> ,
 ///         comms::option::def::HasCustomRefresh // Support polymorphic refresh when needed
 ///     >
@@ -860,7 +860,7 @@
 ///     using Base = comms::MessageBase<... /* options here */>;
 /// public:
 ///     COMMS_MSG_FIELDS_NAMES(flags, data);
-///     
+///
 ///     template <typename TIter>
 ///     comms::ErrorStatus doRead(TIter& iter, std::size_t len)
 ///     {
@@ -878,7 +878,7 @@
 /// Usually there is no need to provide custom write functionality for the messages
 /// in consistent state (see @ref page_define_prot_message_base_custom_refresh).
 /// The default one implemented by @ref comms::MessageBase::doWrite(), which invokes
-/// @b write() member function of every field, is correct. However, if 
+/// @b write() member function of every field, is correct. However, if
 /// the need arises it is enough just to provide custom @b doWrite() member
 /// function.
 /// @code
@@ -888,11 +888,11 @@
 ///     using Base = comms::MessageBase<...>;
 /// public:
 ///     COMMS_MSG_FIELDS_NAMES(...);
-///     
+///
 ///     template <typename TIter>
 ///     comms::ErrorStatus doWrite(TIter& iter, std::size_t len) const
 ///     {
-///         ... 
+///         ...
 ///     }
 /// };
 /// @endcode
@@ -916,7 +916,7 @@
 /// public:
 ///     std::size_t doLength() const
 ///     {
-///         ... 
+///         ...
 ///     }
 /// };
 /// @endcode
@@ -933,7 +933,7 @@
 /// @li @ref comms::MessageBase::doMaxLengthFromUntil()
 ///
 /// @subsection page_define_prot_message_base_custom_valid Custom Validity Check
-/// The default implementation of @ref comms::MessageBase::doValid() calls 
+/// The default implementation of @ref comms::MessageBase::doValid() calls
 /// @b valid() member function of every message field and returns @b true if
 /// all the calls returned @b true. However, there may be a need to provide extra
 /// checks in case specific value of one field may require tighter constrains on
@@ -948,12 +948,12 @@
 ///     {
 ///         // Get type of the base class
 ///         using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
-///         
+///
 ///         // Check that all fields are valid by themselves
 ///         if (!Base::doValid()) {
 ///             return false;
 ///         }
-/// 
+///
 ///         ... // do custom validation logic
 ///         return true;
 ///     }
@@ -981,7 +981,7 @@
 /// the latter about existence of @b doName() member function.
 /// @code
 /// template <typename TBase>
-/// class SomeMessage : public 
+/// class SomeMessage : public
 ///     comms::MessageBase<
 ///         ...,
 ///         comms::option::def::HasName
@@ -999,15 +999,15 @@
 /// invokes provided @b doName() member function.
 ///
 /// @subsection page_define_prot_message_version Protocol Version Support
-/// As was described earlier in @ref page_define_prot_interface_version, some 
+/// As was described earlier in @ref page_define_prot_interface_version, some
 /// protocols may include version information in either message transport framing
 /// or in one of the messages used to establish a connection. Every field
-/// defines @b setVersion() member function in its public interface. The 
+/// defines @b setVersion() member function in its public interface. The
 /// comms::MessageBase class will automatically call this function for every
 /// field before performing its @b read operation (inside @ref comms::MessageBase::doRead()).
 /// However, if @ref page_define_prot_message_base_custom_read is implemented,
 /// the latter is expected to call provided @ref comms::MessageBase::doFieldsVersionUpdate()
-/// member function explicitly before attempting actual read operations. 
+/// member function explicitly before attempting actual read operations.
 /// @b NOTE, that the @ref comms::MessageBase::doFieldsVersionUpdate() function
 /// exists only if @ref comms::option::def::VersionInExtraTransportFields has been
 /// provided to message interface.
@@ -1018,13 +1018,13 @@
 /// {
 /// public:
 ///     ...
-///     
+///
 ///     template <typename TIter>
 ///     comms::ErrorStatus doRead(TIter& iter, std::size_t len)
 ///     {
 ///         // Get type of the base class
 ///         using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
-///         
+///
 ///         // Update version of the fields
 ///         Base::doFieldsVersionUpdate();
 ///
@@ -1033,7 +1033,7 @@
 ///     }
 /// };
 /// @endcode
-/// Similarly, the fields' version needs to be updated in case 
+/// Similarly, the fields' version needs to be updated in case
 /// @ref page_define_prot_message_base_custom_refresh is implemented.
 /// @code
 /// template <typename TBase>
@@ -1042,7 +1042,7 @@
 /// {
 /// public:
 ///     ...
-///     
+///
 ///     bool doRefresh()
 ///     {
 ///         // Get type of the base class
@@ -1070,7 +1070,7 @@
 /// The @b COMMS library provides #COMMS_MSG_FIELD_ALIAS()
 /// macro, which is expected to be used after #COMMS_MSG_FIELDS_NAMES() one when new
 /// message class is being defined.
-/// As an example let's change the @b value3 from the example in the 
+/// As an example let's change the @b value3 from the example in the
 /// @ref page_define_prot_message_base_field_names section to be @b newValue3.
 /// @code
 /// template <typename TMessage>
@@ -1097,7 +1097,7 @@
 ///
 ///     // Alias to the new type
 ///     using Field_value3 = Field_newValue3;
-///     
+///
 ///     // Access to "newValue3" via "value3" name
 ///     auto field_value3() -> decltype(field_newValue3())
 ///     {
@@ -1115,10 +1115,10 @@
 /// using @b field_value3() access function will still work after renaming
 /// takes place.
 ///
-/// Another common case is when some field (usually @ref comms::field::IntValue 
+/// Another common case is when some field (usually @ref comms::field::IntValue
 /// or @ref comms::field::EnumValue) has a limited range of possible values
 /// and in order to save on some I/O traffic, the developer decides to split
-/// the value storage into multiple small parts and make it a 
+/// the value storage into multiple small parts and make it a
 /// @ref comms::field::Bitfield instead. In order to keep old client code compiling
 /// and working the #COMMS_MSG_FIELD_ALIAS() may be used:
 /// @code
@@ -1145,7 +1145,7 @@
 ///
 ///     // Alias to the member field
 ///     using Field_value3 = typename Field_newValue3::Field_member1;
-///     
+///
 ///     // Access to "newValue3.member1" via "value3" name
 ///     auto field_value3() -> decltype(field_newValue3().field_member1())
 ///     {
@@ -1178,7 +1178,7 @@
 ///
 /// @subsection page_define_prot_field_aliases_interfaces Aliases to Extra Transport Field Names Inside Interface
 /// The @ref page_define_prot_interface class definition may have
-/// @ref page_define_prot_interface_extra_transport. Aliasing between the 
+/// @ref page_define_prot_interface_extra_transport. Aliasing between the
 /// extra transport fields can be defined using #COMMS_MSG_TRANSPORT_FIELD_ALIAS()
 /// macro.
 /// @code
@@ -1195,7 +1195,7 @@
 ///     using Base = comms::Message<...>;
 /// public:
 ///     COMMS_MSG_TRANSPORT_FIELDS_NAMES(version, flags);
-///     COMMS_MSG_TRANSPORT_FIELD_ALIAS(otherFlagsName, flags);    
+///     COMMS_MSG_TRANSPORT_FIELD_ALIAS(otherFlagsName, flags);
 /// };
 /// @endcode
 ///
@@ -1204,9 +1204,9 @@
 /// of the serialised message contents is expected to be, and if there are not
 /// variable length fields, such as @b string or @b list, then maximum serialisation
 /// length is also known. It would be wise to slip in compile time checks in
-/// message definition as well. There are several static constexpr member functions 
+/// message definition as well. There are several static constexpr member functions
 /// inherited from @b comms::MessageBase that can be used:
-/// 
+///
 /// @li @ref comms::MessageBase::doMinLength()
 /// @li @ref comms::MessageBase::doMaxLength()
 /// @li @ref comms::MessageBase::doMinLengthFromUntil()
@@ -1217,12 +1217,12 @@
 /// // file Message2.h
 ///
 /// #include "comms/comms.h"
-/// 
+///
 /// #include "MyFieldBase.h" // Defines MyFieldBase common base class for all the fields
 ///
 /// namespace my_protocol
 /// {
-/// 
+///
 /// namespace message
 /// {
 ///
@@ -1249,7 +1249,7 @@
 /// to fields definition.
 ///
 /// <b>Recommended Practice</b>
-/// 
+///
 /// It is recommended to have a separate class / struct called @b DefaultOptions
 /// wich defines relevant inner types to be @ref comms::option::app::EmptyOption (option that
 /// does nothing). For example, let's assume that third field in @b Message1
@@ -1279,7 +1279,7 @@
 ///
 /// namespace my_protocol
 /// {
-/// 
+///
 /// namespace message
 /// {
 ///
@@ -1288,14 +1288,14 @@
 /// {
 ///     using field1 = ...;
 ///     using field2 = ...
-///     using field3 = 
+///     using field3 =
 ///         comms::field::String<
 ///             MyFieldBase,
-///             typename TOpt::message::Message1Fields::field3 // Extra option(s) 
+///             typename TOpt::message::Message1Fields::field3 // Extra option(s)
 ///         >
 ///
 ///     // bunding type
-///     using All = 
+///     using All =
 ///         std::tuple<
 ///             field1,
 ///             field2,
@@ -1305,12 +1305,12 @@
 ///
 /// // Definition of the message itself, described and explained later
 /// template <typename TBase, typename TOpt = DefaultOptions>
-/// class Message1 : public 
+/// class Message1 : public
 ///     comms::MessageBase<
-///         TBase, 
+///         TBase,
 ///         comms::option::def::StaticNumIdImpl<MsgId_Message1>,
 ///         comms::option::def::FieldsImpl<Message1Fields<TOpt>::All>,
-///         comms::option::def::MsgType<Message1<TBase, TOpt> > 
+///         comms::option::def::MsgType<Message1<TBase, TOpt> >
 ///     >
 /// {
 ///     ...
@@ -1321,7 +1321,7 @@
 /// } // namespace my_protocol
 /// @endcode
 /// It gives opportunity to the application to define its own single structure
-/// of options for all the messages by extending the provided @b DefaultOptions 
+/// of options for all the messages by extending the provided @b DefaultOptions
 /// and overriding selected number inner types with its own extension options.
 ///
 /// @b NOTE, that allowing additional customisation for fields like @b list
@@ -1337,7 +1337,7 @@
 /// the default ones
 /// @code
 /// template <typename... TExtraOpts>
-/// using MyField = 
+/// using MyField =
 ///     comms::field::IntValue<
 ///         MyFieldBase,
 ///         std::uint16_t,
@@ -1384,18 +1384,18 @@
 /// @code
 /// namespace my_protocol
 /// {
-/// 
+///
 /// namespace message
 /// {
 ///
 /// template <typename TBase, typename TOpt = DefaultOptions>
-/// class Message1 : public 
+/// class Message1 : public
 ///     comms::MessageBase<
-///         TBase, 
+///         TBase,
 ///         comms::option::def::StaticNumIdImpl<MsgId_Message1>,
 ///         comms::option::def::FieldsImpl<Message1Fields<TOpt>::All>,
 ///         comms::option::def::MsgType<Message1<TBase, TOpt> >,
-///         typename TOpt::message::Message1 // Extra options 
+///         typename TOpt::message::Message1 // Extra options
 ///     >
 /// {
 ///     ...
@@ -1407,13 +1407,13 @@
 /// @endcode
 ///
 /// @section page_define_prot_transport_framing Transport Framing Definition
-/// In addition to definition of the messages and their contents, every 
-/// communication protocol must ensure that the message is successfully 
-/// delivered over the I/O link to the other side and recognised (based on its ID). 
-/// The serialised message payload must be wrapped in some kind of transport 
-/// framing prior to being sent and unwrapped on the other side when received. 
+/// In addition to definition of the messages and their contents, every
+/// communication protocol must ensure that the message is successfully
+/// delivered over the I/O link to the other side and recognised (based on its ID).
+/// The serialised message payload must be wrapped in some kind of transport
+/// framing prior to being sent and unwrapped on the other side when received.
 /// The @ref page_frame_tutorial page contains detailed information on
 /// how define such a frame and make it usable to the client application. Note,
-/// that the same protocol may be used over multiple I/O link, every one of 
+/// that the same protocol may be used over multiple I/O link, every one of
 /// which may require different framing. There is no limit on amount of different
 /// frames that may be defined.

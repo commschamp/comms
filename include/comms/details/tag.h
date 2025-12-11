@@ -53,7 +53,7 @@ template<typename...>
 struct Tag12 {};
 
 } // namespace tag
-    
+
 } // namespace details
 
 } // namespace comms

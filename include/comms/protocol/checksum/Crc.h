@@ -5,7 +5,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// @file 
+/// @file
 /// @brief Contains definition of @ref comms::protocol::checksum::Crc
 
 #pragma once
@@ -50,6 +50,4 @@ using Crc_32 = comms::frame::checksum::Crc_32;
 }  // namespace protocol
 
 }  // namespace comms
-
-
 

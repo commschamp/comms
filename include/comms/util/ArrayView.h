@@ -8,7 +8,6 @@
 /// @file
 /// @brief Contains comms::util::ArrayView class.
 
-
 #pragma once
 
 #include "comms/Assert.h"
@@ -135,7 +134,7 @@ public:
         m_len(static_cast<std::size_t>(std::distance(first, last)))
     {
         COMMS_ASSERT(0 <= std::distance(first, last));
-    }    
+    }
 
     /// @brief Destructor
     ~ArrayView() noexcept = default;
@@ -278,7 +277,7 @@ public:
         std::swap(m_len, other.m_len);
     }
 
-    /// @brief Returns a pointer to the beginning of the underlying sequence. 
+    /// @brief Returns a pointer to the beginning of the underlying sequence.
     const_pointer data() const
     {
         return m_data;
@@ -338,7 +337,6 @@ bool operator!=(const ArrayView<T>& view1, const ArrayView<T>& view2) noexcept
 {
     return !(view1 == view2);
 }
-
 
 } // namespace util
 

@@ -54,4 +54,3 @@ struct BitSizeToByteSize<64>
 
 }  // namespace comms
 
-

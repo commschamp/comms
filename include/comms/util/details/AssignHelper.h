@@ -47,33 +47,32 @@ private:
     using StdSpanTag = comms::details::tag::Tag3<>;
 
     template <typename... TParams>
-    using UnknownTag = comms::details::tag::Tag4<>;   
+    using UnknownTag = comms::details::tag::Tag4<>;
 
     template <typename... TParams>
-    using HasReserveTag = comms::details::tag::Tag5<>;      
+    using HasReserveTag = comms::details::tag::Tag5<>;
 
     template <typename... TParams>
-    using NoReserveTag = comms::details::tag::Tag6<>;      
-
+    using NoReserveTag = comms::details::tag::Tag6<>;
 
     template <typename T>
-    using ConstructorTag = 
+    using ConstructorTag =
         typename comms::util::LazyShallowConditional<
             comms::util::detect::hasPtrSizeConstructor<T>()
         >::template Type<
             UsePtrSizeConstructorTag,
             UnknownTag
-        >;    
+        >;
 
     template <typename T>
-    using SpanConstructorTag = 
+    using SpanConstructorTag =
         typename comms::util::LazyShallowConditional<
             comms::util::detect::details::IsStdSpan<T>::Value
         >::template Type<
             StdSpanTag,
             ConstructorTag,
             T
-        >;    
+        >;
 
     template <typename T>
     using Tag =
@@ -83,7 +82,7 @@ private:
             UseAssignTag,
             SpanConstructorTag,
             T
-        >;    
+        >;
 
     template <typename T>
     using ReserveTag =
@@ -92,7 +91,7 @@ private:
         >::template Type<
             HasReserveTag,
             NoReserveTag
-        >;         
+        >;
 
     template <typename T, typename TIter, typename... TParams>
     static void assignInternal(T& obj, TIter from, TIter to, UseAssignTag<TParams...>)
@@ -108,8 +107,8 @@ private:
     {
         using IterType = typename std::decay<TIter>::type;
         using IterTag = typename std::iterator_traits<IterType>::iterator_category;
-        static_assert(std::is_base_of<std::random_access_iterator_tag, IterTag>::value,    
-            "Only random access iterator is supported for provided type assignments");         
+        static_assert(std::is_base_of<std::random_access_iterator_tag, IterTag>::value,
+            "Only random access iterator is supported for provided type assignments");
 
         auto diff = std::distance(from, to);
         if (diff < 0) {
@@ -125,9 +124,9 @@ private:
             obj = ObjType();
             return;
         }
-        
+
         obj = ObjType(&(*from), static_cast<std::size_t>(diff));
-    } 
+    }
 
     template <typename T, typename TIter, typename... TParams>
     static void assignInternal(T& obj, TIter from, TIter to, StdSpanTag<TParams...>)
@@ -138,20 +137,20 @@ private:
         auto fromPtr = const_cast<PointerType>(reinterpret_cast<ConstPointerType>(&(*from)));
         auto toPtr = fromPtr + std::distance(from, to);
         assignInternal(obj, fromPtr, toPtr, UsePtrSizeConstructorTag<TParams...>());
-    }   
-    
+    }
+
     template <typename T, typename... TParams>
     static void reserveInternal(T& obj, std::size_t len, HasReserveTag<TParams...>)
     {
         obj.reserve(len);
-    }     
+    }
 
     template <typename T, typename... TParams>
     static void reserveInternal(T& obj, std::size_t len, NoReserveTag<TParams...>)
     {
         static_cast<void>(obj);
         static_cast<void>(len);
-    }      
+    }
 };
 
 } // namespace details

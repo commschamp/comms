@@ -48,7 +48,7 @@ public:
     using BuildEndian = TBase;
 
     template <typename TBase>
-    using BuildMsgIdType = TBase;    
+    using BuildMsgIdType = TBase;
 
     template <typename TBase>
     using BuildExtraTransportFields = TBase;
@@ -60,10 +60,10 @@ public:
     using BuildMsgIdInfo = TBase;
 
     template <typename TBase>
-    using BuildReadBase = TBase;    
+    using BuildReadBase = TBase;
 
     template <typename TBase>
-    using BuildWriteBase = TBase;    
+    using BuildWriteBase = TBase;
 
     template <typename TBase>
     using BuildValid = TBase;
@@ -72,13 +72,13 @@ public:
     using BuildLength = TBase;
 
     template <typename TBase>
-    using BuildHandler = TBase;   
+    using BuildHandler = TBase;
 
     template <typename TBase>
-    using BuildRefresh = TBase;  
+    using BuildRefresh = TBase;
 
     template <typename TBase>
-    using BuildName = TBase;       
+    using BuildName = TBase;
 };
 
 template <typename T, typename... TOptions>
@@ -129,7 +129,7 @@ public:
     using ReadIterator = TIter;
 
     template <typename TBase>
-    using BuildReadBase = MessageInterfaceReadBase<TBase, ReadIterator>;      
+    using BuildReadBase = MessageInterfaceReadBase<TBase, ReadIterator>;
 };
 
 template <typename TIter, typename... TOptions>
@@ -142,7 +142,7 @@ public:
     using WriteIterator = TIter;
 
     template <typename TBase>
-    using BuildWriteBase = MessageInterfaceWriteBase<TBase, WriteIterator>;    
+    using BuildWriteBase = MessageInterfaceWriteBase<TBase, WriteIterator>;
 };
 
 template <typename T, typename... TOptions>
@@ -155,7 +155,7 @@ public:
     using Handler = T;
 
     template <typename TBase>
-    using BuildHandler = MessageInterfaceHandlerBase<TBase, Handler>;    
+    using BuildHandler = MessageInterfaceHandlerBase<TBase, Handler>;
 };
 
 template <typename... TOptions>
@@ -241,7 +241,7 @@ public:
     static constexpr std::size_t VersionInExtraTransportFields = TIdx;
 
     template <typename TBase>
-    using BuildVersionInExtraTransportFields = 
+    using BuildVersionInExtraTransportFields =
         MessageInterfaceVersionInExtraTransportFieldsBase<TBase, VersionInExtraTransportFields>;
 };
 
@@ -259,10 +259,7 @@ class MessageInterfaceOptionsParser<
 {
 };
 
-
-
 }  // namespace details
 
 }  // namespace comms
-
 

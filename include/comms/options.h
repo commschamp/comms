@@ -71,7 +71,7 @@ struct NumValueRangeValidator
     template <typename TField>
     constexpr bool operator()(const TField& field) const
     {
-        using MinTag = 
+        using MinTag =
             typename comms::util::Conditional<
                 (std::numeric_limits<decltype(MinValue)>::min() < MinValue)
             >::template Type<
@@ -79,7 +79,7 @@ struct NumValueRangeValidator
                 ReturnTrueTag
             >;
 
-        using MaxTag = 
+        using MaxTag =
             typename comms::util::Conditional<
                 (MaxValue < std::numeric_limits<decltype(MaxValue)>::max())
             >::template Type<
@@ -120,7 +120,6 @@ private:
         return true;
     }
 
-
     static const auto MinValue = TMinValue;
     static const auto MaxValue = TMaxValue;
 };
@@ -159,7 +158,6 @@ struct DefaultVariantIndexInitialiser
 };
 
 }  // namespace details
-
 
 namespace def {
 
@@ -338,7 +336,7 @@ struct VarLength
     static_assert(TMin <= TMax, "TMin must not be greater that TMax.");
 };
 
-/// @brief Option used to specify that serialization length can be contolled by 
+/// @brief Option used to specify that serialization length can be contolled by
 ///     available data length
 /// @details Allows having less bytes in the input buffer than is required
 ///     by the field's default serialization length.
@@ -886,27 +884,27 @@ using UnitsKilovolts =
 /// @brief Alias option, specifying field value units are "bytes".
 /// @headerfile comms/options.h
 using UnitsBytes =
-    Units<comms::traits::units::Memory, comms::traits::units::BytesRatio>;    
+    Units<comms::traits::units::Memory, comms::traits::units::BytesRatio>;
 
 /// @brief Alias option, specifying field value units are "kilobytes".
 /// @headerfile comms/options.h
 using UnitsKilobytes =
-    Units<comms::traits::units::Memory, comms::traits::units::KilobytesRatio>;        
+    Units<comms::traits::units::Memory, comms::traits::units::KilobytesRatio>;
 
 /// @brief Alias option, specifying field value units are "megabytes".
 /// @headerfile comms/options.h
 using UnitsMegabytes =
-    Units<comms::traits::units::Memory, comms::traits::units::MegabytesRatio>;     
+    Units<comms::traits::units::Memory, comms::traits::units::MegabytesRatio>;
 
 /// @brief Alias option, specifying field value units are "gigabytes".
 /// @headerfile comms/options.h
 using UnitsGigabytes =
-    Units<comms::traits::units::Memory, comms::traits::units::GigabytesRatio>;         
+    Units<comms::traits::units::Memory, comms::traits::units::GigabytesRatio>;
 
 /// @brief Alias option, specifying field value units are "terabytes".
 /// @headerfile comms/options.h
 using UnitsTerabytes =
-    Units<comms::traits::units::Memory, comms::traits::units::TerabytesRatio>;         
+    Units<comms::traits::units::Memory, comms::traits::units::TerabytesRatio>;
 
 /// @brief Alias to DefaultValueInitialiser, it defines initialiser class that
 ///     assigns numeric value provided as the template argument to this option.
@@ -1240,7 +1238,7 @@ struct MissingOnInvalid {};
 /// @brief Avoid invocation of built-in @ref comms::field::Variant::reset() "reset()"
 ///     member function on destruction of the @ref comms::field::Variant field.
 /// @details Use this option when the extending class invokes more optimised
-///     @b reset() member function in its destructor. 
+///     @b reset() member function in its destructor.
 struct VariantHasCustomResetOnDestruct {};
 
 /// @brief Mark complex fields like @ref comms::field::Bundle or @ref comms::field::Variant
@@ -1399,14 +1397,14 @@ struct NoVirtualDestructor {};
 
 /// @brief Use "view" on original raw data instead of copying it.
 /// @details Can be used with @ref comms::field::String and raw data @ref comms::field::ArrayList. @n
-///     For @ref comms::field::String it will force usage of 
-///     <a href="https://en.cppreference.com/w/cpp/string/basic_string_view">std::string_view</a> (if available) as 
-///     inner storage type (instead of @b std::string). In case @b std::string_view is unavalable 
+///     For @ref comms::field::String it will force usage of
+///     <a href="https://en.cppreference.com/w/cpp/string/basic_string_view">std::string_view</a> (if available) as
+///     inner storage type (instead of @b std::string). In case @b std::string_view is unavalable
 ///     (C++17 support is disabled or standard library of insufficient version) @ref comms::util::StringView
 ///     will be used instead.@n
-///     For raw data @ref comms::field::ArrayList it will force usage of 
-///     <a href="https://en.cppreference.com/w/cpp/container/span">std::span&lt;std::uint8_t&gt;</a>(if available) as 
-///     inner storage type (instead of @b std::vector<std::uint8_t>). In case @b std::span is unavalable 
+///     For raw data @ref comms::field::ArrayList it will force usage of
+///     <a href="https://en.cppreference.com/w/cpp/container/span">std::span&lt;std::uint8_t&gt;</a>(if available) as
+///     inner storage type (instead of @b std::vector<std::uint8_t>). In case @b std::span is unavalable
 ///     (C++20 support is disabled or standard library of insufficient version) @ref comms::util::ArrayView
 ///     will be used instead.@n
 /// @note The original data must be preserved until destruction of the field
@@ -1445,7 +1443,7 @@ struct MsgFactory {};
 /// @brief Force usage of the provide message factory.
 /// @details Similar to @ref comms::option::app::MsgFactory, but the template
 ///     parameter is template template class with the same template arguments as @ref comms::MsgFactory>.
-/// @tparam TFactory Factory template, expected to have the same template parameters and expose 
+/// @tparam TFactory Factory template, expected to have the same template parameters and expose
 ///     the same interface as @ref comms::MsgFactory.
 template <template<typename, typename, typename...> class TFactory>
 struct MsgFactoryTempl {};
@@ -2069,5 +2067,4 @@ using ForceDispatchLinearSwitch = comms::option::app::ForceDispatchLinearSwitch;
 }  // namespace option
 
 }  // namespace comms
-
 

@@ -78,7 +78,7 @@ public:
     static constexpr std::size_t minLength()
     {
         return LenField::minLength();
-    }    
+    }
 
     static constexpr std::size_t maxLength()
     {
@@ -249,7 +249,7 @@ private:
     using FixedLengthElemTag = comms::details::tag::Tag3<>;
 
     template <typename... TParams>
-    using VarLengthElemTag = comms::details::tag::Tag4<>;    
+    using VarLengthElemTag = comms::details::tag::Tag4<>;
 
     template <typename...>
     using LenFieldLengthTag =
@@ -331,8 +331,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
-
-
-
 

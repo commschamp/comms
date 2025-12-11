@@ -31,9 +31,9 @@ namespace details
 template <std::size_t TLen>
 struct UnsignedValueMaskWrap
 {
-    static const std::uintmax_t Value = 
+    static const std::uintmax_t Value =
         static_cast<std::uintmax_t>(
-            (static_cast<std::uintmax_t>(1U) << (TLen * std::numeric_limits<std::uint8_t>::digits)) - 1U);        
+            (static_cast<std::uintmax_t>(1U) << (TLen * std::numeric_limits<std::uint8_t>::digits)) - 1U);
 };
 
 template <>
@@ -42,9 +42,7 @@ struct UnsignedValueMaskWrap<sizeof(std::uintmax_t)>
     static const std::uintmax_t Value = std::numeric_limits<std::uintmax_t>::max();
 };
 
-
 } // namespace details
-    
 
 template <std::size_t TLen, bool TSignExtend, typename TBase>
 class FixedLength : public TBase
@@ -58,7 +56,7 @@ public:
     static_assert(TLen <= sizeof(BaseSerialisedType),
         "The provided length limit is too big");
 
-    using SerialisedType = 
+    using SerialisedType =
         typename comms::util::Conditional<
             (TLen < sizeof(BaseSerialisedType))
         >::template Type<
@@ -147,16 +145,16 @@ private:
     using JustCastTag = comms::details::tag::Tag1<>;
 
     template <typename... TParams>
-    using SignExtendTag = comms::details::tag::Tag2<>;    
+    using SignExtendTag = comms::details::tag::Tag2<>;
 
     template <typename... TParams>
-    using UnsignedTag = comms::details::tag::Tag3<>;  
+    using UnsignedTag = comms::details::tag::Tag3<>;
 
     template <typename... TParams>
-    using SignedTag = comms::details::tag::Tag4<>;     
+    using SignedTag = comms::details::tag::Tag4<>;
 
     template <typename...>
-    using ConversionTag = 
+    using ConversionTag =
         typename comms::util::LazyShallowConditional<
             (TLen < sizeof(SerialisedType))
         >::template Type<
@@ -165,7 +163,7 @@ private:
         >;
 
     template <typename...>
-    using HasSignTag = 
+    using HasSignTag =
         typename comms::util::LazyShallowConditional<
             std::is_signed<SerialisedType>::value && TSignExtend
         >::template Type<
@@ -249,5 +247,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
 

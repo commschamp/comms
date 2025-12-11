@@ -18,7 +18,6 @@ namespace frame
 namespace details
 {
 
-
 template <typename... TOptions>
 class SyncPrefixLayerOptionsParser;
 
@@ -43,7 +42,7 @@ public:
     using ExtendingClass = T;
 
     template <typename TLayer>
-    using DefineExtendingClass = ExtendingClass;    
+    using DefineExtendingClass = ExtendingClass;
 };
 
 template <typename... TOptions>

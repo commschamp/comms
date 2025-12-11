@@ -70,7 +70,7 @@ public:
     void setValue(U&& val)
     {
         value() = static_cast<ValueType>(std::forward<U>(val));
-    }    
+    }
 
     static constexpr std::size_t length()
     {
@@ -153,5 +153,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
 

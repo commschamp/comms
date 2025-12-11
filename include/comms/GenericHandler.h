@@ -210,17 +210,17 @@ private:
     using ReferenceReturnTag = comms::details::tag::Tag2<>;
 
     template <typename... TParams>
-    using ValueReturnTag = comms::details::tag::Tag3<>;    
+    using ValueReturnTag = comms::details::tag::Tag3<>;
 
     template <typename... TParams>
-    using RetValueShallowCondWrap = 
+    using RetValueShallowCondWrap =
         typename comms::util::LazyShallowConditional<
             std::is_lvalue_reference<TRetType>::value
         >::template Type<
             ReferenceReturnTag,
             ValueReturnTag,
             TParams...
-        >;     
+        >;
 
     template <typename... TParams>
     void defaultHandle(VoidReturnTag<TParams...>)
@@ -498,7 +498,6 @@ public:
         return this->handle(static_cast<TDefault&>(msg));
     }
 
-
 protected:
     ~GenericHandler() noexcept = default;
 };
@@ -567,7 +566,6 @@ public:
         return this->handle(static_cast<TDefault&>(msg));
     }
 
-
 protected:
     ~GenericHandler() noexcept = default;
 };
@@ -626,7 +624,6 @@ public:
 
         return this->handle(static_cast<TDefault&>(msg));
     }
-
 
 protected:
     ~GenericHandler() noexcept = default;

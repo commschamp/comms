@@ -72,7 +72,6 @@ struct SizeToTypeHelper<7>
     using Type = SizeToTypeHelper<8>::Type;
 };
 
-
 }  // namespace details
 
 /// @cond SKIP_DOC

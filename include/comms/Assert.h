@@ -124,7 +124,6 @@ public:
         AssertManager::instance().reset(m_prevAssert);
     }
 
-
     /// @brief Provides reference to internal Assert object
     /// @return Reference to object of type TAssert.
     AssertType& getAssert()
@@ -137,14 +136,13 @@ private:
     Assert* m_prevAssert;
 };
 
-
 #ifndef COMMS_ASSERT
 #ifndef NDEBUG
 
 // NOSTDLIB definition is treated as COMMS_NOSTDLIB for backward compatiblity
 #if defined(NOSTDLIB) && !defined(COMMS_NOSTDLIB)
 #define COMMS_NOSTDLIB
-#endif 
+#endif
 
 /// @cond DOCUCMENT_AM_ASSERT_FUNCTION
 #ifndef __ASSERT_FUNCTION

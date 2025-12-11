@@ -35,7 +35,6 @@ using DispatchMsgHelperIntType =
             std::integral_constant<DispatchMsgTypeEnum, DispatchMsgTypeEnum::Multiple>
         >
     >;
-    
 
 } // namespace details
 

@@ -29,7 +29,7 @@ namespace detect
 namespace details
 {
 
-// MSVC2015 Is not working correctly with VoidT or any other workaround 
+// MSVC2015 Is not working correctly with VoidT or any other workaround
 // suggested at https://en.cppreference.com/w/cpp/types/void_t
 
 // template <typename... TArgs>

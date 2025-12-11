@@ -159,5 +159,3 @@
         , COMMS_END_ENUM(p_) \
     };
 
-
-
