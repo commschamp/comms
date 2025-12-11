@@ -155,6 +155,11 @@ struct ProcessHelper
 
             MsgPtr msg;
             auto es = processSingleWithDispatch(iter, len - consumed, std::forward<TFrame>(frame), msg, handler);
+            if (es == comms::ErrorStatus::ProtocolError) {
+                ++consumed;
+                continue;
+            }
+            
             consumed += static_cast<decltype(consumed)>(std::distance(begIter, iter));
             if (es == comms::ErrorStatus::NotEnoughData) {
                 break;
