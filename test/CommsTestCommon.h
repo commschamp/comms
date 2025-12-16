@@ -56,7 +56,6 @@ enum MessageType {
 template <typename TTraits>
 using TestMessageBase = comms::Message<TTraits>;
 
-
 template <typename TField>
 using FieldsMessage1 =
     std::tuple<
@@ -198,7 +197,6 @@ public:
     static const std::size_t MsgMinLen_1_3 = Base::template doMinLengthFromUntil<FieldIdx_value2, FieldIdx_value4>();
     static const std::size_t MsgMaxLen_1_3 = Base::template doMaxLengthFromUntil<FieldIdx_value2, FieldIdx_value4>();
 
-
     static_assert(MsgMinLen == 10U, "Wrong serialisation length");
     static_assert(MsgMaxLen == 10U, "Wrong serialisation length");
     static_assert(MsgMinLen_0_1 == 4U, "Wrong serialisation length");
@@ -317,7 +315,6 @@ public:
         return "Message4";
     }
 };
-
 
 template <typename TField>
 using FieldsMessage5 =
@@ -553,7 +550,7 @@ struct Message8Fields
 
     using field1 =
             comms::field::EnumValue<
-                TField, 
+                TField,
                 Field1Val,
                 comms::option::VarLength<1, 2>
             >;
@@ -674,18 +671,17 @@ public:
     }
 };
 
-
 template <typename TField>
 struct Message10Fields
 {
-    using field1 = 
+    using field1 =
         comms::field::IntValue<
             TField,
             std::uint16_t,
             comms::option::def::ValidNumValueRange<0, 10>
         >;
 
-    using field2 = 
+    using field2 =
         comms::field::IntValue<
             TField,
             std::uint16_t,
@@ -754,7 +750,7 @@ struct Message90_1Fields
 {
     using typeField =
             comms::field::IntValue<
-                TField, 
+                TField,
                 std::uint8_t,
                 comms::option::ValidNumValue<0>,
                 comms::option::FailOnInvalid<>
@@ -814,7 +810,7 @@ struct Message90_2Fields
 {
     using typeField =
             comms::field::IntValue<
-                TField, 
+                TField,
                 std::uint8_t,
                 comms::option::DefaultNumValue<1>,
                 comms::option::ValidNumValue<1>,
@@ -869,7 +865,6 @@ public:
     }
 };
 
-
 template <typename TMessage>
 using AllTestMessages =
     std::tuple<
@@ -894,7 +889,6 @@ using Messages_1to3 =
         Message3<TMessage>,
         Message4<TMessage>
     >;
-
 
 template <typename TMessage>
 using Messages_1to5 =
@@ -972,7 +966,7 @@ template <typename TFrame, typename TMsg>
 void verifyFrameLengthIfPossible(TFrame& frame, const TMsg& msg, std::size_t expLength)
 {
     using MsgType = typename std::decay<decltype(msg)>::type;
-    using Tag = 
+    using Tag =
         typename comms::util::Conditional<
             MsgType::hasLength()
         >::template Type<
@@ -1095,7 +1089,6 @@ typename TFrame::MsgPtr vectorBackInsertReadWriteMsgTest(
     TS_ASSERT(resultAsExpected);
     return msg;
 }
-
 
 template <typename TFrame, typename TMessage>
 void commonWriteReadMsgTest(

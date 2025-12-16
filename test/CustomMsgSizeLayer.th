@@ -29,13 +29,12 @@ public:
 private:
 
     using BigEndianField = comms::Field<comms::option::BigEndian>;
-    using BigEndianMsgId = 
+    using BigEndianMsgId =
         comms::field::EnumValue<
             BigEndianField,
             MessageType,
             comms::option::FixedLength<1>
         >;
-
 
     class SizeWithFlagsField : public
          comms::field::Bitfield<
@@ -43,17 +42,17 @@ private:
             std::tuple<
                 comms::field::IntValue<BigEndianField, std::uint16_t, comms::option::FixedBitLength<12> >,
                 comms::field::IntValue<BigEndianField, std::uint8_t, comms::option::FixedBitLength<4> >
-            >        
+            >
         >
     {
-        using Base = 
+        using Base =
             comms::field::Bitfield<
                 BigEndianField,
                 std::tuple<
                     comms::field::IntValue<BigEndianField, std::uint16_t, comms::option::FixedBitLength<12> >,
                     comms::field::IntValue<BigEndianField, std::uint8_t, comms::option::FixedBitLength<4> >
-                >        
-            >;   
+                >
+            >;
     public:
         COMMS_FIELD_MEMBERS_NAMES(size, flags);
     };
@@ -63,7 +62,7 @@ private:
             comms::field::IntValue<BigEndianField, std::uint8_t>
         >;
 
-    using IfOptions = 
+    using IfOptions =
         std::tuple<
             comms::option::MsgIdType<MessageType>,
             comms::option::BigEndian,
@@ -74,7 +73,7 @@ private:
             comms::option::ExtraTransportFields<ExtraTransportFields>
         >;
 
-    struct Interface : public 
+    struct Interface : public
         comms::Message<IfOptions>
     {
         using Base = comms::Message<IfOptions>;
@@ -82,7 +81,7 @@ private:
         COMMS_MSG_TRANSPORT_FIELDS_NAMES(flags);
     };
 
-    using IfOptions2 = 
+    using IfOptions2 =
         std::tuple<
             comms::option::MsgIdType<MessageType>,
             comms::option::BigEndian,
@@ -92,7 +91,7 @@ private:
             comms::option::ExtraTransportFields<ExtraTransportFields>
         >;
 
-    struct Interface2 : public 
+    struct Interface2 : public
         comms::Message<IfOptions2>
     {
         using Base = comms::Message<IfOptions2>;
@@ -111,7 +110,7 @@ private:
             TOptions...
         >
     {
-        using Base = 
+        using Base =
             comms::frame::MsgSizeLayer<
                 SizeWithFlagsField,
                 TNextLayer,
@@ -159,7 +158,7 @@ private:
             TOptions...
         >
     {
-        using Base = 
+        using Base =
             comms::frame::MsgSizeLayer<
                 SizeWithFlagsField,
                 TNextLayer,
@@ -198,7 +197,7 @@ private:
     };
 
     template <typename TInterface>
-    using AllMessages1 = 
+    using AllMessages1 =
         std::tuple<
             Message1<TInterface>,
             Message2<TInterface>,

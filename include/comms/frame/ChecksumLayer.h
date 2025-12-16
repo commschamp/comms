@@ -30,7 +30,7 @@ namespace comms
 
 namespace frame
 {
-/// @brief Protocol layer that is responsible to calculate checksum on the
+/// @brief Frame layer that is responsible to calculate checksum on the
 ///     data written by all the wrapped internal layers and append it to the end of
 ///     the written data. When reading, this layer is responsible to verify
 ///     the checksum reported at the end of the read data.
@@ -49,10 +49,10 @@ namespace frame
 ///     @ref comms::frame::checksum namespace (`comms/frame/checkum` folder).
 /// @tparam TNextLayer Next transport layer in frame.
 /// @tparam TOptions Extending functionality options. Supported options are:
-///     @li @ref comms::option::def::ChecksumLayerVerifyBeforeRead - By default, the
+///     @li @ref comms::option::def::FrameLayerVerifyBeforeRead - By default, the
 ///         @b ChecksumLayer will invoke @b read operation of inner (wrapped) layers
 ///         and only if it is successful, it will calculate and verify the
-///         checksum value. Usage of @ref comms::option::def::ChecksumLayerVerifyBeforeRead
+///         checksum value. Usage of @ref comms::option::def::FrameLayerVerifyBeforeRead
 ///         modifies the default behaviour by forcing the checksum verification
 ///         prior to invocation of @b read operation in the wrapped layer(s).
 ///     @li  @ref comms::option::ExtendingClass - Use this option to provide a class
@@ -105,7 +105,7 @@ public:
         return ParsedOptionsInternal::HasExtendingClass;
     }
 
-    /// @brief Compile time inquiry of whether @ref comms::option::def::ChecksumLayerVerifyBeforeRead
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FrameLayerVerifyBeforeRead
     ///     options has been used.
     static constexpr bool hasVerifyBeforeRead()
     {

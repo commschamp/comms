@@ -32,7 +32,7 @@ namespace comms
 namespace frame
 {
 
-/// @brief Protocol layer that uses size field as a prefix to all the
+/// @brief Frame layer that uses size field as a prefix to all the
 ///        subsequent data written by other (next) layers.
 /// @details The main purpose of this layer is to provide information about
 ///     the remaining size of the serialised message. This layer is a mid level

@@ -38,7 +38,7 @@ namespace comms
 namespace frame
 {
 
-/// @brief Protocol layer that uses uses message ID field as a prefix to all the
+/// @brief Frame layer that uses uses message ID field as a prefix to all the
 ///        subsequent data written by other (next) layers.
 /// @details The main purpose of this layer is to process the message ID information.
 ///     Holds instance of @ref comms::MsgFactory as its private member and uses it

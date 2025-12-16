@@ -64,7 +64,6 @@ private:
         std::size_t bufSize,
         comms::ErrorStatus expectedErrStatus = comms::ErrorStatus::Success);
 
-
     typedef std::tuple<
         comms::option::MsgIdType<MessageType>,
         comms::option::BigEndian,
@@ -294,7 +293,6 @@ TMessage MsgDataLayerTestSuite::internalReadWriteCachedTest(
     auto& dataField = std::get<0>(allFields);
     auto& dataFieldVec = dataField.value();
 
-
     if (es == comms::ErrorStatus::Success) {
         auto diff = static_cast<std::size_t>(std::distance(buf, readIter));
         TS_ASSERT_EQUALS(dataFieldVec.size(), diff);
@@ -304,7 +302,7 @@ TMessage MsgDataLayerTestSuite::internalReadWriteCachedTest(
         if (outDataBuf.empty()) {
             outDataBuf.resize(1U); // Make sure the pointer to the first element is valid
         }
-        auto writeIter = &outDataBuf[0];        
+        auto writeIter = &outDataBuf[0];
 
         typename ProtFrame::AllFields allOutFields;
         auto writeES = frame.writeFieldsCached(allOutFields, *msg, writeIter, diff);
@@ -354,7 +352,6 @@ TMessage MsgDataLayerTestSuite::internalReadWriteToVectorTest(
     return *msg;
 }
 
-
 template <typename TMessage>
 void MsgDataLayerTestSuite::internalWriteReadTest(
     const TMessage& msg,
@@ -365,7 +362,7 @@ void MsgDataLayerTestSuite::internalWriteReadTest(
 {
     typedef TMessage Message;
 
-    using ProtFrame = 
+    using ProtFrame =
         typename comms::util::Conditional<
             std::is_base_of<BeMessageBase, Message>::value
         >::template Type<

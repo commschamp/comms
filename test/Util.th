@@ -95,9 +95,9 @@ void UtilTestSuite::test1()
     TS_ASSERT(std::equal(std::begin(InsData2), std::end(InsData2), vec.begin() + DataSize));
     COMMS_GNU_WARNING_PUSH
 #if COMMS_IS_GCC_11
-    COMMS_GNU_WARNING_DISABLE("-Wstringop-overread")     
-#endif // #if COMMS_IS_GCC_11    
-    TS_ASSERT(std::equal(std::begin(InsData1), std::end(InsData1), vec.begin() + DataSize + InsData2Size)); 
+    COMMS_GNU_WARNING_DISABLE("-Wstringop-overread")
+#endif // #if COMMS_IS_GCC_11
+    TS_ASSERT(std::equal(std::begin(InsData1), std::end(InsData1), vec.begin() + DataSize + InsData2Size));
     COMMS_GNU_WARNING_POP
 
     iter = vec.erase(vec.begin() + DataSize, vec.begin() + DataSize + InsData2Size);
@@ -524,7 +524,6 @@ void UtilTestSuite::test16()
     TS_ASSERT_EQUALS(str2.size(), 5U);
 }
 
-
 void UtilTestSuite::test17()
 {
     typedef comms::util::StaticString<100> Str;
@@ -943,21 +942,21 @@ void UtilTestSuite::test24()
             "StringView must have remove_suffix");
 
     static_assert(!comms::util::detect::hasRemoveSuffixFunc<std::string>(),
-            "std::string mustn't have remove_suffix");      
+            "std::string mustn't have remove_suffix");
 
-    static_assert(comms::util::detect::hasAssignFunc<std::string>(), 
+    static_assert(comms::util::detect::hasAssignFunc<std::string>(),
         "std::string must have assign()");
 
-    static_assert(comms::util::detect::hasAssignFunc<std::vector<std::uint8_t> >(), 
-        "std::vector must have assign()");        
+    static_assert(comms::util::detect::hasAssignFunc<std::vector<std::uint8_t> >(),
+        "std::vector must have assign()");
 
     static_assert(
-        !comms::util::detect::hasAssignFunc<comms::util::StringView>(), 
+        !comms::util::detect::hasAssignFunc<comms::util::StringView>(),
             "comms::util::StringView mustn't have assign()");
 
     static_assert(
-        comms::util::detect::hasPtrSizeConstructor<comms::util::StringView>(), 
-            "comms::util::StringView must have ptr + size constructor");            
+        comms::util::detect::hasPtrSizeConstructor<comms::util::StringView>(),
+            "comms::util::StringView must have ptr + size constructor");
 
     static_assert(std::is_base_of<comms::util::details::StaticVectorCasted<char, unsigned char, 20>, StaticVecChar>::value,
             "Wrong base class");
@@ -970,30 +969,30 @@ void UtilTestSuite::test24()
             "std::string_view must have remove_suffix");
 
     static_assert(
-        !comms::util::detect::hasAssignFunc<std::string_view>(), 
+        !comms::util::detect::hasAssignFunc<std::string_view>(),
             "std::string_view mustn't have assign()");
 
     static_assert(
-        comms::util::detect::hasPtrSizeConstructor<std::string_view>(), 
-            "std::string_view must have ptr + size constructor");     
+        comms::util::detect::hasPtrSizeConstructor<std::string_view>(),
+            "std::string_view must have ptr + size constructor");
 
     static_assert(!comms::util::detect::hasClearFunc<std::string_view>(),
-            "std::string_view mustn't have clear");            
+            "std::string_view mustn't have clear");
 #endif
 
 #if COMMS_HAS_CPP20_SPAN
     using SpanType = std::span<std::uint8_t>;
 
     static_assert(
-        !comms::util::detect::hasAssignFunc<SpanType>(), 
+        !comms::util::detect::hasAssignFunc<SpanType>(),
             "std::span mustn't have assign()");
 
     static_assert(
-        comms::util::detect::isStdSpan<SpanType>(), 
-            "std::span is not detected correctly");     
+        comms::util::detect::isStdSpan<SpanType>(),
+            "std::span is not detected correctly");
 
     static_assert(!comms::util::detect::hasClearFunc<SpanType>(),
-            "std::span mustn't have clear");            
+            "std::span mustn't have clear");
 #endif
 
 }
@@ -1063,8 +1062,8 @@ void UtilTestSuite::test27()
 #if COMMS_HAS_CPP17_STRING_VIEW
     std::string_view s3;
     comms::util::assign(s3, Str.begin(), Str.end());
-    TS_ASSERT_EQUALS(Str, s3);    
-#endif    
+    TS_ASSERT_EQUALS(Str, s3);
+#endif
 }
 
 void UtilTestSuite::test28()
@@ -1081,5 +1080,5 @@ void UtilTestSuite::test28()
     using Data2 = std::span<std::uint8_t>;
     auto data2 = comms::util::construct<Data2>(std::begin(Data), std::end(Data));
     static_cast<void>(data2);
-#endif // #if COMMS_HAS_CPP20_SPAN    
+#endif // #if COMMS_HAS_CPP20_SPAN
 }

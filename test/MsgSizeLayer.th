@@ -17,7 +17,6 @@ CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
 CC_ENABLE_WARNINGS()
 
-
 class MsgSizeLayerTestSuite : public CxxTest::TestSuite
 {
 public:
@@ -94,7 +93,6 @@ private:
         comms::option::BigEndian
     > NonPolymorphicBigEndianTraits;
 
-
     typedef TestMessageBase<BeTraits> BeMsgBase;
     typedef TestMessageBase<BeNoLengthTraits> BeNoLengthMsgBase;
     typedef TestMessageBase<LeTraits> LeMsgBase;
@@ -118,7 +116,6 @@ private:
     typedef Message3<BeBackInsertMsgBase> BeBackInsertMsg3;
     typedef Message1<BeNonPolymorphicMessageBase> NonPolymorphicBeMsg1;
     typedef Message2<BeNonPolymorphicMessageBase> NonPolymorphicBeMsg2;
-
 
     template <typename TField, std::size_t TSize, std::size_t TOffset = 0>
     using SizeField =
@@ -249,8 +246,8 @@ private:
             field_second().setMode(mode);
             return true;
         }
-    };    
-    
+    };
+
     using BeSizeComplexField = ComplexLengthField<BeField>;
 
     template <typename TField>

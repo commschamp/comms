@@ -1073,11 +1073,22 @@ using OptionalExistsByDefault = ExistsByDefault;
 template <std::size_t TIdx>
 using DefaultVariantIndex = DefaultValueInitialiser<details::DefaultVariantIndexInitialiser<TIdx> >;
 
+/// @brief Force the layer to verify its field's value before
+///     forwarding read to the wrapped layer(s).
+/// @headerfile comms/options.h
+struct FrameLayerVerifyBeforeRead {};
+
 /// @brief Force @ref comms::frame::ChecksumLayer and
 ///     @ref comms::frame::ChecksumPrefixLayer, to verify checksum prior to
 ///     forwarding read to the wrapped layer(s).
+/// @deprecated Use @ref comms::option::def::FrameLayerVerifyBeforeRead instead.
 /// @headerfile comms/options.h
-struct ChecksumLayerVerifyBeforeRead {};
+using ChecksumLayerVerifyBeforeRead = FrameLayerVerifyBeforeRead;
+
+/// @brief Force the layer to seek its field before
+///     forwarding read to the wrapped layer(s).
+/// @headerfile comms/options.h
+struct FrameLayerSeekField {};
 
 /// @brief Force field not to be serialized during read/write operations
 /// @details Some protocols may define some constant values that are predefined
@@ -1868,8 +1879,8 @@ template <std::size_t TIdx>
 using DefaultVariantIndex = comms::option::def::DefaultVariantIndex<TIdx>;
 
 /// @brief Same as @ref comms::option::def::ChecksumLayerVerifyBeforeRead
-/// @deprecated Use @ref comms::option::def::ChecksumLayerVerifyBeforeRead instead.
-using ChecksumLayerVerifyBeforeRead = comms::option::def::ChecksumLayerVerifyBeforeRead;
+/// @deprecated Use @ref comms::option::def::FrameLayerVerifyBeforeRead instead.
+using ChecksumLayerVerifyBeforeRead = comms::option::def::FrameLayerVerifyBeforeRead;
 
 /// @brief Same as @ref comms::option::def::EmptySerialization
 /// @deprecated Use @ref comms::option::def::EmptySerialization instead.

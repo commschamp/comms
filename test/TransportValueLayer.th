@@ -97,7 +97,7 @@ private:
             FieldBase,
             std::uint16_t,
             comms::option::def::NumValueSerOffset<sizeof(std::uint16_t)>
-        >;        
+        >;
 
     using IdField =
         comms::field::EnumValue<
@@ -110,7 +110,7 @@ private:
         comms::field::IntValue<
             FieldBase,
             std::uint16_t
-        >;        
+        >;
 
     template <typename TMessage>
     using BeforeIdFrame =
@@ -176,7 +176,7 @@ private:
                     >
                 >
             >
-        >;        
+        >;
 };
 
 void TransportValueLayerTestSuite::test1()

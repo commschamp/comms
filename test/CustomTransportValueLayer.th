@@ -119,17 +119,17 @@ private:
             std::tuple<
                 comms::field::IntValue<BigEndianField, std::uint8_t, comms::option::FixedBitLength<4> >,
                 comms::field::IntValue<BigEndianField, std::uint8_t, comms::option::FixedBitLength<4> >
-            >        
+            >
         >
     {
-        using Base = 
+        using Base =
             comms::field::Bitfield<
                 BigEndianField,
                 std::tuple<
                     comms::field::IntValue<BigEndianField, std::uint8_t, comms::option::FixedBitLength<4> >,
                     comms::field::IntValue<BigEndianField, std::uint8_t, comms::option::FixedBitLength<4> >
-                >        
-            >;   
+                >
+            >;
     public:
         COMMS_FIELD_MEMBERS_NAMES(version, flags);
     };
@@ -146,7 +146,7 @@ private:
             TOptions...
         >
     {
-        using Base = 
+        using Base =
             comms::frame::TransportValueLayer<
                 VersionWithFlagsField,
                 std::tuple_size<ExtraTransport>::value,
@@ -164,15 +164,15 @@ private:
         {
             msg.transportField_version().value() = field.field_version().value();
             msg.transportField_flags().value() = field.field_flags().value();
-        }  
+        }
 
         template <typename TMsg>
         static void prepareFieldForWrite(const TMsg& msg, Field& field)
         {
             field.field_version().value() = msg.transportField_version().value();
             field.field_flags().value() = msg.transportField_flags().value();
-        }                  
-    }; 
+        }
+    };
 
     template <
           typename TNextLayer,
@@ -187,7 +187,7 @@ private:
             comms::option::def::FrameLayerSuppressReadUntilDataSplitForcing
         >
     {
-        using Base = 
+        using Base =
             comms::frame::TransportValueLayer<
                 VersionWithFlagsField,
                 std::tuple_size<ExtraTransport>::value,
@@ -210,15 +210,15 @@ private:
             // destField = comms::field_cast<DestFieldType>(field);
             Base::nextLayer().nextLayer().pseudoField() = field;
             return true;
-        }  
+        }
 
         template <typename TMsg>
         static void prepareFieldForWrite(const TMsg& msg, Field& field)
         {
             field.field_version().value() = msg.transportField_version().value();
             field.field_flags().value() = msg.transportField_flags().value();
-        }                  
-    };        
+        }
+    };
 
     template <typename TMessage>
     using BeforeIdFrame =
@@ -230,10 +230,9 @@ private:
                     TMessage,
                     AllTestMessages<TMessage>,
                     comms::frame::MsgDataLayer<>
-                >            
+                >
             >
         >;
-
 
     template <typename TMessage, typename... TOpt>
     using AfterIdFrame =
@@ -267,17 +266,17 @@ private:
                         >,
                         comms::option::def::PseudoValue
                     >
-                >         
+                >
             >
-        >;        
+        >;
 };
 
 void CustomTransportValueLayerTestSuite::test1()
 {
     static const char Buf[] = {
-        0x0, 0x7, 
+        0x0, 0x7,
         0x0, MessageType7,
-        0x15, 
+        0x15,
         0x01, 0x02, 0x03, 0x04
     };
 
@@ -305,8 +304,8 @@ void CustomTransportValueLayerTestSuite::test1()
 void CustomTransportValueLayerTestSuite::test2()
 {
     static const char Buf[] = {
-        0x0, 0x5, 
-        0x14, 
+        0x0, 0x5,
+        0x14,
         0x0, MessageType7,
         0x01, 0x02
     };

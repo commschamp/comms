@@ -19,39 +19,33 @@ namespace details
 {
 
 template <typename... TOptions>
-class ChecksumLayerOptionsParser;
+class SyncSuffixLayerOptionsParser;
 
 template <>
-class ChecksumLayerOptionsParser<>
+class SyncSuffixLayerOptionsParser<>
 {
 public:
     static constexpr bool HasVerifyBeforeRead = false;
     static constexpr bool HasExtendingClass = false;
+    static constexpr bool HasSeekField = false;
 
     using ExtendingClass = void;
 
     template <typename TLayer>
     using DefineExtendingClass = TLayer;
-
-    template <typename TOpt>
-    using SuppressForVerifyBeforeRead = TOpt;
-
 };
 
 template <typename... TOptions>
-class ChecksumLayerOptionsParser<comms::option::def::FrameLayerVerifyBeforeRead, TOptions...> :
-        public ChecksumLayerOptionsParser<TOptions...>
+class SyncSuffixLayerOptionsParser<comms::option::def::FrameLayerVerifyBeforeRead, TOptions...> :
+        public SyncSuffixLayerOptionsParser<TOptions...>
 {
 public:
     static constexpr bool HasVerifyBeforeRead = true;
-
-    template <typename TOpt>
-    using SuppressForVerifyBeforeRead = comms::option::app::EmptyOption;
 };
 
 template <typename T, typename... TOptions>
-class ChecksumLayerOptionsParser<comms::option::def::ExtendingClass<T>, TOptions...> :
-        public ChecksumLayerOptionsParser<TOptions...>
+class SyncSuffixLayerOptionsParser<comms::option::def::ExtendingClass<T>, TOptions...> :
+        public SyncSuffixLayerOptionsParser<TOptions...>
 {
 public:
     static constexpr bool HasExtendingClass = true;
@@ -62,16 +56,24 @@ public:
 };
 
 template <typename... TOptions>
-class ChecksumLayerOptionsParser<
+class SyncSuffixLayerOptionsParser<
     comms::option::app::EmptyOption,
-    TOptions...> : public ChecksumLayerOptionsParser<TOptions...>
+    TOptions...> : public SyncSuffixLayerOptionsParser<TOptions...>
 {
 };
 
+template <typename... TOptions>
+class SyncSuffixLayerOptionsParser<comms::option::def::FrameLayerSeekField, TOptions...> :
+        public SyncSuffixLayerOptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasSeekField = true;
+};
+
 template <typename... TBundledOptions, typename... TOptions>
-class ChecksumLayerOptionsParser<
+class SyncSuffixLayerOptionsParser<
     std::tuple<TBundledOptions...>,
-    TOptions...> : public ChecksumLayerOptionsParser<TBundledOptions..., TOptions...>
+    TOptions...> : public SyncSuffixLayerOptionsParser<TBundledOptions..., TOptions...>
 {
 };
 

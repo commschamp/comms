@@ -3,7 +3,7 @@
 
 if (NOT BUILD_TESTING)
     return ()
-endif ()    
+endif ()
 
 set (COMPONENT_NAME "comms")
 
@@ -17,7 +17,7 @@ function (test_func test_suite_name)
     set (valgrand_args)
     if (VALGRIND_EXECUTABLE)
         set (valgrand_args VALGRIND_EXECUTABLE ${VALGRIND_EXECUTABLE})
-    endif ()    
+    endif ()
 
     cc_cxxtest_add_test (NAME ${name} SRC ${tests} ${valgrand_args})
 
@@ -46,6 +46,7 @@ if (TARGET cxxtest::cxxtest)
     test_func ("MsgIdLayer")
     test_func ("MsgSizeLayer")
     test_func ("SyncPrefixLayer")
+    test_func ("SyncSuffixLayer")
     test_func ("ChecksumLayer")
     test_func ("ChecksumPrefixLayer")
     test_func ("TransportValueLayer")

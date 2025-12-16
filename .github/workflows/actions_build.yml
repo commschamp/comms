@@ -19,10 +19,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Prepare Install
-      run: sudo apt-get update --fix-missing    
-      
+      run: sudo apt-get update --fix-missing
+
     - name: Install Packages
       run: sudo apt install doxygen dia gcc-${{matrix.cc_ver}} g++-${{matrix.cc_ver}}
 
@@ -42,12 +42,12 @@ jobs:
       shell: bash
       run: cmake --build . --config ${{matrix.type}} --target install
       env:
-        VERBOSE: 1 
+        VERBOSE: 1
 
     - name: Test
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: ctest -V 
+      run: ctest -V
 
   build_gcc_ubuntu_24_04:
     runs-on: ubuntu-24.04
@@ -59,14 +59,14 @@ jobs:
         cpp: [11, 14, 17, 20, 23]
         exclude:
           - cc_ver: 13
-            cpp: 23        
+            cpp: 23
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Prepare Install
-      run: sudo apt-get update --fix-missing    
-      
+      run: sudo apt-get update --fix-missing
+
     - name: Install Packages
       run: sudo apt install doxygen dia gcc-${{matrix.cc_ver}} g++-${{matrix.cc_ver}}
 
@@ -86,17 +86,17 @@ jobs:
       shell: bash
       run: cmake --build . --config ${{matrix.type}} --target install
       env:
-        VERBOSE: 1 
+        VERBOSE: 1
 
     - name: Test
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: ctest -V 
+      run: ctest -V
 
     - name: Documentation
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: make doc_comms       
+      run: make doc_comms
 
   build_clang_ubuntu_22_04:
     runs-on: ubuntu-22.04
@@ -109,10 +109,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Prepare Install
       run: sudo apt-get update --fix-missing
-      
+
     - name: Install Packages
       run: sudo apt install doxygen dia clang-${{matrix.cc_ver}}
 
@@ -132,12 +132,12 @@ jobs:
       shell: bash
       run: cmake --build . --config ${{matrix.type}} --target install
       env:
-        VERBOSE: 1 
+        VERBOSE: 1
 
     - name: Test
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: ctest -V 
+      run: ctest -V
 
   build_clang_ubuntu_24_04:
     runs-on: ubuntu-24.04
@@ -155,10 +155,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Prepare Install
       run: sudo apt-get update --fix-missing
-      
+
     - name: Install Packages
       run: sudo apt install doxygen dia clang-${{matrix.cc_ver}}
 
@@ -178,17 +178,17 @@ jobs:
       shell: bash
       run: cmake --build . --config ${{matrix.type}} --target install
       env:
-        VERBOSE: 1 
+        VERBOSE: 1
 
     - name: Test
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: ctest -V 
+      run: ctest -V
 
     - name: Documentation
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: make doc_comms 
+      run: make doc_comms
 
   build_msvc_2022:
     runs-on: windows-2022
@@ -201,7 +201,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Create Build Environment
       shell: cmd
       run: cmake -E make_directory ${{runner.workspace}}/build
@@ -217,13 +217,12 @@ jobs:
       shell: cmd
       run: cmake --build . --config ${{matrix.type}} --target install
       env:
-        VERBOSE: 1 
+        VERBOSE: 1
 
     - name: Test
       working-directory: ${{runner.workspace}}/build
       shell: cmd
-      run: ctest -V 
-
+      run: ctest -V
 
   build_msvc_2025:
     runs-on: windows-2025
@@ -236,7 +235,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Create Build Environment
       shell: cmd
       run: cmake -E make_directory ${{runner.workspace}}/build
@@ -252,10 +251,10 @@ jobs:
       shell: cmd
       run: cmake --build . --config ${{matrix.type}} --target install
       env:
-        VERBOSE: 1 
+        VERBOSE: 1
 
     - name: Test
       working-directory: ${{runner.workspace}}/build
       shell: cmd
-      run: ctest -V 
+      run: ctest -V
 

@@ -25,7 +25,7 @@ namespace comms
 namespace frame
 {
 
-/// @brief Protocol layer that uses "sync" field as a prefix to all the
+/// @brief Frame layer that uses "sync" field as a prefix to all the
 ///        subsequent data written by other (next) layers.
 /// @details The main purpose of this layer is to provide a constant synchronisation
 ///     prefix to help identify the beginning of the serialised message.

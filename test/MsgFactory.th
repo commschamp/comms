@@ -24,7 +24,6 @@ public:
 
     void test1();
 
-
     struct Interface1 : public
         comms::Message<
             comms::option::def::MsgIdType<MessageType>,
@@ -48,7 +47,6 @@ public:
 
     template <typename TAllMessages>
     using MsgFactoryLinearSwitch = comms::MsgFactory<Interface1, TAllMessages, comms::option::app::ForceDispatchLinearSwitch>;
-
 
     template <typename TFactory>
     void testInvalidId(MessageType id)

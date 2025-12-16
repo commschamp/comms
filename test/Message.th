@@ -116,7 +116,6 @@ private:
     static_assert(!BeMessageBase::hasTransportFields(), "Wrong interface");
     static_assert(!BeMessageBase::hasVersionInTransportFields(), "Wrong interface");
 
-
     typedef std::tuple<
         comms::option::MsgIdType<MessageType>
     > BasicCommonOptions;
@@ -156,7 +155,6 @@ private:
     static_assert(std::has_virtual_destructor<BeReadOnlyMessageBase>::value,
         "BeReadOnlyMessageBase is expected to have virtual destructor");
 
-
     typedef std::tuple<
         comms::option::MsgIdType<MessageType>,
         comms::option::WriteIterator<std::back_insert_iterator<std::vector<std::uint8_t> > >
@@ -182,7 +180,6 @@ private:
 
     static_assert(std::has_virtual_destructor<BeWriteOnlyMessageBase>::value,
         "BeWriteOnlyMessageBase is expected to have virtual destructor");
-
 
     typedef std::tuple<
         comms::option::MsgIdType<MessageType>,
@@ -210,7 +207,6 @@ private:
     static_assert(std::has_virtual_destructor<BeLengthOnlyMessageBase>::value,
         "BeLengthOnlyMessageBase is expected to have virtual destructor");
 
-
     typedef Message1<BeMessageBase> BeMsg1;
     typedef Message1<LeMessageBase> LeMsg1;
 
@@ -234,7 +230,7 @@ private:
     typedef Message10<BeMessageBase> BeMsg10;
 
     typedef Message90_1<BeMessageBase> BeMsg90_1;
-    typedef Message90_2<BeMessageBase> BeMsg90_2;    
+    typedef Message90_2<BeMessageBase> BeMsg90_2;
 
     typedef
         comms::Message<
@@ -257,7 +253,6 @@ private:
 
     static_assert(std::has_virtual_destructor<BeRefreshableMessageBase>::value,
         "BeRefreshableMessageBase is expected to have virtual destructor");
-
 
     typedef Message4<BeRefreshableMessageBase> BeRefreshableMsg4;
     typedef Message9<BeRefreshableMessageBase> BeRefreshableMsg9;
@@ -380,7 +375,6 @@ private:
         COMMS_FIELD_MEMBERS_NAMES(mem1, mem2);
     };
 
-
     typedef std::tuple<
         comms::field::IntValue<
             comms::Field<comms::option::BigEndian>,
@@ -443,9 +437,8 @@ private:
         }
 
     private:
-        TMsgPtr m_ptr;        
-    };    
-
+        TMsgPtr m_ptr;
+    };
 
 };
 
@@ -968,7 +961,7 @@ void MessageTestSuite::test19()
     BeBasicMsg2 msg2;
     BeBasicMsg3 msg3;
 
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeBasicMsg1,
             BeBasicMsg2
@@ -988,7 +981,7 @@ void MessageTestSuite::test19()
     interface = static_cast<BeBasicMessageBase*>(&msg3);
     comms::dispatchMsgStaticBinSearch<AllMessages>(msg3.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);
 }
 
 void MessageTestSuite::test20()
@@ -998,7 +991,7 @@ void MessageTestSuite::test20()
     BeBasicMsg3 msg3;
     BeBasicMsg90_1 msg90;
 
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeBasicMsg1,
             BeBasicMsg2,
@@ -1019,22 +1012,22 @@ void MessageTestSuite::test20()
     interface = static_cast<BeBasicMessageBase*>(&msg3);
     comms::dispatchMsgPolymorphic<AllMessages>(msg3.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 3U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90);
     comms::dispatchMsgPolymorphic<AllMessages>(msg90.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 3U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg3);
     comms::dispatchMsg<AllMessages>(msg3.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 4U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg3);
     comms::dispatchMsg<AllMessages>(msg3.doGetId(), 1U, *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 4U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 2U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 2U);
 }
 
 void MessageTestSuite::test21()
@@ -1044,7 +1037,7 @@ void MessageTestSuite::test21()
     BeBasicMsg3 msg3;
     BeBasicMsg90_1 msg90;
 
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeBasicMsg1,
             BeBasicMsg2,
@@ -1067,12 +1060,12 @@ void MessageTestSuite::test21()
     interface = static_cast<BeBasicMessageBase*>(&msg3);
     comms::dispatchMsgPolymorphic<AllMessages>(msg3.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90);
     comms::dispatchMsgPolymorphic<AllMessages>(msg90.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 3U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);
 }
 
 void MessageTestSuite::test22()
@@ -1083,7 +1076,7 @@ void MessageTestSuite::test22()
     BeBasicMsg90_1 msg90_1;
     BeBasicMsg90_2 msg90_2;
 
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeBasicMsg1,
             BeBasicMsg2,
@@ -1117,21 +1110,21 @@ void MessageTestSuite::test22()
     interface = static_cast<BeBasicMessageBase*>(&msg3);
     comms::dispatchMsgPolymorphic<AllMessages>(msg3.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90_1);
     comms::dispatchMsgPolymorphic<AllMessages>(msg90_1.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 3U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90_2);
     comms::dispatchMsgPolymorphic<AllMessages>(msg90_2.doGetId(), 1U, *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 4U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);
 
     comms::dispatchMsgPolymorphic<AllMessages>(msg90_2.doGetId(), 2U, *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 4U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 4U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 4U);
 }
 
 void MessageTestSuite::test23()
@@ -1140,7 +1133,7 @@ void MessageTestSuite::test23()
     BeBasicMsg2 msg2;
     BeBasicMsg3 msg3;
 
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeBasicMsg1,
             BeBasicMsg2,
@@ -1161,12 +1154,12 @@ void MessageTestSuite::test23()
     interface = static_cast<BeBasicMessageBase*>(&msg3);
     comms::dispatchMsgStaticBinSearch<AllMessages>(msg3.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 3U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg3);
     comms::dispatchMsgStaticBinSearch<AllMessages>(msg3.doGetId(), 1U, *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 3U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);
 }
 
 void MessageTestSuite::test24()
@@ -1176,7 +1169,7 @@ void MessageTestSuite::test24()
     BeBasicMsg3 msg3;
     BeBasicMsg90_1 msg90;
 
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeBasicMsg1,
             BeBasicMsg2,
@@ -1199,22 +1192,22 @@ void MessageTestSuite::test24()
     interface = static_cast<BeBasicMessageBase*>(&msg3);
     comms::dispatchMsgStaticBinSearch<AllMessages>(msg3.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90);
     comms::dispatchMsgStaticBinSearch<AllMessages>(msg90.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 3U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90);
     comms::dispatchMsg<AllMessages>(msg90.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 4U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90);
     comms::dispatchMsg<AllMessages>(msg90.doGetId(), 1U, *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 4U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 2U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 2U);
 }
 
 void MessageTestSuite::test25()
@@ -1225,7 +1218,7 @@ void MessageTestSuite::test25()
     BeBasicMsg90_1 msg90_1;
     BeBasicMsg90_2 msg90_2;
 
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeBasicMsg1,
             BeBasicMsg2,
@@ -1259,35 +1252,35 @@ void MessageTestSuite::test25()
     interface = static_cast<BeBasicMessageBase*>(&msg3);
     comms::dispatchMsgStaticBinSearch<AllMessages>(msg3.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90_1);
     comms::dispatchMsgStaticBinSearch<AllMessages>(msg90_1.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 3U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90_2);
     comms::dispatchMsgStaticBinSearch<AllMessages>(msg90_2.doGetId(), 1U, *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 4U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);
 
     comms::dispatchMsgStaticBinSearch<AllMessages>(msg90_2.doGetId(), 2U, *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 4U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 4U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 4U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90_1);
     comms::dispatchMsg<AllMessages>(msg90_1.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 5U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 4U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 4U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90_2);
     comms::dispatchMsg<AllMessages>(msg90_2.doGetId(), 1U, *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 6U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 4U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 4U);
 
     comms::dispatchMsg<AllMessages>(msg90_2.doGetId(), 2U, *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 6U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 5U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 5U);
 }
 
 void MessageTestSuite::test26()
@@ -1296,7 +1289,7 @@ void MessageTestSuite::test26()
     BeBasicMsg2 msg2;
     BeBasicMsg3 msg3;
 
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeBasicMsg1,
             BeBasicMsg2,
@@ -1317,7 +1310,7 @@ void MessageTestSuite::test26()
     interface = static_cast<BeBasicMessageBase*>(&msg3);
     comms::dispatchMsgLinearSwitch<AllMessages>(msg3.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 3U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
 }
 
 void MessageTestSuite::test27()
@@ -1327,7 +1320,7 @@ void MessageTestSuite::test27()
     BeBasicMsg3 msg3;
     BeBasicMsg90_1 msg90;
 
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeBasicMsg1,
             BeBasicMsg2,
@@ -1350,12 +1343,12 @@ void MessageTestSuite::test27()
     interface = static_cast<BeBasicMessageBase*>(&msg3);
     comms::dispatchMsgLinearSwitch<AllMessages>(msg3.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90);
     comms::dispatchMsgLinearSwitch<AllMessages>(msg90.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 3U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 1U);
 }
 
 void MessageTestSuite::test28()
@@ -1366,7 +1359,7 @@ void MessageTestSuite::test28()
     BeBasicMsg90_1 msg90_1;
     BeBasicMsg90_2 msg90_2;
 
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeBasicMsg1,
             BeBasicMsg2,
@@ -1400,26 +1393,26 @@ void MessageTestSuite::test28()
     interface = static_cast<BeBasicMessageBase*>(&msg3);
     comms::dispatchMsgLinearSwitch<AllMessages>(msg3.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90_1);
     comms::dispatchMsgLinearSwitch<AllMessages>(msg90_1.doGetId(), *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 3U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);
 
     interface = static_cast<BeBasicMessageBase*>(&msg90_2);
     comms::dispatchMsgLinearSwitch<AllMessages>(msg90_2.doGetId(), 1U, *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 4U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 3U);
 
     comms::dispatchMsgLinearSwitch<AllMessages>(msg90_2.doGetId(), 2U, *interface, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 4U);
-    TS_ASSERT_EQUALS(handler.getBaseCount(), 4U);    
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 4U);
 }
 
 void MessageTestSuite::test29()
 {
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeMsg1,
             BeMsg2,
@@ -1471,12 +1464,12 @@ void MessageTestSuite::test29()
     {
         bool result = comms::dispatchMsgTypePolymorphic<AllMessages>(MessageType5, handler);
         TS_ASSERT(!result);
-    }    
+    }
 }
 
 void MessageTestSuite::test30()
 {
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeMsg1,
             BeMsg2,
@@ -1513,12 +1506,12 @@ void MessageTestSuite::test30()
     {
         bool result = comms::dispatchMsgTypePolymorphic<AllMessages>(MessageType3, handler);
         TS_ASSERT(!result);
-    }    
+    }
 }
 
 void MessageTestSuite::test31()
 {
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeMsg1,
             BeMsg2,
@@ -1556,22 +1549,22 @@ void MessageTestSuite::test31()
         auto msg = handler.getMsg();
         auto* castedMsg = reinterpret_cast<BeMsg90_1*>(msg.get());
         TS_ASSERT(castedMsg != nullptr);
-    }    
+    }
 
     {
         bool result = comms::dispatchMsgTypePolymorphic<AllMessages>(MessageType90, 2U, handler);
         TS_ASSERT(!result);
-    }        
+    }
 
     {
         bool result = comms::dispatchMsgTypePolymorphic<AllMessages>(MessageType3, handler);
         TS_ASSERT(!result);
-    }    
+    }
 }
 
 void MessageTestSuite::test32()
 {
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeMsg1,
             BeMsg2,
@@ -1609,12 +1602,12 @@ void MessageTestSuite::test32()
     {
         bool result = comms::dispatchMsgTypeStaticBinSearch<AllMessages>(MessageType5, handler);
         TS_ASSERT(!result);
-    }    
+    }
 }
 
 void MessageTestSuite::test33()
 {
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeMsg1,
             BeMsg2,
@@ -1651,7 +1644,7 @@ void MessageTestSuite::test33()
     {
         bool result = comms::dispatchMsgType<AllMessages>(MessageType1, 1U, handler);
         TS_ASSERT(!result);
-    }    
+    }
     {
         bool result = comms::dispatchMsgTypeStaticBinSearch<AllMessages>(MessageType2, handler);
         TS_ASSERT(result);
@@ -1673,17 +1666,17 @@ void MessageTestSuite::test33()
     {
         bool result = comms::dispatchMsgTypeStaticBinSearch<AllMessages>(MessageType3, handler);
         TS_ASSERT(!result);
-    }    
+    }
 
     {
         bool result = comms::dispatchMsgType<AllMessages>(MessageType5, handler);
         TS_ASSERT(!result);
-    }    
+    }
 }
 
 void MessageTestSuite::test34()
 {
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeMsg1,
             BeMsg2,
@@ -1734,32 +1727,32 @@ void MessageTestSuite::test34()
         auto msg = handler.getMsg();
         auto* castedMsg = reinterpret_cast<BeMsg90_1*>(msg.get());
         TS_ASSERT(castedMsg != nullptr);
-    }    
+    }
 
     {
         bool result = comms::dispatchMsgTypeStaticBinSearch<AllMessages>(MessageType90, 2U, handler);
         TS_ASSERT(!result);
-    }        
+    }
 
     {
         bool result = comms::dispatchMsgTypeStaticBinSearch<AllMessages>(MessageType90, 3U, handler);
         TS_ASSERT(!result);
-    }        
+    }
 
     {
         bool result = comms::dispatchMsgTypeStaticBinSearch<AllMessages>(MessageType3, handler);
         TS_ASSERT(!result);
-    }    
+    }
 
     {
         bool result = comms::dispatchMsgType<AllMessages>(MessageType5, handler);
         TS_ASSERT(!result);
-    }    
+    }
 }
 
 void MessageTestSuite::test35()
 {
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeMsg1,
             BeMsg2,
@@ -1793,12 +1786,12 @@ void MessageTestSuite::test35()
     {
         bool result = comms::dispatchMsgTypeLinearSwitch<AllMessages>(MessageType5, handler);
         TS_ASSERT(!result);
-    }    
+    }
 }
 
 void MessageTestSuite::test36()
 {
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeMsg1,
             BeMsg2,
@@ -1835,12 +1828,12 @@ void MessageTestSuite::test36()
     {
         bool result = comms::dispatchMsgTypeLinearSwitch<AllMessages>(MessageType3, handler);
         TS_ASSERT(!result);
-    }    
+    }
 }
 
 void MessageTestSuite::test37()
 {
-    using AllMessages = 
+    using AllMessages =
         std::tuple<
             BeMsg1,
             BeMsg2,
@@ -1878,17 +1871,17 @@ void MessageTestSuite::test37()
         auto msg = handler.getMsg();
         auto* castedMsg = reinterpret_cast<BeMsg90_1*>(msg.get());
         TS_ASSERT(castedMsg != nullptr);
-    }    
+    }
 
     {
         bool result = comms::dispatchMsgTypeLinearSwitch<AllMessages>(MessageType90, 2U, handler);
         TS_ASSERT(!result);
-    }        
+    }
 
     {
         bool result = comms::dispatchMsgTypeLinearSwitch<AllMessages>(MessageType3, handler);
         TS_ASSERT(!result);
-    }    
+    }
 }
 
 void MessageTestSuite::test38()
@@ -1985,7 +1978,7 @@ void MessageTestSuite::test40()
         auto readIter = &Buf[0];
         auto es = msg.doRead(readIter, BufSize);
         TS_ASSERT_EQUALS(es, comms::ErrorStatus::InvalidMsgData);
-    } while (false);   
+    } while (false);
 
     do {
         static const std::uint8_t Buf[] = {
@@ -1996,7 +1989,7 @@ void MessageTestSuite::test40()
         auto readIter = &Buf[0];
         auto es = msg.doRead(readIter, BufSize);
         TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-    } while (false);        
+    } while (false);
 }
 
 template <typename TMessage>

@@ -37,17 +37,17 @@ private:
             std::tuple<
                 comms::field::IntValue<BigEndianField, std::uint8_t, comms::option::FixedBitLength<4> >,
                 comms::field::EnumValue<BigEndianField, MessageType, comms::option::FixedBitLength<4> >
-            >        
+            >
         >
     {
-        using Base = 
+        using Base =
             comms::field::Bitfield<
                 BigEndianField,
                 std::tuple<
                     comms::field::IntValue<BigEndianField, std::uint8_t, comms::option::FixedBitLength<4> >,
                     comms::field::EnumValue<BigEndianField, MessageType, comms::option::FixedBitLength<4> >
-                >        
-            >;   
+                >
+            >;
     public:
         COMMS_FIELD_MEMBERS_NAMES(flags, id);
     };
@@ -57,7 +57,7 @@ private:
             comms::field::IntValue<BigEndianField, std::uint8_t>
         >;
 
-    using IfOptions = 
+    using IfOptions =
         std::tuple<
             comms::option::MsgIdType<MessageType>,
             comms::option::BigEndian,
@@ -68,7 +68,7 @@ private:
             comms::option::ExtraTransportFields<ExtraTransportFields>
         >;
 
-    struct Interface : public 
+    struct Interface : public
         comms::Message<IfOptions>
     {
         using Base = comms::Message<IfOptions>;
@@ -76,14 +76,14 @@ private:
         COMMS_MSG_TRANSPORT_FIELDS_NAMES(flags);
     };
 
-    using BasicInterfaceOptions = 
+    using BasicInterfaceOptions =
         std::tuple<
             comms::option::MsgIdType<MessageType>,
             comms::option::BigEndian,
             comms::option::ExtraTransportFields<ExtraTransportFields>
         >;
 
-    struct NonPolymorphicInterface : public 
+    struct NonPolymorphicInterface : public
         comms::Message<BasicInterfaceOptions>
     {
         using Base = comms::Message<BasicInterfaceOptions>;
@@ -94,7 +94,6 @@ private:
 
         virtual ~NonPolymorphicInterface() = default;
     };
-
 
     template <
           typename TInterface,
@@ -111,7 +110,7 @@ private:
             TOptions...
         >
     {
-        using Base = 
+        using Base =
             comms::frame::MsgIdLayer<
                 IdWithFlagsField,
                 TInterface,
@@ -119,7 +118,7 @@ private:
                 TNextLayer,
                 comms::option::ExtendingClass<CustomMsgIdLayer<TInterface, TAllMessages, TNextLayer, TOptions...> >,
                 TOptions...
-            >;        
+            >;
     public:
         using Field = typename Base::Field;
         using MsgIdType = typename Base::MsgIdType;
@@ -145,7 +144,7 @@ private:
     };
 
     template <typename TInterface>
-    using AllMessages1 = 
+    using AllMessages1 =
         std::tuple<
             Message1<TInterface>,
             Message2<TInterface>,
@@ -155,7 +154,7 @@ private:
     template <typename TInterface = Interface>
     class SimpleFrame : public
         CustomMsgIdLayer<
-            TInterface, 
+            TInterface,
             AllMessages1<TInterface>,
             comms::frame::MsgDataLayer<>
         >
@@ -188,7 +187,7 @@ private:
             >;
     public:
         COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-    };    
+    };
 
     template <typename TInterface = Interface>
     class InPlaceFrameWithGenericMsg : public
@@ -210,7 +209,7 @@ private:
             >;
     public:
         COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-    };   
+    };
 };
 
 void CustomMsgIdLayerTestSuite::test1()

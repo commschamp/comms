@@ -339,7 +339,7 @@
 /// complete their read operation before calculating and verifying checksum on
 /// read data. However, there may be protocols that may allow checksum verification
 /// before attempting to read message contents. In this case
-/// @ref comms::option::def::ChecksumLayerVerifyBeforeRead option may be used as
+/// @ref comms::option::def::FrameLayerVerifyBeforeRead option may be used as
 /// fourth template parameter.
 /// @code
 /// namespace my_protocol
@@ -354,7 +354,7 @@
 ///         ChecksumField,
 ///         comms::frame::checksum::Crc_CCITT
 ///         MyMsgSize<TMessage, TInputMessages, TAllocationOptions>,
-///         comms::option::def::ChecksumLayerVerifyBeforeRead
+///         comms::option::def::FrameLayerVerifyBeforeRead
 ///     >;
 ///
 /// } // namespace my_protocol

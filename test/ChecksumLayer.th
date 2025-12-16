@@ -88,7 +88,6 @@ private:
     typedef Message1<BeNonPolymorphicMessageBase> NonPolymorphicBeMsg1;
     typedef Message2<BeNonPolymorphicMessageBase> NonPolymorphicBeMsg2;
 
-
     template <typename TField, std::size_t TSize>
     using SyncField =
         comms::field::IntValue<
@@ -148,14 +147,12 @@ private:
     using BeIdField2 = IdField2<BeField>;
     using LeIdField2 = IdField2<LeField>;
 
-
     template <typename TField, std::size_t TLen>
     using ChecksumField =
         comms::field::IntValue<
             TField,
             typename comms::util::SizeToType<TLen>::Type
         >;
-
 
     template <typename TField>
     using ChecksumField1 = ChecksumField<TField, 1U>;
@@ -219,7 +216,7 @@ private:
                         comms::frame::MsgDataLayer<>
                     >
                 >,
-                comms::option::ChecksumLayerVerifyBeforeRead
+                comms::option::def::FrameLayerVerifyBeforeRead
             >
         >;
 
@@ -477,7 +474,6 @@ void ChecksumLayerTestSuite::test8()
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-
     typedef
         FrameVerifyBefore<
             BeSyncField2,
@@ -519,7 +515,6 @@ void ChecksumLayerTestSuite::test9()
         > TestFrame;
 
     TestFrame frame;
-
 
     auto& syncLayer = frame.layer_sync();
     using SyncLayerType = typename std::decay<decltype(syncLayer)>::type;

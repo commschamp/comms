@@ -122,7 +122,7 @@ public:
         unsigned interfaceCnt() const
         {
             return m_interfaceCnt;
-        }        
+        }
 
         MessageType lastId() const
         {
@@ -140,14 +140,13 @@ public:
         unsigned m_detectedCnt = 0U;
         unsigned m_interfaceCnt = 0U;
         MessageType m_lastId = InvalidMessageId;
-    };    
+    };
 
     using Interface1 =
         comms::Message<
             comms::option::def::MsgIdType<MessageType>,
             comms::option::def::BigEndian
         >;
-
 
     using Interface2 =
         comms::Message<
@@ -375,7 +374,7 @@ void DispatchTestSuite::test5()
             comms::option::app::Handler<TestHandler>,
             comms::option::app::ReadIterator<const std::uint8_t*>,
             comms::option::app::WriteIterator<std::uint8_t*>
-        >;    
+        >;
 
     using Msg1 = Message1<TestInterface>;
     using Msg2 = Message2<TestInterface>;
@@ -396,7 +395,7 @@ void DispatchTestSuite::test5()
     using SizeField = comms::field::IntValue<FieldBase, std::uint16_t>;
     using Idfield = comms::field::EnumValue<FieldBase, MessageType>;
 
-    using Frame = 
+    using Frame =
         comms::frame::MsgSizeLayer<
             SizeField,
             comms::frame::MsgIdLayer<
@@ -408,14 +407,14 @@ void DispatchTestSuite::test5()
         >;
 
     std::vector<std::uint8_t> outBuf;
-    
+
     Msg90_2 outMsg;
     TestHandler handler;
     Frame frame;
 
     outBuf.resize(frame.length(outMsg));
     auto writeIter = &outBuf[0];
-    
+
     auto es = frame.write(outMsg, writeIter, outBuf.size());
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
 

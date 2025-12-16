@@ -26,7 +26,7 @@ namespace comms
 namespace frame
 {
 
-/// @brief Protocol layer that reads a value from transport wrapping and
+/// @brief Frame layer that reads a value from transport wrapping and
 ///     reassigns it to appropriate "extra transport" data member of the
 ///     created message object.
 /// @details Some protocols may put some values, which influence the way
