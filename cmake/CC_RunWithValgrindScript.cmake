@@ -1,6 +1,6 @@
-# This script allows running of prevously compiled binary (unit test) with 
+# This script allows running of prevously compiled binary (unit test) with
 # valgrind.
-# 
+#
 # Expected variables:
 #     VALGRIND_EXECUTABLE - path the the valgrind.
 #     TEST_EXECUTABLE - path to the test binary.
@@ -32,6 +32,5 @@ endif ()
 
 if ("${_output}" MATCHES "[.]*==[0-9]*== [.]*")
     message (FATAL_ERROR "Valgrind reported errors.")
-endif ()    
-
+endif ()
 
