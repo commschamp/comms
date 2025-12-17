@@ -69,11 +69,6 @@ public:
     /// @brief Type of the field object used to read/write "sync" value.
     using Field = typename BaseImpl::Field;
 
-    /// @brief Type of real extending class
-    /// @details Updated when @ref comms::option::ExtendingClass extension option us used,
-    ///    aliasing @b void if the options is not used.
-    using ExtendingClass = typename ParsedOptionsInternal::ExtendingClass;
-
     /// @brief Default constructor
     TransportValueLayer() = default;
 

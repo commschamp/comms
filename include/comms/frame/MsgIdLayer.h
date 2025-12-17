@@ -83,11 +83,6 @@ public:
     /// @brief Message factory class
     using MsgFactory = typename ParsedOptionsInternal::template MsgFactory<TMessage, TAllMessages>;
 
-    /// @brief Type of real extending class
-    /// @details Updated when @ref comms::option::ExtendingClass extension option us used,
-    ///    aliasing @b void if the options is not used.
-    using ExtendingClass = typename ParsedOptionsInternal::ExtendingClass;
-
     /// @brief All supported message types bundled in std::tuple.
     using AllMessages = TAllMessages;
 

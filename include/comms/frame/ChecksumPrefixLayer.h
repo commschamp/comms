@@ -75,11 +75,6 @@ public:
     /// @brief Provided checksum calculation algorithm
     using ChecksumCalc = TCalc;
 
-    /// @brief Type of real extending class
-    /// @details Updated when @ref comms::option::ExtendingClass extension option us used,
-    ///    aliasing @b void if the options is not used.
-    using ExtendingClass = typename ParsedOptionsInternal::ExtendingClass;
-
     /// @brief Default constructor.
     ChecksumPrefixLayer() = default;
 
