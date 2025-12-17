@@ -39,6 +39,12 @@ namespace frame
 ///     @li  @ref comms::option::ExtendingClass - Use this option to provide a class
 ///         name of the extending class, which can be used to extend existing functionality.
 ///         See also @ref page_custom_sync_prefix_layer.
+///     @li @ref comms::option::def::FrameLayerSeekField - By default, the
+///         @b SyncSuffixLayer will invoke @b read operation of inner (wrapped) layers
+///         and only if it is successful. Usage of @ref comms::option::def::FrameLayerSeekField
+///         modifies the default behaviour by forcing layer to seek the field in the
+///         buffer (until the successful read and verification)
+///         prior to invocation of @b read operation in the wrapped layer(s).
 /// @headerfile comms/frame/SyncPrefixLayer.h
 /// @extends comms::frame::FrameLayerBase
 template <typename TField, typename TNextLayer, typename... TOptions>
@@ -85,7 +91,7 @@ public:
     ///     the next layer is called.
     /// @tparam TMsg Type of the @b msg parameter.
     /// @tparam TIter Type of iterator used for reading.
-    /// @tparam TNextLayerReader next layer reader object type.
+    /// @tparam TNextLayerReader Next layer reader object type.
     /// @param[out] field Field object to read.
     /// @param[in, out] msg Reference to smart pointer, that already holds or
     ///     will hold allocated message object, or reference to actual message
@@ -114,26 +120,23 @@ public:
         TNextLayerReader&& nextLayerReader,
         TExtraValues... extraValues)
     {
-        auto& thisObj = BaseImpl::thisLayer();
-        auto* msgPtr = BaseImpl::toMsgPtr(msg);
-        auto beforeReadIter = iter;
+        using SeekTag =
+            typename comms::util::LazyShallowConditional<
+                ParsedOptionsInternal::HasSeekField
+            >::template Type<
+                SeekFieldTag,
+                InstantOpTag
+            >;
 
-        auto es = thisObj.doReadField(msgPtr, field, iter, size);
-        if (es == comms::ErrorStatus::NotEnoughData) {
-            BaseImpl::updateMissingSize(field, size, extraValues...);
-        }
-
-        if (es != comms::ErrorStatus::Success) {
-            return es;
-        }
-
-        bool verified = thisObj.verifyFieldValue(field);
-        if (!verified) {
-            return comms::ErrorStatus::ProtocolError;
-        }
-
-        auto fieldLen = static_cast<std::size_t>(std::distance(beforeReadIter, iter));
-        return nextLayerReader.read(msg, iter, size - fieldLen, extraValues...);
+        return
+            readInternal(
+                field,
+                msg,
+                iter,
+                size,
+                std::forward<TNextLayerReader>(nextLayerReader),
+                SeekTag(),
+                extraValues...);
     }
 
     /// @brief Customized write functionality, invoked by @ref comms::frame::FrameLayerBase::write() "write()".
@@ -194,6 +197,95 @@ protected:
     static void prepareFieldForWrite(Field& field)
     {
         static_cast<void>(field);
+    }
+
+private:
+    template <typename... TParams>
+    using SeekFieldTag = comms::details::tag::Tag1<>;
+
+    template <typename... TParams>
+    using InstantOpTag = comms::details::tag::Tag2<>;
+
+    template <typename TMsg, typename TIter, typename TReader, typename... TExtraValues>
+    ErrorStatus readInternal(
+        Field& field,
+        TMsg& msg,
+        TIter& iter,
+        std::size_t size,
+        TReader&& nextLayerReader,
+        SeekFieldTag<>,
+        TExtraValues... extraValues)
+    {
+        using IterType = typename std::decay<decltype(iter)>::type;
+        static_assert(std::is_same<typename std::iterator_traits<IterType>::iterator_category, std::random_access_iterator_tag>::value,
+            "The read operation is expected to use random access iterator");
+
+        auto& thisObj = BaseImpl::thisLayer();
+        auto* msgPtr = BaseImpl::toMsgPtr(msg);
+
+        auto fromIter = iter;
+        std::size_t consumed = 0U;
+        while (consumed < size) {
+            auto iterTmp = iter;
+            auto remSize = size - consumed;
+
+            auto fieldEs = thisObj.doReadField(msgPtr, field, iterTmp, remSize);
+            if (fieldEs == ErrorStatus::NotEnoughData) {
+                BaseImpl::updateMissingSize(field, remSize, extraValues...);
+                BaseImpl::resetMsg(msg);
+                return fieldEs;
+            }
+
+            if ((fieldEs == ErrorStatus::Success) &&
+                (thisObj.verifyFieldValue(field))) {
+                // Set iter to point after field
+                iter = iterTmp;
+                break;
+            }
+
+            ++iter;
+            ++consumed;
+        }
+
+        if (size <= consumed) {
+            // Field hasn't been recognized
+            return ErrorStatus::NotEnoughData;
+        }
+
+        auto remSize = size - static_cast<std::size_t>(std::distance(fromIter, iter));
+        return nextLayerReader.read(msg, iter, remSize, extraValues...);
+    }
+
+    template <typename TMsg, typename TIter, typename TReader, typename... TExtraValues>
+    ErrorStatus readInternal(
+        Field& field,
+        TMsg& msg,
+        TIter& iter,
+        std::size_t size,
+        TReader&& nextLayerReader,
+        InstantOpTag<>,
+        TExtraValues... extraValues)
+    {
+        auto& thisObj = BaseImpl::thisLayer();
+        auto* msgPtr = BaseImpl::toMsgPtr(msg);
+        auto beforeReadIter = iter;
+
+        auto es = thisObj.doReadField(msgPtr, field, iter, size);
+        if (es == comms::ErrorStatus::NotEnoughData) {
+            BaseImpl::updateMissingSize(field, size, extraValues...);
+        }
+
+        if (es != comms::ErrorStatus::Success) {
+            return es;
+        }
+
+        bool verified = thisObj.verifyFieldValue(field);
+        if (!verified) {
+            return comms::ErrorStatus::ProtocolError;
+        }
+
+        auto fieldLen = static_cast<std::size_t>(std::distance(beforeReadIter, iter));
+        return nextLayerReader.read(msg, iter, size - fieldLen, extraValues...);
     }
 };
 

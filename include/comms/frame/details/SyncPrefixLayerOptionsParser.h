@@ -26,6 +26,7 @@ class SyncPrefixLayerOptionsParser<>
 {
 public:
     static constexpr bool HasExtendingClass = false;
+    static constexpr bool HasSeekField = false;
 
     using ExtendingClass = void;
 
@@ -43,6 +44,14 @@ public:
 
     template <typename TLayer>
     using DefineExtendingClass = ExtendingClass;
+};
+
+template <typename... TOptions>
+class SyncPrefixLayerOptionsParser<comms::option::def::FrameLayerSeekField, TOptions...> :
+        public SyncPrefixLayerOptionsParser<TOptions...>
+{
+public:
+    static constexpr bool HasSeekField = true;
 };
 
 template <typename... TOptions>

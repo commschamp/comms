@@ -50,15 +50,15 @@ namespace frame
 ///     @ref comms::frame::checksum namespace (`comms/frame/checkum` folder).
 /// @tparam TNextLayer Next transport layer in frame.
 /// @tparam TOptions Extending functionality options. Supported options are:
+///     @li  @ref comms::option::ExtendingClass - Use this option to provide a class
+///         name of the extending class, which can be used to extend existing functionality.
+///         See also @ref page_custom_checksum_layer tutorial page.
 ///     @li @ref comms::option::def::FrameLayerVerifyBeforeRead - By default, the
 ///         @b ChecksumPrefixLayer will invoke @b read operation of inner (wrapped) layers
 ///         and only if it is successful, it will calculate and verify the
 ///         checksum value. Usage of @ref comms::option::def::FrameLayerVerifyBeforeRead
 ///         modifies the default behaviour by forcing the checksum verification
 ///         prior to invocation of @b read operation in the wrapped layer(s).
-///     @li  @ref comms::option::ExtendingClass - Use this option to provide a class
-///         name of the extending class, which can be used to extend existing functionality.
-///         See also @ref page_custom_checksum_layer tutorial page.
 /// @headerfile comms/frame/ChecksumPrefixLayer.h
 /// @extends comms::frame::FrameLayerBase
 template <typename TField, typename TCalc, typename TNextLayer, typename... TOptions>

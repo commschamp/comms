@@ -56,18 +56,18 @@ public:
 };
 
 template <typename... TOptions>
-class SyncSuffixLayerOptionsParser<
-    comms::option::app::EmptyOption,
-    TOptions...> : public SyncSuffixLayerOptionsParser<TOptions...>
-{
-};
-
-template <typename... TOptions>
 class SyncSuffixLayerOptionsParser<comms::option::def::FrameLayerSeekField, TOptions...> :
         public SyncSuffixLayerOptionsParser<TOptions...>
 {
 public:
     static constexpr bool HasSeekField = true;
+};
+
+template <typename... TOptions>
+class SyncSuffixLayerOptionsParser<
+    comms::option::app::EmptyOption,
+    TOptions...> : public SyncSuffixLayerOptionsParser<TOptions...>
+{
 };
 
 template <typename... TBundledOptions, typename... TOptions>

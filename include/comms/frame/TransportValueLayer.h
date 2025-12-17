@@ -44,8 +44,6 @@ namespace frame
 ///     (accessed via @ref comms::Message::transportFields()).
 /// @tparam TNextLayer Next transport layer in frame.
 /// @tparam TOptions Extending functionality options. Supported options are:
-///     @li @ref comms::option::def::PseudoValue - Mark the handled value to be "pseudo"
-///         one, i.e. the field is not getting serialised.
 ///     @li  @ref comms::option::def::ExtendingClass - Use this option to provide a class
 ///         name of the extending class, which can be used to extend existing functionality.
 ///         See also @ref page_custom_transport_value_layer tutorial page.
@@ -57,6 +55,8 @@ namespace frame
 ///         happens when the @ref comms::frame::TransportValueLayer preceeds (wraps)
 ///         @ref comms::frame::MsgIdLayer and is unable to re-assign the read field value
 ///         to the message object, because the latter hasn't been created yet.
+///     @li @ref comms::option::def::PseudoValue - Mark the handled value to be "pseudo"
+///         one, i.e. the field is not getting serialised.
 /// @headerfile comms/frame/TransportValueLayer.h
 /// @extends comms::frame::FrameLayerBase
 template <typename TField, std::size_t TIdx, typename TNextLayer, typename... TOptions>

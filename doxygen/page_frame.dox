@@ -391,12 +391,29 @@
 ///
 /// } // namespace my_protocol
 /// @endcode
-/// The comms::frame::SyncPrefixLayer class receives two template parameters.
+/// The comms::frame::SyncPrefixLayer class receives at least two template parameters.
+///
 /// The first one is the type of the @b field, that is responsible to read/write
 /// the synchronisation byte(s). Please note the usage of @ref comms::option::def::DefaultNumValue
 /// option when defining the @b field type. It insures that the default constructed
-/// field will have the required value. @n
+/// field will have the required value.
+///
 /// The second template parameter is the upper layer being wrapped.
+///
+/// Starting from the third template parameter coming behaviour customization options
+/// For example passing extra @ref comms::option::def::FrameLayerSeekField will force
+/// the layer to actually seek the required prefix in the input data before continuing.
+/// @code
+/// using MySyncPrefix =
+///     comms::frame::SyncPrefixLayer<
+///         SyncField,
+///         MyChecksum<TMessage, TInputMessages, TAllocationOptions>,
+///         comms::option::def::FrameLayerSeekField
+///     >;
+/// @endcode
+/// Similar to the @ref page_frame_tutorial_checksum the @ref page_frame_tutorial_sync
+/// can process the trailing (after message payload) synchronization bytes. However, to
+/// process such bytes the @ref comms::frame::SyncSuffixLayer class needs to be used instead.
 ///
 /// @section page_frame_tutorial_transport_value Extra Transport Values
 /// Some protocol may use extra values as part of the transport information. Such

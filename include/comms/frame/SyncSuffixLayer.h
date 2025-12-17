@@ -39,6 +39,9 @@ namespace frame
 /// @tparam TField Type of the field that is used as to represent checksum value.
 /// @tparam TNextLayer Next transport layer in frame.
 /// @tparam TOptions Extending functionality options. Supported options are:
+///     @li  @ref comms::option::ExtendingClass - Use this option to provide a class
+///         name of the extending class, which can be used to extend existing functionality.
+///         See also @ref page_custom_checksum_layer tutorial page.
 ///     @li @ref comms::option::def::FrameLayerVerifyBeforeRead - By default, the
 ///         @b SyncSuffixLayer will invoke @b read operation of inner (wrapped) layers
 ///         and only if it is successful. Usage of @ref comms::option::def::FrameLayerVerifyBeforeRead
@@ -50,9 +53,6 @@ namespace frame
 ///         modifies the default behaviour by forcing layer to seek the field in the
 ///         buffer (until the successful read and verification)
 ///         prior to invocation of @b read operation in the wrapped layer(s).
-///     @li  @ref comms::option::ExtendingClass - Use this option to provide a class
-///         name of the extending class, which can be used to extend existing functionality.
-///         See also @ref page_custom_checksum_layer tutorial page.
 /// @headerfile comms/frame/SyncSuffixLayer.h
 /// @extends comms::frame::FrameLayerBase
 template <typename TField, typename TNextLayer, typename... TOptions>
@@ -144,13 +144,17 @@ public:
         TNextLayerReader&& nextLayerReader,
         TExtraValues... extraValues)
     {
+        std::cout << "!!! " << __FUNCTION__ << ": " << std::hex;
+        std::copy_n(iter, size, std::ostream_iterator<unsigned>(std::cout, " "));
+        std::cout << std::dec << std::endl;
+
         using IterType = typename std::decay<decltype(iter)>::type;
         static_assert(std::is_same<typename std::iterator_traits<IterType>::iterator_category, std::random_access_iterator_tag>::value,
             "The read operation is expected to use random access iterator");
 
         using SeekTag =
             typename comms::util::LazyShallowConditional<
-                ParsedOptionsInternal::HasVerifyBeforeRead
+                ParsedOptionsInternal::HasSeekField
             >::template Type<
                 SeekFieldTag,
                 InstantOpTag
@@ -243,6 +247,10 @@ private:
         TReader&& nextLayerReader,
         TExtraValues... extraValues)
     {
+        std::cout << "!!! " << __FUNCTION__ << ": " << std::hex;
+        std::copy_n(iter, size, std::ostream_iterator<unsigned>(std::cout, " "));
+        std::cout << std::dec << std::endl;
+
         auto fromIter = iter;
         auto* msgPtr = BaseImpl::toMsgPtr(msg);
         auto fieldLen = Field::minLength();
@@ -281,6 +289,10 @@ private:
         TReader&& nextLayerReader,
         TExtraValues... extraValues)
     {
+        std::cout << "!!! " << __FUNCTION__ << ": " << std::hex;
+        std::copy_n(iter, size, std::ostream_iterator<unsigned>(std::cout, " "));
+        std::cout << std::dec << std::endl;
+
         auto fromIter = iter;
 
         auto es = nextLayerReader.read(msg, iter, size, extraValues...);
@@ -321,6 +333,10 @@ private:
         TReader&& nextLayerReader,
         TExtraValues... extraValues)
     {
+        std::cout << "!!! " << __FUNCTION__ << ": " << std::hex;
+        std::copy_n(iter, size, std::ostream_iterator<unsigned>(std::cout, " "));
+        std::cout << std::dec << std::endl;
+
         auto& thisObj = BaseImpl::thisLayer();
         auto* msgPtr = BaseImpl::toMsgPtr(msg);
 

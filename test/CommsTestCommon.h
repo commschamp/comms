@@ -49,6 +49,7 @@ enum MessageType {
     MessageType8,
     MessageType9,
     MessageType10,
+    MessageType11,
 
     MessageType90 = 90
 };
@@ -746,6 +747,57 @@ public:
 };
 
 template <typename TField>
+struct Message11Fields
+{
+    using field1 = comms::field::String<TField>;
+
+    using All = std::tuple<
+        field1
+    >;
+
+};
+
+template <typename TMessage>
+class Message11 : public
+        comms::MessageBase<
+            TMessage,
+            comms::option::StaticNumIdImpl<MessageType11>,
+            comms::option::FieldsImpl<typename Message11Fields<typename TMessage::Field>::All>,
+            comms::option::MsgType<Message11<TMessage> >,
+            comms::option::HasName,
+            comms::option::FailOnInvalid<>
+        >
+{
+    using Base =
+        comms::MessageBase<
+            TMessage,
+            comms::option::StaticNumIdImpl<MessageType11>,
+            comms::option::FieldsImpl<typename Message11Fields<typename TMessage::Field>::All>,
+            comms::option::MsgType<Message11<TMessage> >,
+            comms::option::HasName,
+            comms::option::FailOnInvalid<>
+        >;
+public:
+
+    static const bool AreFieldsVersionDependent = Base::areFieldsVersionDependent();
+    static_assert(!AreFieldsVersionDependent, "Fields not must be version dependent");
+
+    COMMS_MSG_FIELDS_NAMES(f1);
+
+    static const std::size_t MsgMinLen = Base::doMinLength();
+    static_assert(MsgMinLen == 0U, "Wrong serialisation length");
+
+    Message11() = default;
+
+    ~Message11() noexcept = default;
+
+    static const char* doName()
+    {
+        return "Message11";
+    }
+};
+
+template <typename TField>
 struct Message90_1Fields
 {
     using typeField =
@@ -877,6 +929,8 @@ using AllTestMessages =
         Message7<TMessage>,
         Message8<TMessage>,
         Message9<TMessage>,
+        Message10<TMessage>,
+        Message11<TMessage>,
         Message90_1<TMessage>,
         Message90_2<TMessage>
     >;
