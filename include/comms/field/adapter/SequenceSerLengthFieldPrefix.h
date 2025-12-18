@@ -10,6 +10,8 @@
 #include "comms/Assert.h"
 #include "comms/ErrorStatus.h"
 
+#include <iterator>
+
 namespace comms
 {
 

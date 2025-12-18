@@ -17,6 +17,8 @@
 #include "comms/frame/details/TransportValueLayerBase.h"
 #include "comms/util/type_traits.h"
 
+#include <iterator>
+
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4189) // Disable erroneous initialized but not referenced variable warning
 

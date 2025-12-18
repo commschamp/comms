@@ -12,6 +12,8 @@
 #include "comms/ErrorStatus.h"
 #include "comms/util/type_traits.h"
 
+#include <iterator>
+
 namespace comms
 {
 

@@ -16,6 +16,7 @@
 #include "comms/util/type_traits.h"
 
 #include <algorithm>
+#include <iterator>
 #include <limits>
 #include <type_traits>
 

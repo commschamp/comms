@@ -5,6 +5,13 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include "comms/comms.h"
+#include "CommsTestCommon.h"
+
+CC_DISABLE_WARNINGS()
+#include "cxxtest/TestSuite.h"
+CC_ENABLE_WARNINGS()
+
 #include <cstdint>
 #include <algorithm>
 #include <limits>
@@ -12,13 +19,6 @@
 #include <iterator>
 #include <ratio>
 #include <type_traits>
-
-#include "comms/comms.h"
-#include "CommsTestCommon.h"
-
-CC_DISABLE_WARNINGS()
-#include "cxxtest/TestSuite.h"
-CC_ENABLE_WARNINGS()
 
 static_assert(comms::util::detect::hasClearFunc<std::string>(), "Invalid function presence detection");
 static_assert(comms::util::detect::hasClearFunc<std::vector<std::uint8_t> >(), "Invalid function presence detection");

@@ -5,13 +5,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <cstdint>
-#include <cstddef>
-#include <algorithm>
-#include <iterator>
-#include <iostream>
-#include <iomanip>
-
 #include "comms/comms.h"
 #include "comms/frame/checksum/BasicSum.h"
 #include "comms/frame/checksum/Crc.h"
@@ -21,6 +14,13 @@
 CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
 CC_ENABLE_WARNINGS()
+
+#include <cstdint>
+#include <cstddef>
+#include <algorithm>
+#include <iterator>
+#include <iostream>
+#include <iomanip>
 
 class CustomChecksumPrefixLayerTestSuite : public CxxTest::TestSuite
 {
