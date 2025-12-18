@@ -126,8 +126,6 @@ public:
 
     /// @brief Compile time inquiry of whether this class was extended via
     ///    @ref comms::option::ExtendingClass option.
-    /// @details If @b true is returned, the @ref SyncPrefixLayer::ExtendingClass "ExtendingClass"
-    ///     type aliasing the real layer type.
     static constexpr bool hasExtendingClass()
     {
         return ParsedOptionsInternal::HasExtendingClass;
