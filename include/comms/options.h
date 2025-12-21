@@ -1087,7 +1087,9 @@ using ChecksumLayerVerifyBeforeRead = FrameLayerVerifyBeforeRead;
 
 /// @brief Force the layer to seek its field before
 ///     forwarding read to the wrapped layer(s).
+/// @tparam TEscField - Escape field to avoid detection of the field being seeked.
 /// @headerfile comms/options.h
+template <typename TEscField = void>
 struct FrameLayerSeekField {};
 
 /// @brief Force field not to be serialized during read/write operations

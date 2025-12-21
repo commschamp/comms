@@ -30,6 +30,8 @@ public:
 
     using ExtendingClass = void;
 
+    using EscField = void;
+
     template <typename TLayer>
     using DefineExtendingClass = TLayer;
 };
@@ -46,11 +48,12 @@ public:
     using DefineExtendingClass = ExtendingClass;
 };
 
-template <typename... TOptions>
-class SyncPrefixLayerOptionsParser<comms::option::def::FrameLayerSeekField, TOptions...> :
+template <typename TEscField, typename... TOptions>
+class SyncPrefixLayerOptionsParser<comms::option::def::FrameLayerSeekField<TEscField>, TOptions...> :
         public SyncPrefixLayerOptionsParser<TOptions...>
 {
 public:
+    using EscField = TEscField;
     static constexpr bool HasSeekField = true;
 };
 

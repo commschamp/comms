@@ -36,7 +36,7 @@ class MsgSizeLayerBaseHelper
             TField,
             TNextLayer,
             ActualLayer,
-            comms::option::FrameLayerDisallowReadUntilDataSplit
+            comms::option::def::FrameLayerDisallowReadUntilDataSplit
         >;
 
 public:

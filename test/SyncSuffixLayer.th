@@ -99,7 +99,7 @@ private:
                 AllTestMessages<BeMsgBase>,
                 comms::frame::MsgDataLayer<>
             >,
-            comms::option::def::FrameLayerSeekField
+            comms::option::def::FrameLayerSeekField<>
         >;
 };
 

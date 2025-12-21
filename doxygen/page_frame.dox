@@ -408,7 +408,7 @@
 ///     comms::frame::SyncPrefixLayer<
 ///         SyncField,
 ///         MyChecksum<TMessage, TInputMessages, TAllocationOptions>,
-///         comms::option::def::FrameLayerSeekField
+///         comms::option::def::FrameLayerSeekField<>
 ///     >;
 /// @endcode
 /// Similar to the @ref page_frame_tutorial_checksum the @ref page_frame_tutorial_sync
