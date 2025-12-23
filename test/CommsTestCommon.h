@@ -962,13 +962,11 @@ public:
     template <typename TMsg>
     void handle(TMsg&)
     {
-        //std::cout << "Dispatching actual type!!!" << std::endl;
         ++m_custom;
     }
 
     void handle(TMsgBase&)
     {
-        //std::cout << "Dispatching base!!!" << std::endl;
         ++m_base;
     }
 

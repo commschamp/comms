@@ -325,10 +325,10 @@ private:
         auto& thisObj = BaseImpl::thisLayer();
 
         auto limitIter = to;
-        std::advance(limitIter, -dist);
+        std::advance(limitIter, -static_cast<int>(dist));
 
         auto iter = to;
-        std::advance(iter, -EscField::minLength());
+        std::advance(iter, -static_cast<int>(EscField::minLength()));
         while (true) {
             auto iterTmp = iter;
             EscField escField;

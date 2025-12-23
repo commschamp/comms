@@ -23,6 +23,7 @@ public:
     void test1();
     void test2();
     void test3();
+    void test4();
 
 private:
 
@@ -46,6 +47,20 @@ private:
             BeField,
             std::uint16_t,
             comms::option::DefaultNumValue<0xabcd>
+        >;
+
+    using BeSyncField2 =
+        comms::field::IntValue<
+            BeField,
+            std::uint16_t,
+            comms::option::DefaultNumValue<0x3d3d> // ==
+        >;
+
+    using BeEscField =
+        comms::field::IntValue<
+            BeField,
+            std::uint16_t,
+            comms::option::DefaultNumValue<0x4040> // @@
         >;
 
     using BeSizeField =
@@ -101,6 +116,18 @@ private:
             >,
             comms::option::def::FrameLayerSeekField<>
         >;
+
+    using SeekFieldWithEscFrame =
+        comms::frame::SyncSuffixLayer<
+            BeSyncField2,
+            comms::frame::MsgIdLayer<
+                BeIdField,
+                BeMsgBase,
+                AllTestMessages<BeMsgBase>,
+                comms::frame::MsgDataLayer<>
+            >,
+            comms::option::def::FrameLayerSeekField<BeEscField>
+        >;
 };
 
 void SyncSuffixLayerTestSuite::test1()
@@ -152,5 +179,24 @@ void SyncSuffixLayerTestSuite::test3()
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType11);
     auto& msg11 = dynamic_cast<BeMsg11&>(*msgPtr);
     TS_ASSERT_EQUALS(std::get<0>(msg11.fields()).value(), "hello");
+}
+
+void SyncSuffixLayerTestSuite::test4()
+{
+    static const char Buf[] = {
+        MessageType11, 'h', 'e', '@', '@', '=', '=', 'l', 'l', 'o', '=', '=', static_cast<char>(0x3f)
+    };
+
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    SeekFieldWithEscFrame frame;
+    SeekFieldWithEscFrame::MsgPtr msg;
+    auto readIter = comms::readIteratorFor(msg, Buf);
+    auto es = frame.read(msg, readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT(msg);
+    TS_ASSERT_EQUALS(msg->getId(), MessageType11);
+    auto& msg11 = dynamic_cast<BeMsg11&>(*msg);
+    TS_ASSERT_EQUALS(std::get<0>(msg11.fields()).value(), "he@@==llo");
 }
 

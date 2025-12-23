@@ -65,6 +65,10 @@ public:
     /// @brief Type of the field object used to read/write checksum value.
     using Field = typename BaseImpl::Field;
 
+    /// @brief Type of the escape field provided via @ref comms::option::def::FrameLayerSeekField option.
+    /// @details Same as @b void if not provided via said option.
+    using EscField = typename ParsedOptionsInternal::EscField;
+
     /// @brief Default constructor.
     SyncSuffixLayer() = default;
 
@@ -207,6 +211,18 @@ protected:
         return field == Field();
     }
 
+    /// @brief Verify the validity of the escapte field provided via @ref comms::option::def::FrameLayerSeekField option.
+    /// @details Default implementation compares read field with default constructed type. @n
+    ///     May be overridden by the extending class in case
+    ///     more complex logic is required.
+    /// @param[out] field Field that has been read.
+    /// @note May be non-static in the extending class
+    template <typename TEscField>
+    static bool verifyEscFieldValue(const TEscField& field)
+    {
+        return field == TEscField();
+    }
+
     /// @brief Prepare field for writing.
     /// @details Default implementation does nothing. @n
     ///     May be overridden by the extending class in case
@@ -231,6 +247,12 @@ private:
 
     template <typename... TParams>
     using VerifyAfterReadTag = comms::details::tag::Tag4<>;
+
+    template <typename... TParams>
+    using EscapeSupportedTag = comms::details::tag::Tag5<>;
+
+    template <typename... TParams>
+    using NoEscapeTag = comms::details::tag::Tag6<>;
 
     template <typename TMsg, typename TIter, typename TReader, typename... TExtraValues>
     ErrorStatus verifyRead(
@@ -336,6 +358,7 @@ private:
             }
 
             if ((fieldEs == ErrorStatus::Success) &&
+                (!fieldEscapedInternal(fromIter, iter)) &&
                 (thisObj.verifyFieldValue(field))) {
                 // Set iter to point after field
                 iter = iterTmp;
@@ -547,6 +570,65 @@ private:
 
         thisObj.prepareFieldForWrite(checksum, msgPtr, field);
         return thisObj.writeField(msgPtr, field, to, remSize);
+    }
+
+    template <typename TIter>
+    bool fieldEscapedInternal(TIter from, TIter to, NoEscapeTag<>)
+    {
+        static_cast<void>(from);
+        static_cast<void>(to);
+        return false;
+    }
+
+    template <typename TIter>
+    bool fieldEscapedInternal(TIter from, TIter to, EscapeSupportedTag<>)
+    {
+        auto dist = static_cast<std::size_t>(std::distance(from, to));
+        dist = std::min(dist, EscField::maxLength());
+        if (dist < EscField::minLength()) {
+            return false;
+        }
+
+        auto& thisObj = BaseImpl::thisLayer();
+
+        auto limitIter = to;
+        std::advance(limitIter, -static_cast<int>(dist));
+
+        auto iter = to;
+        std::advance(iter, -static_cast<int>(EscField::minLength()));
+        while (true) {
+            auto iterTmp = iter;
+            EscField escField;
+            auto len = static_cast<std::size_t>(std::distance(iterTmp, to));
+            auto es = escField.read(iterTmp, len);
+            if ((es == comms::ErrorStatus::Success) &&
+                (iterTmp == to) &&
+                (thisObj.verifyEscFieldValue(escField))) {
+                return true;
+            }
+
+            if (iter == limitIter) {
+                break;
+            }
+
+            std::advance(iter, -1);
+        }
+
+        return false;
+    }
+
+    template <typename TIter>
+    bool fieldEscapedInternal(TIter from, TIter to)
+    {
+        using EscTag =
+            typename comms::util::LazyShallowConditional<
+                std::is_same<EscField, void>::value
+            >::template Type<
+                NoEscapeTag,
+                EscapeSupportedTag
+            >;
+
+        return fieldEscapedInternal(from, to, EscTag());
     }
 
     static_assert(!(hasVerifyBeforeRead() && hasSeekField()),
