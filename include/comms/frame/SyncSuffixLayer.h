@@ -583,38 +583,52 @@ private:
     template <typename TIter>
     bool fieldEscapedInternal(TIter from, TIter to, EscapeSupportedTag<>)
     {
-        auto dist = static_cast<std::size_t>(std::distance(from, to));
-        dist = std::min(dist, EscField::maxLength());
-        if (dist < EscField::minLength()) {
-            return false;
-        }
-
+        unsigned escCount = 0U;
         auto& thisObj = BaseImpl::thisLayer();
 
-        auto limitIter = to;
-        std::advance(limitIter, -static_cast<int>(dist));
-
-        auto iter = to;
-        std::advance(iter, -static_cast<int>(EscField::minLength()));
-        while (true) {
-            auto iterTmp = iter;
-            EscField escField;
-            auto len = static_cast<std::size_t>(std::distance(iterTmp, to));
-            auto es = escField.read(iterTmp, len);
-            if ((es == comms::ErrorStatus::Success) &&
-                (iterTmp == to) &&
-                (thisObj.verifyEscFieldValue(escField))) {
-                return true;
-            }
-
-            if (iter == limitIter) {
+        while (from != to) {
+            auto dist = static_cast<std::size_t>(std::distance(from, to));
+            dist = std::min(dist, EscField::maxLength());
+            if (dist < EscField::minLength()) {
                 break;
             }
 
-            std::advance(iter, -1);
+            auto maxLenIter = to;
+            std::advance(maxLenIter, -static_cast<int>(dist));
+
+            auto iter = to;
+            std::advance(iter, -static_cast<int>(EscField::minLength()));
+            auto prevCount = escCount;
+            while (true) {
+                auto iterTmp = iter;
+                EscField escField;
+                auto len = static_cast<std::size_t>(std::distance(iterTmp, to));
+                auto es = escField.read(iterTmp, len);
+                if ((es == comms::ErrorStatus::Success) &&
+                    (iterTmp == to) &&
+                    (thisObj.verifyEscFieldValue(escField))) {
+                    ++escCount;
+                    break;
+                }
+
+                if (iter == maxLenIter) {
+                    break;
+                }
+
+                std::advance(iter, -1);
+            }
+
+            if (prevCount == escCount) {
+                // Failed to detect escField
+                break;
+            }
+
+            // esc field was detected, trying again
+            to = iter;
         }
 
-        return false;
+        // Escaped only if odd number of esc field is detected
+        return (escCount & 0x1) != 0U;
     }
 
     template <typename TIter>

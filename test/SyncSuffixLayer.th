@@ -24,6 +24,8 @@ public:
     void test2();
     void test3();
     void test4();
+    void test5();
+    void test6();
 
 private:
 
@@ -198,5 +200,45 @@ void SyncSuffixLayerTestSuite::test4()
     TS_ASSERT_EQUALS(msg->getId(), MessageType11);
     auto& msg11 = dynamic_cast<BeMsg11&>(*msg);
     TS_ASSERT_EQUALS(std::get<0>(msg11.fields()).value(), "he@@==llo");
+}
+
+void SyncSuffixLayerTestSuite::test5()
+{
+    // Double esc field should be ignored
+    static const char Buf[] = {
+        MessageType11, 'h', 'e', 'l', 'l', 'o', '@', '@', '@', '@', '=', '=', static_cast<char>(0x3f)
+    };
+
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    SeekFieldWithEscFrame frame;
+    SeekFieldWithEscFrame::MsgPtr msg;
+    auto readIter = comms::readIteratorFor(msg, Buf);
+    auto es = frame.read(msg, readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT(msg);
+    TS_ASSERT_EQUALS(msg->getId(), MessageType11);
+    auto& msg11 = dynamic_cast<BeMsg11&>(*msg);
+    TS_ASSERT_EQUALS(std::get<0>(msg11.fields()).value(), "hello@@@@");
+}
+
+void SyncSuffixLayerTestSuite::test6()
+{
+    // Triple escape should still count as escape
+    static const char Buf[] = {
+        MessageType11, 'h', 'e', '@', '@', '@', '@', '@', '@', '=', '=', 'l', 'l', 'o', '=', '=', static_cast<char>(0x3f)
+    };
+
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    SeekFieldWithEscFrame frame;
+    SeekFieldWithEscFrame::MsgPtr msg;
+    auto readIter = comms::readIteratorFor(msg, Buf);
+    auto es = frame.read(msg, readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT(msg);
+    TS_ASSERT_EQUALS(msg->getId(), MessageType11);
+    auto& msg11 = dynamic_cast<BeMsg11&>(*msg);
+    TS_ASSERT_EQUALS(std::get<0>(msg11.fields()).value(), "he@@@@@@==llo");
 }
 
