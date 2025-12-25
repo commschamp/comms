@@ -512,7 +512,7 @@ private:
             return es;
         }
 
-        auto esTmp = thisObj.writeField(&msg, field, iter, fieldLen);
+        auto esTmp = thisObj.doWriteField(&msg, field, iter, fieldLen);
         static_cast<void>(esTmp);
         COMMS_ASSERT(esTmp == comms::ErrorStatus::Success);
         return comms::ErrorStatus::UpdateRequired;
@@ -569,7 +569,7 @@ private:
         }
 
         thisObj.prepareFieldForWrite(checksum, msgPtr, field);
-        return thisObj.writeField(msgPtr, field, to, remSize);
+        return thisObj.doWriteField(msgPtr, field, to, remSize);
     }
 
     template <typename TIter>
