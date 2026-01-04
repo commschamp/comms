@@ -94,22 +94,22 @@ template <typename TFieldBase, typename TMembers, typename... TOptions>
 class Bitfield : public
     details::AdaptBasicFieldT<
         basic::Bitfield<
-            TFieldBase, 
+            TFieldBase,
             details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
             TMembers
-        >, 
+        >,
         TOptions...
     >
 {
-    using BaseImpl = 
+    using BaseImpl =
         details::AdaptBasicFieldT<
             basic::Bitfield<
-                TFieldBase, 
+                TFieldBase,
                 details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
                 TMembers
-            >, 
+            >,
             TOptions...
-        >;    
+        >;
 
 public:
     /// @brief Base class provided in the first template parameter.
@@ -132,10 +132,10 @@ public:
     ///     of all the member fields.
     using ValueType = typename BaseImpl::ValueType;
 
-    /// @brief Type of actual extending field specified via 
+    /// @brief Type of actual extending field specified via
     ///     @ref comms::option::def::FieldType.
     /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
-    using FieldType = typename ParsedOptions::FieldType;    
+    using FieldType = typename ParsedOptions::FieldType;
 
     /// @brief Default constructor
     /// @details All field members are initialised using their default constructors.
@@ -181,21 +181,21 @@ public:
     static constexpr bool hasFieldType()
     {
         return ParsedOptions::HasFieldType;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
     ///     has been used.
     static constexpr bool hasFixedValue()
     {
         return ParsedOptions::HasFixedValue;
-    }  
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
     ///     has been used.
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
-    }     
+    }
 
     /// @brief Retrieve number of bits specified member field consumes.
     /// @tparam TIdx Index of the member field.
@@ -206,7 +206,6 @@ public:
     {
         return BaseImpl::template memberBitLength<TIdx>();
     }
-
 
     /// @brief Get access to the stored tuple of fields.
     /// @return Const reference to the underlying stored value.
@@ -235,7 +234,7 @@ public:
     void setValue(U&& val)
     {
         BaseImpl::setValue(std::forward<U>(val));
-    }        
+    }
 
     /// @brief Get length required to serialise the current field value.
     /// @return Number of bytes it will take to serialise the field value.
@@ -416,9 +415,9 @@ private:
     static_assert(!ParsedOptions::HasInvalidByDefault,
         "comms::option::def::InvalidByDefault option is not applicable to Bitfield field");
     static_assert(!ParsedOptions::HasMissingOnReadFail,
-            "comms::option::def::MissingOnReadFail option is not applicable to Bitfield field");   
+            "comms::option::def::MissingOnReadFail option is not applicable to Bitfield field");
     static_assert(!ParsedOptions::HasMissingOnInvalid,
-            "comms::option::def::MissingOnInvalid option is not applicable to Bitfield field");                
+            "comms::option::def::MissingOnInvalid option is not applicable to Bitfield field");
 };
 
 /// @brief Equality comparison operator.
@@ -496,5 +495,4 @@ toFieldBase(const Bitfield<TFieldBase, TMembers, TOptions...>& field)
 }  // namespace field
 
 }  // namespace comms
-
 

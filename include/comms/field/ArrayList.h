@@ -45,10 +45,10 @@ struct ArrayListOrigDataViewStorageType<true>
 #if COMMS_HAS_CPP20_SPAN
     template <typename TElement>
     using Type = std::span<TElement>;
-#else // #if COMMS_HAS_CPP20_SPAN    
+#else // #if COMMS_HAS_CPP20_SPAN
     template <typename TElement>
     using Type = comms::util::ArrayView<TElement>;
-#endif // #if COMMS_HAS_CPP20_SPAN        
+#endif // #if COMMS_HAS_CPP20_SPAN
 };
 
 template <>
@@ -220,10 +220,10 @@ public:
     /// @brief Type of the element.
     using ElementType = typename BaseImpl::ElementType;
 
-    /// @brief Type of actual extending field specified via 
+    /// @brief Type of actual extending field specified via
     ///     @ref comms::option::def::FieldType.
     /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
-    using FieldType = typename ParsedOptions::FieldType;    
+    using FieldType = typename ParsedOptions::FieldType;
 
     /// @brief Type of size field prefix specified via @ref comms::option::def::SequenceSizeFieldPrefix.
     /// @details @b void if @ref comms::option::def::SequenceSizeFieldPrefix is not used.
@@ -231,23 +231,23 @@ public:
 
     /// @brief Type of length field prefix specified via @ref comms::option::def::SequenceSerLengthFieldPrefix.
     /// @details @b void if @ref comms::option::def::SequenceSerLengthFieldPrefix is not used.
-    using SerLengthFieldPrefix = typename ParsedOptions::SequenceSerLengthFieldPrefix;    
+    using SerLengthFieldPrefix = typename ParsedOptions::SequenceSerLengthFieldPrefix;
 
     /// @brief Type of element's length field prefix specified via @ref comms::option::def::SequenceElemSerLengthFieldPrefix.
     /// @details @b void if @ref comms::option::def::SequenceElemSerLengthFieldPrefix is not used.
-    using ElemSerLengthFieldPrefix = typename ParsedOptions::SequenceElemSerLengthFieldPrefix;    
+    using ElemSerLengthFieldPrefix = typename ParsedOptions::SequenceElemSerLengthFieldPrefix;
 
     /// @brief Type of element's fixed length field prefix specified via @ref comms::option::def::SequenceElemFixedSerLengthFieldPrefix.
     /// @details @b void if @ref comms::option::def::SequenceElemFixedSerLengthFieldPrefix is not used.
-    using ElemFixedSerLengthFieldPrefix = typename ParsedOptions::SequenceElemFixedSerLengthFieldPrefix;    
+    using ElemFixedSerLengthFieldPrefix = typename ParsedOptions::SequenceElemFixedSerLengthFieldPrefix;
 
     /// @brief Type of termination field suffix specified via @ref comms::option::def::SequenceTerminationFieldSuffix.
     /// @details @b void if @ref comms::option::def::SequenceTerminationFieldSuffix is not used.
-    using TerminationFieldSuffix = typename ParsedOptions::SequenceTerminationFieldSuffix;    
+    using TerminationFieldSuffix = typename ParsedOptions::SequenceTerminationFieldSuffix;
 
     /// @brief Type of trailing field suffix specified via @ref comms::option::def::SequenceTrailingFieldSuffix.
     /// @details @b void if @ref comms::option::def::SequenceTrailingFieldSuffix is not used.
-    using TrailingFieldSuffix = typename ParsedOptions::SequenceTrailingFieldSuffix;      
+    using TrailingFieldSuffix = typename ParsedOptions::SequenceTrailingFieldSuffix;
 
         /// @brief Default constructor
     ArrayList() = default;
@@ -291,14 +291,14 @@ public:
     static constexpr bool hasIgnoreInvalid()
     {
         return ParsedOptions::HasIgnoreInvalid;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::EmptySerialization option
     ///     has been used.
     static constexpr bool hasEmptySerialization()
     {
         return ParsedOptions::HasEmptySerialization;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
     ///     has been used.
@@ -319,7 +319,7 @@ public:
     static constexpr bool hasSerLengthFieldPrefix()
     {
         return ParsedOptions::HasSequenceSerLengthFieldPrefix;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceElemSerLengthFieldPrefix option
     ///     has been used.
@@ -333,42 +333,42 @@ public:
     static constexpr bool hasElemFixedSerLengthFieldPrefix()
     {
         return ParsedOptions::HasSequenceElemFixedSerLengthFieldPrefix;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceTerminationFieldSuffix option
     ///     has been used.
     static constexpr bool hasTerminationFieldSuffix()
     {
         return ParsedOptions::HasSequenceTerminationFieldSuffix;
-    }      
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceTrailingFieldSuffix option
     ///     has been used.
     static constexpr bool hasTrailingFieldSuffix()
     {
         return ParsedOptions::HasSequenceTrailingFieldSuffix;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceFixedSize option
     ///     has been used.
     static constexpr bool hasFixedSize()
     {
         return ParsedOptions::HasSequenceFixedSize;
-    }   
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
     ///     has been used.
     static constexpr bool hasFixedValue()
     {
         return ParsedOptions::HasFixedValue;
-    }      
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
     ///     has been used.
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
-    }  
+    }
 
     /// @brief Compile time inquiry of fixed size provided via @ref comms::option::def::SequenceFixedSize option.
     /// @details If the @ref comms::option::def::SequenceFixedSize option hasn't been used
@@ -376,7 +376,7 @@ public:
     static constexpr std::size_t fixedSize()
     {
         return ParsedOptions::SequenceFixedSize;
-    }           
+    }
 
     /// @brief Get access to the value storage.
     ValueType& value()
@@ -403,7 +403,7 @@ public:
     void setValue(U&& val)
     {
         BaseImpl::setValue(std::forward<U>(val));
-    }    
+    }
 
     /// @brief Get length of serialised data
     constexpr std::size_t length() const
@@ -488,7 +488,7 @@ public:
     }
 
     /// @brief Check validity of the field value.
-    /// @details The collection is valid if all the elements are valid. 
+    /// @details The collection is valid if all the elements are valid.
     /// @return true in case the field's value is valid, false otherwise.
     bool valid() const
     {
@@ -598,7 +598,7 @@ public:
     }
 
 #ifdef FOR_DOXYGEN_DOC_ONLY
-    /// @brief Access list termination field 
+    /// @brief Access list termination field
     /// @details Exists only if @ref comms::option::def::SequenceTerminationFieldSuffix option has been
     ///     used. The function can be used to access the termination field value after
     ///     the @b read and/or before the @b write operations.
@@ -606,7 +606,7 @@ public:
     auto terminationFieldSuffix() -> decltype(BaseImpl::terminationFieldSuffix())
     {
         return BaseImpl::terminationFieldSuffix();
-    }    
+    }
 
     /// @brief Access list termination field (const variant)
     /// @details Exists only if @ref comms::option::def::SequenceTerminationFieldSuffix option has been
@@ -616,9 +616,9 @@ public:
     auto terminationFieldSuffix() const -> decltype(BaseImpl::terminationFieldSuffix())
     {
         return BaseImpl::terminationFieldSuffix();
-    }     
+    }
 
-#endif // #ifdef FOR_DOXYGEN_DOC_ONLY    
+#endif // #ifdef FOR_DOXYGEN_DOC_ONLY
 
 protected:
     using BaseImpl::readData;
@@ -648,9 +648,9 @@ private:
     static_assert(!ParsedOptions::HasInvalidByDefault,
             "comms::option::def::InvalidByDefault option is not applicable to ArrayList field");
     static_assert(!ParsedOptions::HasMissingOnReadFail,
-            "comms::option::def::MissingOnReadFail option is not applicable to ArrayList field");     
+            "comms::option::def::MissingOnReadFail option is not applicable to ArrayList field");
     static_assert(!ParsedOptions::HasMissingOnInvalid,
-            "comms::option::def::MissingOnInvalid option is not applicable to ArrayList field");                       
+            "comms::option::def::MissingOnInvalid option is not applicable to ArrayList field");
 };
 
 /// @brief Equivalence comparison operator.
@@ -714,8 +714,8 @@ bool operator!=(
 template <typename T>
 constexpr bool isArrayList()
 {
-    return 
-        std::is_same<typename T::CommsTag, tag::ArrayList>::value || 
+    return
+        std::is_same<typename T::CommsTag, tag::ArrayList>::value ||
         std::is_same<typename T::CommsTag, tag::RawArrayList>::value;
 }
 
@@ -740,7 +740,6 @@ toFieldBase(const ArrayList<TFieldBase, TElement, TOptions...>& field)
 {
     return field;
 }
-
 
 }  // namespace field
 

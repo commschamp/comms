@@ -27,13 +27,13 @@ class ReadIteratorHelper
     using HasReadIterTag = comms::details::tag::Tag1<>;
 
     template <typename... TParams>
-    using MsgPointerTag = comms::details::tag::Tag2<>;    
+    using MsgPointerTag = comms::details::tag::Tag2<>;
 
     template <typename... TParams>
-    using CastTag = comms::details::tag::Tag3<>;         
+    using CastTag = comms::details::tag::Tag3<>;
 
     template <typename TMsg>
-    using MsgObjTag = 
+    using MsgObjTag =
         typename comms::util::LazyShallowConditional<
             TMsg::hasRead()
         >::template Type<
@@ -42,16 +42,16 @@ class ReadIteratorHelper
         >;
 
     template <typename TMsg>
-    using MsgPtrOrCastTag = 
+    using MsgPtrOrCastTag =
         typename comms::util::LazyShallowConditional<
             hasElementType<TMsg>()
         >::template Type<
             MsgPointerTag,
             CastTag
-        >;    
+        >;
 
     template <typename TMsg>
-    using Tag = 
+    using Tag =
         typename comms::util::LazyShallowConditional<
             comms::isMessage<TMsg>()
         >::template Type<
@@ -66,20 +66,20 @@ class ReadIteratorHelper
         static_assert(std::is_convertible<typename std::decay<decltype(iter)>::type, typename TMsg::ReadIterator>::value,
             "Provided iterator is not convertible to read iterator type used by message interface");
         return typename TMsg::ReadIterator(std::forward<TIter>(iter));
-    }    
+    }
 
     template <typename TMsg, typename TIter, typename... TParams>
     static auto getInternal(TIter&& iter, CastTag<TParams...>) -> decltype(std::forward<TIter>(iter))
     {
         return std::forward<TIter>(iter);
-    }     
+    }
 
     template <typename TMsg, typename TIter, typename... TParams>
-    static auto getInternal(TIter&& iter, MsgPointerTag<TParams...>) -> 
+    static auto getInternal(TIter&& iter, MsgPointerTag<TParams...>) ->
         decltype(getInternal<typename TMsg::element_type>(std::forward<TIter>(iter), Tag<typename TMsg::element_type>()))
     {
         return getInternal<typename TMsg::element_type>(std::forward<TIter>(iter), Tag<typename TMsg::element_type>());
-    }  
+    }
 
 public:
     template <typename TMsg, typename TIter>

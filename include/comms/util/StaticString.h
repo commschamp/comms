@@ -264,7 +264,7 @@ protected:
     void pop_back()
     {
         static constexpr bool The_string_is_empty = false;
-        static_cast<void>(The_string_is_empty);        
+        static_cast<void>(The_string_is_empty);
         COMMS_ASSERT((!empty()) || The_string_is_empty);
         m_vec.erase(end() - 1, end());
     }
@@ -358,9 +358,9 @@ protected:
             }
 
             COMMS_GNU_WARNING_PUSH
-#if COMMS_IS_GCC_11_OR_ABOVE            
-            COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow") 
-#endif // #if COMMS_IS_GCC_12            
+#if COMMS_IS_GCC_11_OR_ABOVE
+            COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow")
+#endif // #if COMMS_IS_GCC_12
             *iter = static_cast<TChar>(*first2); // Wrong warning reported by gcc-12
             COMMS_GNU_WARNING_POP
             ++first2;
@@ -769,7 +769,6 @@ struct StaticStringStorageBase
     using StorageType = std::array<TChar, TSize>;
     StorageType m_data;
 };
-
 
 }  // namespace details
 
@@ -2022,7 +2021,6 @@ bool operator!=(const StaticString<TSize1, TChar>& str1, const TChar* str2)
 
 namespace details
 {
-
 
 template <typename T>
 struct IsStaticString

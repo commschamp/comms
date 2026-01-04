@@ -29,12 +29,12 @@ template <typename TField, typename TCalc, typename TNextLayer, typename... TOpt
 class ChecksumPrefixLayerBaseHelper
 {
     using ParsedOptionsInternal = comms::frame::details::ChecksumLayerOptionsParser<TOptions...>;
-    using ActualLayer = 
+    using ActualLayer =
         typename ParsedOptionsInternal::template DefineExtendingClass<
             ChecksumPrefixLayer<TField, TCalc, TNextLayer, TOptions...>
         >;
-        
-    using TopBase = 
+
+    using TopBase =
         comms::frame::FrameLayerBase<
             TField,
             TNextLayer,
@@ -42,7 +42,7 @@ class ChecksumPrefixLayerBaseHelper
             typename ParsedOptionsInternal::template SuppressForVerifyBeforeRead<comms::option::def::FrameLayerDisallowReadUntilDataSplit>
         >;
 
-public:    
+public:
     using Base = TopBase;
 };
 

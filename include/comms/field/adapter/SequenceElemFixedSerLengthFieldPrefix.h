@@ -68,7 +68,7 @@ public:
                 FixedLengthLenFieldTag,
                 VarLengthLenFieldTag
             >;
-                    
+
         return lengthInternal(LenFieldLengthTag());
     }
 
@@ -117,7 +117,7 @@ public:
             m_elemLen = 0U;
             return ErrorStatus::Success;
         }
-                
+
         auto es = readLen(iter, len);
         if (es != comms::ErrorStatus::Success) {
             return es;
@@ -252,7 +252,7 @@ private:
         std::size_t prefixLen = 0U;
         if (!BaseImpl::getValue().empty()) {
             LenField lenField;
-            lenField.setValue( 
+            lenField.setValue(
                     std::min(BaseImpl::minElementLength(), std::size_t(MaxAllowedElemLength)));
             prefixLen = lenField.length();
         }
@@ -327,7 +327,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
-
-
 

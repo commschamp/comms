@@ -7,9 +7,8 @@
 
 #pragma once
 
-#include "comms/frame/details/MsgSizeLayerOptionsParser.h"
+#include "comms/frame/details/SyncSuffixLayerOptionsParser.h"
 #include "comms/frame/FrameLayerBase.h"
-#include "comms/options.h"
 
 #include <cstddef>
 
@@ -21,16 +20,20 @@ namespace frame
 
 // Forward declaration
 template <typename TField, typename TNextLayer, typename... TOptions>
-class MsgSizeLayer;
+class SyncSuffixLayer;
 
 namespace details
 {
 
 template <typename TField, typename TNextLayer, typename... TOptions>
-class MsgSizeLayerBaseHelper
+class SyncSuffixLayerBaseHelper
 {
-    using ParsedOptionsInternal = comms::frame::details::MsgSizeLayerOptionsParser<TOptions...>;
-    using ActualLayer = typename ParsedOptionsInternal::template DefineExtendingClass<MsgSizeLayer<TField, TNextLayer, TOptions...>>;
+    using ParsedOptionsInternal = comms::frame::details::SyncSuffixLayerOptionsParser<TOptions...>;
+    using ActualLayer =
+        typename ParsedOptionsInternal::template DefineExtendingClass<
+            SyncSuffixLayer<TField, TNextLayer, TOptions...>
+        >;
+
     using TopBase =
         comms::frame::FrameLayerBase<
             TField,
@@ -44,7 +47,7 @@ public:
 };
 
 template <typename TField, typename TNextLayer, typename... TOptions>
-using MsgSizeLayerBase = typename MsgSizeLayerBaseHelper<TField, TNextLayer, TOptions...>::Base;
+using SyncSuffixLayerBase = typename SyncSuffixLayerBaseHelper<TField, TNextLayer, TOptions...>::Base;
 
 } // namespace details
 

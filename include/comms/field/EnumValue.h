@@ -97,10 +97,10 @@ public:
     /// @details Same as template parameter TEnum to this class.
     using ValueType = typename BaseImpl::ValueType;
 
-    /// @brief Type of actual extending field specified via 
+    /// @brief Type of actual extending field specified via
     ///     @ref comms::option::def::FieldType.
     /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
-    using FieldType = typename ParsedOptions::FieldType;    
+    using FieldType = typename ParsedOptions::FieldType;
 
     /// @brief Default constructor.
     EnumValue() = default;
@@ -139,28 +139,28 @@ public:
     static constexpr bool hasEmptySerialization()
     {
         return ParsedOptions::HasEmptySerialization;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
     ///     has been used.
     static constexpr bool hasFieldType()
     {
         return ParsedOptions::HasFieldType;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
     ///     has been used.
     static constexpr bool hasFixedValue()
     {
         return ParsedOptions::HasFixedValue;
-    }   
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
     ///     has been used.
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
-    }    
+    }
 
     /// @brief Get access to enum value storage.
     const ValueType& value() const
@@ -187,7 +187,7 @@ public:
     void setValue(U&& val)
     {
         BaseImpl::setValue(std::forward<U>(val));
-    }          
+    }
 
     /// @brief Get length required to serialise the current field value.
     /// @return Number of bytes it will take to serialise the field value.
@@ -316,7 +316,7 @@ public:
     /// @brief Force serialization length of the field.
     /// @details Available only when @ref comms::option::def::AvailableLengthLimit
     ///     option is used for field definition.
-    /// @param[in] len Forced serialization length. 
+    /// @param[in] len Forced serialization length.
     ///     @li 0 means default serialization length determined by the storage type
     ///     @li positive value means limit of the serialization length
     ///     @li negative value means the length is determined by the stored value
@@ -330,7 +330,7 @@ public:
     int getForcedLength() const
     {
         return BaseImpl::getForcedLength();
-    }    
+    }
 
 protected:
     using BaseImpl::readData;
@@ -371,9 +371,9 @@ private:
     static_assert(!ParsedOptions::HasVersionsRange,
         "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to EnumValue field");
     static_assert(!ParsedOptions::HasMissingOnReadFail,
-            "comms::option::def::MissingOnReadFail option is not applicable to EnumValue field");           
+            "comms::option::def::MissingOnReadFail option is not applicable to EnumValue field");
     static_assert(!ParsedOptions::HasMissingOnInvalid,
-            "comms::option::def::MissingOnInvalid option is not applicable to EnumValue field");                
+            "comms::option::def::MissingOnInvalid option is not applicable to EnumValue field");
 };
 
 // Implementation
@@ -453,8 +453,4 @@ toFieldBase(const EnumValue<TFieldBase, TEnum, TOptions...>& field)
 }  // namespace field
 
 }  // namespace comms
-
-
-
-
 

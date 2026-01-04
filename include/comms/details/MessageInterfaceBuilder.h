@@ -24,8 +24,8 @@ class MessageInterfaceBuilder
         "comms::option::def::VersionInExtraTransportFields option should not be used "
         "without comms::option::def::ExtraTransportFields.");
 
-    static constexpr bool MustHaveVirtualDestructor = 
-        (!ParsedOptions::HasNoVirtualDestructor) && 
+    static constexpr bool MustHaveVirtualDestructor =
+        (!ParsedOptions::HasNoVirtualDestructor) &&
         (
             ParsedOptions::HasReadIterator ||
             ParsedOptions::HasWriteIterator ||
@@ -34,52 +34,52 @@ class MessageInterfaceBuilder
             ParsedOptions::HasValid ||
             ParsedOptions::HasLength ||
             ParsedOptions::HasRefresh ||
-            ParsedOptions::HasName          
+            ParsedOptions::HasName
         );
 
     using EndianBase = typename ParsedOptions::template BuildEndian<>;
 
-    using IdTypeBase = 
+    using IdTypeBase =
         typename ParsedOptions::template BuildMsgIdType<EndianBase>;
 
-    using TransportFieldsBase = 
+    using TransportFieldsBase =
         typename ParsedOptions::template BuildExtraTransportFields<IdTypeBase>;
 
-    using VersionInTransportFieldsBase = 
+    using VersionInTransportFieldsBase =
         typename ParsedOptions::template BuildVersionInExtraTransportFields<TransportFieldsBase>;
 
-    using IdInfoBase = 
+    using IdInfoBase =
         typename ParsedOptions::template BuildMsgIdInfo<VersionInTransportFieldsBase>;
 
-    using ReadBase = 
-        typename ParsedOptions::template BuildReadBase<IdInfoBase>;        
+    using ReadBase =
+        typename ParsedOptions::template BuildReadBase<IdInfoBase>;
 
-    using WriteBase = 
-        typename ParsedOptions::template BuildWriteBase<ReadBase>;           
-    
-    using ValidBase = 
-        typename ParsedOptions::template BuildValid<WriteBase>;           
+    using WriteBase =
+        typename ParsedOptions::template BuildWriteBase<ReadBase>;
 
-    using LengthBase = 
-        typename ParsedOptions::template BuildLength<ValidBase>;     
-            
-    using HandlerBase = 
-        typename ParsedOptions::template BuildHandler<LengthBase>;     
+    using ValidBase =
+        typename ParsedOptions::template BuildValid<WriteBase>;
 
-    using RefreshBase = 
-        typename ParsedOptions::template BuildRefresh<HandlerBase>;     
+    using LengthBase =
+        typename ParsedOptions::template BuildLength<ValidBase>;
 
-    using NameBase = 
-        typename ParsedOptions::template BuildName<RefreshBase>;     
+    using HandlerBase =
+        typename ParsedOptions::template BuildHandler<LengthBase>;
 
-    using VirtDestructorBase = 
+    using RefreshBase =
+        typename ParsedOptions::template BuildRefresh<HandlerBase>;
+
+    using NameBase =
+        typename ParsedOptions::template BuildName<RefreshBase>;
+
+    using VirtDestructorBase =
         typename comms::util::LazyShallowDeepConditional<
             MustHaveVirtualDestructor
         >::template Type<
             MessageInterfaceVirtDestructorBase,
             comms::util::TypeDeepWrap,
             NameBase
-        >;    
+        >;
 public:
     using Options = ParsedOptions;
     using Type = VirtDestructorBase;
@@ -92,5 +92,4 @@ using MessageInterfaceBuilderT =
 }  // namespace details
 
 }  // namespace comms
-
 

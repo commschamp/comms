@@ -5,17 +5,17 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <cstdint>
-#include <cstddef>
-#include <algorithm>
-#include <iterator>
-
 #include "comms/comms.h"
 #include "CommsTestCommon.h"
 
 CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
 CC_ENABLE_WARNINGS()
+
+#include <cstdint>
+#include <cstddef>
+#include <algorithm>
+#include <iterator>
 
 class CustomSyncPrefixLayerTestSuite : public CxxTest::TestSuite
 {
@@ -144,7 +144,7 @@ private:
             comms::option::ExtendingClass<CustomSyncPrefixLayer<TField, TNextLayer> >
         >
     {
-        using Base = 
+        using Base =
             comms::frame::SyncPrefixLayer<
                 TField,
                 TNextLayer,
@@ -160,7 +160,7 @@ private:
                 ++m_inputCount;
             }
             return valid;
-        } 
+        }
 
         void prepareFieldForWrite(Field& field) const
         {
@@ -184,7 +184,6 @@ private:
         unsigned m_inputCount = 0;
         mutable unsigned m_outputCount = 0;
     };
-
 
     template <typename TSyncField, typename TSizeField, typename TIdField, typename TMessage>
     using Frame =
@@ -218,7 +217,7 @@ void CustomSyncPrefixLayerTestSuite::test1()
         static_cast<char>(0xab), static_cast<char>(0xcd), 0x0, 0x3, MessageType1, 0x01, 0x02, static_cast<char>(0x3f)
     };
 
-    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;    
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
     auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
@@ -230,11 +229,11 @@ void CustomSyncPrefixLayerTestSuite::test1()
         static_cast<char>(0xde), static_cast<char>(0xad), 0x0, 0x3, MessageType1, 0x01, 0x02, static_cast<char>(0x3f)
     };
 
-    static const std::size_t Buf2Size = std::extent<decltype(Buf2)>::value;      
+    static const std::size_t Buf2Size = std::extent<decltype(Buf2)>::value;
 
     auto msgPtr2 = commonReadWriteMsgTest(frame, &Buf2[0], Buf2Size);
     TS_ASSERT(msgPtr2);
     TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
     auto& msg2 = dynamic_cast<BeMsg1&>(*msgPtr);
-    TS_ASSERT_EQUALS(msg1, msg2);    
+    TS_ASSERT_EQUALS(msg1, msg2);
 }

@@ -23,7 +23,7 @@ struct VersionStorage
     {
         return m_version;
     }
-    
+
 protected:
     TVersionType m_version = TVersionType();
 };

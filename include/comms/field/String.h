@@ -183,10 +183,10 @@ public:
     ///     provided to @ref comms::option::app::FixedSizeStorage option.
     using ValueType = typename BaseImpl::ValueType;
 
-    /// @brief Type of actual extending field specified via 
+    /// @brief Type of actual extending field specified via
     ///     @ref comms::option::def::FieldType.
     /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
-    using FieldType = typename ParsedOptions::FieldType;    
+    using FieldType = typename ParsedOptions::FieldType;
 
     /// @brief Type of size field prefix specified via @ref comms::option::def::SequenceSizeFieldPrefix.
     /// @details @b void if @ref comms::option::def::SequenceSizeFieldPrefix is not used.
@@ -194,15 +194,15 @@ public:
 
     /// @brief Type of length field prefix specified via @ref comms::option::def::SequenceSerLengthFieldPrefix.
     /// @details @b void if @ref comms::option::def::SequenceSerLengthFieldPrefix is not used.
-    using SerLengthFieldPrefix = typename ParsedOptions::SequenceSerLengthFieldPrefix;    
+    using SerLengthFieldPrefix = typename ParsedOptions::SequenceSerLengthFieldPrefix;
 
     /// @brief Type of termination field suffix specified via @ref comms::option::def::SequenceTerminationFieldSuffix.
     /// @details @b void if @ref comms::option::def::SequenceTerminationFieldSuffix is not used.
-    using TerminationFieldSuffix = typename ParsedOptions::SequenceTerminationFieldSuffix;    
+    using TerminationFieldSuffix = typename ParsedOptions::SequenceTerminationFieldSuffix;
 
     /// @brief Type of trailing field suffix specified via @ref comms::option::def::SequenceTrailingFieldSuffix.
     /// @details @b void if @ref comms::option::def::SequenceTrailingFieldSuffix is not used.
-    using TrailingFieldSuffix = typename ParsedOptions::SequenceTrailingFieldSuffix;         
+    using TrailingFieldSuffix = typename ParsedOptions::SequenceTrailingFieldSuffix;
 
     /// @brief Default constructor
     String() = default;
@@ -259,14 +259,14 @@ public:
     static constexpr bool hasEmptySerialization()
     {
         return ParsedOptions::HasEmptySerialization;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
     ///     has been used.
     static constexpr bool hasFieldType()
     {
         return ParsedOptions::HasFieldType;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceSizeFieldPrefix option
     ///     has been used.
@@ -280,42 +280,42 @@ public:
     static constexpr bool hasSerLengthFieldPrefix()
     {
         return ParsedOptions::HasSequenceSerLengthFieldPrefix;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceTerminationFieldSuffix option
     ///     has been used.
     static constexpr bool hasTerminationFieldSuffix()
     {
         return ParsedOptions::HasSequenceTerminationFieldSuffix;
-    }      
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceTrailingFieldSuffix option
     ///     has been used.
     static constexpr bool hasTrailingFieldSuffix()
     {
         return ParsedOptions::HasSequenceTrailingFieldSuffix;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::SequenceFixedSize option
     ///     has been used.
     static constexpr bool hasFixedSize()
     {
         return ParsedOptions::HasSequenceFixedSize;
-    }   
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
     ///     has been used.
     static constexpr bool hasFixedValue()
     {
         return ParsedOptions::HasFixedValue;
-    }  
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
     ///     has been used.
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
-    } 
+    }
 
     /// @brief Compile time inquiry of fixed size provided via @ref comms::option::def::SequenceFixedSize option.
     /// @details If the @ref comms::option::def::SequenceFixedSize option hasn't been used
@@ -323,7 +323,7 @@ public:
     static constexpr std::size_t fixedSize()
     {
         return ParsedOptions::SequenceFixedSize;
-    }                 
+    }
 
     /// @brief Read field value from input data sequence
     /// @details By default, the read operation will try to consume all the
@@ -339,7 +339,7 @@ public:
     ErrorStatus read(TIter& iter, std::size_t len)
     {
         auto es = BaseImpl::read(iter, len);
-        using TagTmp = 
+        using TagTmp =
             typename comms::util::LazyShallowConditional<
                 ParsedOptions::HasSequenceFixedSize
             >::template Type<
@@ -367,7 +367,7 @@ public:
     void readNoStatus(TIter& iter)
     {
         BaseImpl::readNoStatus(iter);
-        using TagTmp = 
+        using TagTmp =
             typename comms::util::LazyShallowConditional<
                 ParsedOptions::HasSequenceFixedSize
             >::template Type<
@@ -403,7 +403,7 @@ public:
     void setValue(U&& val)
     {
         BaseImpl::setValue(std::forward<U>(val));
-    }          
+    }
 
     /// @brief Get length of serialised data
     std::size_t length() const
@@ -556,7 +556,7 @@ private:
     using HasResizeTag = comms::details::tag::Tag3<>;
 
     template <typename... TParams>
-    using HasRemoveSuffixTag = comms::details::tag::Tag4<>;    
+    using HasRemoveSuffixTag = comms::details::tag::Tag4<>;
 
     template <typename... TParams>
     void adjustValue(NoAdjustmentTag<TParams...>)
@@ -633,9 +633,9 @@ private:
     static_assert(!ParsedOptions::HasVersionsRange,
         "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to String field");
     static_assert(!ParsedOptions::HasMissingOnReadFail,
-            "comms::option::def::MissingOnReadFail option is not applicable to String field");           
+            "comms::option::def::MissingOnReadFail option is not applicable to String field");
     static_assert(!ParsedOptions::HasMissingOnInvalid,
-            "comms::option::def::MissingOnInvalid option is not applicable to String field");  
+            "comms::option::def::MissingOnInvalid option is not applicable to String field");
 };
 
 /// @brief Equality comparison operator.
@@ -714,5 +714,4 @@ toFieldBase(const String<TFieldBase, TOptions...>& field)
 }  // namespace field
 
 }  // namespace comms
-
 

@@ -5,7 +5,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// @file 
+/// @file
 /// @brief Contains definition of @ref comms::frame::TransportValueLayer
 
 #pragma once
@@ -17,6 +17,8 @@
 #include "comms/frame/details/TransportValueLayerBase.h"
 #include "comms/util/type_traits.h"
 
+#include <iterator>
+
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4189) // Disable erroneous initialized but not referenced variable warning
 
@@ -26,7 +28,7 @@ namespace comms
 namespace frame
 {
 
-/// @brief Protocol layer that reads a value from transport wrapping and
+/// @brief Frame layer that reads a value from transport wrapping and
 ///     reassigns it to appropriate "extra transport" data member of the
 ///     created message object.
 /// @details Some protocols may put some values, which influence the way
@@ -44,19 +46,19 @@ namespace frame
 ///     (accessed via @ref comms::Message::transportFields()).
 /// @tparam TNextLayer Next transport layer in frame.
 /// @tparam TOptions Extending functionality options. Supported options are:
-///     @li @ref comms::option::def::PseudoValue - Mark the handled value to be "pseudo"
-///         one, i.e. the field is not getting serialised.
 ///     @li  @ref comms::option::def::ExtendingClass - Use this option to provide a class
 ///         name of the extending class, which can be used to extend existing functionality.
 ///         See also @ref page_custom_transport_value_layer tutorial page.
-///     @li @ref comms::option::def::FrameLayerSuppressReadUntilDataSplitForcing - Use 
-///         this option when there is a need to disable passing 
+///     @li @ref comms::option::def::FrameLayerSuppressReadUntilDataSplitForcing - Use
+///         this option when there is a need to disable passing
 ///         @ref comms::option::def::FrameLayerForceReadUntilDataSplit option to the
-///         @ref comms::frame::FrameLayerBase base class. The passing of 
-///         @ref comms::option::def::FrameLayerForceReadUntilDataSplit option 
+///         @ref comms::frame::FrameLayerBase base class. The passing of
+///         @ref comms::option::def::FrameLayerForceReadUntilDataSplit option
 ///         happens when the @ref comms::frame::TransportValueLayer preceeds (wraps)
 ///         @ref comms::frame::MsgIdLayer and is unable to re-assign the read field value
 ///         to the message object, because the latter hasn't been created yet.
+///     @li @ref comms::option::def::PseudoValue - Mark the handled value to be "pseudo"
+///         one, i.e. the field is not getting serialised.
 /// @headerfile comms/frame/TransportValueLayer.h
 /// @extends comms::frame::FrameLayerBase
 template <typename TField, std::size_t TIdx, typename TNextLayer, typename... TOptions>
@@ -64,15 +66,10 @@ class TransportValueLayer : public comms::frame::details::TransportValueLayerBas
 {
     using BaseImpl = comms::frame::details::TransportValueLayerBase<TField, TIdx, TNextLayer, TOptions...>;
     using ParsedOptionsInternal = comms::frame::details::TransportValueLayerOptionsParser<TOptions...>;
-    
+
 public:
     /// @brief Type of the field object used to read/write "sync" value.
     using Field = typename BaseImpl::Field;
-
-    /// @brief Type of real extending class
-    /// @details Updated when @ref comms::option::ExtendingClass extension option us used,
-    ///    aliasing @b void if the options is not used.
-    using ExtendingClass = typename ParsedOptionsInternal::ExtendingClass;
 
     /// @brief Default constructor
     TransportValueLayer() = default;
@@ -86,21 +83,19 @@ public:
     /// @brief Destructor
     ~TransportValueLayer() noexcept = default;
 
-    /// @brief Compile time inquiry of whether this class was extended via 
+    /// @brief Compile time inquiry of whether this class was extended via
     ///    @ref comms::option::ExtendingClass option.
-    /// @details If @b true is returned, the @ref SyncPrefixLayer::ExtendingClass "ExtendingClass"
-    ///     type aliasing the real layer type.
     static constexpr bool hasExtendingClass()
     {
         return ParsedOptionsInternal::HasExtendingClass;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether the @ref comms::option::def::PseudoValue
     ///     option has been used.
     static constexpr bool hasPseudoValue()
     {
         return ParsedOptionsInternal::HasPseudoValue;
-    }        
+    }
 
     /// @brief Customized read functionality, invoked by @ref read().
     /// @details Reads the value from the input data and assigns it to appropriate
@@ -149,7 +144,7 @@ public:
             return es;
         }
 
-        static constexpr bool ForcedReadUntilDataSplit = 
+        static constexpr bool ForcedReadUntilDataSplit =
             BaseImpl::ParsedOptions::HasForceReadUntilDataSplit;
 
         if (ForcedReadUntilDataSplit) {
@@ -276,7 +271,7 @@ protected:
     /// @param[in] field Field, value of which needs to be re-assigned
     /// @param[in, out] msgPtr Pointer to the created message object
     /// @return @b true in case of successful operation, @b false othewise @n
-    ///     In case @b false is returned, 
+    ///     In case @b false is returned,
     ///     the @ref comms::frame::TransportValueLayer::doRead() "doRead()"
     ///     member function will return @ref comms::ErrorStatus::ProtocolError.
     /// @note May be non-static in the extending class
@@ -293,7 +288,7 @@ protected:
     }
 
     /// @brief Prepare field for writing.
-    /// @details Copies the field value from the appropriate transport field of the 
+    /// @details Copies the field value from the appropriate transport field of the
     ///     message object and assigns it to the provided output field. @n
     ///     May be overridden by the extending class if some complex functionality is required.
     /// @param[in] msg Reference to message object being written
@@ -305,21 +300,21 @@ protected:
         using MsgType = typename std::decay<decltype(msg)>::type;
         static_assert(MsgType::hasTransportFields(),
             "Message interface class hasn't defined transport fields, "
-            "use comms::option::def::ExtraTransportFields option.");        
+            "use comms::option::def::ExtraTransportFields option.");
         static_assert(TIdx < std::tuple_size<typename MsgType::TransportFields>::value,
             "TIdx is too big, exceeds the amount of transport fields defined in interface class");
 
         auto& transportField = std::get<TIdx>(msg.transportFields());
         field = comms::field_cast<Field>(transportField);
-    }    
+    }
 
 private:
 
     template <typename... TParams>
-    using PseudoValueTag = comms::details::tag::Tag1<>;   
+    using PseudoValueTag = comms::details::tag::Tag1<>;
 
     template <typename... TParams>
-    using NormalValueTag = comms::details::tag::Tag2<>;          
+    using NormalValueTag = comms::details::tag::Tag2<>;
 
     template <typename...>
     using ValueTag =
@@ -329,7 +324,6 @@ private:
             PseudoValueTag,
             NormalValueTag
         >;
-
 
     template <typename... TParams>
     static constexpr std::size_t doFieldLengthInternal(PseudoValueTag<TParams...>)
@@ -371,7 +365,7 @@ private:
         auto& thisObj = BaseImpl::thisLayer();
         auto* msgPtr = BaseImpl::toMsgPtr(msg);
         auto beforeReadIter = iter;
-        
+
         auto es = thisObj.doReadField(msgPtr, field, iter, len);
         if (es == comms::ErrorStatus::NotEnoughData) {
             BaseImpl::updateMissingSize(field, len, extraValues...);

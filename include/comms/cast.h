@@ -16,7 +16,6 @@
 namespace comms
 {
 
-
 /// @brief Helper function to assign value with static_cast to
 ///     appropriate type.
 /// @details Can be used to assign any value, including value of a field.
@@ -40,8 +39,8 @@ details::ValueAssignWrapper<T> cast_assign(T& value)
 ///     @endcode
 ///     The function will perform some compile time analysis and will do a simple
 ///     static_cast between the contained values if they are convertible. Otherwise
-///     the write + read operations will be performed, i.e. the source field will 
-///     be written into a temporary buffer, and the target field will perform a 
+///     the write + read operations will be performed, i.e. the source field will
+///     be written into a temporary buffer, and the target field will perform a
 ///     read operation from that buffer.
 /// @tparam TFieldTo Type to cast to.
 /// @tparam TFieldFrom Type to cast from.
@@ -54,6 +53,5 @@ TFieldTo field_cast(const TFieldFrom& field)
 {
     return details::FieldCastHelper<>::template cast<TFieldTo, TFieldFrom>(field);
 }
-
 
 } // namespace comms

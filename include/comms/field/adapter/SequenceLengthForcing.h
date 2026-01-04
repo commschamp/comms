@@ -97,7 +97,6 @@ public:
     template <typename TIter>
     void readNoStatusN(std::size_t count, TIter& iter) = delete;
 
-
 private:
     static const std::size_t Cleared = std::numeric_limits<std::size_t>::max();
     std::size_t m_forced = Cleared;
@@ -108,5 +107,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
 

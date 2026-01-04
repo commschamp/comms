@@ -7,7 +7,6 @@
 
 #pragma once
 
-
 #include "comms/details/base_detection.h"
 #include "comms/details/gen_enum.h"
 #include "comms/details/macro_common.h"
@@ -50,7 +49,7 @@
     } \
     COMMS_VARIANT_ACCESS_FIELD_CONST_FUNC(v_, n_) { \
         return v_.template accessField<COMMS_CONCATENATE(FieldIdx_, n_)>(); \
-    } 
+    }
 
 #define COMMS_VARIANT_MEM_ACC_FUNC_1(v_, n_) COMMS_VARIANT_MEM_ACC_FUNC(v_, n_)
 #define COMMS_VARIANT_MEM_ACC_FUNC_2(v_, n_, ...) \
@@ -601,14 +600,4 @@
 #define COMMS_CHOOSE_VARIANT_MEM_ACC_FUNC_NOTEMPLATE(N, ...) COMMS_EXPAND(COMMS_CHOOSE_VARIANT_MEM_ACC_FUNC_NOTEMPLATE_(N, __VA_ARGS__))
 #define COMMS_DO_VARIANT_MEM_ACC_FUNC_NOTEMPLATE(...) \
     COMMS_EXPAND(COMMS_CHOOSE_VARIANT_MEM_ACC_FUNC_NOTEMPLATE(COMMS_NUM_ARGS(__VA_ARGS__), __VA_ARGS__))
-
-
-
-
-
-
-
-
-
-
 

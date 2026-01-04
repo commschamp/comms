@@ -166,7 +166,7 @@ struct CommonFuncs
     }
 
     template <typename... TFields>
-    using IsAnyFieldVersionDependentBoolType = 
+    using IsAnyFieldVersionDependentBoolType =
         typename comms::util::Conditional<
             comms::util::tupleTypeIsAnyOf<std::tuple<TFields...> >(
                 comms::field::details::FieldVersionDependentCheckHelper<>())
@@ -176,90 +176,90 @@ struct CommonFuncs
         >;
 
     template <typename... TFields>
-    using FieldSelectMaxLengthIntType = 
+    using FieldSelectMaxLengthIntType =
         std::integral_constant<
-            std::size_t, 
+            std::size_t,
             comms::util::tupleTypeAccumulate<std::tuple<TFields...> >(
                 std::size_t(0), comms::field::details::FieldMaxLengthCalcHelper<>())
         >;
 
     template <typename... TFields>
-    using FieldSumMaxLengthIntType = 
+    using FieldSumMaxLengthIntType =
         std::integral_constant<
-            std::size_t, 
+            std::size_t,
             comms::util::tupleTypeAccumulate<std::tuple<TFields...> >(
                 std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>())
-        >;    
+        >;
 
     template <std::size_t TFrom, std::size_t TUntil, typename... TFields>
-    using FieldSumMaxLengthFromUntilIntType = 
+    using FieldSumMaxLengthFromUntilIntType =
         std::integral_constant<
-            std::size_t, 
+            std::size_t,
             comms::util::tupleTypeAccumulateFromUntil<TFrom, TUntil, std::tuple<TFields...> >(
                 std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>())
-        >;           
+        >;
 
     template <typename... TFields>
-    using FieldSumMinLengthIntType = 
+    using FieldSumMinLengthIntType =
         std::integral_constant<
-            std::size_t, 
+            std::size_t,
             comms::util::tupleTypeAccumulate<std::tuple<TFields...> >(
                 std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>())
-        >;    
+        >;
 
     template <std::size_t TFrom, std::size_t TUntil, typename... TFields>
-    using FieldSumMinLengthFromUntilIntType = 
+    using FieldSumMinLengthFromUntilIntType =
         std::integral_constant<
-            std::size_t, 
+            std::size_t,
             comms::util::tupleTypeAccumulateFromUntil<TFrom, TUntil, std::tuple<TFields...> >(
                 std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>())
-        >;   
+        >;
 
     template <typename... TFields>
-    using FieldSumTotalBitLengthIntType = 
+    using FieldSumTotalBitLengthIntType =
         std::integral_constant<
-            std::size_t, 
+            std::size_t,
             comms::util::tupleTypeAccumulate<std::tuple<TFields...> >(
                 std::size_t(0), comms::field::details::FieldTotalBitLengthSumCalcHelper<>())
-        >;       
+        >;
 
     template <std::size_t TFrom, std::size_t TUntil, typename... TFields>
-    using FieldSumTotalBitLengthFromUntilIntType = 
+    using FieldSumTotalBitLengthFromUntilIntType =
         std::integral_constant<
-            std::size_t, 
+            std::size_t,
             comms::util::tupleTypeAccumulateFromUntil<TFrom, TUntil, std::tuple<TFields...> >(
                 std::size_t(0), comms::field::details::FieldTotalBitLengthSumCalcHelper<>())
-        >;              
+        >;
 
     template <typename... TFields>
-    using AnyFieldHasNonDefaultRefreshBoolType = 
+    using AnyFieldHasNonDefaultRefreshBoolType =
         typename comms::util::Conditional<
             comms::util::tupleTypeIsAnyOf<std::tuple<TFields...> >(
                 comms::field::details::FieldNonDefaultRefreshCheckHelper<>())
         >::template Type<
             std::true_type,
             std::false_type
-        >;    
+        >;
 
     template <typename... TFields>
-    using AllFieldsHaveReadNoStatusBoolType = 
+    using AllFieldsHaveReadNoStatusBoolType =
         typename comms::util::Conditional<
             comms::util::tupleTypeAccumulate<std::tuple<TFields...> >(
                 true, comms::field::details::FieldReadNoStatusDetectHelper<>())
         >::template Type<
             std::true_type,
             std::false_type
-        >;    
+        >;
 
     template <typename... TFields>
-    using AllFieldsHaveWriteNoStatusBoolType = 
+    using AllFieldsHaveWriteNoStatusBoolType =
         typename comms::util::Conditional<
             comms::util::tupleTypeAccumulate<std::tuple<TFields...> >(
                 true, comms::field::details::FieldWriteNoStatusDetectHelper<>())
         >::template Type<
             std::true_type,
             std::false_type
-        >;                
+        >;
 
 private:
 

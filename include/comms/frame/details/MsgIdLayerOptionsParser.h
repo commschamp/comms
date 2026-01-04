@@ -22,7 +22,6 @@ namespace frame
 namespace details
 {
 
-
 template <typename... TOptions>
 class MsgIdLayerOptionsParser;
 
@@ -40,7 +39,7 @@ public:
     using MsgFactory = comms::MsgFactory<TInterface, TAllMessages, TExtraOptions...>;
 
     template <typename TLayer>
-    using DefineExtendingClass = TLayer;    
+    using DefineExtendingClass = TLayer;
 };
 
 template <typename T, typename... TOptions>
@@ -52,7 +51,7 @@ public:
     using ExtendingClass = T;
 
     template <typename TLayer>
-    using DefineExtendingClass = ExtendingClass;       
+    using DefineExtendingClass = ExtendingClass;
 };
 
 template <typename TFactory, typename... TOptions>
@@ -79,7 +78,6 @@ public:
     using MsgFactory = TFactory<TInterface, TAllMessages, typename BaseImpl::FactoryOptions, TExtraOptions...>;
 };
 
-
 template <typename... TOptions>
 class MsgIdLayerOptionsParser<
     comms::option::app::EmptyOption,
@@ -98,8 +96,8 @@ template <typename T, typename... TOptions>
 class MsgIdLayerOptionsParser<T, TOptions...> : public MsgIdLayerOptionsParser<TOptions...>
 {
     using BaseImpl = MsgIdLayerOptionsParser<TOptions...>;
-public:    
-    using FactoryOptions = 
+public:
+    using FactoryOptions =
         typename std::decay<
             decltype(
                 std::tuple_cat(
@@ -111,12 +109,12 @@ public:
 
     // Ignoring all the options if MsgFactory is overriden
     template <typename TInterface, typename TAllMessages, typename... TExtraOptions>
-    using MsgFactory = 
+    using MsgFactory =
         typename comms::util::Conditional<
             BaseImpl::HasMsgFactory
         >::template Type<
             typename BaseImpl::template MsgFactory<TInterface, TAllMessages, FactoryOptions, TExtraOptions...>,
-            comms::MsgFactory<TInterface, TAllMessages, FactoryOptions, TExtraOptions...>  
+            comms::MsgFactory<TInterface, TAllMessages, FactoryOptions, TExtraOptions...>
         >;
 };
 

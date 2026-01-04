@@ -87,7 +87,7 @@ public:
     /// @details For internal use only
     using ImplOptions = details::MessageImplOptionsParser<TOptions...>;
 
-    /// @brief Type of the actual message provided via 
+    /// @brief Type of the actual message provided via
     ///     @ref comms::option::def::MsgType.
     /// @details If @ref comms::option::def::MsgType hasn't been used
     ///     equals to @b void.
@@ -98,9 +98,9 @@ public:
     static constexpr bool hasStaticMsgId()
     {
         return ImplOptions::HasStaticMsgId;
-    }    
+    }
 
-    /// @brief Compile time retrieval of the message id provided via 
+    /// @brief Compile time retrieval of the message id provided via
     ///    @ref comms::option::def::StaticNumIdImpl
     /// @details If comms::option::def::StaticNumIdImpl hasn't been used,
     ///     @b std::numeric_limits<std::intmax_t>::max() is returned.
@@ -144,7 +144,7 @@ public:
     static constexpr bool hasPolymorphicWrite()
     {
         return BaseImpl::hasWrite() && (!ImplOptions::HasNoWriteImpl);
-    }    
+    }
 
     /// @brief Compile time inquiry of whether polymoriphic validity check has been
     ///     requested via interface options and hasn't been inhibited by
@@ -176,7 +176,7 @@ public:
     static constexpr bool hasCustomRefresh()
     {
         return ImplOptions::HasCustomRefresh;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::MessageBase has
     ///    notified about custom name retrieval function in the derived class
@@ -184,13 +184,13 @@ public:
     static constexpr bool hasCustomName()
     {
         return ImplOptions::HasName;
-    }  
-    
+    }
+
     /// @brief Compile type inquiry whether the class provides @ref doGetId() member function.
     static constexpr bool hasDoGetId()
     {
         return ImplOptions::HasStaticMsgId || ImplOptions::HasDoGetId;
-    }        
+    }
 
 #ifdef FOR_DOXYGEN_DOC_ONLY
 
@@ -580,7 +580,7 @@ protected:
 
     /// @brief Same as @ref doReadUntil(), but updating length parameter.
     /// @param[in, out] iter Iterator used for reading the data.
-    /// @param[in, out] len Maximum number of bytes that can be read.    
+    /// @param[in, out] len Maximum number of bytes that can be read.
     template <std::size_t TIdx, typename TIter>
     ErrorStatus doReadUntilAndUpdateLen(TIter& iter, std::size_t& len);
 
@@ -624,7 +624,7 @@ protected:
 
     /// @brief Same as @ref doReadFrom(), but modifies length parameter.
     /// @param[in, out] iter Iterator used for reading the data.
-    /// @param[in, out] len Maximum number of bytes that can be read.    
+    /// @param[in, out] len Maximum number of bytes that can be read.
     template <std::size_t TIdx, typename TIter>
     ErrorStatus doReadFromAndUpdateLen(TIter& iter, std::size_t& len);
 
@@ -667,7 +667,7 @@ protected:
 
     /// @brief Same as @ref doReadFromUntil(), but modifies length parameter.
     /// @param[in, out] iter Iterator used for reading the data.
-    /// @param[in, out] len Maximum number of bytes that can be read.    
+    /// @param[in, out] len Maximum number of bytes that can be read.
     template <std::size_t TFromIdx, std::size_t TUntilIdx, typename TIter>
     ErrorStatus doReadFromUntilAndUpdateLen(TIter& iter, std::size_t& len);
 

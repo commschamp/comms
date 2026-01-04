@@ -53,7 +53,7 @@ public:
     template <std::size_t TFromIdx>
     static constexpr std::size_t maxLengthFrom()
     {
-        using Tag = 
+        using Tag =
             typename comms::util::LazyShallowConditional<
                 TLenFieldIdx < TFromIdx
             >::template Type<
@@ -66,7 +66,7 @@ public:
     template <std::size_t TUntilIdx>
     static constexpr std::size_t maxLengthUntil()
     {
-        using Tag = 
+        using Tag =
             typename comms::util::LazyShallowConditional<
                 TUntilIdx <= TLenFieldIdx
             >::template Type<
@@ -80,7 +80,7 @@ public:
     template <std::size_t TFromIdx, std::size_t TUntilIdx>
     static constexpr std::size_t maxLengthFromUntil()
     {
-        using Tag = 
+        using Tag =
             typename comms::util::LazyShallowConditional<
                 (TUntilIdx <= TLenFieldIdx) || (TLenFieldIdx < TFromIdx)
             >::template Type<
@@ -107,13 +107,13 @@ public:
     ErrorStatus readFrom(TIter& iter, std::size_t len)
     {
         return readFromUntilAndUpdateLen<TFromIdx, std::tuple_size<ValueType>::value>(iter, len);
-    }    
+    }
 
     template <std::size_t TFromIdx, typename TIter>
     ErrorStatus readFromAndUpdateLen(TIter& iter, std::size_t& len)
     {
         return readFromAndUpdateLen<TFromIdx, std::tuple_size<ValueType>::value>(iter, len);
-    }       
+    }
 
     template <std::size_t TUntilIdx, typename TIter>
     ErrorStatus readUntil(TIter& iter, std::size_t len)
@@ -125,7 +125,7 @@ public:
     ErrorStatus readUntilAndUpdateLen(TIter& iter, std::size_t& len)
     {
         return readFromUntilAndUpdateLen<0, TUntilIdx>(iter, len);
-    }   
+    }
 
     template <std::size_t TFromIdx, std::size_t TUntilIdx, typename TIter>
     ErrorStatus readFromUntil(TIter& iter, std::size_t len)
@@ -136,15 +136,15 @@ public:
     template <std::size_t TFromIdx, std::size_t TUntilIdx, typename TIter>
     ErrorStatus readFromUntilAndUpdateLen(TIter& iter, std::size_t& len)
     {
-        using Tag = 
+        using Tag =
             typename comms::util::LazyShallowConditional<
                 (TUntilIdx <= TLenFieldIdx)
             >::template Type<
                 BaseRedirectTag,
                 LocalTag
-            >;      
+            >;
         return readFromUntilInternal<TFromIdx, TUntilIdx>(iter, len, Tag());
-    }      
+    }
 
     template <typename TIter>
     void readNoStatus(TIter& iter) = delete;
@@ -216,10 +216,10 @@ private:
     using LocalTag = comms::details::tag::Tag2<>;
 
     template <typename... TParams>
-    using PerformOpTag = comms::details::tag::Tag3<>;    
+    using PerformOpTag = comms::details::tag::Tag3<>;
 
     template <typename... TParams>
-    using SkipOpTag = comms::details::tag::Tag4<>;    
+    using SkipOpTag = comms::details::tag::Tag4<>;
 
     template <std::size_t TFromIdx, typename... TParams>
     static constexpr std::size_t maxLengthFromInternal(BaseRedirectTag<TParams...>)
@@ -237,7 +237,7 @@ private:
     static constexpr std::size_t maxLengthUntilInternal(BaseRedirectTag<TParams...>)
     {
         return BaseImpl::template maxLengthUntil<TUntilIdx>();
-    }    
+    }
 
     template <std::size_t TUntilIdx, typename... TParams>
     static constexpr std::size_t maxLengthUntilInternal(LocalTag<TParams...>)
@@ -249,19 +249,19 @@ private:
     static constexpr std::size_t maxLengthFromUntilInternal(BaseRedirectTag<TParams...>)
     {
         return BaseImpl::template maxLengthFromUntil<TFromIdx, TUntilIdx>();
-    }    
+    }
 
     template <std::size_t TFromIdx, std::size_t TUntilIdx, typename... TParams>
     static constexpr std::size_t maxLengthFromUntilInternal(LocalTag<TParams...>)
     {
         return MaxPossibleLen;
-    }       
+    }
 
     template <std::size_t TFromIdx, std::size_t TUntilIdx, typename TIter, typename... TParams>
     ErrorStatus readFromUntilInternal(TIter& iter, std::size_t& len, BaseRedirectTag<TParams...>)
     {
         return BaseImpl::template readFromUntilAndUpdateLen<TFromIdx, TUntilIdx>(iter, len);
-    }       
+    }
 
     template <std::size_t TFromIdx, typename TIter, typename... TParams>
     ErrorStatus readEarlierFieldsInternal(TIter& iter, std::size_t& len, PerformOpTag<TParams...>)
@@ -275,7 +275,7 @@ private:
         static_cast<void>(iter);
         static_cast<void>(len);
         return ErrorStatus::Success;
-    }   
+    }
 
     template <typename TIter, typename... TParams>
     ErrorStatus readRemLengthFieldInternal(TIter& iter, std::size_t& len, std::size_t& remLen, PerformOpTag<TParams...>)
@@ -306,7 +306,7 @@ private:
         auto& lenField = std::get<TLenFieldIdx>(mems);
         remLen = lenField.value();
         return ErrorStatus::Success;
-    }    
+    }
 
     template <std::size_t TUntilIdx, typename... TParams>
     void skipUntilFieldInternal(std::size_t& reqLen, PerformOpTag<TParams...>)
@@ -321,32 +321,32 @@ private:
     void skipUntilFieldInternal(std::size_t& reqLen, SkipOpTag<TParams...>)
     {
         static_cast<void>(reqLen);
-    }    
+    }
 
     template <std::size_t TFromIdx, std::size_t TUntilIdx, typename TIter, typename... TParams>
     ErrorStatus readFromUntilInternal(TIter& iter, std::size_t& len, LocalTag<TParams...>)
     {
         static_assert(TLenFieldIdx < TUntilIdx, "Invalid function invocation");
-        using EarlierFieldsTag = 
+        using EarlierFieldsTag =
             typename comms::util::LazyShallowConditional<
                 (TFromIdx < TLenFieldIdx)
             >::template Type<
                 PerformOpTag,
                 SkipOpTag
-            >; 
+            >;
 
         auto es = readEarlierFieldsInternal<TFromIdx>(iter, len, EarlierFieldsTag());
         if (es != comms::ErrorStatus::Success) {
             return es;
         }
 
-        using LenTag = 
+        using LenTag =
             typename comms::util::LazyShallowConditional<
                 (TFromIdx <= TLenFieldIdx)
             >::template Type<
                 PerformOpTag,
                 SkipOpTag
-            >;         
+            >;
 
         std::size_t reqLen = 0U;
         es = readRemLengthFieldInternal(iter, len, reqLen, LenTag());
@@ -354,13 +354,13 @@ private:
             return es;
         }
 
-        using SkipTag = 
+        using SkipTag =
             typename comms::util::LazyShallowConditional<
                 (TLenFieldIdx < TFromIdx)
             >::template Type<
                 PerformOpTag,
                 SkipOpTag
-            >;    
+            >;
 
         skipUntilFieldInternal<TFromIdx>(reqLen, SkipTag());
 
@@ -386,7 +386,7 @@ private:
         }
 
         return es;
-    }       
+    }
 
     bool refreshLengthInternal()
     {
@@ -401,7 +401,6 @@ private:
         lenField.setValue(expLen);
         return true;
     }
-
 
     static const std::size_t MaxPossibleLen = 0xffff;
 };

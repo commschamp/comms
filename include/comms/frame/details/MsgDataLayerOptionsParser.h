@@ -28,7 +28,7 @@ class MsgDataLayerField : public
     >
 {
 public:
-    static const char* name()    
+    static const char* name()
     {
         return "Data";
     }
@@ -51,7 +51,7 @@ class MsgDataLayerOptionsParser<comms::option::def::FieldType<TField>, TOptions.
 {
 public:
     static constexpr bool HasFieldType = true;
-    using FieldType = TField; 
+    using FieldType = TField;
 };
 
 template <typename... TOptions>

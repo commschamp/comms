@@ -7,11 +7,11 @@
 
 #pragma once
 
-
 #include "comms/CompileControl.h"
 #include "comms/ErrorStatus.h"
 
 #include <cstdint>
+#include <iterator>
 #include <limits>
 #include <type_traits>
 
@@ -40,7 +40,7 @@ struct FieldVersionDependentCheckHelper
     constexpr bool operator()(bool soFar) const
     {
         return TField::isVersionDependent() || soFar;
-    }    
+    }
 };
 
 template <typename...>
@@ -77,7 +77,7 @@ template <bool THasBitLengthLimit>
 struct FieldBitLengthRetrieveHelper
 {
     template <typename TField>
-    using Type = 
+    using Type =
         std::integral_constant<
             std::size_t,
             TField::ParsedOptions::FixedBitLength
@@ -88,13 +88,12 @@ template <>
 struct FieldBitLengthRetrieveHelper<false>
 {
     template <typename TField>
-    using Type = 
+    using Type =
         std::integral_constant<
             std::size_t,
             TField::maxLength() * std::numeric_limits<std::uint8_t>::digits
         >;
 };
-
 
 template <typename...>
 struct FieldTotalBitLengthSumCalcHelper
@@ -189,7 +188,6 @@ public:
         }
     }
 
-
 private:
     ErrorStatus& m_es;
     TIter& m_iter;
@@ -271,7 +269,7 @@ struct FieldReadNoStatusDetectHelper
     constexpr bool operator()() const
     {
         return TField::hasReadNoStatus();
-    }    
+    }
 
     template <typename TField>
     constexpr bool operator()(bool soFar) const
@@ -321,7 +319,7 @@ struct FieldVersionUpdateHelper
 private:
     const TVersionType m_version = static_cast<TVersionType>(0);
 };
-    
+
 } // namespace details
 
 } // namespace field

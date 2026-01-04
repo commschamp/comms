@@ -22,7 +22,6 @@ namespace field
 namespace adapter
 {
 
-
 template <typename TActField, typename TBase>
 class FieldType : public TBase
 {
@@ -43,12 +42,12 @@ public:
                 {
                     m_entered = false;
                 });
-                
+
         return static_cast<const TActField*>(this)->valid();
     }
 
 private:
-    mutable bool m_entered = false;    
+    mutable bool m_entered = false;
 };
 
 }  // namespace adapter
@@ -56,7 +55,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
-
-
 

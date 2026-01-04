@@ -5,7 +5,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// @file 
+/// @file
 /// @brief Contains definition of @ref comms::frame::checksum::Crc
 
 #pragma once
@@ -18,7 +18,6 @@
 #include <cstdint>
 #include <limits>
 #include <type_traits>
-
 
 namespace comms
 {
@@ -308,7 +307,7 @@ private:
     using DoReflectTag = comms::details::tag::Tag2<>;
 
     template <typename...>
-    using ReflectTag = 
+    using ReflectTag =
         typename comms::util::LazyShallowConditional<
             TReflect
         >::template Type<
@@ -317,7 +316,7 @@ private:
         >;
 
     template <typename...>
-    using ReflectRemTag = 
+    using ReflectRemTag =
         typename comms::util::LazyShallowConditional<
             TReflectRem
         >::template Type<
@@ -357,8 +356,8 @@ private:
         {
             if (value & 0x01)
             {
-                comms::cast_assign(reflection) = 
-                    reflection | 
+                comms::cast_assign(reflection) =
+                    reflection |
                     static_cast<decltype(reflection)>(1 << ((bitsCount - 1) - bit));
             }
 
@@ -405,6 +404,4 @@ using Crc_32 = Crc<std::uint32_t, 0x04c11db7, 0xffffffff, 0xffffffff, true, true
 }  // namespace frame
 
 }  // namespace comms
-
-
 

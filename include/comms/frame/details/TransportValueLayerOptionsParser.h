@@ -38,14 +38,14 @@ public:
     using DefineExtendingClass = TLayer;
 
     template <typename TNextLayer>
-    using ForceReadUntilDataSplitIfNeeded = 
+    using ForceReadUntilDataSplitIfNeeded =
         typename comms::util::Conditional<
             std::is_void<typename FrameLayerMsgPtr<TNextLayer>::Type>::value
         >::template Type <
             comms::option::app::EmptyOption,
             comms::option::def::FrameLayerForceReadUntilDataSplit
-            // If the MsgPtr is not defined, then the MsgIdLayer is 
-            // probably an outer layer, as the result the message 
+            // If the MsgPtr is not defined, then the MsgIdLayer is
+            // probably an outer layer, as the result the message
             // object is properly allocated when transport value
             // read operation is reached.
         >;
@@ -59,7 +59,7 @@ public:
     static const bool HasPseudoValue = true;
 
     template <typename TBase>
-    using BuildPseudoBase = TransportValueLayerPseudoBase<TBase>;    
+    using BuildPseudoBase = TransportValueLayerPseudoBase<TBase>;
 };
 
 template <typename T, typename... TOptions>
@@ -71,12 +71,12 @@ public:
     using ExtendingClass = T;
 
     template <typename TLayer>
-    using DefineExtendingClass = ExtendingClass;    
+    using DefineExtendingClass = ExtendingClass;
 };
 
 template <typename... TOptions>
 class TransportValueLayerOptionsParser<
-    comms::option::def::FrameLayerSuppressReadUntilDataSplitForcing, 
+    comms::option::def::FrameLayerSuppressReadUntilDataSplitForcing,
     TOptions...> :
         public TransportValueLayerOptionsParser<TOptions...>
 {

@@ -1,22 +1,22 @@
 /// @page page_custom_checksum_layer Defining Custom Checksum Frame Layer
 /// @tableofcontents
-/// The @b COMMS library provides default @ref comms::frame::ChecksumLayer 
-/// and @ref comms::frame::ChecksumPrefixLayer frame layer to handle transport framing checksum. 
+/// The @b COMMS library provides default @ref comms::frame::ChecksumLayer
+/// and @ref comms::frame::ChecksumPrefixLayer frame layer to handle transport framing checksum.
 /// However, they may be insufficient (or incorrect) for some particular use cases. For example
 /// the protocol may support multiple checksum algorithms usage of which is determined
 /// at runtime.
-/// The @ref page_frame_tutorial_new_layers section of the 
+/// The @ref page_frame_tutorial_new_layers section of the
 /// @ref page_frame_tutorial page explains how to define new (custom)
-/// protocol layer. 
+/// protocol layer.
 ///
 /// However, since @b v3.2 COMMS library provides an ability to extend the existing
-/// definition of @ref comms::frame::ChecksumLayer as well as 
+/// definition of @ref comms::frame::ChecksumLayer as well as
 /// @ref comms::frame::ChecksumPrefixLayer and customize some bits
-/// and pieces. Let's implement the mentioned above example of supporting 
+/// and pieces. Let's implement the mentioned above example of supporting
 /// multiple checksum algorithms.
 ///
 /// This tutorial page focuses on the customization of @ref comms::frame::ChecksumLayer,
-/// but all the listed customization points are also applicable to 
+/// but all the listed customization points are also applicable to
 /// @ref comms::frame::ChecksumPrefixLayer.
 ///
 /// For this example the protocol framing is defined to be
@@ -68,7 +68,7 @@
 ///         comms::option::def::ExtraTransportFields<
 ///             std::tuple<
 ///                 ChecksumType
-///             > 
+///             >
 ///         >
 ///     >
 /// {
@@ -82,15 +82,15 @@
 /// } // namespace my_prot
 /// @endcode
 /// Just to refresh the reader's memory: the usage of #COMMS_MSG_TRANSPORT_FIELDS_NAMES()
-/// macro for the interface definition will generate 
-/// @b transportField_checksumType() 
+/// macro for the interface definition will generate
+/// @b transportField_checksumType()
 /// convenience member function to access the stored checksum type field.
 ///
-/// When implementing the transport framing the handling of 
+/// When implementing the transport framing the handling of
 /// `CHECKSUM_TYPE` can be done using regular @ref comms::frame::TransportValueLayer
 /// (see @ref page_frame_tutorial_transport_value).
 ///
-/// Now it's time to actually extend the provided definition of 
+/// Now it's time to actually extend the provided definition of
 /// the @ref comms::frame::ChecksumLayer and support usage of multiple checksum
 /// algorithms.
 /// @code
@@ -99,12 +99,12 @@
 ///
 /// // Field to contain all possible checksums
 /// using ChecksumField = comms::field::IntValue<FieldBase, std::uint32_t>;
-/// 
+///
 /// template <typename TNextLayer>
 /// class MyChecksumLayer : public
 ///     comms::frame::ChecksumLayer<
-///         ChecksumField,   
-///         comms::frame::checksum::Crc_32, // Not really important for this example, 
+///         ChecksumField,
+///         comms::frame::checksum::Crc_32, // Not really important for this example,
 ///                                            // but template parameter type needs to be populated
 ///         TNextLayer,          // Next layer in the frame
 ///         comms::option::def::ExtendingClass<MyChecksumLayer<TNextLayer> >
@@ -126,27 +126,27 @@
 ///             checksumValid = false;
 ///             return static_cast<typename Field::ValueType>(0);
 ///         }
-///     
+///
 ///         checksumValid = true;
 ///         auto checksumType = msgPtr->transportField_checksumType().value();
 ///         if (checksumType == ChecksumTypeVal::Sum8) {
 ///             using Calc = comms::frame::checksum::BasicSum<std::uint8_t>;
 ///             return Calc()(iter, len);
 ///         }
-///     
+///
 ///         if (checksumType == ChecksumType::Crc16) {
 ///             using Calc = comms::frame::checksum::Crc_16;
 ///             return Calc()(iter, len);
-///         }        
-///     
+///         }
+///
 ///         if (checksumType == ChecksumType::Crc32) {
 ///             using Calc = comms::frame::checksum::Crc_32;
 ///             return Calc()(iter, len);
-///         }        
-///     
+///         }
+///
 ///         checksumValid = false;
 ///         return static_cast<typename Field::ValueType>(0);
-///     }    
+///     }
 ///
 ///     // Due to the fact that the used checksums have different lengths, the
 ///     // functionality of reading a field's value also needs to be customized.
@@ -156,7 +156,7 @@
 ///         if (msgPtr == nullptr) {
 ///             return comms::ErrorStatus::ProtocolError;
 ///         }
-///     
+///
 ///         auto checksumType = msgPtr->transportField_checksumType().value();
 ///         if (checksumType == ChecksumType::Sum8) {
 ///             return readFieldInternal<std::uint8_t>(field, iter, len);
@@ -181,7 +181,7 @@
 ///         if (msgPtr == nullptr) {
 ///             return comms::ErrorStatus::ProtocolError;
 ///         }
-///     
+///
 ///         auto checksumType = msgPtr->transportField_checksumType().value();
 ///         if (checksumType == ChecksumType::Sum8) {
 ///             return writeFieldInternal<std::uint8_t>(field, iter, len);
@@ -230,7 +230,7 @@
 ///         if (es != comms::ErrorStatus::Success) {
 ///             return es;
 ///         }
-///     
+///
 ///         field = comms::field_cast<Field>(fieldTmp);
 ///         return es;
 ///     }
@@ -249,12 +249,12 @@
 /// @endcode
 /// The @ref comms::frame::ChecksumLayer doesn't have any virtual functions and
 /// as the result not able to provide any polymorphic behavior. In order to be
-/// able to extend its default functionality there is a need to use 
+/// able to extend its default functionality there is a need to use
 /// <a href="https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously Recurring Template Pattern</a>.
 /// It is done by passing @ref comms::option::def::ExtendingClass extension option with
 /// the type of the layer class being defined to the @ref comms::frame::ChecksumLayer.
 ///
-/// The extending class can customize the default behavior by overriding 
+/// The extending class can customize the default behavior by overriding
 /// the listed below functions. They do not
 /// necessarily need to be @b static, accessing inner private state of the layer object
 /// is also acceptable.
@@ -264,23 +264,23 @@
 /// function that is invoked to write field's value.
 /// @li @ref comms::frame::ChecksumLayer::doFieldLength() "doFieldLength()" - Member
 /// function that is invoked to calculate serialization length of the field.
-/// @li @ref comms::frame::ChecksumLayer::calculateChecksum() "calculateChecksum()" - 
+/// @li @ref comms::frame::ChecksumLayer::calculateChecksum() "calculateChecksum()" -
 /// Member function that is responsible to calculate a checksum on provided range.
-/// @li @ref comms::frame::ChecksumLayer::getChecksumFromField() "getChecksumFromField()" - 
+/// @li @ref comms::frame::ChecksumLayer::getChecksumFromField() "getChecksumFromField()" -
 /// Retrieve value of the checksum from the field.
 /// @li @ref comms::frame::ChecksumLayer::prepareFieldForWrite() "prepareFieldForWrite()" -
 /// Assign the calculated checksum value to the field's value.
-/// 
+///
 /// The newly defined custom frame layer can be used instead of
-/// @ref comms::frame::ChecksumLayer when defining 
+/// @ref comms::frame::ChecksumLayer when defining
 /// @ref page_frame_tutorial "framing" of the protocol.
 /// For example:
 /// @code
 /// namespace my_prot
 /// {
-/// 
+///
 /// template <typename TMessage, typename TAllMessages>
-/// struct Frame1 : public 
+/// struct Frame1 : public
 ///     MyChecksumLayer<                                     // CHECKSUM
 ///         comms::frame::MsgSizeLayer<                   // SIZE
 ///             common::field::IntValue<FieldBase, std::uint16_t>,

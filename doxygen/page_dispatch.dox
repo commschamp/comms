@@ -4,13 +4,13 @@
 /// a basic way to dispatch message object (held by a pointer to the main interface class)
 /// to its handling function. The described approach requires support for
 /// @ref page_use_prot_interface_handle. However, since version @b v1.1 the
-/// @b COMMS library supports other multiple ways to dispatch a message even if 
+/// @b COMMS library supports other multiple ways to dispatch a message even if
 /// its interface doesn't define polymorphic @b dispatch() member function.
 ///
 /// @section page_dispatch_message_object Dispatch of the Message Object
 /// The handler for the message object is expected to look exactly the same
 /// as described in @ref page_use_prot_handling, i.e. to define @b handle()
-/// member function for every actual message type it intends to handle, 
+/// member function for every actual message type it intends to handle,
 /// @b handle() member function for the interface type for the ones it doesn't,
 /// and define @b RetType type to specify return type of the handling functions
 /// in case it's not @b void.
@@ -38,7 +38,7 @@
 /// @li @ref page_dispatch_message_object_linear_switch
 ///
 /// Every way has its advantages and disadvantages, please read on and choose
-/// one that suites your needs. 
+/// one that suites your needs.
 /// There are some definition commonly used for all the examples below.
 ///
 /// All the mentioned below dispatch functions are defined in @b comms/dispatch.h
@@ -56,7 +56,7 @@
 /// The message types that need to be supported are bundled in
 /// @b std::tuple and named @b AllMessages
 /// @code
-/// using AllMessages = 
+/// using AllMessages =
 ///     std::tuple<
 ///         Message1<MyMessage>,
 ///         Message2<MyMessage>,
@@ -89,7 +89,7 @@
 /// @code
 /// return msg.dispath(handler);
 /// @endcode
-/// In case the direct dispatch is not possible, 
+/// In case the direct dispatch is not possible,
 /// the @ref comms::dispatchMsgPolymorphic() function will analyze the
 /// provided tuple of message types (@b AllMessages) at <b>compile time</b>
 /// and generate appropriate global static dispatch tables (initialized before
@@ -98,7 +98,7 @@
 /// In case the numeric ID are sequential and unique with no more than 10% of the gaps
 /// (the ID of the last message is not greater than number of message types in
 /// the provided tuple multiplied by 1.1), the generated dispatch tables and logic provide
-/// O(1) runtime complexity to dispatch message object into appropriate handler. 
+/// O(1) runtime complexity to dispatch message object into appropriate handler.
 ///
 /// The generated table is just an array of pointers to a dispatch method class
 /// equivalent to the code below
@@ -163,7 +163,7 @@
 /// There can also be a case when some message has multiple forms, that implemented
 /// as different message classes, but which share the same ID. For example
 /// @code
-/// using AllMessages = 
+/// using AllMessages =
 ///     std::tuple<
 ///         Message1<MyMessage>, // Has ID 1
 ///         Message2<MyMessage>, // Has ID 2
@@ -173,7 +173,7 @@
 /// @endcode
 /// To support such case, the @ref comms::dispatchMsgPolymorphic() function
 /// is overloaded with new @b index parameter (which is index (or offset) starting from the
-/// first type in the tuple with the requested ID) to allow 
+/// first type in the tuple with the requested ID) to allow
 /// selection to what type to downcast
 /// @code
 /// comms::dispatchMsgPolymorphic<AllMessages>(90, msg, handler); // Invokes handle(Message90_1<MyMessage>&)
@@ -182,20 +182,20 @@
 /// comms::dispatchMsgPolymorphic<AllMessages>(90, 2, msg, handler); // Out of range - invokes handle(MyMessage&)
 /// @endcode
 ///
-/// There is also an overload to @ref comms::dispatchMsgPolymorphic(), which 
+/// There is also an overload to @ref comms::dispatchMsgPolymorphic(), which
 /// doesn't receive any numeric message ID
 /// @code
 /// comms::dispatchMsgPolymorphic<AllMessages>(msg, handler);
 /// @endcode
-/// Such call checks (at compile time) whether the message interface 
+/// Such call checks (at compile time) whether the message interface
 /// provides polymorphic dispatch (see @ref page_use_prot_interface_handle).
 /// If this is the case, then it is used to dispatch the message to the handler.
-/// If not, then the message interface definition (@b MyMessage) 
+/// If not, then the message interface definition (@b MyMessage)
 /// must provide @ref page_use_prot_interface_id_retrieve to be able to retrieve
-/// ID of the message object. 
+/// ID of the message object.
 ///
-/// @b SUMMARY: The runtime complexity of @b polymorphic dispatch can be 
-/// O(1) in case the numeric IDs of the supported message types in the provided tuple 
+/// @b SUMMARY: The runtime complexity of @b polymorphic dispatch can be
+/// O(1) in case the numeric IDs of the supported message types in the provided tuple
 /// are @b NOT too sparse (no more than 10% holes). If this is not the case
 /// the runtime complexity is O(log(n)) with multiple virtual function calls
 /// to retrieve the ID of the dispatching method. Also the downside of the
@@ -217,7 +217,7 @@
 ///
 /// comms::dispatchMsgStaticBinSearch<AllMessages>(id, *msg, handler);
 /// @endcode
-/// The @ref comms::dispatchMsgStaticBinSearch() function generates the 
+/// The @ref comms::dispatchMsgStaticBinSearch() function generates the
 /// code equivalent to having the following folded if statements where @b N
 /// is number of message types
 /// @code
@@ -247,7 +247,7 @@
 /// The runtime complexity of such code is always O(log(n)) and there are no
 /// extra v-tables and virtual functions involved.
 ///
-/// In case there are distinct message types with the same numeric ID (multiple 
+/// In case there are distinct message types with the same numeric ID (multiple
 /// forms of the same message), the overloaded function with extra @b index
 /// parameter is provided (similar to described earlier @ref comms::dispatchMsgPolymorphic()).
 /// @code
@@ -257,16 +257,16 @@
 /// comms::dispatchMsgStaticBinSearch<AllMessages>(90, 2, msg, handler); // Out of range - invokes handle(MyMessage&)
 /// @endcode
 ///
-/// There is also an overload to @ref comms::dispatchMsgStaticBinSearch(), which 
+/// There is also an overload to @ref comms::dispatchMsgStaticBinSearch(), which
 /// doesn't receive any numeric message ID
 /// @code
 /// comms::dispatchMsgStaticBinSearch<AllMessages>(msg, handler);
 /// @endcode
-/// Such call requires the message interface definition (@b MyMessage) 
+/// Such call requires the message interface definition (@b MyMessage)
 /// to provide @ref page_use_prot_interface_id_retrieve to be able to retrieve
-/// ID of the message object. 
+/// ID of the message object.
 ///
-/// @b SUMMARY: The runtime complexity of the <b>static binary search</b> 
+/// @b SUMMARY: The runtime complexity of the <b>static binary search</b>
 /// dispatch is always O(log(n)) regardless of how sparse or compact are IDs
 /// of the message types in the provided tuple. There are also no v-tables
 /// generated by the compiler.
@@ -285,7 +285,7 @@
 ///
 /// comms::dispatchMsgLinearSwitch<AllMessages>(id, *msg, handler);
 /// @endcode
-/// The @ref comms::dispatchMsgLinearSwitch() function generates the 
+/// The @ref comms::dispatchMsgLinearSwitch() function generates the
 /// code equivalent to having the following folded switch statements.
 /// @code
 /// switch (id) {
@@ -294,7 +294,7 @@
 ///     default:
 ///         switch(id) {
 ///             case id_of_elem(1):
-///                 return handler.handle(static_cast<...>(msg)); // cast to appropriate type         
+///                 return handler.handle(static_cast<...>(msg)); // cast to appropriate type
 ///             default:
 ///                 ...
 ///         };
@@ -303,10 +303,10 @@
 /// The runtime complexity of depends on the compiler being used. It has been
 /// noticed that @b clang starting from v3.9 generates efficient dispatch
 /// table with O(1) complexity when binary code is optimized for speed (@b -O2 ).
-/// Other main compilers, such as @b gcc and @b MSVC generate sequential 
+/// Other main compilers, such as @b gcc and @b MSVC generate sequential
 /// comparison statements with O(n) runtime complexity.
 ///
-/// In case there are distinct message types with the same numeric ID (multiple 
+/// In case there are distinct message types with the same numeric ID (multiple
 /// forms of the same message), the overloaded function with extra @b index
 /// parameter is provided (similar to described earlier @ref comms::dispatchMsgPolymorphic(),
 /// and @ref comms::dispatchMsgStaticBinSearch()).
@@ -316,18 +316,18 @@
 /// comms::dispatchMsgLinearSwitch<AllMessages>(90, 1, msg, handler); // Invokes handle(Message90_2<MyMessage>&)
 /// comms::dispatchMsgLinearSwitch<AllMessages>(90, 2, msg, handler); // Out of range - invokes handle(MyMessage&)
 /// @endcode
-/// There is also an overload to @ref comms::dispatchMsgLinearSwitch(), which 
+/// There is also an overload to @ref comms::dispatchMsgLinearSwitch(), which
 /// doesn't receive any numeric message ID
 /// @code
 /// comms::dispatchMsgLinearSwitch<AllMessages>(msg, handler);
 /// @endcode
-/// Such call requires the message interface definition (@b MyMessage) 
+/// Such call requires the message interface definition (@b MyMessage)
 /// to provide @ref page_use_prot_interface_id_retrieve to be able to retrieve
-/// ID of the message object. 
+/// ID of the message object.
 ///
 /// @b SUMMARY: The usage of <b>linear switch</b> dispatch is there for real
-/// "stuntmen". If you are using @b clang compiler, able and willing to 
-/// analyze generated binary code, and require optimal performance, then 
+/// "stuntmen". If you are using @b clang compiler, able and willing to
+/// analyze generated binary code, and require optimal performance, then
 /// consider using <b>linear switch</b> dispatch. For all other cases its usage
 /// is not recommended.
 ///
@@ -348,17 +348,17 @@
 /// comms::dispatchMsg<AllMessages>(id, *msg, handler);
 /// @endcode
 /// In such case the @b COMMS library will check whether the direct invocation
-/// over @b dispatch() member function exposed by the message interface class is 
-/// possible (see @ref page_use_prot_interface_handle) or the condition of 
+/// over @b dispatch() member function exposed by the message interface class is
+/// possible (see @ref page_use_prot_interface_handle) or the condition of
 /// O(1) @b polymorphic dispatch tables holds true (no more than 10% holes in
 /// the used IDs) and use @b polymorphic dispatch in this case. Otherwise
 /// <b>static binary search</b> one will be used.
 ///
-/// In case there are distinct message types with the same numeric ID (multiple 
+/// In case there are distinct message types with the same numeric ID (multiple
 /// forms of the same message), the overloaded function with extra @b index
 /// parameter is provided similar to other dispatch methods described above.
 /// @code
-/// using AllMessages1 = 
+/// using AllMessages1 =
 ///     std::tuple<
 ///         Message1<MyMessage>,
 ///         Message2<MyMessage>,
@@ -366,7 +366,7 @@
 ///     >;
 /// comms::dispatchMsg<AllMessages1>(1, msg, handler); // Equivalent to using comms::dispatchMsgPolymorphic()
 ///
-/// using AllMessages2 = 
+/// using AllMessages2 =
 ///     std::tuple<
 ///         Message1<MyMessage>,
 ///         Message2<MyMessage>,
@@ -375,7 +375,7 @@
 /// comms::dispatchMsg<AllMessages2>(1, msg, handler); // Equivalent to using comms::dispatchMsgStaticBinSearch()
 /// @endcode
 /// To verify what dispatch policy is being used the @b COMMS library provides
-/// <b>compile time</b> inquiry functions @ref comms::dispatchMsgIsPolymorphic() and 
+/// <b>compile time</b> inquiry functions @ref comms::dispatchMsgIsPolymorphic() and
 /// @ref comms::dispatchMsgIsStaticBinSearch() for that purpose.
 /// @code
 /// static_assert(comms::dispatchMsgIsPolymorphic<AllMessages1, MyMessage, MyHandler>(), "Unexpected dispatch type");
@@ -384,7 +384,7 @@
 /// static_assert(!comms::dispatchMsgIsPolymorphic<AllMessages2, MyMessage, MyHandler>(), "Unexpected dispatch type");
 /// static_assert(comms::dispatchMsgIsStaticBinSearch<AllMessages2, MyMessage, MyHandler>(), "Unexpected dispatch type");
 /// @endcode
-/// In case @b MyMessage interface class defines @ref page_use_prot_interface_handle 
+/// In case @b MyMessage interface class defines @ref page_use_prot_interface_handle
 /// functionality, the "polymorphic" dispatch method will always be chosen.
 /// @code
 /// static_assert(comms::dispatchMsgIsPolymorphic<AllMessages1, MyMessage, MyHandler>(), "Unexpected dispatch type");
@@ -400,13 +400,13 @@
 /// numeric ID without having any message object present for dispatching. The classic example
 /// would be the creation of message object itself given the ID (that's what
 /// @ref comms::MsgFactory class does). To support such cases the @b COMMS
-/// library provides the same 3 types of dispatching the given ID to its 
+/// library provides the same 3 types of dispatching the given ID to its
 /// appropriate type.
 /// @li @ref page_dispatch_message_type_polymorphic
 /// @li @ref page_dispatch_message_type_static_bin_search
 /// @li @ref page_dispatch_message_type_linear_switch
 ///
-/// For type dispatching the handler object is expected to look a bit 
+/// For type dispatching the handler object is expected to look a bit
 /// different.
 /// @code
 /// class MyHandler
@@ -461,7 +461,7 @@
 /// The message types that need to be supported are bundled in
 /// @b std::tuple and named @b AllMessages
 /// @code
-/// using AllMessages = 
+/// using AllMessages =
 ///     std::tuple<
 ///         Message1<MyMessage>,
 ///         Message2<MyMessage>,
@@ -469,7 +469,7 @@
 ///         ...
 ///     >;
 /// @endcode
-/// All the type @b dispatchMsgType*() methods described below return 
+/// All the type @b dispatchMsgType*() methods described below return
 /// @b bool which in case of being @b true
 /// indicates that the type was successfully found and appropriate @b handle()
 /// member function of the handler object being called. The return of @b false
@@ -478,7 +478,7 @@
 ///
 /// @subsection page_dispatch_message_type_polymorphic Polymorphic
 /// Just like with @ref page_dispatch_message_object_polymorphic dispatch of the
-/// message object, @b polymorphic dispatch of the message type generates 
+/// message object, @b polymorphic dispatch of the message type generates
 /// similar dispatch tables with virtual functions for O(1) or O(log(n)) runtime complexity
 /// depending on how sparse the IDs in the provided tuple are.
 /// @code
@@ -487,18 +487,18 @@
 /// @endcode
 /// Please see @ref comms::dispatchMsgTypePolymorphic() for reference.
 ///
-/// Please note, that in case there are distinct message types with the same numeric ID (multiple 
+/// Please note, that in case there are distinct message types with the same numeric ID (multiple
 /// forms of the same message), the overloaded function with extra @b index
 /// parameter is also provided.
 /// @code
-/// using AllMessages = 
+/// using AllMessages =
 ///     std::tuple<
 ///         Message1<MyMessage>, // Has ID 1
 ///         Message2<MyMessage>, // Has ID 2
 ///         Message90_1<MyMessage>, // Has ID 90
 ///         Message90_2<MyMessage>, // Has ID 90
 ///     >;
-/// 
+///
 /// dispatchMsgTypePolymorphic<AllMessages>(1, handler); // returns true
 /// dispatchMsgTypePolymorphic<AllMessages>(1, 0, handler); // returns true, same as above
 /// dispatchMsgTypePolymorphic<AllMessages>(1, 1, handler); // returns false
@@ -510,7 +510,7 @@
 ///
 /// @subsection page_dispatch_message_type_static_bin_search Static Binary Search
 /// Similar to @ref page_dispatch_message_object_static_bin_search dispatch of the
-/// message object, <b>static binary search</b> dispatch of the message type generates 
+/// message object, <b>static binary search</b> dispatch of the message type generates
 /// code equivalent to mentioned folded @b if statements with O(log(n)) runtime
 /// complexity.
 /// @code
@@ -519,18 +519,18 @@
 /// @endcode
 /// Please see @ref comms::dispatchMsgTypeStaticBinSearch() for reference.
 ///
-/// Please note, that in case there are distinct message types with the same numeric ID (multiple 
+/// Please note, that in case there are distinct message types with the same numeric ID (multiple
 /// forms of the same message), the overloaded function with extra @b index
 /// parameter is also provided.
 /// @code
-/// using AllMessages = 
+/// using AllMessages =
 ///     std::tuple<
 ///         Message1<MyMessage>, // Has ID 1
 ///         Message2<MyMessage>, // Has ID 2
 ///         Message90_1<MyMessage>, // Has ID 90
 ///         Message90_2<MyMessage>, // Has ID 90
 ///     >;
-/// 
+///
 /// dispatchMsgTypeStaticBinSearch<AllMessages>(1, handler); // returns true
 /// dispatchMsgTypeStaticBinSearch<AllMessages>(1, 0, handler); // returns true, same as above
 /// dispatchMsgTypeStaticBinSearch<AllMessages>(1, 1, handler); // returns false
@@ -542,9 +542,9 @@
 ///
 /// @subsection page_dispatch_message_type_linear_switch Linear Switch
 /// Similar to @ref page_dispatch_message_object_linear_switch dispatch of the
-/// message object, <b>linear switch</b> dispatch of the message type generates 
+/// message object, <b>linear switch</b> dispatch of the message type generates
 /// code equivalent to mentioned folded @b switch statements with O(1) runtime
-/// complexity when compiled with @b clang compiler @b v3.9 and above, and 
+/// complexity when compiled with @b clang compiler @b v3.9 and above, and
 /// O(n) runtime complexity for other major compilers.
 /// @code
 /// MyHandler handler;
@@ -552,18 +552,18 @@
 /// @endcode
 /// Please see @ref comms::dispatchMsgTypeLinearSwitch() for reference.
 ///
-/// Please note, that in case there are distinct message types with the same numeric ID (multiple 
+/// Please note, that in case there are distinct message types with the same numeric ID (multiple
 /// forms of the same message), the overloaded function with extra @b index
 /// parameter is also provided.
 /// @code
-/// using AllMessages = 
+/// using AllMessages =
 ///     std::tuple<
 ///         Message1<MyMessage>, // Has ID 1
 ///         Message2<MyMessage>, // Has ID 2
 ///         Message90_1<MyMessage>, // Has ID 90
 ///         Message90_2<MyMessage>, // Has ID 90
 ///     >;
-/// 
+///
 /// dispatchMsgTypeLinearSwitch<AllMessages>(1, handler); // returns true
 /// dispatchMsgTypeLinearSwitch<AllMessages>(1, 0, handler); // returns true, same as above
 /// dispatchMsgTypeLinearSwitch<AllMessages>(1, 1, handler); // returns false
@@ -586,16 +586,16 @@
 ///
 /// comms::dispatchMsgType<AllMessages>(id, handler);
 /// @endcode
-/// In such case the @b COMMS library will check whether the condition of 
+/// In such case the @b COMMS library will check whether the condition of
 /// O(1) @b polymorphic dispatch tables holds true (no more than 10% holes in
 /// the used IDs) and use @b polymorphic dispatch in this case. Otherwise
 /// <b>static binary search</b> one will be used.
 ///
-/// In case there are distinct message types with the same numeric ID (multiple 
+/// In case there are distinct message types with the same numeric ID (multiple
 /// forms of the same message), the overloaded function with extra @b index
 /// parameter is provided similar to other dispatch methods described above.
 /// @code
-/// using AllMessages1 = 
+/// using AllMessages1 =
 ///     std::tuple<
 ///         Message1<MyMessage>,
 ///         Message2<MyMessage>,
@@ -603,7 +603,7 @@
 ///     >;
 /// comms::dispatchMsgType<AllMessages1>(1, handler); // Equivalent to using comms::dispatchMsgTypePolymorphic()
 ///
-/// using AllMessages2 = 
+/// using AllMessages2 =
 ///     std::tuple<
 ///         Message1<MyMessage>,
 ///         Message2<MyMessage>,
@@ -611,9 +611,9 @@
 ///     >;
 /// comms::dispatchMsgType<AllMessages2>(1, msg, handler); // Equivalent to using comms::dispatchMsgTypeStaticBinSearch()
 /// @endcode
-/// 
-/// Just like with message object dispatching the same 
-/// <b>compile time</b> @ref comms::dispatchMsgTypeIsPolymorphic() and 
+///
+/// Just like with message object dispatching the same
+/// <b>compile time</b> @ref comms::dispatchMsgTypeIsPolymorphic() and
 /// @ref comms::dispatchMsgTypeIsStaticBinSearch() inquiry functions can be used
 /// to verify the dispatch policy for types being used.
 /// @code
@@ -623,4 +623,4 @@
 /// static_assert(!comms::dispatchMsgTypeIsPolymorphic<AllMessages2>(), "Unexpected dispatch type");
 /// static_assert(comms::dispatchMsgTypeIsStaticBinSearch<AllMessages2>(), "Unexpected dispatch type");
 /// @endcode
-/// 
+///

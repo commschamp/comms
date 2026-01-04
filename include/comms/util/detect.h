@@ -58,9 +58,9 @@ constexpr bool hasResizeFunc()
 /// @brief Detect whether provided type has @b remove_suffix() member function
 /// @details
 ///     @code
-///         static_assert(comms::util::detect::hasRemoveSuffixFunc<comms::util::StringView>, 
+///         static_assert(comms::util::detect::hasRemoveSuffixFunc<comms::util::StringView>,
 ///             "comms::util::StringView is expected to have remove_suffix() member function.");
-///         static_assert(comms::util::detect::hasRemoveSuffixFunc<std::string_view>, 
+///         static_assert(comms::util::detect::hasRemoveSuffixFunc<std::string_view>,
 ///             "std::string_view is expected to have remove_suffix() member function.");
 ///     @endcode
 template <typename T>
@@ -84,7 +84,7 @@ constexpr bool hasAssignFunc()
 /// @brief Detect whether provided type has a constructor that receives a pointer + size parameters.
 /// @details
 ///     @code
-///         static_assert(comms::util::detect::hasPtrSizeConstructor<std::string_view>(), 
+///         static_assert(comms::util::detect::hasPtrSizeConstructor<std::string_view>(),
 ///             "std::string_view is expected to have ptr + size constructor.");
 ///     @endcode
 template <typename T>

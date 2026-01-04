@@ -137,16 +137,15 @@ class TrueType
 {
 public:
     template <typename...>
-    using Type = std::true_type;    
+    using Type = std::true_type;
 };
-
 
 template <typename...>
 class FalseType
 {
 public:
     template <typename...>
-    using Type = std::false_type;    
+    using Type = std::false_type;
 };
 
 template <typename...>
@@ -154,7 +153,7 @@ class AliasType
 {
 public:
     template <typename T, typename...>
-    using Type = T;    
+    using Type = T;
 };
 
 template <typename...>
@@ -177,7 +176,7 @@ template <typename...>
 struct IntMaxBinaryOp
 {
     template <typename TFirst, typename TSecond>
-    using Type = 
+    using Type =
         typename Conditional<
             (TFirst::value >= TSecond::value)
         >::template Type<
@@ -190,7 +189,7 @@ template <typename...>
 struct IntMinBinaryOp
 {
     template <typename TFirst, typename TSecond>
-    using Type = 
+    using Type =
         typename Conditional<
             (TFirst::value <= TSecond::value)
         >::template Type<
@@ -203,7 +202,7 @@ template <typename...>
 struct IntSumBinaryOp
 {
     template <typename TFirst, typename TSecond>
-    using Type = 
+    using Type =
         std::integral_constant<typename TFirst::value_type, TFirst::value + TSecond::value>;
 };
 
@@ -228,7 +227,7 @@ class FieldBitLengthIntType
 {
 public:
     template <typename T>
-    using Type = 
+    using Type =
         typename details::FieldBitLengthIntTypeImpl<
             T::ParsedOptions::HasFixedBitLengthLimit
         >::template Type<T>;
@@ -265,10 +264,10 @@ struct AccumulateFromUntil
         std::size_t TFrom,
         std::size_t TUntil,
         template<typename...> class TTransformOp,
-        template<typename...> class TBinaryOp, 
+        template<typename...> class TBinaryOp,
         typename TStart,
         typename... TRest>
-    using Type = 
+    using Type =
         typename details::AccumulateFromUntilImpl<
             (0 == sizeof...(TRest)) || (TUntil == 0U)
         >::template Type<
@@ -285,10 +284,10 @@ struct Accumulate
 {
     template <
         template<typename...> class TTransformOp,
-        template<typename...> class TBinaryOp, 
+        template<typename...> class TBinaryOp,
         typename TStart,
         typename... TRest>
-    using Type = 
+    using Type =
         typename AccumulateFromUntil<>::template Type<
             0,
             sizeof...(TRest),

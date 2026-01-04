@@ -65,7 +65,7 @@ template <bool THasElems, typename...>
 struct IsInTupleHelper // <true>
 {
     template <typename TType, typename TFirst, typename... TRest>
-    using Type = 
+    using Type =
         typename comms::util::Conditional<
             std::is_same<TType, TFirst>::value
         >::template Type<
@@ -86,7 +86,7 @@ struct IsInTupleHelper<false, TParams...>
 /// @brief Check whether TType type is included in the tuple TTuple
 /// @details Usage:
 ///     @code
-///     static constexpr bool InTuple = 
+///     static constexpr bool InTuple =
 ///         comms::util::IsInTuple<Tuple>::template Type<Type>::value;
 ///     @endcode
 /// @tparam TTuple Tuple
@@ -100,7 +100,7 @@ template <typename... TTypes>
 struct IsInTuple<std::tuple<TTypes...> >
 {
     template <typename TType>
-    using Type = 
+    using Type =
         typename details::IsInTupleHelper<(sizeof...(TTypes) != 0U)>::template Type<TType, TTypes...>;
 };
 
@@ -118,22 +118,22 @@ class TupleAsAlignedUnionHelper // <true>
     using ElemAlignmentType = std::integral_constant<std::size_t, alignof(TElem)>;
 
     template <typename TElem>
-    using ElemSizeType = std::integral_constant<std::size_t, sizeof(TElem)>;    
+    using ElemSizeType = std::integral_constant<std::size_t, sizeof(TElem)>;
 
 public:
     template <typename TElem, typename... TRest>
-    using AlignmentType = 
+    using AlignmentType =
         comms::util::IntMaxBinaryOp<>::template Type<
             ElemAlignmentType<TElem>,
             typename TupleAsAlignedUnionHelper<(0U < sizeof...(TRest))>::template AlignmentType<TRest...>
         >;
 
     template <typename TElem, typename... TRest>
-    using SizeType = 
+    using SizeType =
         comms::util::IntMaxBinaryOp<>::template Type<
             ElemSizeType<TElem>,
             typename TupleAsAlignedUnionHelper<(0U < sizeof...(TRest))>::template SizeType<TRest...>
-        >;        
+        >;
 };
 
 template <typename... TParams>
@@ -144,7 +144,7 @@ public:
     using AlignmentType = std::integral_constant<std::size_t, 0U>;
 
     template <typename...>
-    using SizeType = std::integral_constant<std::size_t, 0U>;    
+    using SizeType = std::integral_constant<std::size_t, 0U>;
 };
 
 } // namespace details
@@ -170,10 +170,10 @@ struct TupleAsAlignedUnion
 template <typename... TTypes>
 class TupleAsAlignedUnion<std::tuple<TTypes...> >
 {
-    using AlignmentType = 
+    using AlignmentType =
         typename details::TupleAsAlignedUnionHelper<(0U < sizeof...(TTypes))>::template AlignmentType<TTypes...>;
 
-    using SizeType = 
+    using SizeType =
         typename details::TupleAsAlignedUnionHelper<(0U < sizeof...(TTypes))>::template SizeType<TTypes...>;
 public:
     using Type = comms::util::AlignedStorage<SizeType::value, AlignmentType::value>;
@@ -392,7 +392,6 @@ void tupleForEachType(TFunc&& func)
 }
 //----------------------------------------
 
-
 namespace details
 {
 
@@ -528,7 +527,6 @@ void tupleForEachWithTemplateParamIdx(TTuple&& tuple, TFunc&& func)
         std::forward<TFunc>(func));
 }
 
-
 //----------------------------------------
 
 namespace details
@@ -544,7 +542,7 @@ struct TupleAccumulateHelper
         static_assert(IsTuple<Tuple>::Value, "TTuple must be std::tuple");
         static_assert((TOff + TRem) <= std::tuple_size<Tuple>::value, "Incorrect params");
 
-        return 
+        return
             TupleAccumulateHelper<(1U < TRem)>::template exec<TOff + 1, TRem - 1U>(
                 std::forward<TTuple>(tuple),
                 func(value, std::get<TOff>(std::forward<TTuple>(tuple))),
@@ -685,7 +683,7 @@ template <typename TTuple, typename TValue, typename TFunc>
 constexpr TValue tupleTypeAccumulate(const TValue& value, TFunc&& func)
 {
     using Tuple = typename std::decay<TTuple>::type;
-    return 
+    return
         details::TupleTypeAccumulateHelper<
             (0U < std::tuple_size<Tuple>::value)
         >::template exec<0, std::tuple_size<Tuple>::value, Tuple>(
@@ -715,7 +713,7 @@ constexpr TValue tupleTypeAccumulateFromUntil(const TValue& value, TFunc&& func)
     using Tuple = typename std::decay<TTuple>::type;
     static_assert(TFrom <= TUntil, "TFrom mustn't be greater that TUntil");
     static_assert(TUntil <= std::tuple_size<Tuple>::value, "TUntil mustn't exceed size of the tuple");
-    return 
+    return
         details::TupleTypeAccumulateHelper<
             (TFrom < TUntil)
         >::template exec<TFrom, TUntil - TFrom, Tuple>(
@@ -723,9 +721,7 @@ constexpr TValue tupleTypeAccumulateFromUntil(const TValue& value, TFunc&& func)
             std::forward<TFunc>(func));
 }
 
-
 //----------------------------------------
-
 
 /// @brief Provides the type of <a href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat">std::tuple_cat</a> operation.
 /// @tparam TFirst Type of first tuple
@@ -853,11 +849,11 @@ template <bool THasElems>
 struct TupleStripFirstN
 {
     template <std::size_t TCount, typename TFirst, typename... TElems>
-    using Type = 
+    using Type =
         typename TupleStripFirstN<
             (1U < TCount)
         >::template Type<
-            TCount - 1, 
+            TCount - 1,
             TElems...
         >;
 };
@@ -876,7 +872,7 @@ template <typename... TElems>
 struct TuplePackedStripFirstN<std::tuple<TElems...> >
 {
     template <std::size_t TCount>
-    using Type = 
+    using Type =
         typename TupleStripFirstN<
             (0 < TCount)
         >::template Type<TCount, TElems...>;
@@ -886,17 +882,17 @@ template <bool TMustStrip>
 struct TupleTailCheckHelpler
 {
     template <std::size_t TCount, typename TElems>
-    using StrippedTail = 
+    using StrippedTail =
         typename TuplePackedStripFirstN<TElems>::template Type<
             TCount
         >;
 
     template <typename TTail, typename TElems>
-    using Type = 
+    using Type =
         std::integral_constant<
             bool,
             std::is_same<
-                TTail, 
+                TTail,
                 StrippedTail<
                     (std::tuple_size<TElems>::value - std::tuple_size<TTail>::value),
                     TElems
@@ -909,7 +905,7 @@ template <>
 struct TupleTailCheckHelpler<false>
 {
     template <typename TTail, typename TElems>
-    using Type = 
+    using Type =
         std::integral_constant<
             bool,
             std::is_same<TTail, TElems>::value

@@ -30,7 +30,7 @@ class SyncPrefixLayerBaseHelper
 {
     using ParsedOptionsInternal = comms::frame::details::SyncPrefixLayerOptionsParser<TOptions...>;
     using ActualLayer = typename ParsedOptionsInternal::template DefineExtendingClass<SyncPrefixLayer<TField, TNextLayer, TOptions...>>;
-    using TopBase = 
+    using TopBase =
         comms::frame::FrameLayerBase<
             TField,
             TNextLayer,

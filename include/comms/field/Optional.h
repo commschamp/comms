@@ -71,10 +71,10 @@ public:
     /// @see OptionalMode
     using Mode = OptionalMode;
 
-    /// @brief Type of actual extending field specified via 
+    /// @brief Type of actual extending field specified via
     ///     @ref comms::option::def::FieldType.
     /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
-    using FieldType = typename ParsedOptions::FieldType;    
+    using FieldType = typename ParsedOptions::FieldType;
 
     /// @brief Default constructor
     /// @details The mode it is created in is OptionalMode::Tentative.
@@ -128,28 +128,28 @@ public:
     static constexpr bool hasEmptySerialization()
     {
         return ParsedOptions::HasEmptySerialization;
-    } 
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
     ///     has been used.
     static constexpr bool hasFieldType()
     {
         return ParsedOptions::HasFieldType;
-    }      
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
     ///     has been used.
     static constexpr bool hasFixedValue()
     {
         return ParsedOptions::HasFixedValue;
-    }       
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
     ///     has been used.
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
-    } 
+    }
 
     /// @brief Check whether mode is equivalent to Mode::Tentative
     /// @details Convenience wrapper for getMode(), equivalent to
@@ -236,7 +236,7 @@ public:
     void setValue(U&& val)
     {
         BaseImpl::setValue(std::forward<U>(val));
-    }          
+    }
 
     /// @brief Get current optional mode
     Mode getMode() const
@@ -420,11 +420,11 @@ bool operator==(
     if (field1.getMode() != field2.getMode()) {
         return false;
     }
-    
+
     if (field1.isMissing()) {
         return true;
     }
-    
+
     return field1.field() == field2.field();
 }
 
@@ -454,11 +454,11 @@ bool operator<(
     if (field1.isMissing()) {
         return !field2.isMissing();
     }
-    
+
     if (field2.isMissing()) {
         return false;
     }
-    
+
     return field1.field() < field2.field();
 }
 
@@ -537,5 +537,4 @@ toFieldBase(const Optional<TField, TOptions...>& field)
 }  // namespace field
 
 }  // namespace comms
-
 

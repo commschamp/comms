@@ -41,7 +41,7 @@ class BitfieldReadHelper
 public:
     BitfieldReadHelper(TSerializedType val, ErrorStatus& es)
       : m_value(val),
-        m_es(es) 
+        m_es(es)
     {
     }
 
@@ -53,7 +53,7 @@ public:
         }
 
         using FieldType = typename std::decay<decltype(field)>::type;
-        static const auto FieldBitLength = 
+        static const auto FieldBitLength =
             comms::util::FieldBitLengthIntType<>::template Type<FieldType>::value;
         static const auto Mask =
             (static_cast<TSerializedType>(1) << FieldBitLength) - 1;
@@ -93,7 +93,7 @@ public:
     void operator()(TFieldParam&& field)
     {
         using FieldType = typename std::decay<decltype(field)>::type;
-        static const auto FieldBitLength = 
+        static const auto FieldBitLength =
             comms::util::FieldBitLengthIntType<>::template Type<FieldType>::value;
         static const auto Mask =
             (static_cast<TSerializedType>(1) << FieldBitLength) - 1;
@@ -152,7 +152,7 @@ public:
         const auto* readIter = &buf[0];
         auto fieldSerValue = comms::util::readData<TSerializedType, MaxLength>(readIter, FieldEndian());
 
-        static const auto FieldBitLength = 
+        static const auto FieldBitLength =
             comms::util::FieldBitLengthIntType<>::template Type<FieldType>::value;
         static const auto Mask =
             (static_cast<TSerializedType>(1) << FieldBitLength) - 1;
@@ -167,7 +167,6 @@ public:
         m_value |= valueMask;
         m_pos += FieldBitLength;
     }
-
 
 private:
     TSerializedType& m_value;
@@ -200,7 +199,7 @@ public:
         const auto* readIter = &buf[0];
         auto fieldSerValue = comms::util::readData<TSerializedType, MaxLength>(readIter, FieldEndian());
 
-        static const auto FieldBitLength = 
+        static const auto FieldBitLength =
             comms::util::FieldBitLengthIntType<>::template Type<FieldType>::value;
 
         static const auto Mask =
@@ -258,7 +257,6 @@ class Bitfield<TFieldBase, TVersionDependency, std::tuple<TMembers...> > : publi
         1U < std::tuple_size<Members>::value,
         "Number of members is expected to be at least 2.");
 
-
     static const std::size_t TotalBits = CommonFuncs::FieldSumTotalBitLengthIntType<TMembers...>::value;
     static_assert(
         (TotalBits % std::numeric_limits<std::uint8_t>::digits) == 0,
@@ -275,14 +273,13 @@ class Bitfield<TFieldBase, TVersionDependency, std::tuple<TMembers...> > : publi
             comms::option::def::FixedLength<Length>
         >;
 
-
     using SimpleIntValueField =
         comms::field::IntValue<
             TFieldBase,
             SerializedType
         >;
 
-    using IntValueField = 
+    using IntValueField =
         typename comms::util::Conditional<
             ((Length & (Length - 1)) == 0)
         >::template Type<
@@ -326,7 +323,7 @@ public:
     void setValue(T&& val)
     {
         value() = std::forward<T>(val);
-    }    
+    }
 
     static constexpr std::size_t length()
     {
@@ -372,9 +369,9 @@ public:
 
     bool canWrite() const
     {
-        return 
+        return
             comms::util::tupleAccumulate(
-                value(), true, comms::field::details::FieldCanWriteCheckHelper<>());        
+                value(), true, comms::field::details::FieldCanWriteCheckHelper<>());
     }
 
     template <typename TIter>
@@ -458,5 +455,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
 

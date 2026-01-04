@@ -24,7 +24,7 @@ COMMS_GNU_WARNING_PUSH
 
 #if COMMS_IS_GCC_14 && defined(NDEBUG) && (COMMS_IS_CPP20 || COMMS_IS_CPP23)
 // Bug in gcc-14, reporting "free-nonheap-object" error when working with vectors and using C++20/23, but only in Release mode
-COMMS_GNU_WARNING_DISABLE("-Wfree-nonheap-object") 
+COMMS_GNU_WARNING_DISABLE("-Wfree-nonheap-object")
 #endif // #if COMMS_IS_GCC_14 && defined(NDEBUG) && (COMMS_IS_CPP20 || COMMS_IS_CPP23)
 
 namespace comms
@@ -56,13 +56,13 @@ template <typename T>
 using AccessSelectTypeItself = typename std::decay<T>::type;
 
 template <typename T>
-using AccessSelectIntType = 
+using AccessSelectIntType =
     typename comms::util::Conditional<
         std::is_signed<T>::value
     >::template Type<int, unsigned>;
 
 template <typename T>
-using AccessOptimisedValueType = 
+using AccessOptimisedValueType =
     typename comms::util::LazyShallowConditional<
         sizeof(T) >= sizeof(int)
     >::template Type<
@@ -98,14 +98,14 @@ class SignExt
     using FullSize = comms::details::tag::Tag1<>;
 
     template <typename... TParams>
-    using PartialSize = comms::details::tag::Tag2<>;    
+    using PartialSize = comms::details::tag::Tag2<>;
 
 public:
     template <std::size_t TSize, typename TByteType, typename T>
     static typename std::decay<T>::type value(T val)
     {
         using ValueType = typename std::decay<T>::type;
-        using Tag = 
+        using Tag =
             typename comms::util::LazyShallowConditional<
                 sizeof(ValueType) == TSize
             >::template Type<
@@ -166,11 +166,11 @@ struct AccessContainerByteTypeDetector<std::front_insert_iterator<TContainer> >
 };
 
 template <typename TIter>
-using AccessContainerByteType = 
+using AccessContainerByteType =
     typename AccessContainerByteTypeDetector<typename std::decay<TIter>::type>::Type;
 
 template <typename TIter>
-using AccessByteType = 
+using AccessByteType =
     typename comms::util::LazyShallowConditional<
         std::is_void<AccessIteratorByteType<TIter> >::value
     >::template Type<
@@ -295,17 +295,17 @@ class WriteHelper
     using RegularTag = comms::details::tag::Tag2<>;
 
     template <typename TIter>
-    using RandomAccessOrPointerTag = 
+    using RandomAccessOrPointerTag =
         typename comms::util::LazyShallowConditional<
             std::is_pointer<TIter>::value &&
-            std::is_unsigned<AccessByteType<TIter> >::value        
+            std::is_unsigned<AccessByteType<TIter> >::value
         >::template Type<
             RegularTag,
             RandomAccessTag
-        >;       
+        >;
 
     template <typename TIter>
-    using Tag = 
+    using Tag =
         typename comms::util::LazyShallowConditional<
             std::is_same<
                 typename std::iterator_traits<TIter>::iterator_category,
@@ -327,7 +327,7 @@ class WriteHelper
     static void writeInternal(T value, std::size_t size, TIter& iter, RegularTag<TParams...>)
     {
         details::write<TEndian>(value, size, iter);
-    }        
+    }
 
 public:
     template <typename TEndian, typename T, typename TIter>
@@ -337,7 +337,7 @@ public:
         using AccessOptimisedValueType = details::AccessOptimisedValueType<ValueType>;
 
         return writeInternal<TEndian>(static_cast<AccessOptimisedValueType>(value), size, iter, Tag<TIter>());
-    }    
+    }
 };
 
 template <typename T, typename TIter>
@@ -462,7 +462,7 @@ class ReadHelper
     using OtherTag = comms::details::tag::Tag2<>;
 
     template <typename TIter>
-    using PointerCheckTag = 
+    using PointerCheckTag =
         typename comms::util::LazyShallowConditional<
             std::is_const<AccessByteType<TIter> >::value &&
             std::is_unsigned<AccessByteType<TIter> >::value
@@ -472,7 +472,7 @@ class ReadHelper
         >;
 
     template <typename TIter>
-    using Tag = 
+    using Tag =
         typename comms::util::LazyShallowConditional<
             std::is_pointer<TIter>::value
         >::template Type<
@@ -516,7 +516,7 @@ public:
             retval = details::SignExt<>::template value<TSize, ByteType>(retval);
         }
         return static_cast<T>(retval);
-    }    
+    }
 };
 
 }  // namespace details
@@ -608,7 +608,7 @@ T readBig(TIter& iter)
 template <typename T, typename TIter>
 T readBig(TIter& iter, std::size_t size)
 {
-    return details::ReadHelper<>::template read<traits::endian::Big, T>(size, iter);    
+    return details::ReadHelper<>::template read<traits::endian::Big, T>(size, iter);
 }
 
 /// @brief Write part of integral value into the output area using little
@@ -698,7 +698,7 @@ T readLittle(TIter& iter)
 template <typename T, typename TIter>
 T readLittle(TIter& iter, std::size_t size)
 {
-    return details::ReadHelper<>::template read<traits::endian::Little, T>(size, iter);    
+    return details::ReadHelper<>::template read<traits::endian::Little, T>(size, iter);
 }
 
 /// @brief Same as writeBig<T, TIter>()
@@ -761,7 +761,7 @@ void writeData(
 template <typename T, typename TIter>
 void writeData(
     T value,
-    std::size_t size, 
+    std::size_t size,
     TIter& iter,
     const traits::endian::Little& endian)
 {
@@ -816,7 +816,6 @@ T readData(TIter& iter, std::size_t size, const traits::endian::Little& endian)
     static_cast<void>(endian);
     return readLittle<T>(iter, size);
 }
-
 
 }  // namespace util
 

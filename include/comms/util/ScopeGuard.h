@@ -64,7 +64,6 @@ public:
     {
     }
 
-
     /// @brief No copy is allowed.
     ScopeGuard(const ScopeGuard& guard) = delete;
 
@@ -78,7 +77,6 @@ public:
     {
         guard.release();
     }
-
 
     /// @brief Destructor
     /// @post The functor is called unless it was released with release()

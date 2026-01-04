@@ -51,7 +51,7 @@ public:
     using GenericMessage = TMsg;
 
     template <typename TAll>
-    using AllMessages = 
+    using AllMessages =
         typename std::decay<
             decltype(
                 std::tuple_cat(
@@ -70,7 +70,6 @@ public:
     static constexpr bool HasForcedDispatch = true;
     using ForcedDispatch = T;
 };
-
 
 template <typename... TOptions>
 class MsgFactoryOptionsParser<

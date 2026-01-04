@@ -16,6 +16,7 @@
 #include "comms/util/type_traits.h"
 
 #include <algorithm>
+#include <iterator>
 #include <limits>
 #include <type_traits>
 
@@ -60,7 +61,7 @@ public:
 
     void setForcedLength(int len)
     {
-        m_forcedLength = len;        
+        m_forcedLength = len;
     }
 
     int getForcedLength() const
@@ -152,7 +153,7 @@ public:
             return comms::ErrorStatus::Success;
         }
 
-        // variable length, based on value        
+        // variable length, based on value
         std::size_t len = 1U;
         for (; len < sizeof(serValue); ++len) {
             if (!fitsLength(serValue, len)) {
@@ -181,7 +182,7 @@ private:
     template <typename... TParams>
     using SignedTag = comms::details::tag::Tag2<>;
 
-    using HasSignTag = 
+    using HasSignTag =
         typename comms::util::LazyShallowConditional<
             std::is_signed<SerialisedType>::value
         >::template Type<
@@ -206,33 +207,32 @@ private:
         std::size_t bytesCount,
         SignedTag<TParams...>)
     {
-        UnsignedSerialisedType signBitMask = 
+        UnsignedSerialisedType signBitMask =
             static_cast<UnsignedSerialisedType>(1U) << ((bytesCount * BitsInByte) - (bytesCount + 1));
 
         if ((val & signBitMask) == 0U) {
             return static_cast<SerialisedType>(val);
         }
 
-        UnsignedSerialisedType signExtMask = 
+        UnsignedSerialisedType signExtMask =
             static_cast<UnsignedSerialisedType>(~(signBitMask - 1));
 
         val |= signExtMask;
         return static_cast<SerialisedType>(val);
     }
 
-
     template <typename... TParams>
     static SerialisedType getMinLimitedValue(std::size_t len, UnsignedTag<TParams...>)
     {
         static_cast<void>(len);
-        return static_cast<SerialisedType>(0);      
+        return static_cast<SerialisedType>(0);
     }
 
     template <typename... TParams>
     static SerialisedType getMinLimitedValue(std::size_t len, SignedTag<TParams...>)
     {
         COMMS_ASSERT(len < sizeof(UnsignedSerialisedType));
-        auto mask = 
+        auto mask =
             ((static_cast<UnsignedSerialisedType>(1U) << ((len * BitsInByte) - 1)) - 1U);
 
         return static_cast<SerialisedType>(~static_cast<UnsignedSerialisedType>(mask));
@@ -242,7 +242,7 @@ private:
     static SerialisedType getMaxLimitedValue(std::size_t len, UnsignedTag<TParams...>)
     {
         COMMS_ASSERT(len < sizeof(UnsignedSerialisedType));
-        auto value = 
+        auto value =
             ((static_cast<UnsignedSerialisedType>(1U) << (len * BitsInByte)) - 1U);
         return static_cast<SerialisedType>(value);
     }
@@ -251,11 +251,10 @@ private:
     static SerialisedType getMaxLimitedValue(std::size_t len, SignedTag<TParams...>)
     {
         COMMS_ASSERT(len < sizeof(UnsignedSerialisedType));
-        auto value = 
+        auto value =
             ((static_cast<UnsignedSerialisedType>(1U) << ((len * BitsInByte) - 1)) - 1U);
         return static_cast<SerialisedType>(value);
     }
-
 
     static bool fitsLength(SerialisedType val, std::size_t len)
     {
@@ -268,9 +267,8 @@ private:
         return ((minValue <= val) && (val <= maxValue));
     }
 
-    static const std::size_t BitsInByte = 
-        std::numeric_limits<std::uint8_t>::digits; 
-
+    static const std::size_t BitsInByte =
+        std::numeric_limits<std::uint8_t>::digits;
 
     int m_forcedLength = -1;
 };
@@ -280,5 +278,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
 

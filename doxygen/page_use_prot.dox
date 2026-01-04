@@ -17,7 +17,7 @@
 /// namespace and the inner include paths start with "comms/". There may be
 /// the case when this library being integrated into existing project that may already
 /// define and use its own module (namespace) named @b comms. In this case it
-/// should be possible to rename installation directory (@b comms to @b comms2) and 
+/// should be possible to rename installation directory (@b comms to @b comms2) and
 /// to run a script after library installation to replace
 /// the following strings with new name:
 /// @li <b>"namespace comms"</b> - replace with "namespace comms2"
@@ -25,7 +25,7 @@
 /// @li @b "comms/" - replace with "comms2/"
 ///
 /// @section page_use_prot_error_handling Error Handling
-/// The @b COMMS library is intended to be used in embedded systems (including 
+/// The @b COMMS library is intended to be used in embedded systems (including
 /// bare metal), which means the library does not use exceptions to report errors.
 /// The runtime errors are reported via @ref comms::ErrorStatus return values. All
 /// pre- and post-conditions are checked using COMMS_ASSERT() macro.
@@ -39,14 +39,14 @@
 /// assertion failure report behaviour.
 ///
 /// See @ref page_assert for details on how to define custom assertion failure
-/// behaviour.  
+/// behaviour.
 ///
 /// @section page_use_prot_options Configuration Options
 /// The @ref page_define_prot "Protocol Definition" classes are expected to
 /// define all the relevant protocol classes in a way that provides an ability to perform
 /// end application specific customization, such as choice of specific data types
 /// and/or necessary polymorphic interfaces. Such customization is performed by
-/// passing various options defined in @ref comms::option::app namespace to 
+/// passing various options defined in @ref comms::option::app namespace to
 /// the relevant class definitions.
 /// The @ref comms::option::def namespace contains all the types and classes
 /// relevant for the protocol definition itself. However, they can also be
@@ -69,7 +69,7 @@
 ///     };
 ///
 /// template <typename... TOptions>
-/// using Message = 
+/// using Message =
 ///     comms::Message<
 ///         comms::option::def::BigEndian, // endian
 ///         comms::option::def::MsgIdType<MsgId>, // type of message ID
@@ -82,10 +82,10 @@
 /// @code
 /// namespace my_protocol
 /// {
-///     
+///
 /// class Message : public comms::Message
 /// {
-///     // comms::Field class with the same endian option. 
+///     // comms::Field class with the same endian option.
 ///     // Can (and should) be provided as a base class to all the
 ///     // fields.
 ///     typedef comms::Field<.../* Same endian option*/> Field;
@@ -106,7 +106,7 @@
 /// However, if some other type is used, such as std::string, then @b MsgIdParamType
 /// is a const-reference to @b MsgIdType.
 ///
-/// The message interface class may be extended with multiple options, which 
+/// The message interface class may be extended with multiple options, which
 /// automatically add virtual functions, and hence create polymorphic behaviour
 /// relevant to the client application.
 ///
@@ -169,18 +169,18 @@
 /// won't be created.
 ///
 /// The @ref comms::Message interface class defines @ref comms::Message::hasGetId()
-/// static constexpr member function, which may be used at compile time to 
-/// determine whether the @ref comms::option::app::IdInfoInterface option has been used, i.e. 
+/// static constexpr member function, which may be used at compile time to
+/// determine whether the @ref comms::option::app::IdInfoInterface option has been used, i.e.
 /// the message interface class defines mentioned earlier
 /// functions.
 ///
 /// @subsection page_use_prot_interface_read Polymorphic Read of Payload (Deserialisation)
 /// If the implementation requires polymorphic read and process of input messages, the @b read()
-/// operation needs to be added to the interface. It is achieved by using 
+/// operation needs to be added to the interface. It is achieved by using
 /// @ref comms::option::app::ReadIterator option to provide a type of the iterator that
 /// is going to be used for reading:
 /// @code
-/// using MyMessage = 
+/// using MyMessage =
 ///     my_protocol::Message<
 ///         ...
 ///         comms::option::app::ReadIterator<const std::uint8_t*>,
@@ -204,17 +204,17 @@
 ///
 /// protected:
 ///     // Expected to be overriden in the derived class.
-///     virtual comms::ErrorStatus readImpl(ReadIterator& iter, std::size_t len) 
+///     virtual comms::ErrorStatus readImpl(ReadIterator& iter, std::size_t len)
 ///     {
 ///         return comms::ErrorStatus::NotSupported;
 ///     }
 /// }
 /// @endcode
 /// Please @b note, that COMMS library doesn't impose any restrictions on
-/// how the input data is collected and stored. It is a responsibility of the 
-/// @b caller to allocate and maintain the input buffer, while providing only an 
+/// how the input data is collected and stored. It is a responsibility of the
+/// @b caller to allocate and maintain the input buffer, while providing only an
 /// iterator for read operation. @n
-/// Also @b note, that iterator is passed by reference, which allows advancing 
+/// Also @b note, that iterator is passed by reference, which allows advancing
 /// operator when read operation is performed. @n
 /// For example:
 /// @code
@@ -224,27 +224,27 @@
 ///     auto es = msg.read(readIter, len); // readIter is advanced in the read operation
 ///     if (es != comms::ErrorStatus::Success) {
 ///         ... // Report and handle error
-///         return 0U; 
+///         return 0U;
 ///     }
-///     
+///
 ///     // Report number of processed bytes from buffer:
 ///     auto bytesCount = std::distance(MyMessage::ReadIterator(buf), readIter);
 ///     return bytesCount;
 /// }
 /// @endcode
 /// The @ref comms::Message interface class defines @ref comms::Message::hasRead()
-/// static constexpr member function, which may be used at compile time to 
-/// determine whether the @ref comms::option::app::ReadIterator option has been used, i.e. 
+/// static constexpr member function, which may be used at compile time to
+/// determine whether the @ref comms::option::app::ReadIterator option has been used, i.e.
 /// the message interface class defines mentioned earlier
 /// types and functions.
 ///
 /// @subsection page_use_prot_interface_write Polymorphic Write of Payload (Serialisation)
 /// If the implementation requires polymorphic serialisation of the messages and sending them over I/O
-/// link, the @b write() operation needs to be added to the interface. It is 
-/// achieved by using @ref comms::option::app::WriteIterator option to provide a type of 
+/// link, the @b write() operation needs to be added to the interface. It is
+/// achieved by using @ref comms::option::app::WriteIterator option to provide a type of
 /// the iterator that is going to be used for writing:
 /// @code
-/// using MyMessage = 
+/// using MyMessage =
 ///     my_protocol::Message<
 ///         ...
 ///         comms::option::app::WriteIterator<std::back_insert_iterator<std::vector<std::uint8_t> > >,
@@ -275,22 +275,22 @@
 /// }
 /// @endcode
 /// Please @b note, that COMMS library doesn't impose any restrictions on
-/// storage type for the output buffer. It is a responsibility of the 
-/// @b caller to allocate and maintain the output buffer, while providing only an 
+/// storage type for the output buffer. It is a responsibility of the
+/// @b caller to allocate and maintain the output buffer, while providing only an
 /// iterator for write operation. In the example above the output buffer
 /// is chosen to be @b std::vector<std::uint8_t> and the write operation will
 /// be performed using @b push_back() calls on this vector (due to @b std::back_insert_iterator
 /// being chosen as @b WriteIterator).
 ///
-/// Also @b note, that iterator is passed by reference, which allows advancing 
+/// Also @b note, that iterator is passed by reference, which allows advancing
 /// operator when write operation is performed. In case the iterator is
 /// random-access one, the difference between the initial and its value
-/// after the write has been performed can be used to determine amount of 
+/// after the write has been performed can be used to determine amount of
 /// bytes that have been written to the buffer.
 ///
 /// The @ref comms::Message interface class defines @ref comms::Message::hasWrite()
-/// static constexpr member function, which may be used at compile time to 
-/// determine whether the @ref comms::option::app::WriteIterator option has been used, i.e. 
+/// static constexpr member function, which may be used at compile time to
+/// determine whether the @ref comms::option::app::WriteIterator option has been used, i.e.
 /// the message interface class defines mentioned earlier
 /// types and functions.
 ///
@@ -300,7 +300,7 @@
 /// The @b COMMS library provides @ref comms::option::app::LengthInfoInterface option that
 /// adds @b length() member function to the interface.
 /// @code
-/// using MyMessage = 
+/// using MyMessage =
 ///     my_protocol::Message<
 ///         ...
 ///         comms::option::app::LengthInfoInterface,
@@ -323,8 +323,8 @@
 /// };
 /// @endcode
 /// The @ref comms::Message interface class defines @ref comms::Message::hasLength()
-/// static constexpr member function, which may be used at compile time to 
-/// determine whether the @ref comms::option::app::LengthInfoInterface option has been used, i.e. 
+/// static constexpr member function, which may be used at compile time to
+/// determine whether the @ref comms::option::app::LengthInfoInterface option has been used, i.e.
 /// the message interface class defines mentioned earlier
 /// functions.
 ///
@@ -359,8 +359,8 @@
 /// };
 /// @endcode
 /// The @ref comms::Message interface class defines @ref comms::Message::hasValid()
-/// static constexpr member function, which may be used at compile time to 
-/// determine whether the @ref comms::option::app::ValidCheckInterface option has been used, i.e. 
+/// static constexpr member function, which may be used at compile time to
+/// determine whether the @ref comms::option::app::ValidCheckInterface option has been used, i.e.
 /// the message interface class defines mentioned earlier
 /// functions.
 ///
@@ -373,9 +373,9 @@
 /// properly handled. Using simple
 /// switch statement on message ID (returned by @b getId() interface function)
 /// can result in significant amount of boilerplate code, which grows and must
-/// be updated every time new message is added to the protocol. 
+/// be updated every time new message is added to the protocol.
 /// The @b COMMS library provides much better way
-/// to dispatch messages to appropriate handler. 
+/// to dispatch messages to appropriate handler.
 ///
 /// The handler class needs to be forward declared and passed
 /// to the definition of @b MyMessage interface via @ref comms::option::app::Handler option.
@@ -383,7 +383,7 @@
 /// // Forward declaration
 /// class MyHandler;
 ///
-/// using MyHandler = 
+/// using MyHandler =
 ///     my_protocol::Message<
 ///         ...
 ///         comms::option::app::Handler<MyHandler>,
@@ -396,7 +396,7 @@
 /// class MyMessage
 /// {
 /// public:
-///     // The same type as passed via comms::option::app::Handler option     
+///     // The same type as passed via comms::option::app::Handler option
 ///     typedef ... Handler;
 ///
 ///     // Return type of the dispatch function, which is the same as return type of
@@ -413,27 +413,27 @@
 ///     virtual DispatchRetType dispatchImpl(Handler& handler) {...} // Must be overridden in the derived class
 /// };
 /// @endcode
-/// More details about polymorphic dispatching and handling will be provided 
+/// More details about polymorphic dispatching and handling will be provided
 /// below in @ref page_use_prot_handling section.
 ///
 /// The @ref comms::Message interface class defines @ref comms::Message::hasDispatch()
-/// static constexpr member function, which may be used at compile time to 
-/// determine whether the @ref comms::option::app::Handler option has been used, i.e. 
+/// static constexpr member function, which may be used at compile time to
+/// determine whether the @ref comms::option::app::Handler option has been used, i.e.
 /// the message interface class defines mentioned earlier
 /// types and functions.
 ///
 /// @subsection page_use_prot_interface_refresh Keeping Message Contents in a Consistent State
 /// Some communication protocol may define fields that depend on other fields.
 /// For example, bits in a bitmask field may be used to define whether some
-/// optional fields exist. Or the information about amount of elements in 
-/// the list to follow may reside in an independent numeric field. @n 
+/// optional fields exist. Or the information about amount of elements in
+/// the list to follow may reside in an independent numeric field. @n
 /// After updating such fields directly, using the interface of the message object,
 /// the message contents may end up being in an inconsistent (or invalid) state.
 /// There may be a need to polymorphically normalise the state of the message object. The
 /// @b COMMS library provides @ref comms::option::app::RefreshInterface option, that adds
 /// @b refresh() member function to the message interface.
 /// @code
-/// using MyMessage = 
+/// using MyMessage =
 ///     comms::Message<
 ///         ...
 ///         comms::option::app::RefreshInterface,
@@ -466,18 +466,18 @@
 /// may just override it with proper implementation.
 ///
 /// The @ref comms::Message interface class defines @ref comms::Message::hasRefresh()
-/// static constexpr member function, which may be used at compile time to 
-/// determine whether the @ref comms::option::app::RefreshInterface option has been used, i.e. 
+/// static constexpr member function, which may be used at compile time to
+/// determine whether the @ref comms::option::app::RefreshInterface option has been used, i.e.
 /// the message interface class defines mentioned earlier
 /// functions.
 ///
 /// @subsection page_use_prot_interface_name Polymorphic Message Name Retrieval
 /// Some applications may require knowledge about and report the name of the received / sent
-/// message. The @b COMMS library provides @ref comms::option::app::NameInterface 
+/// message. The @b COMMS library provides @ref comms::option::app::NameInterface
 /// option, that adds @b name() member function to the message interface
 /// (see @ref comms::Message::name()).
 /// @code
-/// using MyMessage = 
+/// using MyMessage =
 ///     comms::Message<
 ///         ...
 ///         comms::option::app::NameInterface,
@@ -489,7 +489,7 @@
 /// class MyMessage
 /// {
 /// public:
-///     // Retrieve name of the message 
+///     // Retrieve name of the message
 ///     const char* name() const
 ///     {
 ///         return nameImpl();
@@ -500,34 +500,34 @@
 /// };
 /// @endcode
 /// The @ref comms::Message interface class defines @ref comms::Message::hasName()
-/// static constexpr member function, which may be used at compile time to 
-/// determine whether the @ref comms::option::app::NameInterface option has been used, i.e. 
+/// static constexpr member function, which may be used at compile time to
+/// determine whether the @ref comms::option::app::NameInterface option has been used, i.e.
 /// the message interface class defines mentioned earlier
 /// functions.
 ///
 /// @subsection page_use_prot_interface_virt_destructor Virtual Destructor
-/// By default the @ref comms::Message class defines its 
-/// destructor as @b virtual if and only if it exhibits a polymorphic behaviour, 
+/// By default the @ref comms::Message class defines its
+/// destructor as @b virtual if and only if it exhibits a polymorphic behaviour,
 /// i.e. if there is at least one other virtual function defined. There are a couple of
 /// ways to change this default behaviour.
-/// @li If the definition of the common message interface class using 
-///     exhibits polymorphic 
+/// @li If the definition of the common message interface class using
+///     exhibits polymorphic
 ///     behaviour (i.e. has other virtual functions), but mustn't define its
-///     destructor as @b virtual, use @ref comms::option::app::NoVirtualDestructor 
+///     destructor as @b virtual, use @ref comms::option::app::NoVirtualDestructor
 ///     option in the interface class definition.
 ///     @code
-///     using MyMessage = 
+///     using MyMessage =
 ///         my_protocol::Message<
 ///             ...,
 ///             comms::option::app::NoVirtualDestructor
 ///         >;
 ///     @endcode
-/// @li If the definition of the common interface class 
-///     doesn't have any virtual function, but still requires an ability to 
-///     be polymorphically deleted, i.e. must have virtual destructor, just 
+/// @li If the definition of the common interface class
+///     doesn't have any virtual function, but still requires an ability to
+///     be polymorphically deleted, i.e. must have virtual destructor, just
 ///     inherit from @b my_protocol::Message and define the destructor as virtual.
 ///     @code
-///     class MyMessage : public 
+///     class MyMessage : public
 ///         my_protocol::Message<>
 ///     {
 ///     public:
@@ -538,20 +538,20 @@
 /// @subsection page_use_prot_interface_summary Interface Options Summary
 /// All the options introduced above can be used in any order. They can also
 /// be repeated multiple times. However, the option that was defined first takes
-/// priority over (or overrides) the same option defined later. @n 
+/// priority over (or overrides) the same option defined later. @n
 /// For example, the definition below defines @b WriteIterator to be
-/// <b>std::uint8_t*</b>, because it was defined with first 
+/// <b>std::uint8_t*</b>, because it was defined with first
 /// @ref comms::option::app::WriteIterator option:
 /// @code
-/// using MyMessage = 
+/// using MyMessage =
 ///     my_protocol::Message<
 ///         ...
-///         comms::option::app::WriteIterator<std::uint8_t*>, 
+///         comms::option::app::WriteIterator<std::uint8_t*>,
 ///         ...
 ///         comms::option::app::WriteIterator<std::back_insert_iterator<std::vector<std::uint8_t> >,
 ///         ...
 ///     >;
-/// @endcode  
+/// @endcode
 /// The definition below gives a full interface of all
 /// the introduced functions: @b getId(), @b read(), @b write(), @b dispatch(),
 /// @b length(), @b valid(), @b refresh(), and @b name().
@@ -575,12 +575,12 @@
 ///
 /// @section page_use_prot_messages Protocol Messages
 /// The protocol messages are expected to be defined as template classes, receiving
-/// at least one template parameter, which specifies the application specific interface 
+/// at least one template parameter, which specifies the application specific interface
 /// class. For example
 /// @code
 /// namespace my_protocol
 /// {
-/// 
+///
 /// namespace message
 /// {
 ///
@@ -599,7 +599,7 @@
 /// } // namespace my_protocol
 /// @endcode
 /// The interface class that was defined for the application (@b MyMessage) needs
-/// to be passed as @b TBase template parameter. The defined message class 
+/// to be passed as @b TBase template parameter. The defined message class
 /// extends @ref comms::MessageBase, which in turn extends provided interface
 /// class @b TBase, which in turn extends (or typedef-s) @ref comms::Message. The inheritance
 /// hierarchy may look like this:
@@ -625,7 +625,7 @@
 /// @code
 /// namespace my_protocol
 /// {
-/// 
+///
 /// namespace message
 /// {
 ///
@@ -691,7 +691,7 @@
 /// @code
 /// namespace my_protocol
 /// {
-/// 
+///
 /// namespace message
 /// {
 ///
@@ -717,7 +717,7 @@
 /// @code
 /// namespace my_protocol
 /// {
-/// 
+///
 /// namespace message
 /// {
 ///
@@ -800,13 +800,13 @@
 /// @endcode
 ///
 /// @section page_use_prot_fields Message Fields
-/// In order to continue with the tutorial, it is paramount to understand a 
-/// concept of @b fields, which are abstractions around value storage primitives and/or objects, 
+/// In order to continue with the tutorial, it is paramount to understand a
+/// concept of @b fields, which are abstractions around value storage primitives and/or objects,
 /// such as integral values, floating point values, strings, arrays, etc..
-/// Every @b field class is defined in @ref comms::field namespace and 
+/// Every @b field class is defined in @ref comms::field namespace and
 /// exposes predefined interface in order to
 /// make template meta-programming as easy as possible. As an example let's
-/// take a look at @ref comms::field::IntValue class which is used to 
+/// take a look at @ref comms::field::IntValue class which is used to
 /// define integral value field.
 /// @code
 /// template <typename TBase, typename T, typename... TOptions>
@@ -815,7 +815,7 @@
 /// public:
 ///     // Define inner storage type
 ///     using ValueType = T;
-///     
+///
 ///     // Get access to the stored value
 ///     ValueType& value() { return m_value; }
 ///     const ValueType& value() const { return m_value; }
@@ -842,9 +842,9 @@
 /// }
 /// @endcode
 /// The main things to note are that every field definition class:
-/// @li receives its base class as the first 
+/// @li receives its base class as the first
 ///     template parameter. It is expected to be a variant of @ref
-///     comms::Field with @ref comms::option::def::BigEndian or @ref 
+///     comms::Field with @ref comms::option::def::BigEndian or @ref
 ///     comms::option::def::LittleEndian option to specify the serialisation endian.
 ///     It may be inner @b Field type of @b MyMessage interface class defined
 ///     earlier (@b MyMessage::Field - documented as @ref comms::Message::Field)
@@ -857,7 +857,7 @@
 ///     environment and/or behaviour (such as modifying the default storage type).
 /// @li defines @b ValueType inner value storage
 ///     type and provides @b value() member functions to access the stored value.
-/// @li provides @b read() and @b write() member functions to read and write the 
+/// @li provides @b read() and @b write() member functions to read and write the
 ///     inner value given the iterator used for reading / writing and available
 ///     length of the buffer.
 /// @li has @b length() member function to report how many bytes are required to
@@ -867,7 +867,7 @@
 /// @li has @b refresh() member function to bring its contents to consistent / valid
 ///     state when required.
 ///
-/// Also note that all the member function are @b NON-virtual, i.e. the field 
+/// Also note that all the member function are @b NON-virtual, i.e. the field
 /// abstractions do not have polymorphic behaviour.
 ///
 /// The most important member function to a client application is @b value().
@@ -877,7 +877,7 @@
 /// auto myFieldValue = myField.value();
 /// myField.value() = 5U;
 /// @endcode
-/// Other member functions are of lesser importance to the client application, 
+/// Other member functions are of lesser importance to the client application,
 /// they are used by the protocol definition itself to properly (de)serialise
 /// message contents and provide other useful functionality.
 ///
@@ -902,7 +902,7 @@
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>
 ///
 /// // definition of integral field
-/// using MyIntField = 
+/// using MyIntField =
 ///     comms::field::IntValue<
 ///         MyFieldBase, // base class for all the fields, defined by the protocol definition library
 ///         std::uint16_t
@@ -918,10 +918,10 @@
 /// information, but serialised as offset from year @b 2000 with a single byte.
 /// Such field may be defined as following:
 /// @code
-/// using YearField = 
+/// using YearField =
 ///     comms::field::IntValue<
-///         MyFieldBase, 
-///         std::int16_t, 
+///         MyFieldBase,
+///         std::int16_t,
 ///         comms::option::def::FixedLength<1>,
 ///         comms::option::def::NumValueSerOffset<-2000>
 ///     >;
@@ -932,14 +932,14 @@
 /// YearField field;
 /// field.value() = 2018; // serialised as 0x12;
 /// @endcode
-/// Some protocols may exchange floating point values by serialising them as 
+/// Some protocols may exchange floating point values by serialising them as
 /// integral ones. For example, multiply the floating point value by 1000 before
-/// the serialisation, and upon reception divide the received value by 1000 to 
+/// the serialisation, and upon reception divide the received value by 1000 to
 /// get the floating point one. Such fields will be defined using @ref
 /// comms::field::IntValue type with using @ref comms::option::def::ScalingRatio
 /// option
 /// @code
-/// using MyFpField = 
+/// using MyFpField =
 ///     comms::field::IntValue<
 ///         MyFieldBase, // base class for all the fields, defined by the protocol definition library
 ///         std::int32_t,
@@ -953,7 +953,7 @@
 /// @code
 /// MyFpField field;
 /// field.setScaled(1.3f);
-/// assert(field.value() == 1300); 
+/// assert(field.value() == 1300);
 /// auto asDouble = field.getScaled<double>(); // equivalent to 1.3
 /// @endcode
 /// In addition to @b scaling, the @b COMMS library also provides an ability
@@ -961,21 +961,21 @@
 /// @b 1/10 of the @b millimetres. The definition of such field may look like
 /// this
 /// @code
-/// using MyDistance = 
+/// using MyDistance =
 ///     comms::field::IntValue<
 ///         MyFieldBase,
 ///         std::int32_t,
 ///         comms::option::def::ScalingRatio<1, 10>,
-///         comms::option::def::UnitsMillimeters         
+///         comms::option::def::UnitsMillimeters
 /// @endcode
 /// The @b COMMS library provides a @b limited set of units conversion functions in
 /// @ref comms::units namespace. When using the provided conversion function the application developer
 /// doesn't need to remember the original units and/or scaling factor. The @b COMMS library
 /// does all the math. It also prevents (at compile time) usage of wrong conversion
-/// functions, say calculating time (@b milliseconds), when specified units are 
+/// functions, say calculating time (@b milliseconds), when specified units are
 /// @b distance (@b millimetres).
 /// @code
-/// MyDistance field; 
+/// MyDistance field;
 /// comms::units::setMeters(field, 1.2345);
 /// std::cout << "Distance in 1/10 of mm:" << field.value() << std::endl; // prints 12345
 /// std::cout << "Distance in mm" << comms::units::getMillimeters<double>(field); // prints 1234.5
@@ -998,7 +998,7 @@
 /// @ref comms::option::def::DefaultNumValue option to specify some other value
 /// @code
 /// // definition of integral field
-/// using MyIntField = 
+/// using MyIntField =
 ///     comms::field::IntValue<
 ///         MyFieldBase, // base class for all the fields, defined by the protocol definition library
 ///         std::uint16_t,
@@ -1023,7 +1023,7 @@
 ///     NumOfValues
 /// };
 ///
-/// using SomeEnumField = 
+/// using SomeEnumField =
 ///     comms::field::EnumValue<
 ///         MyFieldBase,
 ///         SomeEnumVal,
@@ -1034,17 +1034,17 @@
 /// SomeEnumField field;
 /// assert(field.value() == SomeEnumVal::Val3); // initialised by default to Val3;
 /// field.value() = SomeEnumVal::Val2;
-/// @endcode 
+/// @endcode
 /// Note, that underlying type of the enum dictates default serialisation length.
 ///
 /// @subsection page_use_prot_fields_bitmask_value Bitmask Value Fields
 /// Bitmasks (or bitsets) are also numeric values where every bit has separate,
 /// independent meaning. Such fields are defined using @ref comms::field::BitmaskValue
-/// class. 
+/// class.
 /// @code
-/// struct MyBitmask : public 
+/// struct MyBitmask : public
 ///     comms::field::BitmaskValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::FixedLength<1>,
 ///         comms::option::def::BitmaskReservedBits<0x2, 0> // Second bit is reserved and must be 0
 ///     >
@@ -1054,9 +1054,9 @@
 /// @endcode
 /// The field definition will use @ref comms::option::def::FixedLength option in
 /// order to specify its serialisation length. The inner @b ValueType type will
-/// be calculated automatically and defined as one of the unsigned types: 
+/// be calculated automatically and defined as one of the unsigned types:
 /// @b std::uint8_t, @b std::uint16_t, @b std::uint32_t, or @b std::uint64_t.
-/// The usage of @ref comms::option::def::BitmaskReservedBits option will mark 
+/// The usage of @ref comms::option::def::BitmaskReservedBits option will mark
 /// certain bits as "reserved". It influences only validity check functionality
 /// (see @ref comms::field::BitmaskValue::valid()). If any of the reserved bits
 /// doesn't have an expected value, the call to @b valid() member function will
@@ -1066,12 +1066,12 @@
 /// and #COMMS_BITMASK_BITS_ACCESS() macros to provide names for the bits
 /// and generate convenience access function. If bit names are sequential, i.e. start
 /// from bit @b 0, and go up without any holes in the middle, then single
-/// #COMMS_BITMASK_BITS_SEQ() macro can be used instead achieving the same 
+/// #COMMS_BITMASK_BITS_SEQ() macro can be used instead achieving the same
 /// effect.
 /// @code
 /// struct MyBitmask : public
 ///     comms::field::BitmaskValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::FixedLength<1>,
 ///         comms::option::def::BitmaskReservedBits<0x2, 0> // Second bit is reserved and must be 0
 ///     >
@@ -1084,12 +1084,12 @@
 /// @code
 /// struct MyBitmask : public
 ///     comms::field::BitmaskValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::FixedLength<1>,
-///         comms::option::def::BitmaskReservedBits<0x2, 0> 
+///         comms::option::def::BitmaskReservedBits<0x2, 0>
 ///     >
 /// {
-///     enum BitIdx 
+///     enum BitIdx
 ///     {
 ///         BitIdx_first,
 ///         BitIdx_third=2,
@@ -1110,11 +1110,11 @@
 ///     ...
 /// }
 /// @endcode
-/// The generated convenience access functions use existing 
+/// The generated convenience access functions use existing
 /// @ref comms::field::BitmaskValue::getBitValue() and
 /// @ref comms::field::BitmaskValue::setBitValue() member functions.
 ///
-/// It is also possible to set multiple bits at the same time by accessing 
+/// It is also possible to set multiple bits at the same time by accessing
 /// the stored value directly
 /// @code
 /// MyBitmask field;
@@ -1165,9 +1165,9 @@
 /// enum class StopBits {...}
 /// enum class FlowControl {...}
 ///
-/// class SerialConfigField : public 
+/// class SerialConfigField : public
 ///     comms::field::Bitfield<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         std::tuple<
 ///             comms::field::EnumValue<MyFieldBase, Baud, comms::option::def::FixedBitLength<3> >,
 ///             comms::field::EnumValue<MyFieldBase, Parity, comms::option::def::FixedBitLength<2> >,
@@ -1183,18 +1183,18 @@
 ///     COMMS_FIELD_MEMBERS_NAMES(baud, parity, stopBits, flowControl, reserved);
 /// }
 /// @endcode
-/// All the member fields of the @ref comms::field::Bitfield are stored internally 
+/// All the member fields of the @ref comms::field::Bitfield are stored internally
 /// as @b std::tuple, as the result the inner @b ValueType of such field is
 /// @b std::tuple of all member fields and call to @ref comms::field::Bitfield::value()
-/// member function will give an access to it. 
+/// member function will give an access to it.
 ///
 /// The field definition is expected to use @ref COMMS_FIELD_MEMBERS_NAMES() macro,
-/// which will generate @b FieldIdx enum as well as convenience access member 
+/// which will generate @b FieldIdx enum as well as convenience access member
 /// functions. The code becomes equivalent to:
 /// @code
-/// struct SerialConfigField : public 
+/// struct SerialConfigField : public
 ///     comms::field::Bitfield<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         std::tuple<
 ///             comms::field::EnumValue<MyFieldBase, Baud, comms::option::def::FixedBitLength<3> >,
 ///             comms::field::EnumValue<MyFieldBase, Parity, comms::option::def::FixedBitLength<2> >,
@@ -1213,7 +1213,7 @@
 ///         FieldIdx_reserved,
 ///         FieldIdx_numOfValues
 ///     };
-/// 
+///
 ///     // Accessor to "baud" field
 ///     auto field_baud() -> decltype(std::get<FieldIdx_baud>(value()))
 ///     {
@@ -1247,13 +1247,13 @@
 /// SerialConfigField configField;
 /// configField.field_baud().value() = Baud::Val_115200;
 /// @endcode
-/// 
+///
 /// @subsection page_use_prot_fields_bundle Bundle Fields
 /// There are cases when multiple independent fields need to be bundled into
 /// a single field and expose the required interface of reading, writing,
 /// calculating length, checking field's contents validity, and bringing field's
 /// value into a consistent state. It may be required
-/// when a message contains sequence (see @ref page_use_prot_fields_array_list) 
+/// when a message contains sequence (see @ref page_use_prot_fields_array_list)
 /// of such bundles/structs. The @b COMMS library provides @ref comms::field::Bundle
 /// field for this purpose. It is quite similar to @ref comms::field::Bitfield described
 /// earlier. The difference is that every member field
@@ -1284,7 +1284,7 @@
 /// };
 /// @endcode
 /// Just like with @ref page_use_prot_fields_bitfield, the inner @b ValueType type
-/// of such field is a @b std::tuple of member fields, and usage of 
+/// of such field is a @b std::tuple of member fields, and usage of
 /// @ref COMMS_FIELD_MEMBERS_NAMES() has exactly the same effect, i.e. generates
 /// inner @b FieldIdx enum and convenience access member functions:
 /// @code
@@ -1335,7 +1335,7 @@
 /// interface to properly handle such sequences of data. It supports a
 /// sequence of raw bytes
 /// @code
-/// using MySimpleList = 
+/// using MySimpleList =
 ///     comms::field::ArrayList<
 ///         MyFieldBase,
 ///         std::uint8_t // raw byte type as second template parameter
@@ -1343,10 +1343,10 @@
 /// @endcode
 /// as well as using sequence of any fields defined in comms::field namespace
 /// @code
-/// using MyComplexList = 
+/// using MyComplexList =
 ///     comms::field::ArrayList<
 ///         MyFieldBase,
-///         MyBundle // Complex bundle field, defined in previous section 
+///         MyBundle // Complex bundle field, defined in previous section
 ///     >;
 /// @endcode
 /// The @b default storage type (inner @b ValueType type) of these fields is
@@ -1359,7 +1359,7 @@
 /// @ref page_use_prot_fields_customisation section below in more details.
 ///
 /// Please pay attention, that in case of non-raw data lists, the inner @b std::vector
-/// contains fields, not values. As the result access to the stored values 
+/// contains fields, not values. As the result access to the stored values
 /// may require a bit of extra function calls:
 /// @code
 /// MyComplexList list;
@@ -1370,9 +1370,9 @@
 /// firstMember1.value() = ...; // assign the value of "member1"
 /// @endcode
 /// Some protocols may define fixed size lists. In such case lists are defined
-/// with usage of @ref comms::option::def::SequenceFixedSize option. 
+/// with usage of @ref comms::option::def::SequenceFixedSize option.
 /// @code
-/// using MyList = 
+/// using MyList =
 ///     comms::field::ArrayList<
 ///         MyFieldBase,
 ///         comms::field::IntValue<MyFieldBase, std::uint16_t>,
@@ -1380,7 +1380,7 @@
 ///     >;
 /// @endcode
 /// Usage of this option just ensures right amount of elements "on the wire" after
-/// the field is serialised, but it does @b NOT automatically resize inner 
+/// the field is serialised, but it does @b NOT automatically resize inner
 /// storage vector.
 /// @code
 /// MyList field;
@@ -1395,7 +1395,7 @@
 /// @endcode
 /// It is very similar to comms::field::ArrayList
 /// it terms of value storage, read/write operations, and supported options.
-/// By default the value is stored as 
+/// By default the value is stored as
 /// <a href="http://en.cppreference.com/w/cpp/string/basic_string">std::string</a>.
 /// @code
 /// MyString myStr;
@@ -1411,7 +1411,7 @@
 /// like with lists it does @b NOT automatically resize inner string, just ensures
 /// right amount of characters "on the wire" when field is serialised.
 /// @code
-/// using MyFixedString = 
+/// using MyFixedString =
 ///     comms::field::String<
 ///         MyFieldBase,
 ///         comms::option::def::SequenceFixedSize<32>
@@ -1423,11 +1423,11 @@
 ///
 /// @subsection page_use_prot_fields_fp_value Floating Point Value Fields
 /// Floating point value fields are defined using @ref comms::field::FloatValue
-/// They are very similar to 
-/// @ref page_use_prot_fields_int_value, but use @b float or @b double as its 
-/// internal storage type. They abstract the IEEE 754 floating point 
+/// They are very similar to
+/// @ref page_use_prot_fields_int_value, but use @b float or @b double as its
+/// internal storage type. They abstract the IEEE 754 floating point
 /// values, which are serialised "as is" with either big or little endian
-/// encoding. The floating point value fields also support 
+/// encoding. The floating point value fields also support
 /// the same scaling and units conversion just like @ref page_use_prot_fields_int_value.
 ///
 /// @subsection page_use_prot_fields_optional Optional Fields
@@ -1439,7 +1439,7 @@
 /// library provides @ref comms::field::Optional which is a mere wrapper around
 /// other fields and provides an ability to set the optional state of the field.
 /// @code
-/// using OptField = 
+/// using OptField =
 ///     comms::field::Optional<
 ///         comms::field::IntValue<MyFieldBase, std::int32_t>
 ///     >;
@@ -1454,14 +1454,14 @@
 /// The default mode can be changed using @ref comms::option::def::ExistsByDefault
 /// or @ref comms::option::def::MissingByDefault options. For example
 /// @code
-/// using ExistingOptField = 
+/// using ExistingOptField =
 ///     comms::field::Optional<
 ///         comms::field::IntValue<MyFieldBase, std::int32_t>,
 ///         comms::option::def::ExistsByDefault
 ///     >;
 ///
 /// ExistingOptField field;
-/// assert(field.doesExist()); 
+/// assert(field.doesExist());
 /// @endcode
 /// @b NOTE, that inner @b ValueType of such field is wrapped actual field and
 /// both @ref comms::field::Optional::value() and @ref comms::field::Optional::field()
@@ -1474,15 +1474,15 @@
 /// @endcode
 ///
 /// @subsection page_use_prot_fields_variant Variant Fields
-/// Some protocols may require usage of heterogeneous fields or lists of 
+/// Some protocols may require usage of heterogeneous fields or lists of
 /// heterogeneous fields, i.e. the ones that can be of multiple types. Good example
 /// would be a list of @b properties, where every property is a key/value pair
 /// or a type/length/value triplet. The
-/// key (or type) is usually a numeric ID of the property, while value can be 
-/// any field of any length. Such fields are defined using 
-/// @ref comms::field::Variant class. It is very similar to @ref 
+/// key (or type) is usually a numeric ID of the property, while value can be
+/// any field of any length. Such fields are defined using
+/// @ref comms::field::Variant class. It is very similar to @ref
 /// page_use_prot_fields_bundle, but serves as one big union of provided member
-/// fields, i.e. only one can be used at a time. 
+/// fields, i.e. only one can be used at a time.
 ///
 /// As an example for the key/value pairs let's assume usage of three value types:
 /// @li Unsigned integer with length of only 1 byte (@b Value1)
@@ -1497,9 +1497,9 @@
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 /// using Value1 = comms::field::IntValue<MyFieldBase, std::uint8_t>;
 /// using Value2 = comms::field::IntValue<MyFieldBase, std::uint32_t>;
-/// using Value3 = 
+/// using Value3 =
 ///     comms::field::String<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::SequenceSizeFieldPrefix<
 ///             comms::field::IntValue<
 ///                 MyFieldBase,
@@ -1507,7 +1507,7 @@
 ///             >
 ///         >
 ///     >;
-/// 
+///
 /// //The common key type is usually represented as enum.
 /// enum class KeyId : std::uint8_t
 /// {
@@ -1516,7 +1516,7 @@
 ///     Key3,
 ///     NumOfValues
 /// };
-/// 
+///
 /// // Definition of "key" fields
 /// template <KeyId TId>
 /// using KeyField =
@@ -1527,14 +1527,14 @@
 ///         comms::option::def::ValidNumValueRange<(int)TId, (int)TId>,
 ///         comms::option::def::FailOnInvalid<>
 ///     >;
-/// 
+///
 /// using Key1 = KeyField<KeyId::Key1>;
 /// using Key2 = KeyField<KeyId::Key2>;
 /// using Key3 = KeyField<KeyId::Key3>;
-/// 
+///
 /// // Definition of properties bundles
 /// template <typename TKey, typename TValue>
-/// class Property : public 
+/// class Property : public
 ///     comms::field::Bundle<
 ///         MyFieldBase,
 ///         std::tuple<
@@ -1551,9 +1551,9 @@
 /// using Property1 = Property<Key1, Value1>;
 /// using Property2 = Property<Key2, Value2>;
 /// using Property3 = Property<Key3, Value3>;
-/// 
+///
 /// // Definition of the variant field
-/// class MyVariant : public 
+/// class MyVariant : public
 ///     comms::field::Variant<
 ///         MyFieldBase,
 ///         std::tuple<Property1, Property2, Property3>
@@ -1565,19 +1565,19 @@
 /// public:
 ///     COMMS_VARIANT_MEMBERS_NAMES(prop1, prop2, prop3);
 /// };
-/// 
+///
 ///
 /// // Definition of properties list
 /// using PropertiesList = comms::field::ArrayList<MyFieldBase, MyVariant>;
 /// @endcode
 /// @b IMPORTANT: The @ref comms::field::Variant field uses uninitialized implementation
 /// dependent storage area able to be initialized and hold any of the
-/// provided member field types (but only one at a time). The inner 
-/// @ref comms::field::Variant::ValueType "ValueType" type contains 
-/// definition of the used storage type and 
+/// provided member field types (but only one at a time). The inner
+/// @ref comms::field::Variant::ValueType "ValueType" type contains
+/// definition of the used storage type and
 /// @ref comms::field::Variant::value() "value()" member function which returns reference
 /// to the used storage area. These type and function should @b NOT
-/// be used directly. Instead, the  protocol definition is expected to 
+/// be used directly. Instead, the  protocol definition is expected to
 /// use #COMMS_VARIANT_MEMBERS_NAMES() macro, which generates
 /// appropriate access and conversion wrapper functions around
 /// @ref comms::field::Variant::initField() and @ref comms::field::Variant::accessField().
@@ -1587,7 +1587,7 @@
 /// @code
 /// struct MyVariant : public comms::field::Variant<...>
 /// {
-///     // Enumerator to access fields 
+///     // Enumerator to access fields
 ///     enum FieldIdx {
 ///         FieldIdx_prop1,
 ///         FieldIdx_prop2,
@@ -1662,12 +1662,12 @@
 /// enum, all @b initField_* and @b accessField_* functions, as well as
 /// inner @b Field_* types.
 ///
-/// When variant field object is instantiated, 
+/// When variant field object is instantiated,
 /// accessing the currently held field can be tricky though. There is a need
 /// to differentiate between @b compile-time and @b run-time knowledge of the
-/// contents. 
+/// contents.
 ///
-/// When preparing a variant field (or message with variant fields) to be sent out, usually the inner 
+/// When preparing a variant field (or message with variant fields) to be sent out, usually the inner
 /// field type and its value are known at compile time. The initialization of the
 /// field can be performed using one of the @b initField_*() member
 /// function described above:
@@ -1730,8 +1730,8 @@
 ///     };
 /// }
 /// @endcode
-/// However, such approach may require a significant amount of boilerplate code with 
-/// manual (error-prone) "casting" to appropriate field type. 
+/// However, such approach may require a significant amount of boilerplate code with
+/// manual (error-prone) "casting" to appropriate field type.
 /// The @b COMMS library provides a built-in way to perform relatively efficient (O(log(n))
 /// way of dispatching the actual field to its appropriate handling function by
 /// using comms::field::Variant::currentFieldExec() member function. It expects
@@ -1782,7 +1782,7 @@
 /// ...
 /// // Definition of properties bundles
 /// template <typename TKey, typename TValue>
-/// class Property : public 
+/// class Property : public
 ///     comms::field::Bundle<
 ///         MyFieldBase,
 ///         std::tuple<
@@ -1802,7 +1802,7 @@
 /// The rest of the handling code presented above applies for this kind as well
 /// with one small nuance. The value of the @b length field depends on the
 /// value of @b val (especially with variable length fields like strings).
-/// 
+///
 /// When such property field is default constructed, the @b length is updated
 /// to a correct value.
 /// @code
@@ -1860,7 +1860,7 @@
 ///
 /// namespace my_protocol
 /// {
-/// 
+///
 /// namespace message
 /// {
 ///
@@ -1869,14 +1869,14 @@
 /// {
 ///     using field1 = ...;
 ///     using field2 = ...
-///     using field3 = 
+///     using field3 =
 ///         comms::field::String<
 ///             MyFieldBase,
-///             typename TOpt::message::Message1Fields::field3 // Extra option(s) 
+///             typename TOpt::message::Message1Fields::field3 // Extra option(s)
 ///         >
 ///
 ///     // bunding type
-///     using All = 
+///     using All =
 ///         std::tuple<
 ///             field1,
 ///             field2,
@@ -1885,16 +1885,16 @@
 /// };
 ///
 /// template <typename TBase, typename TOpt = DefaultOptions>
-/// class Message1 : public 
+/// class Message1 : public
 ///     comms::MessageBase<
-///         TBase, 
+///         TBase,
 ///         comms::option::def::StaticNumIdImpl<MsgId_Message1>,
 ///         comms::option::def::FieldsImpl<Message1Fields<TOpt>::All>, // using fields with extra options
-///         comms::option::def::MsgType<Message1<TBase, TOpt> > 
+///         comms::option::def::MsgType<Message1<TBase, TOpt> >
 ///     >
 /// {
 ///     // (Re)definition of the base class
-///     using Base = comms::MessageBase<...>; 
+///     using Base = comms::MessageBase<...>;
 /// public:
 ///     // Provide names for the fields
 ///     COMMS_MSG_FIELDS_NAMES(value1, value2, value3);
@@ -1904,8 +1904,8 @@
 ///
 /// } // namespace my_protocol
 /// @endcode
-/// The inner structure of @b DefaultOptions struct is not important, but 
-/// the recommended practice is to resemble the scope of fields. It may look 
+/// The inner structure of @b DefaultOptions struct is not important, but
+/// the recommended practice is to resemble the scope of fields. It may look
 /// like this
 /// @code
 /// namespace my_protocol
@@ -1924,7 +1924,7 @@
 /// };
 /// } // my_protocol
 /// @endcode
-/// The application is expected to provide its own options describing 
+/// The application is expected to provide its own options describing
 /// struct / class if needed. The easiest way is to extend provided @b DefaultOptions
 /// and override selected types. For example
 /// @code
@@ -1959,25 +1959,25 @@
 /// @endcode
 ///
 /// @subsubsection page_use_prot_fields_customisation_seq Customisation for Lists and Strings
-/// As was already mentioned earlier the default storage type (@b ValueType) of 
+/// As was already mentioned earlier the default storage type (@b ValueType) of
 /// @ref page_use_prot_fields_array_list is @b std::vector, while default
 /// storage type for @ref page_use_prot_fields_string is @b std::string. These
 /// types are suitable for most of C++ applications, but may be unsuitable for
 /// bare-metal embedded platforms. That why the protocol definition @b must allow
-/// additional customisation of such fields. 
+/// additional customisation of such fields.
 ///
-/// The @b COMMS library provides 
-/// multiple options to change the default storage type. 
+/// The @b COMMS library provides
+/// multiple options to change the default storage type.
 /// There is @ref comms::option::app::FixedSizeStorage option. When passed to the
 /// @ref comms::field::ArrayList or @ref comms::field::String, it changes the
 /// default storage type to be @ref comms::util::StaticVector or
 /// @ref comms::util::StaticString respectively. These types expose the same
-/// public API as @b std::vector or @b std::string, but use pre-allocated 
+/// public API as @b std::vector or @b std::string, but use pre-allocated
 /// storage area (as their private member) to store the elements / characters.
 /// Note, that the @ref comms::option::app::FixedSizeStorage option has a template
 /// parameter, which specify number of elements (not necessarily bytes) to be
 /// stored. If the field definition already uses @ref comms::option::def::SequenceFixedSize
-/// option to specify that number of elements is fixed, there is 
+/// option to specify that number of elements is fixed, there is
 /// @ref comms::option::app::SequenceFixedSizeUseFixedSizeStorage
 /// option which has the same effect of forcing @ref comms::util::StaticVector
 /// or @ref comms::util::StaticString to be storage types, but does not
@@ -2002,12 +2002,12 @@
 /// the input buffer is contiguous, i.e the pointer to the last element is @b always
 /// greater than pointer to the first one (not some kind of circular buffer), then
 /// copying of the data may be avoided by using @ref comms::option::app::OrigDataView
-/// option. The option will change the default storage types to be 
+/// option. The option will change the default storage types to be
 /// <a href="https://en.cppreference.com/w/cpp/container/span">std::span&lt;std::uint8_t&gt;</a> or
 /// <a href="https://en.cppreference.com/w/cpp/string/basic_string_view">std::string_view</a> respectively.
 /// In case standard variants are unavalable due to used C++ standard or insufficient standard
-/// library version then 
-/// @ref comms::util::ArrayView and/or @ref comms::util::StringView will be used instead. 
+/// library version then
+/// @ref comms::util::ArrayView and/or @ref comms::util::StringView will be used instead.
 ///
 /// @b NOTE, that
 /// passing @ref comms::option::app::OrigDataView option to @ref comms::field::ArrayList
@@ -2025,7 +2025,7 @@
 /// };
 /// @endcode
 ///
-/// If default standard @b std::vector / @b std::string or all the provided 
+/// If default standard @b std::vector / @b std::string or all the provided
 /// by the @b COMMS library storage type are
 /// not good enough, it is possible to specify custom storage type
 /// using @ref comms::option::app::CustomStorageType option. For example:
@@ -2036,7 +2036,7 @@
 ///     {
 ///         struct Message1Fields : public my_protocol::DefaultOptions::message::Message1Fields
 ///         {
-///             using field3 = 
+///             using field3 =
 ///                 comms::option::app::CustomStorageType<
 ///                     boost::container::pmr::string
 ///                 >;
@@ -2060,18 +2060,18 @@
 ///
 /// namespace my_protocol
 /// {
-/// 
+///
 /// namespace message
 /// {
 ///
 /// template <typename TOpt = DefaultOptions>
 /// struct Message1Fields
 /// {
-///     using field1 = 
+///     using field1 =
 ///         comms::field::IntValue<
 ///             MyFieldBase,
 ///             std::uint8_t,
-///             typename TOpt::message::Message1Fields::field1, // Extra options 
+///             typename TOpt::message::Message1Fields::field1, // Extra options
 ///             comms::option::def::DefaultNumValue<10>,
 ///             comms::option::def::ValidNumValueRange<10, 20>
 ///         >;
@@ -2079,12 +2079,12 @@
 /// };
 ///
 /// template <typename TBase, typename TOpt = DefaultOptions>
-/// class Message1 : public 
+/// class Message1 : public
 ///     comms::MessageBase<
-///         TBase, 
+///         TBase,
 ///         comms::option::def::StaticNumIdImpl<MsgId_Message1>,
 ///         comms::option::def::FieldsImpl<Message1Fields<TOpt>::All>, // using fields with extra options
-///         comms::option::def::MsgType<Message1<TBase, TOpt> > 
+///         comms::option::def::MsgType<Message1<TBase, TOpt> >
 ///     >
 /// {
 ///     ...
@@ -2095,7 +2095,7 @@
 /// } // namespace my_protocol
 /// @endcode
 /// If not other options are passed as @b message::Message1Fields::field1 inner
-/// type of application specific options struct / class, then the inner value of 
+/// type of application specific options struct / class, then the inner value of
 /// @b field1 will be initialised to @b 10 upon construction and the range of
 /// valid values will be <b>[10, 20]</b>. Such default settings may be modified
 /// using various options. For example, making the value to be initialised to @b 5 and
@@ -2107,7 +2107,7 @@
 ///     {
 ///         struct Message1Fields : public my_protocol::DefaultOptions::message::Message1Fields
 ///         {
-///             using field1 = 
+///             using field1 =
 ///                 std::tuple<
 ///                     comms::option::def::DefaultNumValue<5>,
 ///                     comms::option::def::ValidNumValue<5>
@@ -2117,9 +2117,9 @@
 /// };
 /// @endcode
 /// After these extra options are passed to the field's definition it becomes
-/// equivalent to 
+/// equivalent to
 /// @code
-///     using field1 = 
+///     using field1 =
 ///         comms::field::IntValue<
 ///             MyFieldBase,
 ///             std::uint8_t,
@@ -2148,7 +2148,7 @@
 ///     {
 ///         struct Message1Fields : public my_protocol::DefaultOptions::message::Message1Fields
 ///         {
-///             using field1 = 
+///             using field1 =
 ///                 std::tuple<
 ///                     comms::option::def::DefaultNumValue<5>, // change the default value
 ///                     comms::option::def::ValidNumValue<5>, // add 5 to valid ranges of [40, 50]
@@ -2184,7 +2184,7 @@
 /// field.value() = static_cast<typename std::decay<decltype(field.value())>::type>(someValue);
 /// @endcode
 /// However, it's too much typing to do and quite inconvenient for the developer.
-/// The @b COMMS library provides @ref comms::cast_assign() stand alone 
+/// The @b COMMS library provides @ref comms::cast_assign() stand alone
 /// function which can be used for easy assignments with implicit @b static_cast to
 /// appropriate type. It should be used for any arithmetic and/or enum storage
 /// values.
@@ -2195,15 +2195,15 @@
 /// @subsection page_use_prot_fields_cast Cast Between Fields
 /// There may also be cases when value of one field needs to be assigned to
 /// value of another type. If @b static_cast between the values works, then
-/// it is possible to use @ref comms::cast_assign() function described in 
+/// it is possible to use @ref comms::cast_assign() function described in
 /// @ref page_use_prot_fields_value_assign section above.
 /// @code
 /// comms::assign(field1.value()) = field2.value();
 /// @endcode
 /// However, there may be cases when such cast is not possible. For example
-/// value of 1 byte @ref comms::field::IntValue needs to be assigned to 
+/// value of 1 byte @ref comms::field::IntValue needs to be assigned to
 /// a @ref comms::field::Bitfield length of which is also 1 byte, but it
-/// splits the value into a couple of inner members. In this case 
+/// splits the value into a couple of inner members. In this case
 /// the @ref comms::field_cast() function should be used.
 /// @code
 /// using MyInt = comms::field::IntValue<FieldBase, std::uint8_t>;
@@ -2217,12 +2217,12 @@
 /// themselves, not their stored values.
 ///
 /// @section page_use_prot_transport Transport Framing
-/// In addition to definition of the messages and their contents, every 
-/// communication protocol must ensure that the message is successfully delivered 
-/// over the I/O link to the other side. The serialised message payload must 
-/// be wrapped in some kind of transport information prior to being sent and 
+/// In addition to definition of the messages and their contents, every
+/// communication protocol must ensure that the message is successfully delivered
+/// over the I/O link to the other side. The serialised message payload must
+/// be wrapped in some kind of transport information prior to being sent and
 /// unwrapped on the other side when received. The @b COMMS protocol defines
-/// multiple so called @b layers (defined in @b comms::frame namespace). 
+/// multiple so called @b layers (defined in @b comms::frame namespace).
 /// The transport framing will be defined using those @b layer classes and may
 /// be called @b Frame. Its definition is expected to
 /// look something like this:
@@ -2235,8 +2235,8 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for comms::frame::MsgIdLayer
 /// >
-/// struct Frame : public 
-///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
+/// struct Frame : public
+///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions>
 /// {
 ///     COMMS_FRAME_LAYERS_ACCESS(...);
 /// };
@@ -2245,7 +2245,7 @@
 /// @endcode
 /// The first template parameter (@b TMessage) is common message interface class described
 /// earlier in @ref page_use_prot_interface section.
-/// 
+///
 /// The second template parameter (@b TInputMessages) is @b std::tuple of input
 /// messages that @b read operation is expected to recognise. The message classes
 /// must be sorted by the ascending order of message IDs. The protocol definition
@@ -2253,9 +2253,9 @@
 /// messages, which can be used as reference.
 ///
 /// The third template parameter (@b TAllocationOptions) is extra option(s)
-/// (bundled in @b std::tuple if more than one) to be passed to 
+/// (bundled in @b std::tuple if more than one) to be passed to
 /// @ref comms::frame::MsgIdLayer class which is responsible for message
-/// allocation. By default the message object is dynamically allocated, it is 
+/// allocation. By default the message object is dynamically allocated, it is
 /// possible to modify such behaviour by using @ref comms::option::app::InPlaceAllocation
 /// option. It will be explained in more details further below.
 ///
@@ -2267,7 +2267,7 @@
 /// It may also happen, that the extra options (@b TAllocationOptions)
 /// are defined inside the recommended @b DefaultOptions structure and be
 /// passed to the layers definitions themselves. Such approach is undertaken by
-/// the **commsdsl2comms** code generator application from the 
+/// the **commsdsl2comms** code generator application from the
 /// <a href="https://github.com/commschamp/commsdsl">commsdsl</a> project.
 /// @code
 /// namespace my_protocol
@@ -2283,12 +2283,12 @@
 ///         {
 ///             // Extra options for Data layer.
 ///             using Data = comms::option::app::EmptyOption;
-///             
+///
 ///             // Extra options for Id layer.
 ///             using Id = comms::option::app::EmptyOption;
-///             
+///
 ///         }; // struct FrameLayers
-///         
+///
 ///     }; // struct frame
 /// }/ // struct DefaultOptions
 ///
@@ -2297,8 +2297,8 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TOpt = DefaultOptions // Options of the protocol definitions
 /// >
-/// struct Frame : public 
-///     MySyncPrefix<TMessage, TInputMessages, TOpt> 
+/// struct Frame : public
+///     MySyncPrefix<TMessage, TInputMessages, TOpt>
 /// {
 ///     COMMS_FRAME_LAYERS_ACCESS(...);
 /// };
@@ -2307,7 +2307,7 @@
 /// @endcode
 ///
 /// @subsection page_use_prot_transport_read Reading Transport Framing and Message Payload
-/// The @b COMMS library provides some convenience input processing and 
+/// The @b COMMS library provides some convenience input processing and
 /// message dispatching functionality suitable for most cases. There is
 /// @ref comms::processAllWithDispatch() function which is responsible to
 /// process provided data in input buffer, detect and allocate message objects,
@@ -2324,7 +2324,7 @@
 /// ... // Removed consumed bytes from input buffer
 /// @endcode
 /// The code above will dispatch allocated message objects to the provided
-/// handler using @ref comms::dispatchMsg() function, which in turn performs 
+/// handler using @ref comms::dispatchMsg() function, which in turn performs
 /// compile time analysis of supported message types and can
 /// result in either using polymorphic (see @ref comms::dispatchMsgPolymorphic()) or
 /// static binary search (see @ref comms::dispatchMsgStaticBinSearch()) way
@@ -2334,10 +2334,10 @@
 /// uses @ref comms::MsgDispatcher to force a particular way of dispatching.
 /// @code
 /// using MyDispatcher = comms::MsgDispatcher<comms::option::ForceDispatchStaticBinSearch>
-/// std::size_t consumed = 
+/// std::size_t consumed =
 ///     comms::processAllWithDispatchViaDispatcher<MyDispatcher>(buf, bufLen, frame, handler);
 /// @endcode
-/// If the described above processing functions (@ref comms::processAllWithDispatch() 
+/// If the described above processing functions (@ref comms::processAllWithDispatch()
 /// and @ref comms::processAllWithDispatchViaDispatcher()) are not good enough
 /// for a particular application, there are several auxiliary functions that can
 /// be used to implement application specific input data processing loop.
@@ -2350,7 +2350,7 @@
 /// such as various types of acknowledgment. To support such case
 /// @ref comms::frame::FrameLayerBase::read() "read()" member function of the
 /// @b Frame as well as processing function(s) described above support reception of
-/// reference to the real message object (instead of 
+/// reference to the real message object (instead of
 /// @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr" pointer).
 /// @code
 /// using MyAckMsg = my_protocol::AckMsg<MyMessage>;
@@ -2366,9 +2366,9 @@
 /// is used in the code above.
 ///
 /// @subsection page_use_prot_transport_msg_alloc Message Object Allocation
-/// By default, the message object is dynamically allocated. However, some 
+/// By default, the message object is dynamically allocated. However, some
 /// applications (especially bare-metal ones) may require something different.
-/// The @b COMMS library has @ref comms::option::app::InPlaceAllocation option, 
+/// The @b COMMS library has @ref comms::option::app::InPlaceAllocation option,
 /// which may be passed as third template parameter (@b TAllocationOptions)
 /// to @b Frame type definition. It statically allocates (in private data
 /// members) storage area, that is capable to store any message object from
@@ -2381,8 +2381,8 @@
 /// In case the @ref page_use_prot_interface "Message Interface" class does
 /// not define any virtual function (which results in lack of virtual
 /// destructor), the @b COMMS library also creates a custom deleter for
-/// the defined smart pointer to the allocated message 
-/// (see @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr") 
+/// the defined smart pointer to the allocated message
+/// (see @ref comms::frame::FrameLayerBase::MsgPtr "MsgPtr")
 /// to allow proper downcast of the held pointer to the appropriate
 /// class and invoke the correct destructor.
 ///
@@ -2393,7 +2393,7 @@
 /// In general, if message ID cannot be recognised, then appropriate message object cannot be
 /// created and processed, i.e. the reading loop will just discard such input.
 /// However, there are applications that serve as some kind of a @b bridge or
-/// a @b firewall, i.e. need to recognise and process only limited 
+/// a @b firewall, i.e. need to recognise and process only limited
 /// number of input messages, all the rest need to be forwarded "as-is" or
 /// maybe wrapped in different transport frame before sending it over
 /// different I/O link. To help with such task @b COMMS library provides
@@ -2406,27 +2406,27 @@
 /// using MyGenericMessage = comms::GenericMessage<MyMessage>;
 ///
 /// // Limited number of supported messages
-/// using MyInputMessages = 
+/// using MyInputMessages =
 ///     std::tuple<
 ///         my_protocol::Message1<MyMessage>,
 ///         my_protocol::Message2<MyMessage>
 ///     >;
 ///
 /// // Frame definition
-/// using MyFrame = 
+/// using MyFrame =
 ///     my_protocol::Frame<
-///         MyMessage, 
+///         MyMessage,
 ///         MyInputMessages,
 ///         comms::option::app::SupportGenericMessage<MyGenericMessage>
 ///     >;
 /// @endcode
 /// @b NOTE, that @ref comms::GenericMessage has only single field, which
 /// is a list of raw data (@ref comms::field::ArrayList). The @b read operation
-/// of such field will result in copying the data from input buffer to 
+/// of such field will result in copying the data from input buffer to
 /// internal storage of this field. The @ref comms::GenericMessage
 /// class has also other template parameters (except common message interface class).
 /// The second template parameter is option(s) that are going to be passed to this
-/// comms::field::ArrayList field. If allocated message is @b not going to 
+/// comms::field::ArrayList field. If allocated message is @b not going to
 /// outlive input buffer, than it may make sense to pass @ref comms::option::app::OrigDataView
 /// as second template parameter to @ref comms::GenericMessage.
 /// @code
@@ -2437,9 +2437,9 @@
 /// and @ref comms::option::app::SupportGenericMessage as the third template parameter to
 /// @b Frame type definition using @b std::tuple bundling.
 /// @code
-/// using MyFrame = 
+/// using MyFrame =
 ///     my_protocol::Frame<
-///         MyMessage, 
+///         MyMessage,
 ///         MyInputMessages,
 ///         std::tuple<
 ///             comms::option::app::InPlaceAllocation,
@@ -2472,7 +2472,7 @@
 /// @ref page_use_prot_interface_length is also recommended. It will be used
 /// to write the required value right away. However, if not provided the dummy
 /// value (@b 0) will be written at first, then after the write operation is complete,
-/// the number of written bytes will be calculated and the previously written 
+/// the number of written bytes will be calculated and the previously written
 /// dummy value updated accordingly. @b NOTE, that such update is possible only
 /// if iterator used for writing is random-access one. Otherwise, such update won't be
 /// possible. In this case @ref comms::ErrorStatus::UpdateRequired error status
@@ -2493,22 +2493,22 @@
 ///         auto updateIter = &outBuf[0];
 ///         es = frame.update(updateIter, outBuf.size());
 ///     }
-///         
+///
 ///     if (es == comms::ErrorStatus::Success) {
 ///         ... // Send contents of dataToSend via I/O link
 ///     }
 /// }
 /// @endcode
-/// Similar scenario of a need to handle @ref comms::ErrorStatus::UpdateRequired 
+/// Similar scenario of a need to handle @ref comms::ErrorStatus::UpdateRequired
 /// error status may occur when transport framing contains checksum value and
 /// output (not random-access) iterator is used. The checksum calculation requires
-/// going over the written data to calculate the value. However, it won't be 
+/// going over the written data to calculate the value. However, it won't be
 /// possible to do right away, the @b update() call must follow.
 ///
 /// There may be cases when @b update() operation also requires knowledge about
 /// message object being written. For example when remaining size information
 /// shares the same bytes with some extra flags, which can be retrieved from the message object being written.
-/// To support such cases there is also overloaded 
+/// To support such cases there is also overloaded
 /// @ref comms::frame::FrameLayerBase::update() "update()" member
 /// function which also receives reference to message object/
 /// @code
@@ -2519,7 +2519,7 @@
 /// @endcode
 ///
 /// The @b Frame does not require usage of polymorphic
-/// write for message serialisation all the time. If number of messages being 
+/// write for message serialisation all the time. If number of messages being
 /// sent is not very high, sometimes it makes sense to avoid adding an ability
 /// to support polymorphic write in the common interface. In this case the
 /// sending functionality can be implemented using a template function where
@@ -2535,7 +2535,7 @@
 /// @endcode
 /// Such implementation does not require any polymorphic behaviour from the
 /// message object being sent, it takes all the required information from the
-/// direct calls to non-virtual @b doGetId() (see @ref comms::MessageBase::doGetId()) and 
+/// direct calls to non-virtual @b doGetId() (see @ref comms::MessageBase::doGetId()) and
 /// @b doLength() (see @ref comms::MessageBase::doLength()). The payload write is also performed using
 /// direct call to @b doWrite() (see @ref comms::MessageBase::doWrite()).
 ///
@@ -2543,36 +2543,36 @@
 /// All the examples above do not store the read/written transport fields
 /// anywhere. In most cases it is not needed. However, if need arises they can
 /// be cached during the read/write operations and accessed later. The @b Frame
-/// also defines @b AllFields type which is @b std::tuple of all the fields used by all the 
+/// also defines @b AllFields type which is @b std::tuple of all the fields used by all the
 /// layer classes. @n
-/// Also, the @b Frame defines 
-/// @ref comms::frame::FrameLayerBase::readFieldsCached() "readFieldsCached()" 
+/// Also, the @b Frame defines
+/// @ref comms::frame::FrameLayerBase::readFieldsCached() "readFieldsCached()"
 /// and @ref comms::frame::FrameLayerBase::writeFieldsCached() "writeFieldsCached()"
-/// member functions which are substitutes to normal 
-/// @ref comms::frame::FrameLayerBase::read() "read()" and 
+/// member functions which are substitutes to normal
+/// @ref comms::frame::FrameLayerBase::read() "read()" and
 /// @ref comms::frame::FrameLayerBase::write() "write()". The first
-/// parameter to these functions is reference to the 
+/// parameter to these functions is reference to the
 /// @ref comms::frame::FrameLayerBase::AllFields "AllFields" bundle
 /// object.
 /// @code
 /// MyFrame::AllFields fields;
 /// auto es = frame.readFieldsCached(fields, msgPtr, readIter, bufSize);
 /// @endcode
-/// The layer class that is responsible to read/write payload data 
+/// The layer class that is responsible to read/write payload data
 /// (see @ref comms::frame::MsgDataLayer) uses @ref comms::field::ArrayList
 /// to define a field that will store the payload when "caching" operations are
-/// performed. 
+/// performed.
 /// In case the the input / output buffer outlives the @b AllFields
 /// object, consider passing @ref comms::option::app::OrigDataView option as the
 /// fourth template parameter to @b Frame definition, which will pass it to
-/// to the field containing the message payload raw data. Otherwise, the 
+/// to the field containing the message payload raw data. Otherwise, the
 /// payload part from the read / written buffer will also be copied to storage
 /// area of the cached payload field.
 ///
 /// As was mentioned earlier, the frame is defined using so called
 /// @b layer classes (defined in @ref comms::frame namespace) by wrapping
-/// one another. Access to the appropriate layer may be obtained using a 
-/// sequence of calls to @b nextLayer() member functions (see 
+/// one another. Access to the appropriate layer may be obtained using a
+/// sequence of calls to @b nextLayer() member functions (see
 /// @ref comms::frame::FrameLayerBase::nextLayer()). Alternatively, the frame
 /// definition is also expected to use #COMMS_FRAME_LAYERS_ACCESS()
 /// macro to generate a convenience access functions. For example
@@ -2585,8 +2585,8 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
-/// struct Frame : public 
-///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
+/// struct Frame : public
+///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions>
 /// {
 ///     COMMS_FRAME_LAYERS_ACCESS(payload, id, size, checksum, sync);
 /// };
@@ -2594,7 +2594,7 @@
 /// } // namespace my_protocol
 /// @endcode
 /// The provided names are used in generation of access member functions with
-/// @b layer_ prefix. The code above is equivalent to having the following 
+/// @b layer_ prefix. The code above is equivalent to having the following
 /// member functions defined.
 /// @code
 /// template <
@@ -2602,8 +2602,8 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
-/// struct Frame : public 
-///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions> 
+/// struct Frame : public
+///     MySyncPrefix<TMessage, TInputMessages, TAllocationOptions>
 /// {
 ///     // Access to PAYLOAD layer
 ///     decltype(auto) layer_payload();
@@ -2653,7 +2653,7 @@
 /// std::cout << "ID = " << frame.layer_id().accessCachedField(fields).value() << '\n';
 /// std::cout << "CHECKSUM = " << frame.layer_checksum().accessCachedField(fields).value() << std::endl;
 /// @endcode
-/// Version @b v2.0 the @b COMMS library has introduced additional way to retrieve 
+/// Version @b v2.0 the @b COMMS library has introduced additional way to retrieve
 /// values from stripped message framing. There are several functions listed
 /// below that can be used to pass extra variadic arguments to the "read" functions
 /// of the frame (see @ref comms::frame::FrameLayerBase::read() "read()"
@@ -2664,11 +2664,11 @@
 /// @li @ref comms::frame::msgId() - Use to retrieve numeric message ID.
 /// @li @ref comms::frame::msgIndex() - Use to retrieve index of the message
 /// among difference message types that have the same numeric ID.
-/// @li @ref comms::frame::msgPayload() - Use to retrieve the location 
+/// @li @ref comms::frame::msgPayload() - Use to retrieve the location
 /// of message payload in the input buffer.
-/// 
+///
 /// For example there can be a case when @ref page_use_prot_interface
-/// does not support @ref page_use_prot_interface_handle. In this case 
+/// does not support @ref page_use_prot_interface_handle. In this case
 /// it might be required to retrieve the information about message ID and
 /// its relevant index in order to dispatch message object to its
 /// appropriate handling function (see @ref page_dispatch).
@@ -2679,14 +2679,14 @@
 /// MyFrame frame; // Frame object
 /// MyHandler handler; // Handler object
 /// MyFrame::MsgPtr msg; Pointer to message to be updated
-/// my_protocol::MsgId msgId = my_protocol::MsgId(); // Message ID to be updated 
+/// my_protocol::MsgId msgId = my_protocol::MsgId(); // Message ID to be updated
 /// std::size_t msgIndex = 0U; // Message index to be updated
 ///
-/// auto es = 
+/// auto es =
 ///     frame.read(
-///         msg, 
-///         readIter, 
-///         bufLen, 
+///         msg,
+///         readIter,
+///         bufLen,
 ///         comms::frame::msgId(msgId), // msgId will be updated here
 ///         comms::frame::msgIndex(msgIndex)); // msgIndex will be updated here
 /// if (es == comms::ErrorStatus::Success) {
@@ -2695,17 +2695,17 @@
 ///     // Dispatch message knowing its id and index.
 ///     comms::dispatchMsg<MyInputMessages>(msgId, msgIndex, *msg, handler);
 /// }
-/// @endcode 
+/// @endcode
 ///
 /// @section page_use_prot_handling Message Handling
-/// When a message is received over I/O link and successfully deserialised, it 
+/// When a message is received over I/O link and successfully deserialised, it
 /// needs to be dispatched to appropriate handling function. Many
-/// developers write quite big (depends on number of messages it needs to handle) 
-/// switch statement that checks the ID of the message and calls appropriate 
-/// function in the relevant case area. Other developers try to minimise 
-/// amount of boilerplate code by introducing hand written map from message ID to the 
-/// handling function. Such approaches may be quite inefficient in terms of 
-/// execution performance as well as development effort required to introduce 
+/// developers write quite big (depends on number of messages it needs to handle)
+/// switch statement that checks the ID of the message and calls appropriate
+/// function in the relevant case area. Other developers try to minimise
+/// amount of boilerplate code by introducing hand written map from message ID to the
+/// handling function. Such approaches may be quite inefficient in terms of
+/// execution performance as well as development effort required to introduce
 /// a new message when protocol evolves.
 ///
 /// The @b COMMS library has a built-in efficient (O(1)) dispatch mechanism, which
@@ -2747,12 +2747,12 @@
 /// msg2->dispatch(handler); // invokes handle(MyMessage&)
 /// @endcode
 ///
-/// @b NOTE, that @b MyMessage class is only forward declared when 
+/// @b NOTE, that @b MyMessage class is only forward declared when
 /// @ref page_use_prot_interface (@b MyMessage), but needs to be properly
 /// defined (included if in separate file) when defining @ref page_use_prot_transport.
 ///
 /// @subsection page_use_prot_handling_multi Having Multiple Handlers
-/// There may be a need for being able to dispatch message for multiple independent handlers. 
+/// There may be a need for being able to dispatch message for multiple independent handlers.
 /// Good example would be having a state-machine, where every state processes
 /// the same message in different way. It is simple to implement by just
 /// defining the handling functions as @b virtual.
@@ -2877,7 +2877,7 @@
 /// };
 /// @endcode
 /// If inner @b RetType type is defined, it is propagated to be also the return type of
-/// the @ref comms::Message::dispatch() member function as well. As the result the developer may 
+/// the @ref comms::Message::dispatch() member function as well. As the result the developer may
 /// use constructs like this:
 /// @code
 /// bool result = msg->dispatch(handler);
@@ -2892,13 +2892,13 @@
 /// to one described above. Please read @ref page_dispatch page for more details.
 ///
 /// @section page_use_prot_extra_transport Extra Transport Values
-/// Some protocols may use extra values in their transport information, which 
-/// may influence the way how message payload is being read and/or message 
-/// object being handled. Good example would be having a protocol version, 
-/// which defines what message payload fields were serialised and which were 
-/// not (because they were introduced in later version of the protocol). 
+/// Some protocols may use extra values in their transport information, which
+/// may influence the way how message payload is being read and/or message
+/// object being handled. Good example would be having a protocol version,
+/// which defines what message payload fields were serialised and which were
+/// not (because they were introduced in later version of the protocol).
 /// Such extra information is stored in the message object itself. If this is
-/// the case, the protocol definition is expected to use 
+/// the case, the protocol definition is expected to use
 /// @ref comms::option::def::ExtraTransportFields option in addition to specifying
 /// serialisation endian and message ID type (described in @ref
 /// page_use_prot_interface).
@@ -2906,11 +2906,11 @@
 /// @code
 /// namespace my_protocol
 /// {
-/// 
+///
 /// // Field describing protocol version.
-/// using MyVersionField = 
+/// using MyVersionField =
 ///     comms::field::IntValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         std::uint16_t,
 ///         comms::option::def::DefaultNumValue<5> // Implementing v5 of the protocol by default
 ///     >;
@@ -2944,7 +2944,7 @@
 /// @code
 /// namespace my_protocol
 /// {
-/// 
+///
 /// template <typename... TOptions>
 /// class Message : public
 ///     comms::Message<
@@ -3003,14 +3003,14 @@
 ///     ... // do something with version information
 /// }
 /// @endcode
-/// @b NOTE, that the defined "extra transport fields" are there to attach 
-/// some extra information, delivered as part of transport framing, to message 
+/// @b NOTE, that the defined "extra transport fields" are there to attach
+/// some extra information, delivered as part of transport framing, to message
 /// object itself. These fields are @b NOT getting serialised / deserialised when message
 /// object (payload) being read / written.
 ///
 /// The @ref comms::Message interface class defines @ref comms::Message::hasTransportFields()
-/// static constexpr member function, which may be used at compile time to 
-/// determine whether the @ref comms::option::def::ExtraTransportFields option has been used, i.e. 
+/// static constexpr member function, which may be used at compile time to
+/// determine whether the @ref comms::option::def::ExtraTransportFields option has been used, i.e.
 /// the message interface class defines mentioned earlier
 /// types and functions.
 ///
@@ -3024,7 +3024,7 @@
 /// @code
 /// namespace my_protocol
 /// {
-/// 
+///
 /// // Field describing protocol version.
 /// using MyVersionField = comms::field::IntValue<...>;
 ///
@@ -3056,7 +3056,7 @@
 /// @code
 /// namespace my_protocol
 /// {
-/// 
+///
 /// template <typename... TOptions>
 /// class Message : public
 ///     comms::Message<...>
@@ -3076,15 +3076,15 @@
 /// @b NOTE, that updating the version information only modifies the value
 /// of the relevant transport fields itself. The message contents are not
 /// being updated. There is a need to invoke @b doFieldsVersionUpdate() member
-/// function (see @ref comms::MessageBase::doFieldsVersionUpdate()), 
-/// which will do the job of updating message 
+/// function (see @ref comms::MessageBase::doFieldsVersionUpdate()),
+/// which will do the job of updating message
 /// contents accordingly.
 /// @code
 /// using MyMessage1 = my_protocol::MyMessage<...>;
 /// MyMessage1 msg;
 /// msg.version() = 5U; // Update the version
 /// msg.doFieldsVersionUpdate(); // Update the message contents that depend on version
-/// @endcode 
+/// @endcode
 /// The @b refresh functionality (direct or polymorphic) also contains update
 /// of the fields' version, which can be used instead.
 /// @code
@@ -3126,8 +3126,8 @@
 ///     typename TInputMessages = AllMessages<TMessage>, // Input messages that need to be recognised
 ///     typename TAllocationOptions = comms::option::app::EmptyOption // Extra options for MsgIdLayer
 /// >
-/// struct Frame : public 
-///     MySizePrefix<TMessage, TInputMessages, TAllocationOptions> 
+/// struct Frame : public
+///     MySizePrefix<TMessage, TInputMessages, TAllocationOptions>
 /// {
 ///     COMMS_FRAME_LAYERS_ACCESS(payload, version, id, size);
 /// };
@@ -3150,17 +3150,17 @@
 /// @section page_use_prot_msg_customisation Application Specific Customisation of Messages
 /// When most of the messages are uni-directional, i.e. are either only sent or
 /// only received, then it may make sense to split the common message interface
-/// class @b MyMessage (see @ref page_use_prot_interface) into two 
+/// class @b MyMessage (see @ref page_use_prot_interface) into two
 /// interface classes: for @b input and for @b output. It will save the generation
 /// of unnecessary virtual functions which are not used, but occupy space.
 /// @code
-/// using MyInputMessage = 
+/// using MyInputMessage =
 ///     my_protocol::Message<
 ///         comms::option::app::ReadIterator<const std::uint8_t*>, // polymorphic read
 ///         comms::option::app::Handler<MyHandler> // polymorphic dispatch
 ///     >;
 ///
-///  using MyOutputMessage = 
+///  using MyOutputMessage =
 ///     my_protocol::Message<
 ///         comms::option::app::WriteIterator<std::uint8_t*>, // polymorphic write
 ///         comms::option::app::IdInfoInterface, // polymorphic ID retrieve
@@ -3183,8 +3183,8 @@
 /// message interface will do the job. However generating unnecessary virtual
 /// functions for bare-metal application may be a heavy price to pay, especially
 /// when ROM size is small. The @b COMMS library provides several
-/// options that inhibit generation of virtual functions. These extra options 
-/// need to be passed to @ref comms::MessageBase class when defining a message 
+/// options that inhibit generation of virtual functions. These extra options
+/// need to be passed to @ref comms::MessageBase class when defining a message
 /// class. Available options are:
 /// @li @ref comms::option::app::NoReadImpl
 /// @li @ref comms::option::app::NoWriteImpl
@@ -3210,18 +3210,18 @@
 ///         ...
 ///     };
 /// };
-/// 
+///
 /// namespace message
 /// {
 ///
 /// template <typename TBase, typename TOpt = DefaultOptions>
-/// class Message1 : public 
+/// class Message1 : public
 ///     comms::MessageBase<
-///         TBase, 
+///         TBase,
 ///         comms::option::def::StaticNumIdImpl<MsgId_Message1>,
 ///         comms::option::def::FieldsImpl<Message1Fields<TOpt>::All>,
 ///         comms::option::def::MsgType<Message1<TBase, TOpt> >,
-///         typename TOpt::message::Message1 // Extra options 
+///         typename TOpt::message::Message1 // Extra options
 ///     >
 /// {
 ///     ...
@@ -3280,13 +3280,13 @@
 ///     }
 /// };
 /// @endcode
-/// Don't forget to bundle newly defined messages in @b std::tuple and pass 
+/// Don't forget to bundle newly defined messages in @b std::tuple and pass
 /// them to @ref page_use_prot_transport definition or @ref page_use_prot_handling_generic
 /// when needed.
 /// @code
-/// using MyInputMessages = 
+/// using MyInputMessages =
 ///     std::tuple<
-///         MyMessage1, 
+///         MyMessage1,
 ///         MyMessage2,
 ///         ...
 ///     >;

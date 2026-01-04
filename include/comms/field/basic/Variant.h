@@ -57,7 +57,7 @@ template<typename...>
 class VariantLengthCalcHelper
 {
 public:
-    VariantLengthCalcHelper(std::size_t& len, const void* storage) : 
+    VariantLengthCalcHelper(std::size_t& len, const void* storage) :
         m_len(len),
         m_storage(storage)
     {
@@ -213,7 +213,6 @@ private:
     TFunc m_func;
 };
 
-
 template <typename TIter, typename TVerBase, bool TVerDependent>
 class VariantReadHelper
 {
@@ -230,7 +229,7 @@ class VariantReadHelper
         >::template Type<
             VersionDependentTag,
             NoVersionDependencyTag
-        >;    
+        >;
 public:
     VariantReadHelper(
         std::size_t& idx,
@@ -356,8 +355,8 @@ class VariantSetVersionHelper
 {
 public:
     VariantSetVersionHelper(TVersionType version, bool& updated, void* storage) :
-        m_version(version), 
-        m_updated(updated), 
+        m_version(version),
+        m_updated(updated),
         m_storage(storage)
     {
     }
@@ -401,14 +400,14 @@ struct VariantVersionStorageBaseHelper;
 template <typename TFieldBase, typename... TMembers>
 struct VariantVersionStorageBaseHelper<TFieldBase, comms::field::details::MembersVersionDependency_NotSpecified, TMembers...>
 {
-    using Type = 
+    using Type =
     typename comms::util::LazyShallowConditional<
         CommonFuncs::IsAnyFieldVersionDependentBoolType<TMembers...>::value
     >::template Type<
         comms::field::details::VersionStorage,
         comms::util::EmptyStruct,
         typename TFieldBase::VersionType
-    >;    
+    >;
 };
 
 template <typename TFieldBase, typename... TMembers>
@@ -424,7 +423,7 @@ struct VariantVersionStorageBaseHelper<TFieldBase, comms::field::details::Member
 };
 
 template <typename TFieldBase, comms::field::details::MembersVersionDependency TVersionDependency, typename... TMembers>
-using VariantVersionStorageBase = 
+using VariantVersionStorageBase =
     typename VariantVersionStorageBaseHelper<TFieldBase, TVersionDependency, TMembers...>::Type;
 
 template <comms::field::details::MembersVersionDependency TVersionDependency, typename... TMembers>
@@ -447,7 +446,6 @@ struct VariantVersionDependencyDetectHelper<comms::field::details::MembersVersio
 {
     static constexpr bool Value = true;
 };
-
 
 } // namespace details
 
@@ -560,7 +558,7 @@ public:
     void setValue(T&& val)
     {
         value() = std::forward<T>(val);
-    }    
+    }
 
     std::size_t length() const
     {
@@ -672,7 +670,6 @@ public:
         comms::util::tupleForSelectedType<Members>(m_memIdx, makeWriteNoStatusHelper(iter, &m_storage));
     }
 
-
     std::size_t currentField() const
     {
         return m_memIdx;
@@ -742,7 +739,7 @@ public:
         using FieldType = typename std::tuple_element<TIdx, Members>::type;
         reinterpret_cast<FieldType*>(&m_storage)->~FieldType();
         m_memIdx = MembersCount;
-    }    
+    }
 
     template <std::size_t TIdx>
     typename std::tuple_element<TIdx, Members>::type& accessField()
@@ -801,7 +798,7 @@ private:
     using ForcedVersionDependencyTag = comms::details::tag::Tag3<>;
 
     template <typename... TParams>
-    using NoForcedVersionDependencyTag = comms::details::tag::Tag4<>;    
+    using NoForcedVersionDependencyTag = comms::details::tag::Tag4<>;
 
     template <typename... TParams>
     using VersionTag =
@@ -827,7 +824,7 @@ private:
     }
 
     template <typename TIter, typename TVerBase>
-    details::VariantReadHelper<TIter, TVerBase, details::VariantVersionDependencyDetectHelper<TVersionDependency, TMembers...>::Value> 
+    details::VariantReadHelper<TIter, TVerBase, details::VariantVersionDependencyDetectHelper<TVersionDependency, TMembers...>::Value>
     makeReadHelper(
         comms::ErrorStatus& es,
         TIter& iter,
@@ -837,7 +834,7 @@ private:
     {
         m_memIdx = 0;
         static constexpr bool VerDependent = isVersionDependent();
-        return 
+        return
             details::VariantReadHelper<TIter, TVerBase, VerDependent>(
                 m_memIdx, es, iter, len, storage, verBase);
     }
@@ -886,7 +883,6 @@ private:
         }
         return updated;
     }
-
 
     template <typename... TParams>
     VersionType getVersionInternal(VersionDependentTag<TParams...>) const

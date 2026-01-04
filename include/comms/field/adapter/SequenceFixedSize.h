@@ -170,13 +170,13 @@ private:
     using HasFixedLengthElemsTag = comms::details::tag::Tag3<>;
 
     template <typename... TParams>
-    using HasVarLengthElemsTag = comms::details::tag::Tag4<>;    
+    using HasVarLengthElemsTag = comms::details::tag::Tag4<>;
 
     template <typename... TParams>
     using HasResizeTag = comms::details::tag::Tag5<>;
 
     template <typename... TParams>
-    using NoResizeTag = comms::details::tag::Tag6<>;     
+    using NoResizeTag = comms::details::tag::Tag6<>;
 
     template <typename... TParams>
     std::size_t recalcLen(HasFieldsTag<TParams...>) const
@@ -279,16 +279,9 @@ public:
     }
 };
 
-
-
-
-
 }  // namespace adapter
 
 }  // namespace field
 
 }  // namespace comms
-
-
-
 

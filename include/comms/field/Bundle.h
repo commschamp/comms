@@ -55,23 +55,23 @@ namespace field
 /// @see @ref COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE()
 /// @see @ref COMMS_FIELD_ALIAS()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
-class Bundle : public 
+class Bundle : public
     details::AdaptBasicFieldT<
         basic::Bundle<
-            TFieldBase, 
+            TFieldBase,
             details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
-            TMembers>, 
+            TMembers>,
         TOptions...
     >
 {
-    using BaseImpl = 
+    using BaseImpl =
         details::AdaptBasicFieldT<
             basic::Bundle<
-                TFieldBase, 
+                TFieldBase,
                 details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
-                TMembers>, 
+                TMembers>,
             TOptions...
-        >;    
+        >;
     static_assert(comms::util::IsTuple<TMembers>::Value,
         "TMembers is expected to be a tuple of std::tuple<...>");
 
@@ -100,10 +100,10 @@ public:
     ///     of all the wrapped fields.
     using ValueType = typename BaseImpl::ValueType;
 
-    /// @brief Type of actual extending field specified via 
+    /// @brief Type of actual extending field specified via
     ///     @ref comms::option::def::FieldType.
     /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
-    using FieldType = typename ParsedOptions::FieldType;    
+    using FieldType = typename ParsedOptions::FieldType;
 
     /// @brief Default constructor
     /// @details Invokes default constructor of every wrapped field
@@ -147,21 +147,21 @@ public:
     static constexpr bool hasFieldType()
     {
         return ParsedOptions::HasFieldType;
-    }    
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
     ///     has been used.
     static constexpr bool hasFixedValue()
     {
         return ParsedOptions::HasFixedValue;
-    }      
+    }
 
     /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
     ///     has been used.
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
-    } 
+    }
 
     /// @brief Get access to the stored tuple of fields.
     ValueType& value()
@@ -188,7 +188,7 @@ public:
     void setValue(U&& val)
     {
         BaseImpl::setValue(std::forward<U>(val));
-    }          
+    }
 
     /// @brief Get length required to serialise bundled fields.
     /// @details Summarises all the results returned by the call to length() for
@@ -358,7 +358,7 @@ public:
     ErrorStatus readFromAndUpdateLen(TIter& iter, std::size_t& len)
     {
         return BaseImpl::template readFromAndUpdateLen<TFromIdx>(iter, len);
-    }    
+    }
 
     /// @brief Read selected number of member fields (until specified index).
     /// @details Similar to @ref read(), but invokes @b read() member function
@@ -391,7 +391,7 @@ public:
     ErrorStatus readUntilAndUpdateLen(TIter& iter, std::size_t& len)
     {
         return BaseImpl::template readUntilAndUpdateLen<TUntilIdx>(iter, len);
-    }    
+    }
 
     /// @brief Read selected number of member fields (between specified indices).
     /// @details Similar to @ref read(), but invokes @b read() member function
@@ -430,7 +430,7 @@ public:
     ErrorStatus readFromUntilAndUpdateLen(TIter& iter, std::size_t& len)
     {
         return BaseImpl::template readFromUntilAndUpdateLen<TFromIdx, TUntilIdx>(iter, len);
-    }    
+    }
 
     /// @brief Compile time check of whether the field has @b proper
     ///     @ref readNoStatus() member function (or similar).
@@ -726,9 +726,9 @@ private:
     static_assert(!ParsedOptions::HasInvalidByDefault,
         "comms::option::def::InvalidByDefault option is not applicable to Bundle field");
     static_assert(!ParsedOptions::HasMissingOnReadFail,
-            "comms::option::def::MissingOnReadFail option is not applicable to Bundle field");     
+            "comms::option::def::MissingOnReadFail option is not applicable to Bundle field");
     static_assert(!ParsedOptions::HasMissingOnInvalid,
-            "comms::option::def::MissingOnInvalid option is not applicable to Bundle field");          
+            "comms::option::def::MissingOnInvalid option is not applicable to Bundle field");
 };
 
 /// @brief Equality comparison operator.
@@ -839,5 +839,4 @@ toFieldBase(const Bundle<TFieldBase, TMembers, TOptions...>& field)
 }  // namespace field
 
 }  // namespace comms
-
 

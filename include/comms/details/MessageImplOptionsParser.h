@@ -62,31 +62,31 @@ public:
     using BuildReadImpl = TBase;
 
     template <typename TBase>
-    using BuildWriteImpl = TBase;    
+    using BuildWriteImpl = TBase;
 
     template <typename TBase>
-    using BuildValidImpl = TBase;     
+    using BuildValidImpl = TBase;
 
     template <typename TBase>
-    using BuildLengthImpl = TBase;      
+    using BuildLengthImpl = TBase;
 
     template <typename TBase>
-    using BuildRefreshImpl = TBase; 
+    using BuildRefreshImpl = TBase;
 
     template <typename TBase>
-    using BuildDispatchImpl = TBase;   
+    using BuildDispatchImpl = TBase;
 
     template <typename TBase>
-    using BuildStaticMsgId = TBase;  
+    using BuildStaticMsgId = TBase;
 
     template <typename TBase>
-    using BuildMsgIdImpl = TBase;    
+    using BuildMsgIdImpl = TBase;
 
     template <typename TBase>
-    using BuildNameImpl = TBase;     
+    using BuildNameImpl = TBase;
 
     template <typename TBase>
-    using BuildFailOnInvalidImpl = TBase;                   
+    using BuildFailOnInvalidImpl = TBase;
 };
 
 template <std::intmax_t TId,
@@ -106,7 +106,7 @@ public:
     static constexpr std::intmax_t MsgId = TId;
 
     template <typename TBase>
-    using BuildStaticMsgId = 
+    using BuildStaticMsgId =
         typename comms::util::Conditional<
             TBase::hasMsgIdType() // most likely to be true
         >::template Type<
@@ -115,14 +115,14 @@ public:
         >;
 
     template <typename TBase>
-    using BuildMsgIdImpl = 
+    using BuildMsgIdImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasGetId() && (!BaseImpl::HasNoIdImpl)
         >::template Type<
             MessageImplPolymorhpicStaticNumIdBase,
             comms::util::TypeDeepWrap,
             TBase, typename BaseImpl::MsgType
-        >;    
+        >;
 };
 
 template <typename... TOptions>
@@ -157,17 +157,17 @@ public:
     using BuildFieldsImpl = MessageImplFieldsBase<TBase, Fields>;
 
     template <typename TBase>
-    using BuildFailOnInvalidImpl = 
+    using BuildFailOnInvalidImpl =
         typename comms::util::LazyShallowDeepConditional<
             BaseImpl::HasFailOnInvalid
         >::template Type<
             MessageImplFailOnInvalidBase,
             comms::util::TypeDeepWrap,
             TBase, typename BaseImpl::MsgType, typename BaseImpl::FailOnInvalidStatusWrapper
-        >;       
+        >;
 
     template <typename TBase>
-    using BuildVersionImpl = 
+    using BuildVersionImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasVersionInTransportFields()
         >::template Type<
@@ -177,47 +177,47 @@ public:
         >;
 
     template <typename TBase>
-    using BuildReadImpl = 
+    using BuildReadImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasRead() && (!BaseImpl::HasNoReadImpl)
         >::template Type<
             MessageImplFieldsReadImplBase,
             comms::util::TypeDeepWrap,
             TBase, typename BaseImpl::MsgType
-        >;    
+        >;
 
     template <typename TBase>
-    using BuildWriteImpl = 
+    using BuildWriteImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasWrite() && (!BaseImpl::HasNoWriteImpl)
         >::template Type<
             MessageImplFieldsWriteImplBase,
             comms::util::TypeDeepWrap,
             TBase, typename BaseImpl::MsgType
-        >;      
+        >;
 
     template <typename TBase>
-    using BuildValidImpl = 
+    using BuildValidImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasValid() && (!BaseImpl::HasNoValidImpl)
         >::template Type<
             MessageImplFieldsValidBase,
             comms::util::TypeDeepWrap,
             TBase, typename BaseImpl::MsgType
-        >;   
+        >;
 
     template <typename TBase>
-    using BuildLengthImpl = 
+    using BuildLengthImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasLength() && (!BaseImpl::HasNoLengthImpl)
         >::template Type<
             MessageImplFieldsLengthBase,
             comms::util::TypeDeepWrap,
             TBase, typename BaseImpl::MsgType
-        >;      
+        >;
 
     template <typename TBase>
-    using BuildRefreshImpl = 
+    using BuildRefreshImpl =
         typename comms::util::LazyShallowDeepConditional<
             (TBase::hasRefresh()) &&
             (!BaseImpl::HasNoRefreshImpl) &&
@@ -248,14 +248,14 @@ public:
     static constexpr bool HasNoIdImpl = true;
 
     template <typename TBase>
-    using BuildMsgIdImpl = 
+    using BuildMsgIdImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasGetId()
         >::template Type<
             MessageImplNoIdBase,
             comms::util::TypeDeepWrap,
             TBase
-        >; 
+        >;
 };
 
 template <typename... TOptions>
@@ -279,7 +279,7 @@ public:
     static constexpr bool HasNoWriteImpl = true;
 
     template <typename TBase>
-    using BuildWriteImpl = TBase;    
+    using BuildWriteImpl = TBase;
 };
 
 template <typename... TOptions>
@@ -291,7 +291,7 @@ public:
     static constexpr bool HasNoLengthImpl = true;
 
     template <typename TBase>
-    using BuildLengthImpl = TBase;     
+    using BuildLengthImpl = TBase;
 };
 
 template <typename... TOptions>
@@ -303,7 +303,7 @@ public:
     static constexpr bool HasNoValidImpl = true;
 
     template <typename TBase>
-    using BuildValidImpl = TBase;   
+    using BuildValidImpl = TBase;
 };
 
 template <typename... TOptions>
@@ -328,14 +328,14 @@ public:
     static constexpr bool HasCustomRefresh = true;
 
     template <typename TBase>
-    using BuildRefreshImpl = 
+    using BuildRefreshImpl =
         typename comms::util::LazyShallowDeepConditional<
-            (TBase::hasRefresh()) && (!BaseImpl::HasNoRefreshImpl) 
+            (TBase::hasRefresh()) && (!BaseImpl::HasNoRefreshImpl)
         >::template Type<
             MessageImplRefreshBase,
             comms::util::TypeDeepWrap,
             TBase, typename BaseImpl::MsgType
-        >;       
+        >;
 };
 
 template <typename... TOptions>
@@ -349,14 +349,14 @@ public:
     static constexpr bool HasName = true;
 
     template <typename TBase>
-    using BuildNameImpl = 
+    using BuildNameImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasName() && BaseImpl::HasMsgType
         >::template Type<
             MessageImplNameBase,
             comms::util::TypeDeepWrap,
             TBase, typename BaseImpl::MsgType
-        >;         
+        >;
 };
 
 template <typename... TOptions>
@@ -369,7 +369,7 @@ public:
     static constexpr bool HasDoGetId = true;
 
     template <typename TBase>
-    using BuildMsgIdImpl = 
+    using BuildMsgIdImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasGetId() && (!BaseImpl::HasNoIdImpl) &&
                 (BaseImpl::HasStaticMsgId || BaseImpl::HasMsgType)
@@ -377,7 +377,7 @@ public:
             MessageImplPolymorhpicStaticNumIdBase,
             comms::util::TypeDeepWrap,
             TBase, typename BaseImpl::MsgType
-        >;     
+        >;
 };
 
 template <typename TMsgType,
@@ -395,57 +395,57 @@ public:
     using MsgType = TMsgType;
 
     template <typename TBase>
-    using BuildFailOnInvalidImpl = 
+    using BuildFailOnInvalidImpl =
         typename comms::util::LazyShallowDeepConditional<
             BaseImpl::HasFieldsImpl && BaseImpl::HasFailOnInvalid
         >::template Type<
             MessageImplFailOnInvalidBase,
             comms::util::TypeDeepWrap,
             TBase, MsgType, typename BaseImpl::FailOnInvalidStatusWrapper
-        >;       
+        >;
 
     template <typename TBase>
-    using BuildReadImpl = 
+    using BuildReadImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasRead() && (!BaseImpl::HasNoReadImpl)
         >::template Type<
             MessageImplFieldsReadImplBase,
             comms::util::TypeDeepWrap,
             TBase, MsgType
-        >;     
+        >;
 
     template <typename TBase>
-    using BuildWriteImpl = 
+    using BuildWriteImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasWrite() && (!BaseImpl::HasNoWriteImpl)
         >::template Type<
             MessageImplFieldsWriteImplBase,
             comms::util::TypeDeepWrap,
             TBase, MsgType
-        >;    
+        >;
 
     template <typename TBase>
-    using BuildValidImpl = 
+    using BuildValidImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasValid() && (!BaseImpl::HasNoValidImpl)
         >::template Type<
             MessageImplFieldsValidBase,
             comms::util::TypeDeepWrap,
             TBase, MsgType
-        >;         
+        >;
 
     template <typename TBase>
-    using BuildLengthImpl = 
+    using BuildLengthImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasLength() && (!BaseImpl::HasNoLengthImpl)
         >::template Type<
             MessageImplFieldsLengthBase,
             comms::util::TypeDeepWrap,
             TBase, MsgType
-        >;     
+        >;
 
     template <typename TBase>
-    using BuildRefreshImpl = 
+    using BuildRefreshImpl =
         typename comms::util::LazyShallowDeepConditional<
             (TBase::hasRefresh()) &&
             (!BaseImpl::HasNoRefreshImpl) &&
@@ -458,20 +458,20 @@ public:
             MessageImplRefreshBase,
             comms::util::TypeDeepWrap,
             TBase, MsgType
-        >;   
+        >;
 
     template <typename TBase>
-    using BuildDispatchImpl = 
+    using BuildDispatchImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasDispatch() && (!BaseImpl::HasNoDispatchImpl)
         >::template Type<
             MessageImplDispatchBase,
             comms::util::TypeDeepWrap,
             TBase, MsgType
-        >;       
+        >;
 
     template <typename TBase>
-    using BuildMsgIdImpl = 
+    using BuildMsgIdImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasGetId() && (!BaseImpl::HasNoIdImpl) &&
                 (BaseImpl::HasStaticMsgId || BaseImpl::HasDoGetId)
@@ -479,17 +479,17 @@ public:
             MessageImplPolymorhpicStaticNumIdBase,
             comms::util::TypeDeepWrap,
             TBase, MsgType
-        >;    
+        >;
 
     template <typename TBase>
-    using BuildNameImpl = 
+    using BuildNameImpl =
         typename comms::util::LazyShallowDeepConditional<
             TBase::hasName() && BaseImpl::HasName
         >::template Type<
             MessageImplNameBase,
             comms::util::TypeDeepWrap,
             TBase, MsgType
-        >; 
+        >;
 };
 
 template <comms::ErrorStatus TStatus, typename... TOptions>
@@ -504,14 +504,14 @@ public:
     using FailOnInvalidStatusWrapper = MessageImplValueWrapper<comms::ErrorStatus, TStatus>;
 
     template <typename TBase>
-    using BuildFailOnInvalidImpl = 
+    using BuildFailOnInvalidImpl =
         typename comms::util::LazyShallowDeepConditional<
             BaseImpl::HasFieldsImpl
         >::template Type<
             MessageImplFailOnInvalidBase,
             comms::util::TypeDeepWrap,
             TBase, typename BaseImpl::MsgType, FailOnInvalidStatusWrapper
-        >;         
+        >;
 };
 
 template <typename... TOptions>
@@ -531,6 +531,4 @@ class MessageImplOptionsParser<
 }  // namespace details
 
 }  // namespace comms
-
-
 

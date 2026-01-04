@@ -47,7 +47,6 @@ public:
     SerOffset& operator=(const SerOffset&) = default;
     SerOffset& operator=(SerOffset&&) = default;
 
-
     template <typename TIter>
     ErrorStatus read(TIter& iter, std::size_t size)
     {

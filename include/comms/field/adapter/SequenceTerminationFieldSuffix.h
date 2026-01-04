@@ -12,6 +12,8 @@
 #include "comms/ErrorStatus.h"
 #include "comms/util/type_traits.h"
 
+#include <iterator>
+
 namespace comms
 {
 
@@ -120,7 +122,7 @@ public:
     const TermField& terminationFieldSuffix() const
     {
         return m_termField;
-    }    
+    }
 
 private:
     template <typename... TParams>
@@ -192,7 +194,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
-
-
 

@@ -26,7 +26,7 @@ template <typename TAllFields>
 class MessageImplFieldsContainer;
 
 template <typename... TAllFields>
-class MessageImplFieldsContainer<std::tuple<TAllFields...> >    
+class MessageImplFieldsContainer<std::tuple<TAllFields...> >
 {
 public:
     using AllFields = std::tuple<TAllFields...>;
@@ -49,7 +49,7 @@ public:
     static constexpr bool doFieldsHaveNonDefaultRefresh()
     {
         return comms::field::basic::CommonFuncs::AnyFieldHasNonDefaultRefreshBoolType<TAllFields...>::value;
-    }    
+    }
 
     template <typename TIter>
     comms::ErrorStatus doRead(TIter& iter, std::size_t size)
@@ -118,7 +118,7 @@ public:
 
     static constexpr std::size_t doMinLength()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulate<AllFields>(
                 std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>());
     }
@@ -126,7 +126,7 @@ public:
     template <std::size_t TFromIdx>
     static constexpr std::size_t doMinLengthFrom()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulateFromUntil<TFromIdx, std::tuple_size<AllFields>::value, AllFields>(
                 std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>());
     }
@@ -134,38 +134,38 @@ public:
     template <std::size_t TUntilIdx>
     static constexpr std::size_t doMinLengthUntil()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulateFromUntil<0, TUntilIdx, AllFields>(
-                std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>());        
+                std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>());
     }
 
     template <std::size_t TFromIdx, std::size_t TUntilIdx>
     static constexpr std::size_t doMinLengthFromUntil()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulateFromUntil<TFromIdx, TUntilIdx, AllFields>(
-                std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>());           
+                std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>());
     }
 
     static constexpr std::size_t doMaxLength()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulate<AllFields>(
-                std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>());  
+                std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>());
     }
 
     template <std::size_t TFromIdx>
     static constexpr std::size_t doMaxLengthFrom()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulateFromUntil<TFromIdx, std::tuple_size<AllFields>::value, AllFields>(
-                std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>()); 
+                std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>());
     }
 
     template <std::size_t TUntilIdx>
     static constexpr std::size_t doMaxLengthUntil()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulateFromUntil<0, TUntilIdx, AllFields>(
                 std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>());
     }
@@ -173,7 +173,7 @@ public:
     template <std::size_t TFromIdx, std::size_t TUntilIdx>
     static constexpr std::size_t doMaxLengthFromUntil()
     {
-        return 
+        return
             comms::util::tupleTypeAccumulateFromUntil<TFromIdx, TUntilIdx, AllFields>(
                 std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>());
     }
@@ -192,7 +192,7 @@ protected:
         std::size_t len)
     {
         return doReadUntilAndUpdateLen<TIdx>(iter, len);
-    }    
+    }
 
     template <std::size_t TIdx, typename TIter>
     comms::ErrorStatus doReadUntilAndUpdateLen(
@@ -216,7 +216,7 @@ protected:
         std::size_t len)
     {
         return doReadFromAndUpdateLen<TIdx>(iter, len);
-    }    
+    }
 
     template <std::size_t TIdx, typename TIter>
     comms::ErrorStatus doReadFromAndUpdateLen(
@@ -240,7 +240,7 @@ protected:
         std::size_t len)
     {
         return doReadFromUntilAndUpdateLen<TFromIdx, TUntilIdx>(iter, len);
-    }    
+    }
 
     template <std::size_t TFromIdx, std::size_t TUntilIdx, typename TIter>
     comms::ErrorStatus doReadFromUntilAndUpdateLen(
@@ -274,7 +274,7 @@ protected:
         auto status = comms::ErrorStatus::Success;
         util::tupleForEachUntil<TIdx>(fields(), makeFieldWriter(iter, status, len));
         return status;
-    }    
+    }
 
     template <std::size_t TIdx, typename TIter>
     void doWriteNoStatusUntil(TIter& iter) const
@@ -298,7 +298,7 @@ protected:
         auto status = comms::ErrorStatus::Success;
         util::tupleForEachFrom<TIdx>(fields(), makeFieldWriter(iter, status, len));
         return status;
-    }    
+    }
 
     template <std::size_t TIdx, typename TIter>
     void doWriteNoStatusFrom(TIter& iter) const
@@ -322,7 +322,7 @@ protected:
         auto status = comms::ErrorStatus::Success;
         util::tupleForEachFromUntil<TFromIdx, TUntilIdx>(fields(), makeFieldWriter(iter, status, len));
         return status;
-    }    
+    }
 
     template <std::size_t TFromIdx, std::size_t TUntilIdx, typename TIter>
     void doWriteNoStatusFromUntil(TIter& iter) const
@@ -516,13 +516,13 @@ protected:
         typename BaseImpl::ReadIterator& iter,
         std::size_t size) override
     {
-        using Tag = 
+        using Tag =
             typename comms::util::LazyShallowConditional<
                 std::is_same<TActual, void>::value
             >::template Type<
                 NoActual,
                 HasActual
-            >;        
+            >;
         return readImplInternal(iter, size, Tag());
     }
 
@@ -565,13 +565,13 @@ protected:
         typename BaseImpl::WriteIterator& iter,
         std::size_t size) const override
     {
-        using Tag = 
+        using Tag =
             typename comms::util::LazyShallowConditional<
                 std::is_same<TActual, void>::value
             >::template Type<
                 NoActual,
                 HasActual
-            >;        
+            >;
         return writeImplInternal(iter, size, Tag());
     }
 
@@ -612,7 +612,7 @@ protected:
     ~MessageImplFieldsValidBase() noexcept = default;
     virtual bool validImpl() const override
     {
-        using Tag = 
+        using Tag =
             typename comms::util::LazyShallowConditional<
                 std::is_same<TActual, void>::value
             >::template Type<
@@ -653,13 +653,13 @@ protected:
     ~MessageImplFieldsLengthBase() noexcept = default;
     virtual std::size_t lengthImpl() const override
     {
-        using Tag = 
+        using Tag =
             typename comms::util::LazyShallowConditional<
                 std::is_same<TActual, void>::value
             >::template Type<
                 NoActual,
                 HasActual
-            >;        
+            >;
         return lengthImplInternal(Tag());
     }
 
@@ -704,7 +704,7 @@ public:
         }
 
         return comms::ErrorStatus::Success;
-    }    
+    }
 
 protected:
     ~MessageImplFailOnInvalidBase() noexcept = default;
@@ -730,18 +730,17 @@ private:
 
     bool doValidInternal() const
     {
-        using Tag = 
+        using Tag =
             typename comms::util::LazyShallowConditional<
                 std::is_same<TActual, void>::value
             >::template Type<
                 NoActual,
                 HasActual
-            >;   
+            >;
 
         return doValidInternal(Tag());
     }
 };
-
 
 // ------------------------------------------------------
 
@@ -884,7 +883,6 @@ protected:
         return static_cast<const TActual*>(this)->doName();
     }
 };
-
 
 } // namespace details
 

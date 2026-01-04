@@ -53,7 +53,6 @@ using ProcessMsgIdType =
     typename ProcessMsgIdRetrieveHelper<comms::isMessage<ProcessMsgDecayType<T> >(), hasElementType<ProcessMsgDecayType<T> >()>::
         template Type<ProcessMsgDecayType<T> >;
 
-
 template <bool TIsMessage, bool TIsMsgPtr>
 struct ProcessMsgCastToMsgObjHelper;
 
@@ -78,18 +77,18 @@ struct ProcessMsgCastToMsgObjHelper<false, true>
 };
 
 template <typename T>
-using ProcessMsgCastParamIsMessage = 
+using ProcessMsgCastParamIsMessage =
     std::integral_constant<
         bool,
         isMessage<ProcessMsgDecayType<T> >()
     >;
 
 template <typename T>
-using ProcessMsgCastParamIsMsgPtr = 
+using ProcessMsgCastParamIsMsgPtr =
     std::integral_constant<
         bool,
         hasElementType<ProcessMsgDecayType<T> >()
-    >;    
+    >;
 
 template <typename T>
 auto processMsgCastToMsgObj(T& msg) ->

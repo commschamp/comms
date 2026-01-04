@@ -30,7 +30,7 @@ class TransportValueLayerBaseHelper
 {
     using ParsedOptionsInternal = comms::frame::details::TransportValueLayerOptionsParser<TOptions...>;
     using ActualLayer = typename ParsedOptionsInternal::template DefineExtendingClass<TransportValueLayer<TField, TIdx, TNextLayer, TOptions...>>;
-    using TopBase = 
+    using TopBase =
         comms::frame::FrameLayerBase<
             TField,
             TNextLayer,
@@ -40,7 +40,7 @@ class TransportValueLayerBaseHelper
 
     using AdaptedPseudoBase = typename ParsedOptionsInternal::template BuildPseudoBase<TopBase>;
 
-public:    
+public:
     using Base = AdaptedPseudoBase;
 };
 

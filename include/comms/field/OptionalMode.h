@@ -32,4 +32,3 @@ enum class OptionalMode
 
 }  // namespace comms
 
-

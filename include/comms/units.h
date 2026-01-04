@@ -78,7 +78,7 @@ private:
     using ConvertToIntTag = comms::details::tag::Tag4<>;
 
     template <typename TField, typename TConvRatio>
-    using RatioTag = 
+    using RatioTag =
         typename comms::util::LazyShallowConditional<
             std::is_same<FullUnitsRatioOf<TField, TConvRatio>, std::ratio<1, 1> >::value
         >::template Type<
@@ -87,7 +87,7 @@ private:
         >;
 
     template <typename TRet>
-    using TypeTag = 
+    using TypeTag =
         typename comms::util::LazyShallowConditional<
             std::is_floating_point<TRet>::value
         >::template Type<
@@ -340,10 +340,10 @@ private:
     using DegreesToRadiansTag = comms::details::tag::Tag2<>;
 
     template <typename... TParams>
-    using RadiansToDegreesTag = comms::details::tag::Tag3<>;    
+    using RadiansToDegreesTag = comms::details::tag::Tag3<>;
 
     template <typename TConvRatio>
-    using SetUnitsTag = 
+    using SetUnitsTag =
         typename comms::util::LazyShallowConditional<
             std::is_same<TConvRatio, typename comms::traits::units::RadiansRatio>::value
         >::template Type<
@@ -352,33 +352,33 @@ private:
         >;
 
     template <typename TConvRatio>
-    using GetUnitsTag = 
+    using GetUnitsTag =
         typename comms::util::LazyShallowConditional<
             std::is_same<TConvRatio, typename comms::traits::units::RadiansRatio>::value
         >::template Type<
             DegreesToRadiansTag,
             RadiansToDegreesTag
-        >;        
+        >;
 
     template <typename TField, typename TConvRatio>
-    using GetTag = 
+    using GetTag =
         typename comms::util::LazyShallowConditional<
             std::is_same<TConvRatio, typename TField::UnitsRatio>::value
         >::template Type<
             SameUnitsTag,
             GetUnitsTag,
             TConvRatio
-        >;    
+        >;
 
     template <typename TField, typename TConvRatio>
-    using SetTag = 
+    using SetTag =
         typename comms::util::LazyShallowConditional<
             std::is_same<TConvRatio, typename TField::UnitsRatio>::value
         >::template Type<
             SameUnitsTag,
             SetUnitsTag,
             TConvRatio
-        >;         
+        >;
 
     template <typename TRet, typename TConvRatio, typename TField, typename... TParams>
     static TRet getValueInternal(const TField& field, SameUnitsTag<TParams...>)
@@ -2050,7 +2050,6 @@ constexpr bool isMicroamps(const TField& field)
     return isMicroamps<typename std::decay<decltype(field)>::type>();
 }
 
-
 /// @brief Retrieve field's value as milliamps.
 /// @details The function will do all the necessary math operations to convert
 ///     stored value to milliamps and return the result in specified return
@@ -2633,7 +2632,6 @@ constexpr bool isMegabytes(const TField& field)
 {
     return isMegabytes<typename std::decay<decltype(field)>::type>();
 }
-
 
 /// @brief Retrieve field's value as gigabytes.
 /// @details The function will do all the necessary math operations to convert

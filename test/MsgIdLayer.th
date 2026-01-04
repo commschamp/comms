@@ -5,17 +5,17 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <cstdint>
-#include <cstddef>
-#include <algorithm>
-#include <iterator>
-
 #include "comms/comms.h"
 #include "CommsTestCommon.h"
 
 CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
 CC_ENABLE_WARNINGS()
+
+#include <cstdint>
+#include <cstddef>
+#include <algorithm>
+#include <iterator>
 
 class MsgIdLayerTestSuite : public CxxTest::TestSuite
 {
@@ -65,9 +65,9 @@ private:
         {
             static_cast<void>(msg);
         }
-    };    
+    };
 
-    using CommonOptions = 
+    using CommonOptions =
         std::tuple<
             comms::option::MsgIdType<MessageType>,
             comms::option::IdInfoInterface,
@@ -96,7 +96,7 @@ private:
         comms::option::BigEndian,
         comms::option::app::Handler<EmptyHandler>,
         CommonOptions
-    > DispatchBeTraits;    
+    > DispatchBeTraits;
 
     typedef TestMessageBase<BeTraits> BeMsgBase;
     typedef TestMessageBase<LeTraits> LeMsgBase;
@@ -170,7 +170,7 @@ private:
             >
         >
     {
-        using Base = 
+        using Base =
             comms::field::Bitfield<
                 TField,
                 std::tuple<
@@ -185,7 +185,7 @@ private:
                         comms::option::FixedBitLength<2>
                     >
                 >
-            >;   
+            >;
     public:
         COMMS_FIELD_MEMBERS_NAMES(id, flags);
 
@@ -198,7 +198,7 @@ private:
         void setValue(U&& val)
         {
             field_id().setValue(val);
-        }    
+        }
 
     };
 
@@ -398,7 +398,7 @@ private:
         MsgPtr createMsg(MsgIdParamType id, unsigned idx = 0U, CreateFailureReason* reason = nullptr) const
         {
             static_cast<void>(idx);
-            auto updateReasonFunc = 
+            auto updateReasonFunc =
                 [&reason](CreateFailureReason r)
                 {
                     if (reason != nullptr) {
@@ -407,7 +407,7 @@ private:
                 };
 
             if (msgCount(id) <= idx) {
-                updateReasonFunc(CreateFailureReason::InvalidId);    
+                updateReasonFunc(CreateFailureReason::InvalidId);
                 return MsgPtr();
             }
 
@@ -433,27 +433,27 @@ private:
                 case MessageType5: {
                     COMMS_ASSERT(idx == 0);
                     return MsgPtr(new Message5<Message>);
-                }  
+                }
                 case MessageType6: {
                     COMMS_ASSERT(idx == 0);
                     return MsgPtr(new Message6<Message>);
-                }    
+                }
                 case MessageType7: {
                     COMMS_ASSERT(idx == 0);
                     return MsgPtr(new Message7<Message>);
-                } 
+                }
                 case MessageType8: {
                     COMMS_ASSERT(idx == 0);
                     return MsgPtr(new Message8<Message>);
-                }                 
+                }
                 case MessageType9: {
                     COMMS_ASSERT(idx == 0);
                     return MsgPtr(new Message7<Message>);
-                }  
+                }
                 case MessageType10: {
                     COMMS_ASSERT(idx == 0);
                     return MsgPtr(new Message10<Message>);
-                }       
+                }
                 case MessageType90: {
                     if (idx == 0) {
                         return MsgPtr(new Message90_1<Message>);
@@ -461,13 +461,13 @@ private:
 
                     COMMS_ASSERT(idx == 1);
                     return MsgPtr(new Message90_2<Message>);
-                }                  
+                }
                 default: {
                     break;
                 }
             }
 
-            updateReasonFunc(CreateFailureReason::InvalidId);    
+            updateReasonFunc(CreateFailureReason::InvalidId);
             return MsgPtr();
         }
 
@@ -499,8 +499,8 @@ private:
                 default: {
                     break;
                 }
-            }            
-            
+            }
+
             return 0U;
         }
 
@@ -522,7 +522,7 @@ private:
         static constexpr bool isDispatchLinearSwitch()
         {
             return false;
-        }    
+        }
 
         static constexpr bool hasInPlaceAllocation()
         {
@@ -537,12 +537,11 @@ private:
         static constexpr bool hasForcedDispatch()
         {
             return true;
-        }            
+        }
     };
 
     template <typename TInterface, typename TAllMessages, typename... TOptions>
     using CustomMsgFactoryTempl = CustomMsgFactory<TInterface>;
-
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
     class FrameCustomFactory : public
@@ -565,7 +564,7 @@ private:
 
     public:
         COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-    };  
+    };
 
     template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
     class FrameCustomFactoryTempl : public
@@ -588,7 +587,7 @@ private:
 
     public:
         COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-    };        
+    };
 };
 
 void MsgIdLayerTestSuite::test1()
@@ -661,7 +660,7 @@ void MsgIdLayerTestSuite::test2()
 
     InPlaceFrame<BeField2, BeMsgBase> inPlaceFrame;
     commonWriteReadMsgTest(inPlaceFrame, msg, buf, BufSize, &ExpectedBuf[0]);
-    
+
 }
 
 void MsgIdLayerTestSuite::test3()
@@ -688,9 +687,9 @@ void MsgIdLayerTestSuite::test3()
 
     auto msgPtr3 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize, comms::ErrorStatus::MsgAllocFailure);
     TS_ASSERT(!msgPtr3);
-    
-    CountHandler<LeMsgBase> handler; 
-    comms::processAllWithDispatch(&Buf[0], BufSize, frame, handler);  
+
+    CountHandler<LeMsgBase> handler;
+    comms::processAllWithDispatch(&Buf[0], BufSize, frame, handler);
     TS_ASSERT_EQUALS(handler.getCustomCount(), 1U);
     TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
 }
@@ -879,13 +878,12 @@ void MsgIdLayerTestSuite::test12()
 }
 
 template <typename TMsgBase>
-using Test13Messages = 
+using Test13Messages =
     std::tuple<
         Message1<TMsgBase>,
         Message2<TMsgBase>,
         Message90_1<TMsgBase>
     >;
-
 
 void MsgIdLayerTestSuite::test13()
 {
@@ -929,12 +927,12 @@ void MsgIdLayerTestSuite::test14()
 
     using TestFrame = FramePolymorphic<BeField1, BeMsgBase>;
     static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value, 
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value,
         "Invalid options");
     static_assert(TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
     static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
-    
+
     TestFrame frame;
     auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
     TS_ASSERT(msgPtr);
@@ -944,7 +942,7 @@ void MsgIdLayerTestSuite::test14()
 }
 
 template <typename TMsgBase>
-using Test15Messages = 
+using Test15Messages =
     std::tuple<
         Message1<TMsgBase>,
         Message5<TMsgBase>,
@@ -960,7 +958,7 @@ void MsgIdLayerTestSuite::test15()
 
     using TestFrame = FramePolymorphic<BeField1, BeMsgBase, Test15Messages>;
     static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value, 
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value,
         "Invalid options");
     static_assert(TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -975,7 +973,7 @@ void MsgIdLayerTestSuite::test15()
 }
 
 template <typename TMsgBase>
-using Test16Messages = 
+using Test16Messages =
     std::tuple<
         Message1<TMsgBase>,
         Message5<TMsgBase>,
@@ -992,7 +990,7 @@ void MsgIdLayerTestSuite::test16()
 
     using TestFrame = FramePolymorphic<BeField1, BeMsgBase, Test16Messages>;
     static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value, 
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value,
         "Invalid options");
     static_assert(TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -1016,7 +1014,7 @@ void MsgIdLayerTestSuite::test17()
 
     using TestFrame = FrameStaticBinSearch<BeField1, BeMsgBase>;
     static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value, 
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value,
         "Invalid options");
     static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -1031,7 +1029,7 @@ void MsgIdLayerTestSuite::test17()
 }
 
 template <typename TMsgBase>
-using Test18Messages = 
+using Test18Messages =
     std::tuple<
         Message1<TMsgBase>,
         Message5<TMsgBase>,
@@ -1047,7 +1045,7 @@ void MsgIdLayerTestSuite::test18()
 
     using TestFrame = FrameStaticBinSearch<BeField1, BeMsgBase, Test18Messages>;
     static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value, 
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value,
         "Invalid options");
     static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -1062,7 +1060,7 @@ void MsgIdLayerTestSuite::test18()
 }
 
 template <typename TMsgBase>
-using Test19Messages = 
+using Test19Messages =
     std::tuple<
         Message1<TMsgBase>,
         Message5<TMsgBase>,
@@ -1079,7 +1077,7 @@ void MsgIdLayerTestSuite::test19()
 
     using TestFrame = FrameStaticBinSearch<BeField1, BeMsgBase, Test19Messages>;
     static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value, 
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value,
         "Invalid options");
     static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -1103,7 +1101,7 @@ void MsgIdLayerTestSuite::test20()
 
     using TestFrame = FrameLinearSwitch<BeField1, BeMsgBase>;
     static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value, 
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value,
         "Invalid options");
     static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -1118,7 +1116,7 @@ void MsgIdLayerTestSuite::test20()
 }
 
 template <typename TMsgBase>
-using Test21Messages = 
+using Test21Messages =
     std::tuple<
         Message1<TMsgBase>,
         Message5<TMsgBase>,
@@ -1134,11 +1132,11 @@ void MsgIdLayerTestSuite::test21()
 
     using TestFrame = FrameLinearSwitch<BeField1, BeMsgBase, Test21Messages>;
     static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value, 
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value,
         "Invalid options");
     static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
-    static_assert(TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");        
+    static_assert(TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
 
     TestFrame frame;
     auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
@@ -1149,7 +1147,7 @@ void MsgIdLayerTestSuite::test21()
 }
 
 template <typename TMsgBase>
-using Test22Messages = 
+using Test22Messages =
     std::tuple<
         Message1<TMsgBase>,
         Message5<TMsgBase>,
@@ -1166,7 +1164,7 @@ void MsgIdLayerTestSuite::test22()
 
     using TestFrame = FrameLinearSwitch<BeField1, BeMsgBase, Test22Messages>;
     static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value, 
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value,
         "Invalid options");
     static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
     static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
@@ -1528,7 +1526,7 @@ void MsgIdLayerTestSuite::test33()
         TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
         auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
         TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
-    } while (false);    
+    } while (false);
 }
 
 void MsgIdLayerTestSuite::test34()
@@ -1564,7 +1562,7 @@ void MsgIdLayerTestSuite::test34()
         auto readIter = &Buf[0];
         auto es = comms::processSingle(readIter, BufSize, frame, *msgPtr);
         TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-    }    
+    }
 }
 
 void MsgIdLayerTestSuite::test35()

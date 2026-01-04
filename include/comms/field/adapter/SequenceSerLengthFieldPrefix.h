@@ -10,6 +10,8 @@
 #include "comms/Assert.h"
 #include "comms/ErrorStatus.h"
 
+#include <iterator>
+
 namespace comms
 {
 
@@ -27,7 +29,6 @@ class SequenceSerLengthFieldPrefix : public TBase
 
     static const std::size_t MaxAllowedLength =
             static_cast<std::size_t>(LenField::maxValue());
-
 
     static_assert(!LenField::isVersionDependent(),
             "Prefix fields must not be version dependent");
@@ -166,7 +167,4 @@ public:
 }  // namespace field
 
 }  // namespace comms
-
-
-
 

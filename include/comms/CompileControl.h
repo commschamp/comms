@@ -39,7 +39,6 @@
 
 #endif
 
-
 #define COMMS_IS_MSVC false
 #define COMMS_IS_GCC  false
 #define COMMS_IS_CLANG false
@@ -105,12 +104,12 @@
 #define COMMS_IS_CPP20 (__cplusplus >= 202002L)
 #define COMMS_IS_CPP23 (__cplusplus >= 202302L)
 
-#if COMMS_IS_MSVC_2025_OR_BELOW 
+#if COMMS_IS_MSVC_2025_OR_BELOW
 #undef COMMS_IS_CPP23
 #define COMMS_IS_CPP23 (__cplusplus >= 202003L)
 #endif
 
-#if COMMS_IS_MSVC_2019_OR_BELOW 
+#if COMMS_IS_MSVC_2019_OR_BELOW
 #undef COMMS_IS_CPP20
 #define COMMS_IS_CPP20 (__cplusplus >= 201704L)
 #endif
@@ -135,7 +134,7 @@
 
 #if COMMS_IS_CLANG
 
-// The defines below are seperate because VS2015 doesn't 
+// The defines below are seperate because VS2015 doesn't
 // behave well with angle brackets inside macro arguments.
 
 #undef COMMS_CLANG_HAS_STRING_VIEW
@@ -145,7 +144,6 @@
 #define COMMS_CLANG_HAS_VERSION_HEADER (__has_include(<version>))
 
 #endif // #if COMMS_IS_CLANG
-
 
 #define COMMS_HAS_CPP20_VERSION_HEADER \
     COMMS_IS_CPP20 && \
@@ -161,7 +159,7 @@
 
 #define COMMS_HAS_CPP17_STRING_VIEW  false
 
-#ifndef COMMS_NO_CPP17_STRING_VIEW 
+#ifndef COMMS_NO_CPP17_STRING_VIEW
 #undef COMMS_HAS_CPP17_STRING_VIEW
 #define COMMS_HAS_CPP17_STRING_VIEW \
     COMMS_IS_CPP17 && \
@@ -171,7 +169,7 @@
         (COMMS_IS_MSVC && (_MSC_VER >= 1910)) \
     )
 
-#endif // #ifndef COMMS_NO_CPP17_STRING_VIEW 
+#endif // #ifndef COMMS_NO_CPP17_STRING_VIEW
 
 #define COMMS_HAS_CPP20_SPAN false
 #if !defined(COMMS_NO_CPP20_SPAN) && COMMS_IS_CPP20 && defined(__cpp_lib_span)
@@ -196,7 +194,4 @@
 #define COMMS_MSVC_WARNING_SUPPRESS(w_)
 
 #endif // #if COMMS_IS_MSVC
-
-
-
 

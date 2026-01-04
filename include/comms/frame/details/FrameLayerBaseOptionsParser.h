@@ -18,7 +18,6 @@ namespace frame
 namespace details
 {
 
-
 template <typename... TOptions>
 class FrameLayerBaseOptionsParser;
 

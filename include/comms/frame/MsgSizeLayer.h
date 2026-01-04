@@ -5,7 +5,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// @file 
+/// @file
 /// @brief Contains definition of @ref comms::frame::MsgSizeLayer
 
 #pragma once
@@ -32,7 +32,7 @@ namespace comms
 namespace frame
 {
 
-/// @brief Protocol layer that uses size field as a prefix to all the
+/// @brief Frame layer that uses size field as a prefix to all the
 ///        subsequent data written by other (next) layers.
 /// @details The main purpose of this layer is to provide information about
 ///     the remaining size of the serialised message. This layer is a mid level
@@ -55,11 +55,6 @@ public:
     /// @brief Type of the field object used to read/write remaining size value.
     using Field = typename BaseImpl::Field;
 
-    /// @brief Type of real extending class
-    /// @details Updated when @ref comms::option::ExtendingClass extension option us used,
-    ///    aliasing @b void if the options is not used.
-    using ExtendingClass = typename ParsedOptionsInternal::ExtendingClass;    
-
     /// @brief Default constructor
     explicit MsgSizeLayer() = default;
 
@@ -78,14 +73,12 @@ public:
     /// @brief Move assignment.
     MsgSizeLayer& operator=(MsgSizeLayer&&) = default;
 
-    /// @brief Compile time inquiry of whether this class was extended via 
+    /// @brief Compile time inquiry of whether this class was extended via
     ///    @ref comms::option::ExtendingClass option.
-    /// @details If @b true is returned, the @ref SyncPrefixLayer::ExtendingClass "ExtendingClass"
-    ///     type aliasing the real layer type.
     static constexpr bool hasExtendingClass()
     {
         return ParsedOptionsInternal::HasExtendingClass;
-    }    
+    }
 
     /// @cond SKIP_DOC
     static constexpr std::size_t doFieldLength()
@@ -150,7 +143,7 @@ public:
         auto begIter = iter;
         auto* msgPtr = BaseImpl::toMsgPtr(msg);
         auto& thisObj = BaseImpl::thisLayer();
-        auto es = thisObj.doReadField(msgPtr, field, iter, size);        
+        auto es = thisObj.doReadField(msgPtr, field, iter, size);
         if (es == ErrorStatus::NotEnoughData) {
             BaseImpl::updateMissingSize(field, size, extraValues...);
         }
@@ -189,7 +182,6 @@ public:
         }
         return es;
     }
-
 
     /// @brief Customized write functionality, invoked by @ref write().
     /// @details The function will write number of bytes required to serialise
@@ -239,7 +231,7 @@ public:
         TNextLayerUpdater&& nextLayerUpdater) const
     {
         using LocalMsgPtr = typename BaseImpl::MsgPtr;
-        using ConstNullptrType = 
+        using ConstNullptrType =
             typename details::MsgSizeLayerConstNullPtrCastHelper<
                 !std::is_void<LocalMsgPtr>::value
             >::template Type<LocalMsgPtr>;
@@ -292,7 +284,7 @@ protected:
     }
 
     /// @brief Prepare field for writing
-    /// @details Must assign provided size (length) value. 
+    /// @details Must assign provided size (length) value.
     ///     May be overridden by the extending class if some complex functionality is required.
     /// @param[in] size Size value to assign
     /// @param[in] msg Pointer to message object being written, may be nullptr (in case invoked
@@ -317,16 +309,16 @@ private:
     using LengthTag = typename BaseImpl::template LengthTag<TParams...>;
 
     template <typename... TParams>
-    using MsgHasLengthTag = comms::details::tag::Tag3<>;  
+    using MsgHasLengthTag = comms::details::tag::Tag3<>;
 
     template <typename... TParams>
-    using MsgNoLengthTag = comms::details::tag::Tag4<>;   
+    using MsgNoLengthTag = comms::details::tag::Tag4<>;
 
     template <typename... TParams>
-    using ValidMsgTypeTag = comms::details::tag::Tag5<>;     
+    using ValidMsgTypeTag = comms::details::tag::Tag5<>;
 
     template <typename... TParams>
-    using NoMsgTypeTag = comms::details::tag::Tag6<>;         
+    using NoMsgTypeTag = comms::details::tag::Tag6<>;
 
     template<typename TMsg>
     using MsgLengthTag =
@@ -530,7 +522,7 @@ private:
     {
         static_cast<void>(msg);
         return nextLayerUpdater.update(iter, size);
-    } 
+    }
 
     template <typename TMsg, typename TIter, typename TNextLayerUpdater, typename... TParams>
     comms::ErrorStatus doUpdateForward(
@@ -542,7 +534,7 @@ private:
     {
         COMMS_ASSERT(msg != nullptr);
         return nextLayerUpdater.update(*msg, iter, size);
-    }        
+    }
 };
 
 namespace details

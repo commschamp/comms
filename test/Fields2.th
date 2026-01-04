@@ -5,19 +5,19 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <cstdint>
-#include <algorithm>
-#include <limits>
-#include <memory>
-#include <iterator>
-#include <type_traits>
-
 #include "comms/comms.h"
 #include "comms/options.h"
 
 CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
 CC_ENABLE_WARNINGS()
+
+#include <cstdint>
+#include <algorithm>
+#include <limits>
+#include <memory>
+#include <iterator>
+#include <type_traits>
 
 class FieldsTestSuite2 : public CxxTest::TestSuite
 {
@@ -391,7 +391,6 @@ void FieldsTestSuite2::test4()
     using Field1 = comms::field::IntValue<FieldBase, uint8_t>;
     using Field2 = comms::field::EnumValue<FieldBase, Field2Val>;
 
-
     Field1 field1;
     Field2 field2;
 
@@ -576,7 +575,7 @@ void FieldsTestSuite2::test7()
         TS_ASSERT_EQUALS(comms::units::getMegabytes<std::uintmax_t>(field), Num * 1024ULL * 1024);
         TS_ASSERT_EQUALS(comms::units::getGigabytes<std::uintmax_t>(field), Num * 1024ULL);
         TS_ASSERT_EQUALS(comms::units::getTerabytes<std::uintmax_t>(field), Num);
-    } while (false);    
+    } while (false);
 
     do {
         typedef comms::field::IntValue<
@@ -610,7 +609,7 @@ void FieldsTestSuite2::test7()
         TS_ASSERT_EQUALS(comms::units::getMegabytes<std::uintmax_t>(field), Num * 1024ULL * 1024);
         TS_ASSERT_EQUALS(comms::units::getGigabytes<std::uintmax_t>(field), Num * 1024ULL);
         TS_ASSERT_EQUALS(comms::units::getTerabytes<std::uintmax_t>(field), Num);
-    } while (false);  
+    } while (false);
 
     do {
         typedef comms::field::IntValue<
@@ -637,7 +636,7 @@ void FieldsTestSuite2::test7()
         TS_ASSERT_EQUALS(comms::units::getMegabytes<std::uintmax_t>(field), Num * 1024ULL * 1024);
         TS_ASSERT_EQUALS(comms::units::getGigabytes<std::uintmax_t>(field), Num * 1024ULL);
         TS_ASSERT_EQUALS(comms::units::getTerabytes<std::uintmax_t>(field), Num);
-    } while (false);        
+    } while (false);
 
     do {
         typedef comms::field::IntValue<
@@ -657,7 +656,7 @@ void FieldsTestSuite2::test7()
         TS_ASSERT_EQUALS(comms::units::getMegabytes<std::uintmax_t>(field), Num * 1024ULL * 1024);
         TS_ASSERT_EQUALS(comms::units::getGigabytes<std::uintmax_t>(field), Num * 1024ULL);
         TS_ASSERT_EQUALS(comms::units::getTerabytes<std::uintmax_t>(field), Num);
-    } while (false);                    
+    } while (false);
 
 }
 
@@ -678,31 +677,31 @@ struct Test8_Helper
 
         comms::units::setKilobytes(field, Num);
         TS_ASSERT(std::abs(comms::units::getBytes<double>(field) - Num * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - Num) < Epsilon);        
+        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - Num) < Epsilon);
         TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - Num / 1024 ) < Epsilon);
         TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - Num / 1024 / 1024) < Epsilon);
         TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - Num / 1024 / 1024 / 1024) < Epsilon);
 
         comms::units::setMegabytes(field, Num);
         TS_ASSERT(std::abs(comms::units::getBytes<double>(field) - Num * 1024 * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - Num * 1024) < Epsilon);        
-        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - Num) < Epsilon);        
+        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - Num * 1024) < Epsilon);
+        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - Num) < Epsilon);
         TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - Num / 1024) < Epsilon);
         TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - Num / 1024 / 1024) < Epsilon);
 
         comms::units::setGigabytes(field, Num);
         TS_ASSERT(std::abs(comms::units::getBytes<double>(field) - Num * 1024 * 1024 * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - Num * 1024 * 1024) < Epsilon);        
-        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - Num * 1024) < Epsilon);        
+        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - Num * 1024 * 1024) < Epsilon);
+        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - Num * 1024) < Epsilon);
         TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - Num) < Epsilon);
         TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - Num / 1024) < Epsilon);
 
         comms::units::setTerabytes(field, Num);
         TS_ASSERT(std::abs(comms::units::getBytes<double>(field) - Num * 1024 * 1024 * 1024 * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - Num * 1024 * 1024 * 1024) < Epsilon);        
-        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - Num * 1024 * 1024) < Epsilon);        
+        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - Num * 1024 * 1024 * 1024) < Epsilon);
+        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - Num * 1024 * 1024) < Epsilon);
         TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - Num * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - Num) < Epsilon);        
+        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - Num) < Epsilon);
     }
 };
 
@@ -730,7 +729,7 @@ void FieldsTestSuite2::test8()
         Field field;
         static_assert(comms::units::isKilobytes(field), "Invalid units");
         Test8_Helper::test(field);
-    } while (false);    
+    } while (false);
 
     do {
         typedef comms::field::FloatValue<
@@ -742,7 +741,7 @@ void FieldsTestSuite2::test8()
         Field field;
         static_assert(comms::units::isMegabytes(field), "Invalid units");
         Test8_Helper::test(field);
-    } while (false);        
+    } while (false);
 
     do {
         typedef comms::field::FloatValue<
@@ -754,7 +753,7 @@ void FieldsTestSuite2::test8()
         Field field;
         static_assert(comms::units::isGigabytes(field), "Invalid units");
         Test8_Helper::test(field);
-    } while (false);     
+    } while (false);
 
     do {
         typedef comms::field::FloatValue<
@@ -766,7 +765,7 @@ void FieldsTestSuite2::test8()
         Field field;
         static_assert(comms::units::isTerabytes(field), "Invalid units");
         Test8_Helper::test(field);
-    } while (false);           
+    } while (false);
 }
 
 void FieldsTestSuite2::test9()
@@ -787,8 +786,8 @@ void FieldsTestSuite2::test9()
         comms::option::CustomStorageType<comms::util::StringView>
     > Field;
 
-    static_assert(std::is_same<Field::ValueType, comms::util::StringView>::value, 
-        "comms::util::StringView is expected to be used for this field");     
+    static_assert(std::is_same<Field::ValueType, comms::util::StringView>::value,
+        "comms::util::StringView is expected to be used for this field");
 
     static_assert(!Field::isVersionDependent(),
         "Invalid version dependency assumption");
@@ -839,14 +838,14 @@ class Test10_Mem1 : public
         >
     >
 {
-    using Base = 
+    using Base =
         comms::field::Bundle<
             Test10_FieldBase,
             std::tuple<
                 Test1_IntKeyField<1>,
                 comms::field::IntValue<Test1_FieldBase, std::uint16_t>
             >
-        >;            
+        >;
 public:
     COMMS_FIELD_MEMBERS_NAMES(key, val);
 };
@@ -856,11 +855,11 @@ class Test10_Field : public
         Test10_FieldBase,
         std::tuple<
             Test10_Mem1
-        >, 
+        >,
         comms::option::def::HasVersionDependentMembers<false>
     >
 {
-    using Base = 
+    using Base =
         comms::field::Variant<
             Test10_FieldBase,
             std::tuple<
@@ -869,7 +868,7 @@ class Test10_Field : public
             comms::option::def::HasVersionDependentMembers<false>
         >;
 public:
-    COMMS_VARIANT_MEMBERS_NAMES(mem1);        
+    COMMS_VARIANT_MEMBERS_NAMES(mem1);
 };
 
 void FieldsTestSuite2::test10()
@@ -908,7 +907,7 @@ struct Test11_Mem1 : public
         >
     >
 {
-    using Base = 
+    using Base =
         comms::field::Bundle<
             Test11_FieldBase,
             std::tuple<
@@ -930,7 +929,7 @@ struct Test11_Mem2 : public
         >
     >
 {
-    using Base = 
+    using Base =
         comms::field::Bundle<
             Test11_FieldBase,
             std::tuple<
@@ -952,7 +951,7 @@ class Test11_Variant : public
         >
     >
 {
-    using Base = 
+    using Base =
         comms::field::Variant<
             Test11_FieldBase,
             std::tuple<
@@ -961,7 +960,7 @@ class Test11_Variant : public
             >
         >;
 public:
-    COMMS_VARIANT_MEMBERS_NAMES(mem1, mem2);        
+    COMMS_VARIANT_MEMBERS_NAMES(mem1, mem2);
 };
 
 void FieldsTestSuite2::test11()
@@ -981,7 +980,7 @@ void FieldsTestSuite2::test11()
     field.value()[1].initField_mem2().field_val().value() = 0x87654321;
 
     Field field2(field);
-    TS_ASSERT_EQUALS(field, field2); 
+    TS_ASSERT_EQUALS(field, field2);
 }
 
 using Test12_FieldBase = FieldsTestSuite2::BeFieldBase;
@@ -1023,7 +1022,7 @@ void FieldsTestSuite2::test12()
         static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
         field = readWriteField<Field>(&Buf[0], BufSize);
-        TS_ASSERT_EQUALS(field.field_value().value(), 0x0102);    
+        TS_ASSERT_EQUALS(field.field_value().value(), 0x0102);
     } while (false);
 
     do {
@@ -1035,8 +1034,8 @@ void FieldsTestSuite2::test12()
         static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
         field = readWriteField<Field>(&Buf[0], BufSize);
-        TS_ASSERT_EQUALS(field.field_value().value(), 0x010203);    
-    } while (false);  
+        TS_ASSERT_EQUALS(field.field_value().value(), 0x010203);
+    } while (false);
 
     do {
         Field field;
@@ -1047,8 +1046,8 @@ void FieldsTestSuite2::test12()
         static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
         field = readWriteField<Field>(&Buf[0], BufSize);
-        TS_ASSERT_EQUALS(field.field_value().value(), 0x01020304);    
-    } while (false);    
+        TS_ASSERT_EQUALS(field.field_value().value(), 0x01020304);
+    } while (false);
 
     do {
         Field field;
@@ -1059,8 +1058,8 @@ void FieldsTestSuite2::test12()
         static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
         field = readWriteField<Field>(&Buf[0], BufSize);
-        TS_ASSERT_EQUALS(field.field_value().value(), 0x0102030405);    
-    } while (false);    
+        TS_ASSERT_EQUALS(field.field_value().value(), 0x0102030405);
+    } while (false);
 
     do {
         Field field;
@@ -1071,8 +1070,8 @@ void FieldsTestSuite2::test12()
         static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
         field = readWriteField<Field>(&Buf[0], BufSize);
-        TS_ASSERT_EQUALS(field.field_value().value(), 0x010203040506);    
-    } while (false);        
+        TS_ASSERT_EQUALS(field.field_value().value(), 0x010203040506);
+    } while (false);
 
     do {
         Field field;
@@ -1083,7 +1082,7 @@ void FieldsTestSuite2::test12()
         static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
         field = readWriteField<Field>(&Buf[0], BufSize);
-        TS_ASSERT_EQUALS(field.field_value().value(), 0x01020304050607);    
+        TS_ASSERT_EQUALS(field.field_value().value(), 0x01020304050607);
     } while (false);
 }
 
@@ -1146,8 +1145,8 @@ class Test14_Field : public
         std::tuple<
             comms::field::IntValue<Test14_FieldBase, std::uint8_t>,
             comms::field::IntValue<
-                Test14_FieldBase, 
-                std::uint32_t, 
+                Test14_FieldBase,
+                std::uint32_t,
                 comms::option::def::FixedLength<3>,
                 comms::option::def::AvailableLengthLimit>
         >,
@@ -1160,8 +1159,8 @@ class Test14_Field : public
             std::tuple<
                 comms::field::IntValue<Test14_FieldBase, std::uint8_t>,
                 comms::field::IntValue<
-                    Test14_FieldBase, 
-                    std::uint32_t, 
+                    Test14_FieldBase,
+                    std::uint32_t,
                     comms::option::def::FixedLength<3>,
                     comms::option::def::AvailableLengthLimit>
             >,
@@ -1220,7 +1219,7 @@ void FieldsTestSuite2::test15()
         V500 = 500,
     };
 
-    using Field = 
+    using Field =
         comms::field::EnumValue<
             BeFieldBase,
             Enum_Test15,
@@ -1236,7 +1235,7 @@ void FieldsTestSuite2::test15()
 
         field = readWriteField<Field>(&Buf[0], BufSize);
         TS_ASSERT_EQUALS(field.length(), 1U);
-        TS_ASSERT_EQUALS(field.value(), Enum_Test15::V10);    
+        TS_ASSERT_EQUALS(field.value(), Enum_Test15::V10);
     } while (false);
 
     do {
@@ -1248,7 +1247,7 @@ void FieldsTestSuite2::test15()
 
         field = readWriteField<Field>(&Buf[0], BufSize);
         TS_ASSERT_EQUALS(field.length(), 2U);
-        TS_ASSERT_EQUALS(field.value(), Enum_Test15::V500);    
+        TS_ASSERT_EQUALS(field.value(), Enum_Test15::V500);
     } while (false);
 
     auto writeAndVerifyFunc =
@@ -1417,7 +1416,7 @@ class Test17_BundleField : public
         comms::option::RemLengthMemberField<0>
     >
 {
-    using Base = 
+    using Base =
         comms::field::Bundle<
             FieldsTestSuite2::BeFieldBase,
             std::tuple<
@@ -1425,10 +1424,10 @@ class Test17_BundleField : public
                 comms::field::String<FieldsTestSuite2::BeFieldBase>
             >,
             comms::option::RemLengthMemberField<0>
-        >;   
+        >;
 
 public:
-    COMMS_FIELD_MEMBERS_NAMES(length, value);         
+    COMMS_FIELD_MEMBERS_NAMES(length, value);
 };
 
 void FieldsTestSuite2::test17()
@@ -1443,7 +1442,7 @@ void FieldsTestSuite2::test17()
 
         field = readWriteField<Field>(&Buf[0], BufSize);
         TS_ASSERT_EQUALS(field.length(), 6U);
-        TS_ASSERT_EQUALS(field.field_value().value(), std::string("hello"));  
+        TS_ASSERT_EQUALS(field.field_value().value(), std::string("hello"));
     } while (false);
 
     do {
@@ -1455,8 +1454,8 @@ void FieldsTestSuite2::test17()
 
         field = readWriteField<Field>(&Buf[0], BufSize);
         TS_ASSERT_EQUALS(field.length(), 10U);
-        TS_ASSERT_EQUALS(field.field_value().value(), std::string("hello"));  
-    } while (false);  
+        TS_ASSERT_EQUALS(field.field_value().value(), std::string("hello"));
+    } while (false);
 
     do {
         Field field;
@@ -1474,15 +1473,15 @@ void FieldsTestSuite2::test17()
 
         TS_ASSERT(std::equal(std::begin(Buf), std::end(Buf), outBuf.begin()));
         TS_ASSERT(std::equal(field.field_value().value().begin(), field.field_value().value().end(), outBuf.begin() + BufSize));
-    } while (false);         
+    } while (false);
 }
 
 void FieldsTestSuite2::test18()
 {
     using LengthField = Test17_LengthField;
-    using Field = 
+    using Field =
         comms::field::String<
-            BeFieldBase, 
+            BeFieldBase,
             comms::option::SequenceSizeFieldPrefix<LengthField>
         >;
 
@@ -1495,7 +1494,7 @@ void FieldsTestSuite2::test18()
 
         field = readWriteField<Field>(&Buf[0], BufSize);
         TS_ASSERT_EQUALS(field.length(), 6U);
-        TS_ASSERT_EQUALS(field.value(), std::string("hello"));  
+        TS_ASSERT_EQUALS(field.value(), std::string("hello"));
     } while (false);
 
     do {
@@ -1508,9 +1507,9 @@ void FieldsTestSuite2::test18()
         auto readIter = &Buf[0];
         auto es = field.read(readIter, BufSize);
         TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-        TS_ASSERT_EQUALS(field.value(), std::string("hello"));  
+        TS_ASSERT_EQUALS(field.value(), std::string("hello"));
         TS_ASSERT_EQUALS(field.length(), 6U);
-    } while (false);  
+    } while (false);
 
     do {
         Field field;
@@ -1528,15 +1527,15 @@ void FieldsTestSuite2::test18()
 
         TS_ASSERT(std::equal(std::begin(Buf), std::end(Buf), outBuf.begin()));
         TS_ASSERT(std::equal(field.value().begin(), field.value().end(), outBuf.begin() + BufSize));
-    } while (false);      
+    } while (false);
 }
 
 void FieldsTestSuite2::test19()
 {
     using LengthField = Test17_LengthField;
-    using Field = 
+    using Field =
         comms::field::String<
-            BeFieldBase, 
+            BeFieldBase,
             comms::option::SequenceSerLengthFieldPrefix<LengthField>
         >;
 
@@ -1549,7 +1548,7 @@ void FieldsTestSuite2::test19()
 
         field = readWriteField<Field>(&Buf[0], BufSize);
         TS_ASSERT_EQUALS(field.length(), 6U);
-        TS_ASSERT_EQUALS(field.value(), std::string("hello"));  
+        TS_ASSERT_EQUALS(field.value(), std::string("hello"));
     } while (false);
 
     do {
@@ -1562,9 +1561,9 @@ void FieldsTestSuite2::test19()
         auto readIter = &Buf[0];
         auto es = field.read(readIter, BufSize);
         TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-        TS_ASSERT_EQUALS(field.value(), std::string("hello"));  
+        TS_ASSERT_EQUALS(field.value(), std::string("hello"));
         TS_ASSERT_EQUALS(field.length(), 6U);
-    } while (false);  
+    } while (false);
 
     do {
         Field field;
@@ -1582,15 +1581,15 @@ void FieldsTestSuite2::test19()
 
         TS_ASSERT(std::equal(std::begin(Buf), std::end(Buf), outBuf.begin()));
         TS_ASSERT(std::equal(field.value().begin(), field.value().end(), outBuf.begin() + BufSize));
-    } while (false);      
+    } while (false);
 }
 
 void FieldsTestSuite2::test20()
 {
     using LengthField = Test17_LengthField;
-    using Field = 
+    using Field =
         comms::field::ArrayList<
-            BeFieldBase, 
+            BeFieldBase,
             comms::field::IntValue<BeFieldBase, std::uint16_t>,
             comms::option::SequenceSizeFieldPrefix<LengthField>,
             comms::option::SequenceElemFixedSerLengthFieldPrefix<LengthField>
@@ -1599,9 +1598,9 @@ void FieldsTestSuite2::test20()
     do {
         Field field;
         static const char Buf[] = {
-            0x3, 
+            0x3,
             0x2,
-            0x0, 0x1, 
+            0x0, 0x1,
             0x0, 0x2,
             0x0, 0x3
         };
@@ -1609,15 +1608,15 @@ void FieldsTestSuite2::test20()
 
         field = readWriteField<Field>(&Buf[0], BufSize);
         TS_ASSERT_EQUALS(field.length(), 8U);
-        TS_ASSERT_EQUALS(field.value().size(), 3U);  
+        TS_ASSERT_EQUALS(field.value().size(), 3U);
     } while (false);
 }
 
 void FieldsTestSuite2::test21()
 {
-    using Field = 
+    using Field =
         comms::field::IntValue<
-            BeFieldBase, 
+            BeFieldBase,
             std::int32_t,
             comms::option::def::AvailableLengthLimit
         >;
@@ -1644,7 +1643,7 @@ void FieldsTestSuite2::test21()
         field = readWriteField<Field>(&Buf[0], BufSize);
         TS_ASSERT_EQUALS(field.value(), -1878);
         TS_ASSERT_EQUALS(field.length(), 2U);
-    } while (false);   
+    } while (false);
 
     do {
         Field field;
@@ -1656,12 +1655,12 @@ void FieldsTestSuite2::test21()
         field = readWriteField<Field>(&Buf[0], BufSize);
         TS_ASSERT_EQUALS(field.value(), 255);
         TS_ASSERT_EQUALS(field.length(), 2U);
-    } while (false);        
+    } while (false);
 }
 
 void FieldsTestSuite2::test22()
 {
-    using TermField = 
+    using TermField =
         comms::field::IntValue<
             BeFieldBase,
             std::uint16_t,
@@ -1669,9 +1668,9 @@ void FieldsTestSuite2::test22()
             comms::option::FailOnInvalid<>
         >;
 
-    using Field = 
+    using Field =
         comms::field::ArrayList<
-            BeFieldBase, 
+            BeFieldBase,
             comms::field::IntValue<BeFieldBase, std::uint32_t>,
             comms::option::def::SequenceTerminationFieldSuffix<TermField>
         >;
@@ -1691,7 +1690,7 @@ void FieldsTestSuite2::test22()
         TS_ASSERT_EQUALS(field.value()[0].value(), 0x01020304);
         TS_ASSERT_EQUALS(field.value()[1].value(), 0x05060708);
     } while (false);
-   
+
 }
 
 void FieldsTestSuite2::test23()
@@ -1738,13 +1737,13 @@ class Test24Field : public
         comms::option::def::FieldType<Test24Field>
     >
 {
-    using Base = 
+    using Base =
         comms::field::IntValue<
             comms::Field<FieldsTestSuite2::BigEndianOpt>,
             std::uint8_t,
             comms::option::def::FailOnInvalid<>,
             comms::option::def::FieldType<Test24Field>
-        >;    
+        >;
 public:
     bool valid() const
     {
@@ -1776,13 +1775,13 @@ class Test25Field : public
         comms::option::def::FieldType<Test25Field>
     >
 {
-    using Base = 
+    using Base =
         comms::field::Optional<
             comms::field::IntValue<comms::Field<FieldsTestSuite2::BigEndianOpt>, std::uint8_t>,
             comms::option::def::ExistsByDefault,
             comms::option::def::MissingOnInvalid,
             comms::option::def::FieldType<Test25Field>
-        >;    
+        >;
 public:
     bool valid() const
     {
@@ -1800,7 +1799,6 @@ void FieldsTestSuite2::test25()
     };
     const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-    
     static_assert(Field::ParsedOptions::HasMissingOnInvalid, "Invalid assumption");
     TS_ASSERT(field.valid());
     TS_ASSERT(field.doesExist());
@@ -1819,10 +1817,9 @@ void FieldsTestSuite2::test25()
     TS_ASSERT(field.isMissing());
 }
 
-
 void FieldsTestSuite2::test26()
 {
-    using Field = 
+    using Field =
         comms::field::BitmaskValue<
             BeFieldBase,
             comms::option::def::FixedLength<8U>,
@@ -1877,9 +1874,9 @@ void FieldsTestSuite2::test27()
 void FieldsTestSuite2::test28()
 {
     using LengthField = comms::field::IntValue<BeFieldBase, std::uint8_t>;
-    using Field = 
+    using Field =
         comms::field::ArrayList<
-            BeFieldBase, 
+            BeFieldBase,
             comms::field::IntValue<BeFieldBase, std::uint16_t>,
             comms::option::SequenceSerLengthFieldPrefix<LengthField>,
             comms::option::SequenceElemFixedSerLengthFieldPrefix<LengthField>
@@ -1888,7 +1885,7 @@ void FieldsTestSuite2::test28()
     do {
         Field field;
         static const char Buf[] = {
-            0x0, 
+            0x0,
         };
         static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
@@ -1899,7 +1896,7 @@ void FieldsTestSuite2::test28()
 
 void FieldsTestSuite2::test29()
 {
-    using Field = 
+    using Field =
        comms::field::IntValue<
             BeFieldBase,
             std::int16_t,
@@ -1913,14 +1910,13 @@ void FieldsTestSuite2::test29()
         field.value() = 10;
 
         static const char Buf[] = {
-            static_cast<char>(0x8a), 
+            static_cast<char>(0x8a),
         };
         static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
         writeReadField(field, &Buf[0], BufSize);
     } while (false);
 }
-
 
 using Test30_FieldBase = comms::Field<comms::option::BigEndian>;
 
@@ -1933,18 +1929,17 @@ class Test30_Mem1 : public
         >
     >
 {
-    using Base = 
+    using Base =
         comms::field::Bundle<
             Test30_FieldBase,
             std::tuple<
                 Test1_IntKeyField<1>,
                 comms::field::IntValue<Test1_FieldBase, std::uint16_t>
             >
-        >;            
+        >;
 public:
     COMMS_FIELD_MEMBERS_NAMES(key, val);
 };
-
 
 class Test30_Mem2 : public
     comms::field::Bundle<
@@ -1955,14 +1950,14 @@ class Test30_Mem2 : public
         >
     >
 {
-    using Base = 
+    using Base =
         comms::field::Bundle<
             Test30_FieldBase,
             std::tuple<
                 Test1_IntKeyField<2>,
                 comms::field::IntValue<Test1_FieldBase, std::uint32_t>
             >
-        >;            
+        >;
 public:
     COMMS_FIELD_MEMBERS_NAMES(key, val);
 };
@@ -1977,7 +1972,7 @@ class Test30_Field : public
         comms::option::def::VariantHasCustomResetOnDestruct
     >
 {
-    using Base = 
+    using Base =
         comms::field::Variant<
             Test30_FieldBase,
             std::tuple<
@@ -1992,14 +1987,14 @@ public:
         reset();
     }
 
-    COMMS_VARIANT_MEMBERS_NAMES(mem1, mem2);        
+    COMMS_VARIANT_MEMBERS_NAMES(mem1, mem2);
 
     void reset()
     {
         if (!Base::currentFieldValid()) {
             return;
         }
-        
+
         switch (Base::currentField()) {
         case FieldIdx_mem1: deinitField_mem1(); return;
         case FieldIdx_mem2: deinitField_mem2(); return;
@@ -2014,7 +2009,7 @@ public:
     {
         reset();
         return Base::read(iter, len);
-    }    
+    }
 };
 
 void FieldsTestSuite2::test30()
@@ -2224,7 +2219,7 @@ void FieldsTestSuite2::test36()
 
 void FieldsTestSuite2::test37()
 {
-    using Field = 
+    using Field =
         comms::field::IntValue<
             comms::Field<BigEndianOpt>,
             std::uint16_t,
@@ -2241,7 +2236,7 @@ void FieldsTestSuite2::test37()
 
 void FieldsTestSuite2::test38()
 {
-    using Field = 
+    using Field =
         comms::field::BitmaskValue<
             comms::Field<BigEndianOpt>,
             comms::option::def::FixedLength<1>,

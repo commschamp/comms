@@ -20,7 +20,6 @@ namespace field
 namespace adapter
 {
 
-
 template <typename TBase>
 class MissingOnReadFail : public TBase
 {
@@ -57,7 +56,4 @@ public:
 }  // namespace field
 
 }  // namespace comms
-
-
-
 

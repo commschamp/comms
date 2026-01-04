@@ -31,7 +31,7 @@ public:
         return castInternal<TFieldTo>(field, Tag<TFieldFrom, TFieldTo>());
     }
 
-private:    
+private:
 
     template <typename... TParams>
     using StaticCastTag = comms::details::tag::Tag1<>;
@@ -40,7 +40,7 @@ private:
     using WriteReadTag = comms::details::tag::Tag2<>;
 
     template <typename TFieldFrom, typename TFieldTo>
-    using Convertible = 
+    using Convertible =
         std::is_convertible<typename TFieldFrom::ValueType, typename TFieldTo::ValueType>;
 
     template <typename TField>
@@ -52,15 +52,15 @@ private:
         >;
 
     template <typename TFieldFrom, typename TFieldTo>
-    using UseStaticCast = 
+    using UseStaticCast =
         std::integral_constant<
             bool,
-            Convertible<TFieldFrom, TFieldTo>::value || 
+            Convertible<TFieldFrom, TFieldTo>::value ||
                 (IsIntegral<TFieldFrom>::value && IsIntegral<TFieldTo>::value)
         >;
 
     template <typename TFieldFrom, typename TFieldTo>
-    using Tag = 
+    using Tag =
         typename comms::util::LazyShallowConditional<
             UseStaticCast<TFieldFrom, TFieldTo>::value
         >::template Type<
@@ -72,7 +72,7 @@ private:
     static TFieldTo castInternal(const TFieldFrom& field, StaticCastTag<TParams...>)
     {
         TFieldTo result;
-        result.value() = static_cast<typename TFieldTo::ValueType>(field.value()); 
+        result.value() = static_cast<typename TFieldTo::ValueType>(field.value());
         return result;
     }
 
@@ -98,13 +98,11 @@ private:
         es = result.read(readIter, len);
         static_cast<void>(es);
         COMMS_ASSERT(es == comms::ErrorStatus::Success);
-        return result;        
-    }    
+        return result;
+    }
 };
-
 
 }  // namespace details
 
 }  // namespace comms
-
 

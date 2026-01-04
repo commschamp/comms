@@ -5,7 +5,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// @file 
+/// @file
 /// @brief Contains definition of @ref comms::protocol::ProtocolLayerBase
 
 #pragma once
@@ -87,7 +87,7 @@ auto msgPayload(TIter& iter, std::size_t& len) -> decltype(comms::frame::msgPayl
 
 /// @brief Same as #COMMS_FRAME_LAYERS_NAMES_INNER()
 /// @deprecated Use #COMMS_FRAME_LAYERS_NAMES_INNER() instead
-#define COMMS_PROTOCOL_LAYERS_NAMES_INNER(...) COMMS_FRAME_LAYERS_NAMES_INNER(__VA_ARGS__)    
+#define COMMS_PROTOCOL_LAYERS_NAMES_INNER(...) COMMS_FRAME_LAYERS_NAMES_INNER(__VA_ARGS__)
 
 /// @brief Same as #COMMS_FRAME_LAYERS_ACCESS_OUTER()
 /// @deprecated Use #COMMS_FRAME_LAYERS_ACCESS_OUTER() instead

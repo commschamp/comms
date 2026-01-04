@@ -54,9 +54,7 @@ class FieldBase<std::tuple<TTuple...>, TOptions...> : public FieldBase<TTuple...
 {
 };
 
-
 }  // namespace details
 
 }  // namespace comms
-
 

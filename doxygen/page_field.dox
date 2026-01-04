@@ -1,11 +1,11 @@
 /// @page page_field_tutorial Fields Definition Tutorial
 /// @tableofcontents
-/// Fields are abstractions around value storage primitives and/or objects, 
+/// Fields are abstractions around value storage primitives and/or objects,
 /// such as integral values, floating point values, strings, arrays, etc..
-/// Every @b field class is defined in @ref comms::field namespace and 
+/// Every @b field class is defined in @ref comms::field namespace and
 /// exposes predefined interface in order to
 /// make template meta-programming as easy as possible. As an example let's
-/// take a look at @ref comms::field::IntValue class which is used to 
+/// take a look at @ref comms::field::IntValue class which is used to
 /// define integral value field.
 /// @code
 /// template <typename TBase, typename T, typename... TOptions>
@@ -17,7 +17,7 @@
 ///
 ///     // Type used for version update
 ///     using VersionType = typename TBase::VersionType;
-///     
+///
 ///     // Get access to the stored value
 ///     ValueType& value() { return m_value; }
 ///     const ValueType& value() const { return m_value; }
@@ -51,16 +51,16 @@
 /// }
 /// @endcode
 /// The main things to note are that every field definition class:
-/// @li receives its base class as the first 
+/// @li receives its base class as the first
 ///     template parameter. It is expected to be a variant of @ref
-///     comms::Field with @ref comms::option::def::BigEndian or @ref 
+///     comms::Field with @ref comms::option::def::BigEndian or @ref
 ///     comms::option::def::LittleEndian option to specify the serialisation endian.
 /// @li exhibits some default behaviour which can be modified by
 ///     passing various options from @ref comms::option namespace as additional template
 ///     parameters. All the available options are described below in this tutorial.
 /// @li defines @b ValueType inner value storage
 ///     type and provides @b value() member functions to access the stored value.
-/// @li provides @b read() and @b write() member functions to read and write the 
+/// @li provides @b read() and @b write() member functions to read and write the
 ///     inner value given the iterator used for reading / writing and available
 ///     length of the buffer.
 /// @li has @b length() member function to report how many bytes are required to
@@ -72,7 +72,7 @@
 /// @li has @b setVersion() member function to notify field object that the
 ///     the protocol version has changed.
 ///
-/// Also note that all the member function are NON-virtual, i.e. the field 
+/// Also note that all the member function are NON-virtual, i.e. the field
 /// abstractions do not have polymorphic behaviour.
 ///
 /// The available fields abstractions are:
@@ -106,12 +106,12 @@
 /// std::cout << "Default value: " << intField.value() << '\n'; // prints 0
 /// intField.value() = 5;
 /// std::cout << "Updated value: " << intField.value() << std::endl; // prints 5
-/// @endcode 
+/// @endcode
 /// When such field is serialised, 2 bytes (<b>sizeof(std::int16_t)</b>) are written
 /// to the output buffer, most significant first and less significant second
 /// (because @b MyFieldBase base class was defined using comms::option::def::BigEndian
 /// option).
-/// 
+///
 /// @subsection sec_field_tutorial_int_value_fixed_length Modifying Serialisation Length
 /// Sometimes protocol specification tries to reduce amount of data transferred over
 /// I/O link. It may define serialisation length of the field that differs
@@ -134,10 +134,10 @@
 /// it is the last byte in the numeric encoding or the next one also needs to
 /// be taken into account. The COMMS library provides comms::option::def::VarLength
 /// option that can be used with comms::field::IntValue and modifies the
-/// behaviour of the latter to expose the required read()/write()/length() 
+/// behaviour of the latter to expose the required read()/write()/length()
 /// behaviour:
 /// @code
-/// // Variable length encoding, encoding takes at least 1 byte and at most 4 bytes. 
+/// // Variable length encoding, encoding takes at least 1 byte and at most 4 bytes.
 /// using MyIntField = comms::field::IntValue<MyFieldBase, std::uint32_t, comms::option::def::VarLength<1, 4> >;
 /// @endcode
 /// The field's base class (@b MyFieldBase) contains endian information which is
@@ -145,25 +145,25 @@
 ///
 /// @subsection sec_field_tutorial_int_value_ser_offset Serialisation Offset
 /// There are cases when there is a need to add/subtract some predefined offset
-/// to/from the value of the field when serialisation takes place. 
-/// Good example of such case would be serialising a "current year" value. 
-/// Most protocols now specify it as an offset from year 2000 or later and 
-/// serialised as a single byte, i.e. to specify year 2015 is to write value 15. 
-/// However it may be inconvenient to manually adjust serialised/deserialised 
-/// value by predefined offset 2000. To help with such case option 
+/// to/from the value of the field when serialisation takes place.
+/// Good example of such case would be serialising a "current year" value.
+/// Most protocols now specify it as an offset from year 2000 or later and
+/// serialised as a single byte, i.e. to specify year 2015 is to write value 15.
+/// However it may be inconvenient to manually adjust serialised/deserialised
+/// value by predefined offset 2000. To help with such case option
 /// comms::option::def::NumValueSerOffset can be used. For example:
 /// @code
-/// using YearField = 
+/// using YearField =
 ///     comms::field::IntValue<
-///         MyFieldBase, 
-///         std::int16_t, 
+///         MyFieldBase,
+///         std::int16_t,
 ///         comms::option::def::FixedLength<1>,
 ///         comms::option::def::NumValueSerOffset<-2000>
 ///     >;
 ///
 /// static const std::uint8_t SerData[] = { 15 }; // Pretend serialisation data
-/// static const std::size_t SerDataLen = std::extent<decltype(SerData)>::value; 
-/// 
+/// static const std::size_t SerDataLen = std::extent<decltype(SerData)>::value;
+///
 /// YearField year;
 /// auto* readIter = &SerData[0];
 /// auto es = year.read(readIter, SerDataLen); // Read year information
@@ -173,7 +173,7 @@
 ///
 /// // Modify year value:
 /// year.value() = 2016;
-/// 
+///
 /// std::vector<std::uint8_t> outData; // Pretend output buffer
 /// auto writeIter = std::back_inserter(outData);
 /// es = year.write(writeIter, outData.max_size());
@@ -181,7 +181,7 @@
 ///
 /// assert(outData.size() == 1U); // Only 1 byte is expected to be pushed to outData,
 ///                               // due to using comms::option::def::FixedLength<1> option.
-/// assert(outData[0] == 16); // The value equal to "year.value() - 2000" is expected to be written.  
+/// assert(outData[0] == 16); // The value equal to "year.value() - 2000" is expected to be written.
 /// @endcode
 ///
 /// @subsection sec_field_tutorial_int_value_scaling Scaling Value
@@ -189,14 +189,14 @@
 /// the distance between two points on the map in meters. However, when communicating
 /// this information over the I/O link, the developers often scale the floating
 /// point value up in order to send such value as integer. For example, the distance
-/// is communicated in millimeters (when calculated and handled in meters). 
+/// is communicated in millimeters (when calculated and handled in meters).
 /// The definition of such field may look like:
 /// @code
 /// using DistanceField =
 ///     comms::field::IntValue<
-///         MyFieldBase, 
-///         std::uint16_t, 
-///         comms::option::def::ScalingRatio<1, 1000> 
+///         MyFieldBase,
+///         std::uint16_t,
+///         comms::option::def::ScalingRatio<1, 1000>
 ///     >;
 /// @endcode
 /// The comms::option::def::ScalingRatio option allows scaling of serialised value
@@ -204,7 +204,7 @@
 /// @code
 /// static const std::uint8_t InData[] = {0x3, 0xe8}; // Pretend input buffer, encoded 1000
 /// static const std::size_t InDataSize = std::extent<decltype(InData)>::value;
-/// 
+///
 /// DistanceField dist;
 /// const auto* readIter = &InData[0];;
 /// auto es = dist.read(readIter, InDataSize);
@@ -222,11 +222,11 @@
 /// It would be convenient to be able to convert it to proper millimeters number.
 /// As the result the field can be defined as:
 /// @code
-/// using OtherDistanceField = 
+/// using OtherDistanceField =
 ///     comms::field::IntValue<
-///         MyFieldBase, 
-///         std::uint16_t, 
-///         comms::option::def::ScalingRatio<10, 1> 
+///         MyFieldBase,
+///         std::uint16_t,
+///         comms::option::def::ScalingRatio<10, 1>
 ///     >;
 /// @endcode
 /// The @ref comms::option::def::ScalingRatio option allows scaling of serialised value
@@ -234,7 +234,7 @@
 /// @code
 /// static const std::uint8_t InData[] = {0x0, 0xf}; // Pretend input buffer, encoded 15
 /// static const std::size_t InDataSize = std::extent<decltype(InData)>::value;
-/// 
+///
 /// OtherDistanceField dist;
 /// const auto* readIter = &InData[0];;
 /// auto es = dist.read(readIter, InDataSize);
@@ -249,7 +249,7 @@
 ///
 /// Methods comms::field::IntValue::getScaled and comms::field::IntValue::setScaled
 /// take into account scaling ratio provided (with @ref comms::option::def::ScalingRatio option)
-/// to the comms::field::IntValue field. If such option wasn't used  
+/// to the comms::field::IntValue field. If such option wasn't used
 /// @b comms::option::def::ScalingRatio<1, 1> is assumed.
 ///
 /// @subsection sec_field_tutorial_int_value_units Value Units
@@ -261,18 +261,18 @@
 /// @code
 /// using DistanceField =
 ///     comms::field::IntValue<
-///         MyFieldBase, 
-///         std::uint16_t, 
+///         MyFieldBase,
+///         std::uint16_t,
 ///         comms::option::def::UnitsMillimeters
 ///     >;
 /// @endcode
 /// The @ref comms::option::def::UnitsMillimeters option specifies that field contains
-/// distance in millimeters, which allows @b COMMS library provide proper 
+/// distance in millimeters, which allows @b COMMS library provide proper
 /// conversion to other distance units when necessary:
 /// @code
 /// static const std::uint8_t InData[] = {0x3, 0xe8}; // Pretend input buffer, encoded 1000
 /// static const std::size_t InDataSize = std::extent<decltype(InData)>::value;
-/// 
+///
 /// DistanceField dist;
 /// const auto* readIter = &InData[0];;
 /// auto es = dist.read(readIter, InDataSize);
@@ -290,16 +290,16 @@
 /// std::cout << "New distance in m: "  << comms::units::getMeters<float>(dist) << std::endl; // Prints 0.055
 /// @endcode
 ///
-/// In the examples above the "units" specification may replace the "scaling" 
+/// In the examples above the "units" specification may replace the "scaling"
 /// information. However, there are cases when it they may complement each other.
 /// For example, the field contains "latitude" information in @b degrees but
 /// multiplied by 10'000'000 to make integral value out of floating point.
 /// @code
 /// using LatField =
 ///     comms::field::IntValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         std::int32_t,
-///         comms::option::def::ScalingRatio<1, 10000000>, 
+///         comms::option::def::ScalingRatio<1, 10000000>,
 ///         comms::option::def::UnitsDegrees
 ///     >;
 /// @endcode
@@ -321,7 +321,7 @@
 /// std::cout << "Updated degrees value: " << comms::units::getDegrees<double>(lat) << std::endl; // Prints 60
 /// std::cout << "Updated radians value: " << comms::units::getRadians<double>(lat) << std::endl; // Prints 1.04719
 /// @endcode
-/// The @b COMMS library provides mulitple @b options to specify the units of 
+/// The @b COMMS library provides mulitple @b options to specify the units of
 /// the field's value:
 /// @li @b Time:
 ///     - @ref comms::option::def::UnitsNanoseconds
@@ -369,7 +369,7 @@
 ///
 /// All the units conversion functions reside in comms::units namespace. @b NOTE,
 /// that conversion can be applied only between the units of the same type. The
-/// units compitability check is performed at compile time and the compilation 
+/// units compitability check is performed at compile time and the compilation
 /// will fail on attempt to set/get incompatible value, such as
 /// setting/getting "seconds" to/from the field specified as containing millimeters.
 ///
@@ -381,11 +381,11 @@
 ///
 /// @subsection sec_field_tutorial_int_value_other Other Options
 /// There multiple common options that are applicable to all the fields,
-/// comms::field::IntValue included. Please refer to 
+/// comms::field::IntValue included. Please refer to
 /// @ref sec_field_tutorial_common_options for more details.
 ///
 /// @section sec_field_tutorial_enum_value Enum Value Fields
-/// Sometimes it is more convenient to operate with enum types instead of 
+/// Sometimes it is more convenient to operate with enum types instead of
 /// integral values. For example, the custom protocol message carries information
 /// of how to configure some external serial port, and one of the values is
 /// the baud rate. In order not to impose too much overhead on I/O link, the
@@ -450,12 +450,12 @@
 /// using BitmaskField = comms::field::BitmaskValue<MyFieldBase>;
 /// @endcode
 /// By default the underlying storage type of the comms::field::BitmaskValue is
-/// @b unsigned, which makes the default serialisation length to be 
+/// @b unsigned, which makes the default serialisation length to be
 /// @b sizeof(unsigned). The modification of the underlying storage type as
 /// well as serialisation length can be done using comms::option::def::FixedLength
 /// option (see @ref sec_field_tutorial_int_value_fixed_length). The underlying
 /// type will always be some unsigned integral type. If the serialisation length
-/// is specified to be 1 byte, the underlying storage type is @b std::uint8_t, 
+/// is specified to be 1 byte, the underlying storage type is @b std::uint8_t,
 /// if the serialisation length is 2 bytes, the underlying storage type is @b std::uint16_t,
 /// if the serialisation length is 3 or 4 bytes, the underlying storage type is
 /// @b std::uin32_t, etc...
@@ -476,27 +476,27 @@
 /// static_assert(std::is_same<BitmaskField_4bytes::ValueType, std::uint32_t>::value, "std::uint32_t type is expected");
 /// assert(BitmaskField_2bytes().length() == 4U);
 /// @endcode
-/// All the @ref sec_field_tutorial_common_options can also be used with 
+/// All the @ref sec_field_tutorial_common_options can also be used with
 /// comms::field::BitmaskValue.
 ///
 /// @subsection sec_field_tutorial_bitmask_value_reserved Reserved Bits
 /// Quite often the bitmask fields contain reserved bits, which must preserve
-/// some values (usually 0). The comms::field::BitmaskValue fields support 
+/// some values (usually 0). The comms::field::BitmaskValue fields support
 /// usage of @ref comms::option::def::BitmaskReservedBits alias option. The template
 /// parameters of the option specify mask for reserved bits as well as their
 /// expected values. The check for the reserved bits values is performed inside
 /// @b comms::field::BitmaskValue::valid() member function.
 /// @code
-/// using MyBitmask = 
+/// using MyBitmask =
 ///     comms::field::BitmaskValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::FixedLength<1>,
 ///         comms::option::def::BitmaskReservedBits<0x2, 0> // Second bit is reserved and must be 0
 ///     >;
 /// @endcode
 ///
 /// @subsection sec_field_tutorial_bitmask_value_names Bit Names
-/// Quite often there is a need to provide names for the bits in the 
+/// Quite often there is a need to provide names for the bits in the
 /// comms::field::BitmaskValue field. It is possible to define it as external
 /// independent enum. However, it may be convenient to define it as internal
 /// type. It is possible to do by inheriting from appropriate comms::field::BitmaskValue
@@ -504,7 +504,7 @@
 /// @code
 /// struct MyBitmask : public
 ///     comms::field::BitmaskValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::FixedLength<1>,
 ///         comms::option::def::BitmaskReservedBits<0x2, 0> // Second bit is reserved and must be 0
 ///     >
@@ -516,9 +516,9 @@
 /// @code
 /// struct MyBitmask : public
 ///     comms::field::BitmaskValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::FixedLength<1>,
-///         comms::option::def::BitmaskReservedBits<0x2, 0> 
+///         comms::option::def::BitmaskReservedBits<0x2, 0>
 ///     >
 /// {
 ///     enum BitIdx
@@ -535,11 +535,11 @@
 /// }
 /// @endcode
 /// @b NOTE, that provided names have found their way to @b BitIdx enum type, and
-/// got prefixed with @b BitIdx_. This indices may be used with 
+/// got prefixed with @b BitIdx_. This indices may be used with
 /// comms::field::BitmaskValue::getBitValue() and comms::field::BitmaskValue::setBitValue()
 /// member functions.
 ///
-/// Also note, that there is automatically generated @b BitIdx_numOfValues 
+/// Also note, that there is automatically generated @b BitIdx_numOfValues
 /// value to indicate end of the names list.
 ///
 /// Due to the fact that the provided bit names may have @b =val suffixes, it
@@ -550,7 +550,7 @@
 /// @code
 /// struct MyBitmask : public
 ///     comms::field::BitmaskValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::FixedLength<1>,
 ///         comms::option::def::BitmaskReservedBits<0x2, 0> // Second bit is reserved and must be 0
 ///     >
@@ -563,9 +563,9 @@
 /// @code
 /// struct MyBitmask : public
 ///     comms::field::BitmaskValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::FixedLength<1>,
-///         comms::option::def::BitmaskReservedBits<0x2, 0> 
+///         comms::option::def::BitmaskReservedBits<0x2, 0>
 ///     >
 /// {
 ///     enum BitIdx {...}
@@ -586,7 +586,7 @@
 /// @code
 /// struct MyBitmask : public
 ///     comms::field::BitmaskValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::FixedLength<1>,
 ///         comms::option::def::BitmaskReservedBits<0xf0, 0> // 4 MSBs are reserved
 ///     >
@@ -595,9 +595,9 @@
 /// }
 /// @endcode
 /// <b style="color:red">WARNING:</b> Some compilers, such as @b clang or earlier
-/// versions of @b gcc (v4.9 and earlier) may have problems compiling the 
+/// versions of @b gcc (v4.9 and earlier) may have problems compiling the
 /// #COMMS_BITMASK_BITS_ACCESS() and #COMMS_BITMASK_BITS_SEQ() macros
-/// even though they contain valid C++11 code. If the compilation failure 
+/// even though they contain valid C++11 code. If the compilation failure
 /// happens and the bitmask definition class is @b NOT a template one (like
 /// in the example above), then try to substitute the used macros with
 /// #COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE() and #COMMS_BITMASK_BITS_SEQ_NOTEMPLATE()
@@ -605,7 +605,7 @@
 /// @code
 /// struct MyBitmask : public
 ///     comms::field::BitmaskValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::FixedLength<1>,
 ///         comms::option::def::BitmaskReservedBits<0xf0, 0> // 4 MSBs are reserved
 ///     >
@@ -620,16 +620,16 @@
 /// template <typename... TExtraOptions>
 /// class MyBitmask : public
 ///     comms::field::BitmaskValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::FixedLength<1>,
 ///         comms::option::def::BitmaskReservedBits<0xf0, 0>, // 4 MSBs are reserved
 ///         TExtraOptions...
 ///     >
 /// {
 ///     // Duplicate base class type
-///     using Base = 
+///     using Base =
 ///         comms::field::BitmaskValue<
-///             MyFieldBase, 
+///             MyFieldBase,
 ///             comms::option::def::FixedLength<1>,
 ///             comms::option::def::BitmaskReservedBits<0xf0, 0>, // 4 MSBs are reserved
 ///             TExtraOptions...
@@ -643,7 +643,7 @@
 /// @b NOTE, that @b COMMS library also defines @b COMMS_MUST_DEFINE_BASE in
 /// case the base class definition is needed (going to be used). If the developed
 /// application is going to be multi-platform and compiled with various compilers
-/// (some of which may warn about unused private type) it is possible to use 
+/// (some of which may warn about unused private type) it is possible to use
 /// the defined symbol to add / remove the definition of the @b Base member type.
 /// @code
 /// template <typename... TExtraOptions>
@@ -660,7 +660,7 @@
 /// @section sec_field_tutorial_bitfield Bitfield Fields
 /// Many communication protocols try to pack multiple independent values into
 /// a one or several bytes to save traffic on I/O link. For example, to encode
-/// baud rate from example in @ref sec_field_tutorial_enum_value section, only 
+/// baud rate from example in @ref sec_field_tutorial_enum_value section, only
 /// 3 bits are needed (values [0 - 6]). The serial port configuration may
 /// also require parity information, which may have only "None", "Even", and "Odd"
 /// values:
@@ -693,9 +693,9 @@
 /// COMMS library provides comms::field::Bitfield field for this purpose.
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-/// using SerialConfigField = 
+/// using SerialConfigField =
 ///     comms::field::Bitfield<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         std::tuple<
 ///             comms::field::EnumValue<MyFieldBase, Baud, comms::option::def::FixedBitLength<3> >,
 ///             comms::field::EnumValue<MyFieldBase, Parity, comms::option::def::FixedBitLength<2> >,
@@ -704,7 +704,7 @@
 ///     >;
 /// @endcode
 /// Please pay attention to the following details:
-/// @li The bitfield members are bundled in 
+/// @li The bitfield members are bundled in
 ///     <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a>
 ///     and passed as the second template parameter.
 /// @li The serialisation length of every bitfield member is specified in bits using
@@ -716,8 +716,8 @@
 /// @li The member of the bitfield may be any numeric field (comms::field::IntValue,
 ///     comms::field::EnumValue, and comms::field::BitmaskValue), that support
 ///     @ref comms::option::def::FixedBitLength option.
-/// 
-/// Every member of the bitfield may use all the supported options. The 
+///
+/// Every member of the bitfield may use all the supported options. The
 /// comms::field::Bitfield itself may receive only options listed in its class
 /// description.
 ///
@@ -733,7 +733,7 @@
 /// baudField.value() = Baud_115200; // =6
 /// parityField.value() = Parity_Even; // =2
 /// flagsField.value() = 0x2;
-/// 
+///
 /// std::vector<std::uint8_t> outData; // Pretend output buffer
 /// auto writeIter = std::back_inserter(outData);
 /// auto es = baud.write(writeIter, outData.max_size());
@@ -768,7 +768,7 @@
 ///         FieldIdx_flags,
 ///         FieldIdx_numOfValues
 ///     };
-/// 
+///
 ///     // Accessor to "baud" field
 ///     auto field_baud() -> decltype(std::get<FieldIdx_baud>(value()))
 ///     {
@@ -850,15 +850,15 @@
 ///     COMMS_FIELD_MEMBERS_ACCESS(baud, parity, flags);
 /// }
 /// @endcode
-/// In fact @ref COMMS_FIELD_MEMBERS_NAMES() is implemented as the wrapper 
+/// In fact @ref COMMS_FIELD_MEMBERS_NAMES() is implemented as the wrapper
 /// around @ref COMMS_FIELD_MEMBERS_ACCESS().
-///     
+///
 /// @section sec_field_tutorial_bundle Bundle Fields
 /// There are cases when multiple independent fields need to be bundled into
 /// a single field and expose the required interface of reading, writing,
 /// calculating length, checking field's contents validity, and bringing field's
 /// value into a consistent state. It may be required
-/// when a message contains sequence (see @ref sec_field_tutorial_array_list) 
+/// when a message contains sequence (see @ref sec_field_tutorial_array_list)
 /// of such bundles/structs. The COMMS library provides comms::field::Bundle
 /// field for this purpose. It is quite similar to comms::field::Bitfield described
 /// earlier. The difference is that every member field
@@ -900,7 +900,7 @@
 /// auto es = baud.write(writeIter, outData.max_size());
 /// assert(es == comms::ErrorStatus::Success); // No error is expected
 /// assert(outData.size() == 4); // Expected 2 bytes for IntValue, 1 byte for EnumValue and 1 byte for BitmaskValue
-/// @endcode 
+/// @endcode
 /// The default behaviour of comms::field::Bundle may be extended with options.
 /// Please refer to the class documentation for the list of supported options.
 ///
@@ -911,7 +911,7 @@
 /// class MyBundle : public comms::field::Bundle<...>
 /// {
 ///     // (Re)definition of the base class as inner Base type is
-///     // required by COMMS_FIELD_MEMBERS_NAMES() macro. 
+///     // required by COMMS_FIELD_MEMBERS_NAMES() macro.
 ///     using Base = comms::field::Bundle<...>;
 /// public:
 ///     COMMS_FIELD_MEMBERS_NAMES(member1, member2, member3);
@@ -920,7 +920,7 @@
 /// It will create similar enum and convenience access functions, just
 /// like described in previous @ref sec_field_tutorial_bitfield section.
 ///
-/// Some @b bundle fields in some protocols may contain a field, which 
+/// Some @b bundle fields in some protocols may contain a field, which
 /// holds a <b>remaining serialization length</b> of the following member fields
 /// in the bundle. The @b COMMS library has a built-in support for such cases,
 /// it requires usage of @ref comms::option::def::RemLengthMemberField option to
@@ -932,8 +932,8 @@
 ///         MyFieldBase,
 ///         std::tuple<
 ///             comms::field::IntValue<FieldBase, std::uint8_t>, // remaing length info
-///             SomeField1, 
-///             SomeField2, 
+///             SomeField1,
+///             SomeField2,
 ///             SomeField3
 ///         >,
 ///         comms::option::def::RemLengthMemberField<0>, // Index of the remaining length field is 0
@@ -954,7 +954,7 @@
 /// sequence of raw bytes
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-/// using MySimpleList = 
+/// using MySimpleList =
 ///     comms::field::ArrayList<
 ///         MyFieldBase,
 ///         std::uint8_t
@@ -963,20 +963,20 @@
 /// as well as using sequence of any fields defined in comms::field namespace
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-/// using MyComplexList = 
+/// using MyComplexList =
 ///     comms::field::ArrayList<
 ///         MyFieldBase,
-///         MyBundle<> // Complex bundle field, defined in previous section 
+///         MyBundle<> // Complex bundle field, defined in previous section
 ///     >;
 /// @endcode
 /// By default the read operation on comms::field::ArrayList continues as
 /// long as there is data left in input buffer, and write operation serialises
-/// all the data stored in internal vector. These default behaviours can be 
+/// all the data stored in internal vector. These default behaviours can be
 /// changed using options described below.
 ///
 /// @subsection sec_field_tutorial_array_list_size_prefix Prefixing with Size Information
 /// Very often variable size sequences of raw bytes or other fields get
-/// prefixed with size information. The default behaviour of the 
+/// prefixed with size information. The default behaviour of the
 /// comms::field::ArrayList is to read until the end of the buffer. Having
 /// sequence prefixed with number of elements to follow, allows earlier
 /// termination of the read operation, and allows having other independent
@@ -985,13 +985,13 @@
 /// to specify type of the size field (usually a variant of comms::field::IntValue)
 /// to be serialised before the contents of comms::field::ArrayList being
 /// serialised. For example, the serialised raw bytes sequence is prefixed with
-/// 2 bytes of size information: 
+/// 2 bytes of size information:
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///
 /// using SizePrefixField = comms::field::IntValue<MyFieldBase, std::uint16_t>;
 ///
-/// using MyList = 
+/// using MyList =
 ///     comms::field::ArrayList<
 ///         MyFieldBase,
 ///         std::uint8_t,
@@ -1005,14 +1005,14 @@
 ///
 /// MyList myList;
 /// const auto* readIter = &InputBuffer[0];
-/// auto es = myList.read(readIter, InputBufferSize); 
+/// auto es = myList.read(readIter, InputBufferSize);
 /// assert(es == comms::ErrorStatus::Success); // No error is expected;
 /// assert(myList.value().size() == 3U); // Reading only 3 elements
 /// assert((myList.value())[0] == 0xa); // First element
-/// assert((myList.value())[1] == 0xb); // Second element 
+/// assert((myList.value())[1] == 0xb); // Second element
 /// assert((myList.value())[2] == 0xc); // Third element
 /// assert(std::distance(&InputBuffer[0], readIter) == 5); // Expected to consume 2 first bytes of the size + ,
-///                                                        // number of elements size specified (=3). Overall 5 bytes consumed 
+///                                                        // number of elements size specified (=3). Overall 5 bytes consumed
 ///
 ///
 /// std::vector<std::uint8_t> outputBuffer;
@@ -1022,14 +1022,14 @@
 /// assert(outputBuffer.size() == 5U); // Expected to write 5 bytes, 2 bytes for size, and 3 for elements.
 /// assert(std::equal(outputBuffer.begin(), outputBuffer.end(), std::begin(InputBuffer)); // The output must be equal to
 /// @endcode
-/// 
+///
 /// Some protocols prefix the sequence with <b>serialisation length</b> rather
-/// than <b>number of elements to follow</b>. In this case the 
+/// than <b>number of elements to follow</b>. In this case the
 /// @ref comms::option::def::SequenceSerLengthFieldPrefix option needs to be used
 /// instead of @ref comms::option::def::SequenceSizeFieldPrefix.
 ///
 /// @subsection sec_field_tutorial_array_list_elem_length_prefix Element Serialisation Length Prefix
-/// Also some protocols, for easier exchange of lists between nodes that use 
+/// Also some protocols, for easier exchange of lists between nodes that use
 /// different versions of the same protocol, may require prefixing <b>every
 /// element</b> of the list with its serialisation length. In this case
 /// @ref comms::option::def::SequenceElemSerLengthFieldPrefix option may be used.
@@ -1040,14 +1040,14 @@
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///
 /// using SizePrefixField = comms::field::IntValue<MyFieldBase, std::uint16_t>;
-/// using ElemLengthPrefixField = 
+/// using ElemLengthPrefixField =
 ///     comms::field::IntValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         std::uint32_t,
 ///         comms::option::def::VarLength<1, 4> // variable length encoding up to 4 bytes
 ///     >;
 ///
-/// using MyList = 
+/// using MyList =
 ///     comms::field::ArrayList<
 ///         MyFieldBase,
 ///         MyBundle, // some bundle of fields
@@ -1057,8 +1057,8 @@
 /// @endcode
 /// When every element of the list is of fixed size, i.e. has the same serialisation
 /// length, it becomes redundant to prefix @b every element with its length.
-/// Instead, only first element can be prefixed with one, and all others may 
-/// reuse the same information. To achieve such behaviour 
+/// Instead, only first element can be prefixed with one, and all others may
+/// reuse the same information. To achieve such behaviour
 /// @ref comms::option::def::SequenceElemFixedSerLengthFieldPrefix should be used instead.
 /// For example, the list of <b>fixed length</b> bundles prefixed with 1 byte specifying number of
 /// elements to follow, and with first element prefixed with 1 byte containing its serialisation length
@@ -1069,7 +1069,7 @@
 /// using SizePrefixField = comms::field::IntValue<MyFieldBase, std::uint8_t>;
 /// using ElemLengthPrefixField = comms::field::IntValue<MyFieldBase, std::uint8_t>;
 ///
-/// using MyList = 
+/// using MyList =
 ///     comms::field::ArrayList<
 ///         MyFieldBase,
 ///         comms::field::Bundle<
@@ -1086,12 +1086,12 @@
 ///
 /// @subsection sec_field_tutorial_array_list_detached_size_prefix Detached Size Information
 /// There may be cases when size information is detached from the sequence itself, i.e.
-/// there are other fields between the size field and the sequence itself. 
+/// there are other fields between the size field and the sequence itself.
 /// For example, the protocol specifies the following:
 /// | Byte Offset | Length | Description |
 /// |:-----------:|:------:|:-----------:|
 /// | 0           | 1      | Number of elements in sequence |
-/// | 1           | 1      | Some flags bitmask | 
+/// | 1           | 1      | Some flags bitmask |
 /// | 2           | 2 * N  | Sequence of 2 byte integral values |
 ///
 /// In this case the option @ref comms::option::def::SequenceSizeFieldPrefix can NOT
@@ -1100,13 +1100,13 @@
 /// is successfully read, its value must be forced upon the sequence somehow
 /// before the read operation of the sequence takes place. To help with such
 /// forcing, @ref comms::option::def::SequenceSizeForcingEnabled option was introduced.
-/// When this option used, the comms::field::ArrayList::forceReadElemCount member 
+/// When this option used, the comms::field::ArrayList::forceReadElemCount member
 /// function of the field may be used to force number of elements that follow.
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 /// using SeqSizeField = comms::field::IntValue<MyFieldBase, std::uint8_t>;
 /// using BitmaskField = comms::field::BitmaskValue<MyFieldBase, comms::option::def::FixedLength<1> >;
-/// using MyList = 
+/// using MyList =
 ///     comms::field::ArrayList<
 ///         MyFieldBase,
 ///         comms::field::IntValue<MyFieldBase, std::uint16_t>,
@@ -1122,10 +1122,10 @@
 /// auto remSize = InputBufferSize;
 ///
 /// SeqSizeField sizeField;
-/// auto es = sizeField.read(readIter, remSize); 
+/// auto es = sizeField.read(readIter, remSize);
 /// assert(es == comms::ErrorStatus::Success); // No error is expected;
 /// assert(sizeField.value() == 3U); // First byte should be read;
-/// 
+///
 /// remSize -= sizeField.length();
 /// BitmaskField bitmask;
 /// es = bitmask.read(readIter, remSize);
@@ -1139,7 +1139,7 @@
 /// assert(es == comms::ErrorStatus::Success); // No error is expected;
 /// assert(myList.value().size() == 3U); // Reading only 3 elements
 /// assert((myList.value())[0] == 0xa); // First element
-/// assert((myList.value())[1] == 0xb); // Second element 
+/// assert((myList.value())[1] == 0xb); // Second element
 /// assert((myList.value())[2] == 0xc); // Third element
 /// @endcode
 ///
@@ -1150,7 +1150,7 @@
 /// maintain data exchange compatibility with earlier versions of the protocol,
 /// which may be used on the other side of the communication link. The @b COMMS
 /// library allows forcing the serialisation length of a single element when
-/// such information becomes available. It is similar to 
+/// such information becomes available. It is similar to
 /// @ref sec_field_tutorial_array_list_detached_size_prefix. The option
 /// @ref comms::option::def::SequenceElemLengthForcingEnabled needs to be used when
 /// defining the field type, and @ref comms::field::ArrayList::forceReadElemLength()
@@ -1162,16 +1162,16 @@
 ///
 /// // Field used to serialise serialisation length of a single element in the list
 /// using ElemLengthPrefixField = comms::field::IntValue<MyFieldBase, std::uint8_t>;
-/// 
+///
 /// // Field used to serialise number of elements in the list
 /// using SizePrefixField = comms::field::IntValue<MyFieldBase, std::uint8_t>;
 ///
-/// using MyList = 
+/// using MyList =
 ///     comms::field::ArrayList<
 ///         MyFieldBase,
 ///         comms::field::IntValue< // 3 bytes integers
-///             MyFieldBas, 
-///             std::uint32_t, 
+///             MyFieldBas,
+///             std::uint32_t,
 ///             comms::option::def::FixedLength<3> >,
 ///         comms::option::def::SequenceSizeFieldPrefix<SizePrefixField>, // 1 byte prefix
 ///         comms::option::def::SequenceElemLengthForcingEnabled // enable forcing of the element length
@@ -1180,7 +1180,7 @@
 /// static const std::uint8_t InputBuffer[] = {
 ///     0x4, // single element serialisation length
 ///     0x2, // number of elements in the list,
-///     0xa, 0xa, 0xa, 0x0, // first element + padding 
+///     0xa, 0xa, 0xa, 0x0, // first element + padding
 ///     0xb, 0xb, 0xb, 0x0 // second element + padding
 /// }
 /// static const auto InputBufferSize = std::extent<decltype(InputBuffer)>::value;
@@ -1193,11 +1193,11 @@
 /// assert(lengthPrefix.value() == 4U);
 ///
 /// myList.forceReadElemLength(lengthPrefix.value()); // force serialisation length of the single element
-/// auto es = myList.read(readIter, InputBufferSize - lengthPrefix.length()); 
+/// auto es = myList.read(readIter, InputBufferSize - lengthPrefix.length());
 /// assert(es == comms::ErrorStatus::Success); // No error is expected;
 /// assert(myList.value().size() == 2U); // Reading only 2 elements
 /// assert((myList.value())[0] == 0x0a0a0a); // First element
-/// assert((myList.value())[1] == 0x0b0b0b); // Second element 
+/// assert((myList.value())[1] == 0x0b0b0b); // Second element
 /// assert(std::distance(&InputBuffer[0], readIter) == 10); // Expected to consume in the
 /// @endcode
 ///
@@ -1209,7 +1209,7 @@
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 /// using TermField = comms::field::IntValue<MyFieldBase, std::uint8_t>; // Default value is 0.
-/// using MyList = 
+/// using MyList =
 ///     comms::field::ArrayList<
 ///         MyFieldBase,
 ///         comms::field::IntValue<MyFieldBase, std::uint8_t>,
@@ -1228,10 +1228,10 @@
 /// assert(es == comms::ErrorStatus::Success); // No error is expected;
 /// assert(myList.value().size() == 4U); // Reading only 4 elements, terminating 0 is not included
 /// assert((myList.value())[0] == 0x1); // First element
-/// assert((myList.value())[1] == 0x2); // Second element 
+/// assert((myList.value())[1] == 0x2); // Second element
 /// assert((myList.value())[2] == 0x3); // Third element
 /// assert((myList.value())[4] == 0x4); // Fourth element
-/// assert(std::distance(&InputBuffer[0], readIter) == 5); // Expected to consume all bytes including termination one 
+/// assert(std::distance(&InputBuffer[0], readIter) == 5); // Expected to consume all bytes including termination one
 /// @endcode
 ///
 /// @subsection sec_field_tutorial_array_list_fixed_size Fixed Size Sequences
@@ -1242,7 +1242,7 @@
 /// values.
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-/// using MyList = 
+/// using MyList =
 ///     comms::field::ArrayList<
 ///         MyFieldBase,
 ///         comms::field::IntValue<MyFieldBase, std::uint16_t>,
@@ -1261,10 +1261,10 @@
 /// assert(es == comms::ErrorStatus::Success); // No error is expected;
 /// assert(myList.value().size() == 4U); // Reading only 4 elements
 /// assert((myList.value())[0] == 0x1); // First element
-/// assert((myList.value())[1] == 0x2); // Second element 
+/// assert((myList.value())[1] == 0x2); // Second element
 /// assert((myList.value())[2] == 0x3); // Third element
 /// assert((myList.value())[4] == 0x4); // Fourth element
-/// assert(std::distance(&InputBuffer[0], readIter) == 8); // Consumed only 4 element (2 bytes each) 
+/// assert(std::distance(&InputBuffer[0], readIter) == 8); // Consumed only 4 element (2 bytes each)
 /// @endcode
 /// @b NOTE, that comms::option::def::SequenceFixedSize option insures existence of
 /// the right number of elements "on the wire", but doesn't influence number
@@ -1285,7 +1285,7 @@
 /// @endcode
 ///
 /// @subsection sec_field_tutorial_array_list_storage Value Storage
-/// By default, the internal data is stored using 
+/// By default, the internal data is stored using
 /// <a href="http://en.cppreference.com/w/cpp/container/vector">std::vector</a>.
 /// @code
 /// MySimpleList simpleList; // defined above
@@ -1295,7 +1295,7 @@
 /// auto& complexListStorage = complexList.value(); // reference to std::vector<MyBundle>;
 /// @endcode
 /// This behaviour can be modified using extra options such as @ref
-/// comms::option::app::CustomStorageType, @ref comms::option::app::FixedSizeStorage, 
+/// comms::option::app::CustomStorageType, @ref comms::option::app::FixedSizeStorage,
 /// @ref comms::option::app::OrigDataView, or @ref comms::option::app::SequenceFixedSizeUseFixedSizeStorage.
 /// @b HOWEVER, these options do not influence the way how list fields are being
 /// serialised, they influence the way how list value has been stored. As the result,
@@ -1306,7 +1306,7 @@
 /// template <typename... TExtraOptions>
 /// using MyList = comms::field::ArrayList<..., TExtraOptions...>;
 /// @endcode
-/// 
+///
 /// All the @ref sec_field_tutorial_common_options are also applicable to
 /// comms::field::ArrayList field.
 ///
@@ -1319,14 +1319,14 @@
 /// @endcode
 /// It is very similar to comms::field::ArrayList
 /// it terms of value storage, read/write operations, and supported options.
-/// By default the value is stored as 
+/// By default the value is stored as
 /// <a href="http://en.cppreference.com/w/cpp/string/basic_string">std::string</a>.
 /// @code
 /// MyString myStr;
 /// auto& myStrStorage = myStr.value(); // Reference to std::string.
 /// @endcode
 /// Just like described in @ref sec_field_tutorial_array_list_storage section
-/// above the same options can be used to modify the storage type of the 
+/// above the same options can be used to modify the storage type of the
 /// comms::field::String field, but should @b NOT be used in protocol definition, but
 /// instead there should be an ability to provide extra options.
 /// @code
@@ -1338,10 +1338,10 @@
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 /// using SizePrefixField = comms::field::IntValue<MyFieldBase, std::uint8_t>;
-/// using MyString = 
+/// using MyString =
 ///     comms::field::String<
-///         MyFieldBase, 
-///         comms::option::def::SequenceSizeFieldPrefix<SizePrefixField> 
+///         MyFieldBase,
+///         comms::option::def::SequenceSizeFieldPrefix<SizePrefixField>
 ///     >;
 ///
 /// MyString myStr;
@@ -1366,10 +1366,10 @@
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 /// using ZeroTermField = comms::field::IntValue<MyFieldBase, std::uint8_t>; // default value is 0
-/// using MyString = 
+/// using MyString =
 ///     comms::field::String<
-///         MyFieldBase, 
-///         comms::option::def::SequenceTerminationFieldSuffix<ZeroTermField> 
+///         MyFieldBase,
+///         comms::option::def::SequenceTerminationFieldSuffix<ZeroTermField>
 ///     >;
 ///
 /// MyString myStr;
@@ -1396,11 +1396,11 @@
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 /// using ZeroTermField = comms::field::IntValue<MyFieldBase, std::uint8_t>; // default value is 0
-/// using MyString = 
+/// using MyString =
 ///     comms::field::String<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::SequenceFixedSize<31>,
-///         comms::option::def::SequenceTrailingFieldSuffix<ZeroTermField> 
+///         comms::option::def::SequenceTrailingFieldSuffix<ZeroTermField>
 ///     >;
 ///
 /// MyString myStr;
@@ -1418,11 +1418,11 @@
 /// assert(outputBuf[4] == 'o');
 /// assert(outputBuf[5] == 0U);
 /// ...
-/// assert(outputBuf[31] == 0U);  
+/// assert(outputBuf[31] == 0U);
 /// @endcode
 /// @b NOTE, that the example above uses @ref comms::option::def::SequenceTrailingFieldSuffix
 /// option, rather than @ref comms::option::def::SequenceTerminationFieldSuffix.
-/// The options slightly differ. The "termination" one 
+/// The options slightly differ. The "termination" one
 /// (@ref comms::option::def::SequenceTerminationFieldSuffix) forces the field to
 /// stop reading when termination value is encountered, while "trailing" one
 /// (@ref comms::option::def::SequenceTrailingFieldSuffix) doesn't check what it reads,
@@ -1437,31 +1437,31 @@
 /// Just like with @ref comms::field::ArrayList, it is possible to use static
 /// storage for fixed size strings:
 /// @code
-/// using MyString = 
+/// using MyString =
 ///     comms::field::String<
-///         ..., 
+///         ...,
 ///         comms::option::def::SequenceFixedSize<16>,
-///         comms::option::app::SequenceFixedSizeUseFixedSizeStorage 
+///         comms::option::app::SequenceFixedSizeUseFixedSizeStorage
 ///     >;
 /// @endcode
-/// or 
+/// or
 /// @code
-/// using MyString = 
+/// using MyString =
 ///     comms::field::String<
-///         ..., 
+///         ...,
 ///         comms::option::def::SequenceFixedSize<16>,
-///         comms::option::app::FixedSizeStorage<16> 
+///         comms::option::app::FixedSizeStorage<16>
 ///     >;
 /// @endcode
 /// HOWEVER, the @ref comms::option::app "app" options should be used in protocol
 /// definition, only in application customization.
 ///
 /// @section sec_field_tutorial_fp_value Floating Point Value Fields
-/// Floating point value fields (comms::field::FloatValue) are very similar to 
-/// @ref sec_field_tutorial_int_value, but use @b float or @b double as its 
-/// internal storage type. They abstract the IEEE 754 floating point 
+/// Floating point value fields (comms::field::FloatValue) are very similar to
+/// @ref sec_field_tutorial_int_value, but use @b float or @b double as its
+/// internal storage type. They abstract the IEEE 754 floating point
 /// values, which are serialised "as is" with either big or little endian
-/// encoding. The floating point value fields also support 
+/// encoding. The floating point value fields also support
 /// @ref sec_field_tutorial_int_value_units conversions.
 ///
 /// @section sec_field_tutorial_optional Optional Fields
@@ -1472,25 +1472,25 @@
 /// data in the input buffer it exists, and missing otherwise. The COMMS
 /// library provides comms::field::Optional which is a mere wrapper around
 /// other fields and provides an ability to set the optional state of the field.
-/// Let's do the example of the int32 field existence based on bit 0 in processing bitmask: 
+/// Let's do the example of the int32 field existence based on bit 0 in processing bitmask:
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 /// using FlagsField = comms::field::BitmaskValue<MyFieldBase, comms::option::def::FixedLength<1> >;
-/// using OptField = 
+/// using OptField =
 ///     comms::field::Optional<
 ///         comms::field::IntValue<MyFieldBase, std::int32_t>
 ///     >;
 ///
 /// FlagsField flags;
 /// OptField optField;
-/// 
+///
 /// // Common read function for multiple buffers
-/// auto readFunc = 
+/// auto readFunc =
 ///     [&flags, &optField](const std::uint8_t*& iter, std::size_t len)
 ///     {
 ///         auto es = flags.read(iter, len);
 ///         assert(es == comms::ErrorStatus::Success); // No error is expected;
-/// 
+///
 ///         optField.setMissing();
 ///         if ((flags.value() & 0x1) != 0) {
 ///             optField.setExists();
@@ -1499,7 +1499,7 @@
 ///         es = optField.read(iter, len - flags.length());
 ///         assert(es == comms::ErrorStatus::Success); // No error is expected;
 ///     };
-///         
+///
 ///
 /// static const std::uint8_t InputBuffer1[] = {
 ///     0x1, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf
@@ -1523,17 +1523,17 @@
 /// optField.field().value() = 0;
 /// readIter = &InputBuffer2[0];
 /// readFunc(readIter, InputBuffer2Size);
-/// assert(std::distance(&InputBuffer2[0], readIter) == 1); // Expected to read only 1 byte of flags 
+/// assert(std::distance(&InputBuffer2[0], readIter) == 1); // Expected to read only 1 byte of flags
 ///                                                         // skipping read of int32_t int value, because
 ///                                                         // bit 0 in flags is cleared.
 /// assert(optField.field().value() == 0); // value is expected NOT to be updated;
-/// @endcode 
+/// @endcode
 /// Note, that default mode for the optional field is "tentative", which is
 /// updated after read operation:
 /// @code
 /// OptField optField1;
 /// assert(optField1.getMode() == comms::field::OptionalMode::Tentative); // Default mode is tentative
-/// 
+///
 /// static const std::uint8_t InputBuffer[] = {
 ///     0x11, 0x22, 0x33, 0x44
 /// }
@@ -1557,7 +1557,7 @@
 /// providing @ref comms::option::def::DefaultOptionalMode option with selected default mode
 /// or @ref comms::option::def::MissingByDefault / @ref comms::option::def::ExistsByDefault aliases.
 /// @code
-/// using OptField = 
+/// using OptField =
 ///     comms::field::Optional<
 ///         comms::field::IntValue<MyFieldBase, std::int32_t>,
 ///         comms::option::def::MissingByDefault // Set default mode to be "missing"
@@ -1569,7 +1569,7 @@
 /// receives @ref comms::option::def::ExistsBetweenVersions option to specify the
 /// numeric versions of the protocol between which the field exists.
 /// @code
-/// using OptField = 
+/// using OptField =
 ///     comms::field::Optional<
 ///         comms::field::IntValue<MyFieldBase, std::int32_t>,
 ///         comms::option::def::MissingByDefault, // Set default mode to be "missing"
@@ -1579,7 +1579,7 @@
 /// If the field has been introduced in one of the version, but hasn't been
 /// removed yet, it is possible to use @ref comms::option::def::ExistsSinceVersion alias
 /// to @ref comms::option::def::ExistsBetweenVersions. Or the opposite, if the field
-/// has been introduced in the first version, but deprecated and removed in the 
+/// has been introduced in the first version, but deprecated and removed in the
 /// later one, use @ref comms::option::def::ExistsUntilVersion alias.
 ///
 /// Usage of such version control option will automatically mark the optional
@@ -1587,12 +1587,12 @@
 /// the @b setVersion() member function.
 ///
 /// @section sec_field_tutorial_variant Variant Fields
-/// Some protocols may require usage of heterogeneous fields or lists of 
+/// Some protocols may require usage of heterogeneous fields or lists of
 /// heterogeneous fields, i.e. the ones that can be of multiple types. Good example
-/// would be a list of @b properties, where every property is a key/value pair or 
+/// would be a list of @b properties, where every property is a key/value pair or
 /// a TLV (type/length/value) triplet. The
 /// key (or type) is usually a numeric ID of the property, while value can be any
-/// field of any length. 
+/// field of any length.
 /// As an example for the key/value pairs let's define three value types:
 /// @li Unsigned integer with length of only 1 byte (@b Value1)
 /// @li Unsigned integer with length of 4 bytes (@b Value2)
@@ -1605,9 +1605,9 @@
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 /// using Value1 = comms::field::IntValue<MyFieldBase, std::uint8_t>;
 /// using Value2 = comms::field::IntValue<MyFieldBase, std::uint32_t>;
-/// using Value3 = 
+/// using Value3 =
 ///     comms::field::String<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::SequenceSizeFieldPrefix<
 ///             comms::field::IntValue<
 ///                 MyFieldBase,
@@ -1638,20 +1638,20 @@
 ///         comms::option::def::ValidNumValueRange<(int)TId, (int)TId>,
 ///         comms::option::def::FailOnInvalid<>
 ///     >;
-/// 
+///
 /// using Key1 = KeyField<KeyId::Key1>;
 /// using Key2 = KeyField<KeyId::Key2>;
 /// using Key3 = KeyField<KeyId::Key3>;
 /// @endcode
 /// Please pay attention to usage of @ref comms::option::def::FailOnInvalid option
-/// and having only single valid value in order to force failure 
+/// and having only single valid value in order to force failure
 /// of the @b read operation when the key doesn't match.
 ///
 /// Then the @b KeyX and its corresponding @b ValueX need to be bundled together
 /// as a single @b PropertyX field.
 /// @code
 /// template <typename TKey, typename TValue>
-/// class Property : public 
+/// class Property : public
 ///     comms::field::Bundle<
 ///         MyFieldBase,
 ///         std::tuple<
@@ -1673,7 +1673,7 @@
 /// above forms. The comms::field::Variant field class provides such an ability.
 /// As its second parameter it receives a tuple of supported types.
 /// @code
-/// class MyVariant : public 
+/// class MyVariant : public
 ///     comms::field::Variant<
 ///         MyFieldBase,
 ///         std::tuple<Property1, Property2, Property3>
@@ -1684,14 +1684,14 @@
 /// public:
 ///     COMMS_VARIANT_MEMBERS_NAMES(prop1, prop2, prop3);
 /// };
-/// @endcode 
-/// Similar to #COMMS_FIELD_MEMBERS_NAMES() macro for 
+/// @endcode
+/// Similar to #COMMS_FIELD_MEMBERS_NAMES() macro for
 /// @ref sec_field_tutorial_bundle, the #COMMS_VARIANT_MEMBERS_NAMES()
 /// macro generates the following convenience member enum and functions
 /// @code
 /// struct MyVariant : public comms::field::Variant<...>
 /// {
-///     // Enumerator to access fields 
+///     // Enumerator to access fields
 ///     enum FieldIdx {
 ///         FieldIdx_prop1,
 ///         FieldIdx_prop2,
@@ -1772,21 +1772,21 @@
 /// @endcode
 /// In this scenario, read operation on the list will invoke read operation of
 /// every @b MyVariant field, which in turn will try to perform read operation
-/// on @b Property1, @b Property2, and @b Property3 in the order of their 
+/// on @b Property1, @b Property2, and @b Property3 in the order of their
 /// definition inside the provided tuple. The read operation of the
 /// comms::field::Variant field type will stop when read operation of any
 /// of the contained types reports comms::ErrorStatus::Success as its status.
 /// That's why every @b key field needs to fail its @b read operation on
 /// invalid value.
 ///
-/// The extension of the key/value pairs example above to 
+/// The extension of the key/value pairs example above to
 /// TLV triplets is quite easy.
 /// @code
 /// // No need for length prefix for strings any more
 /// using Value3 = comms::field::String<MyFieldBase>;
 /// ...
 /// template <typename TKey, typename TValue>
-/// class Property : public 
+/// class Property : public
 ///     comms::field::Bundle<
 ///         MyFieldBase,
 ///         std::tuple<
@@ -1806,28 +1806,28 @@
 /// earlier in @ref sec_field_tutorial_bundle section. It informs the @b COMMS
 /// library about presence of the @b length value in the bundle, which will result
 /// in proper read length limitation for the value(s) to follow. Also in case
-/// the read of the following value(s) does not consume all the reported length, 
+/// the read of the following value(s) does not consume all the reported length,
 /// @b COMMS library will advance the read iterator to consume the remaining
 /// bytes resulting in read of the next field to be at correct location.
 ///
-/// The @b length field in example above contains @b remaining length 
+/// The @b length field in example above contains @b remaining length
 /// not including the field itself. Some protocols may include the length of
-/// the @b length field itself. If this is the case, just use 
-/// @ref comms::option::def::NumValueSerOffset option 
-/// (described in @ref sec_field_tutorial_int_value_ser_offset) 
-/// to add extra numeric offset to 
+/// the @b length field itself. If this is the case, just use
+/// @ref comms::option::def::NumValueSerOffset option
+/// (described in @ref sec_field_tutorial_int_value_ser_offset)
+/// to add extra numeric offset to
 /// be added when the field's value is written.
 /// @code
 /// template <typename TKey, typename TValue>
-/// class Property : public 
+/// class Property : public
 ///     comms::field::Bundle<
 ///         MyFieldBase,
 ///         std::tuple<
 ///             TKey,
 ///             comms::field::IntValue<
-///                 MyFieldBase, 
-///                 std::uint16_t, 
-///                 comms::option::def::NumValueSerOffset<sizeof(std::uint16_t)> 
+///                 MyFieldBase,
+///                 std::uint16_t,
+///                 comms::option::def::NumValueSerOffset<sizeof(std::uint16_t)>
 ///             >, // 2 byte value of remaining length
 ///             TValue
 ///         >,
@@ -1844,7 +1844,7 @@
 /// to create a dummy field with non-failing read to allow usage of unknown
 /// properties which can be introduced in later versions of the protocol.
 /// @code
-/// class UnknownProperty : public 
+/// class UnknownProperty : public
 ///     comms::field::Bundle<
 ///         MyFieldBase,
 ///         std::tuple<
@@ -1862,7 +1862,7 @@
 /// @endcode
 /// And put such property at the end of the supported types tuple for the variant field definition.
 /// @code
-/// struct MyVariant : public 
+/// struct MyVariant : public
 ///     comms::field::Variant<
 ///         MyFieldBase,
 ///         std::tuple<Property1, Property2, Property3, UnknownProperty>
@@ -1870,13 +1870,13 @@
 /// {
 ///     ...
 /// };
-/// @endcode 
-/// The default constructed comms::field::Variant object from the examples above 
+/// @endcode
+/// The default constructed comms::field::Variant object from the examples above
 /// has an "invalid" state, i.e. hasn't been initialized and doesn't contain any
 /// valid field. It can be changed by providing @ref comms::option::def::DefaultVariantIndex
 /// option.
 /// @code
-/// struct MyVariant : public 
+/// struct MyVariant : public
 ///     comms::field::Variant<
 ///         MyFieldBase,
 ///         std::tuple<Property1, Property2, Property3>,
@@ -1885,7 +1885,7 @@
 /// {
 ///     COMMS_VARIANT_MEMBERS_NAMES(prop1, prop2, prop3);
 /// };
-/// @endcode 
+/// @endcode
 /// When instantiating such @b MyVariant object, there is no need to perform
 /// initialization (construction) of the contained object.
 /// @code
@@ -1907,11 +1907,11 @@
 ///     COMMS_VARIANT_MEMBERS_ACCESS(prop1, prop2, prop3);
 /// }
 /// @endcode
-/// In fact #COMMS_VARIANT_MEMBERS_NAMES() is implemented as the wrapper 
+/// In fact #COMMS_VARIANT_MEMBERS_NAMES() is implemented as the wrapper
 /// around #COMMS_VARIANT_MEMBERS_ACCESS().
-/// 
+///
 /// @section sec_field_tutorial_common_options Common Options or Modifications for the Fields
-/// There are options that suitable only to numeric fields, such as 
+/// There are options that suitable only to numeric fields, such as
 /// comms::field::IntValue, comms::field::EnumValue, comms::field::BitmaskValue. @n
 /// There are options that suitable only for collection fields, such as
 /// comms::field::ArrayList, and comms::field::String.@n
@@ -1921,9 +1921,9 @@
 /// @subsection sec_field_tutorial_common_options_default_value Default Value for Default Construction
 /// There may be a case when default construction of the field object should
 /// assign some custom value to the field, which differ to the usual defaults, such
-/// as assigning 0 to numeric fields or empty string to a string field. 
-/// 
-/// One of the possible ways is to extend the defined field class and 
+/// as assigning 0 to numeric fields or empty string to a string field.
+///
+/// One of the possible ways is to extend the defined field class and
 /// set the required value in the constructor.
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
@@ -1962,10 +1962,10 @@
 /// };
 ///
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-/// using MyString = 
+/// using MyString =
 ///     comms::field::String<
-///         MyFieldBase, 
-///         comms::option::def::DefaultValueInitialiser<CustomStringInitaliser> 
+///         MyFieldBase,
+///         comms::option::def::DefaultValueInitialiser<CustomStringInitaliser>
 ///     >;
 ///
 /// MyString myStr; // Default construction
@@ -1980,13 +1980,13 @@
 /// to set default value for numeric fields. It is @ref comms::option::def::DefaultNumValue.
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-/// using MyInt = 
+/// using MyInt =
 ///     comms::field::IntValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         std::uint16_t,
-///         comms::option::def::DefaultNumValue<10> 
+///         comms::option::def::DefaultNumValue<10>
 ///     >;
-/// 
+///
 /// MyInt myInt;
 /// assert(myInt.value() == 10); // Custom default value is expected to be assigned
 /// @endcode
@@ -1996,8 +1996,8 @@
 /// value. Sometimes the default "read" functionality may be incorrect or
 /// incomplete. For example, let's
 /// define a "bundle" field with two members. The first one is a "bitmask", while
-/// the second one is optional 2 byte "int" value. The second member exists 
-/// only if least significant bit of the "bitmask" is not @b 0. In this case, 
+/// the second one is optional 2 byte "int" value. The second member exists
+/// only if least significant bit of the "bitmask" is not @b 0. In this case,
 /// the provided @b read() member function won't analyse the value of the
 /// read "bitmask" and won't modify "existing"/"missing" mode value of the
 /// optional field.
@@ -2006,7 +2006,7 @@
 /// definition and override the @b read() member function:
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-/// class MyBundle : public 
+/// class MyBundle : public
 ///     comms::field::Bundle<
 ///         MyFieldBase,
 ///         std::tuple<
@@ -2018,14 +2018,14 @@
 /// {
 ///     using Base = comms::field::Bundle<...>;
 /// public:
-///     // Provide convenience access functions    
+///     // Provide convenience access functions
 ///     COMMS_FIELD_MEMBERS_NAMES(mask, value);
-///    
+///
 ///     template <typename TIter>
 ///     comms::ErrorStatus read(TIter& iter, std::size_t len)
 ///     {
 ///         using Base = typename std::decay<decltype(comms::field::toFieldBase(*this))>::type;
-///         
+///
 ///         auto es = Base::template readUntilAndUpdateLen<FieldIdx_value>(iter, len);
 ///         if (es != comms::ErrorStatus::Success) {
 ///             return es;
@@ -2044,24 +2044,24 @@
 /// @endcode
 /// Please @b NOTE the following:
 /// @li Usage of @ref comms::option::def::HasCustomRead option. It notifies
-/// other classes about existence of custom @b read functionality 
+/// other classes about existence of custom @b read functionality
 /// (instead of default one). Other classes may contain some inner logic to
 /// perform various optimisations if there is no custom @b read.
 /// Failure to specify this option may result in incorrect behaviour.
-/// @li If @b Base type is not specified manually, then it can be obtained using 
+/// @li If @b Base type is not specified manually, then it can be obtained using
 /// @ref comms::field::toFieldBase(). function.
-/// @li The @ref comms::field::Bundle class has set of member functions for partial 
-/// reads. Thise operations can be either non-modifying input length parameter 
-/// (@ref comms::field::Bundle::readFrom(), @ref comms::field::Bundle::readUntil(), 
-/// and @ref comms::field::Bundle::readFromUntil()) or modifying 
-/// (@ref comms::field::Bundle::readFromAndUpdateLen(), @ref comms::field::Bundle::readUntilAndUpdateLen(), 
+/// @li The @ref comms::field::Bundle class has set of member functions for partial
+/// reads. Thise operations can be either non-modifying input length parameter
+/// (@ref comms::field::Bundle::readFrom(), @ref comms::field::Bundle::readUntil(),
+/// and @ref comms::field::Bundle::readFromUntil()) or modifying
+/// (@ref comms::field::Bundle::readFromAndUpdateLen(), @ref comms::field::Bundle::readUntilAndUpdateLen(),
 /// and @ref comms::field::Bundle::readFromUntilAndUpdateLen()). The latter
 /// can be used to automatically reduce remaining length value.
 ///
 /// @subsection sec_field_tutorial_common_options_validation Custom Value Validation Logic
 /// Every field provides @b valid() member function to validate the internal value.
 /// By default, every internal value of the field is considered to be valid, i.e.
-/// the @b valid() function will always return true. 
+/// the @b valid() function will always return true.
 ///
 /// One of the ways to provide custom validation logic is to extend the field
 /// definition and implement @b valid() member function:
@@ -2076,14 +2076,14 @@
 ///     }
 /// };
 /// @endcode
-/// 
+///
 ///
 /// Quite often the valid values of the numeric fields can be expressed in limited
-/// number of ranges: [minValid - maxValid]. The COMMS library provides 
+/// number of ranges: [minValid - maxValid]. The COMMS library provides
 /// @ref comms::option::def::ValidNumValueRange option (and @ref comms::option::def::ValidNumValue alias),
 /// which can be used multiple times. The field's value is considered to be valid if
 /// <b>at least one</b> of the provided ranges contains it. The range validation option
-/// can be used only with numeric value fields, such as comms::field::IntValue, 
+/// can be used only with numeric value fields, such as comms::field::IntValue,
 /// or comms::field::EnumValue. For example:
 /// @code
 /// enum SomeEnum : std::uint8_t
@@ -2094,9 +2094,9 @@
 /// };
 ///
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-/// using MyEnum = 
+/// using MyEnum =
 ///     comms::field::EnumValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         SomeEnum,
 ///         comms::option::def::DefaultNumValue<SomeEnum_Value1>, // Construct with valid value
 ///         comms::option::def::ValidNumValueRange<SomeEnum_Value1, SomeEnum_Value3>
@@ -2113,7 +2113,7 @@
 /// Another example could be a single character numeric field with valid values
 /// range of [0x20 - 0x7e], as well as value 0. Such field can be defined as:
 /// @code
-/// using MyChar = 
+/// using MyChar =
 ///     comms::field::IntValue<
 ///         MyFieldBase,
 ///         char,
@@ -2128,16 +2128,16 @@
 /// There is a also a convenience reserved bits checked option
 /// for use with bitmasks (comms::field::BitmaskValue). Many bitmask fields
 /// may have one or several reserved bits with predefined values they must contain.
-/// The option is @ref comms::option::def::BitmaskReservedBits. It receives two 
+/// The option is @ref comms::option::def::BitmaskReservedBits. It receives two
 /// template parameters: one for the mask indicating the reserved bits and another
 /// for the expected values of these bits.@n
 /// For example, below is a definition of the 1 byte bitmask field that has
 /// two reserved bits, most and least significant. Both of them must be 0.
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-/// using MyFlags = 
+/// using MyFlags =
 ///     comms::field::BitmaskValue<
-///         MyFieldBase, 
+///         MyFieldBase,
 ///         comms::option::def::FixedLength<1>,
 ///         comms::option::def::BitmaskReservedBits<0x81, 0>
 ///     >;
@@ -2149,7 +2149,7 @@
 /// @endcode
 ///
 /// @subsection sec_field_tutorial_common_options_refresh Custom Refresh Functionality
-/// Every field provides @b refresh() member function used to bring the field's 
+/// Every field provides @b refresh() member function used to bring the field's
 /// value into a consistent state. By default this function does nothing and
 /// returns @b false, meaning the field has @b NOT been updated. For complex fields, such
 /// as comms::field::Bitfield or comms::field::Bundle, the default behaviour is
@@ -2160,15 +2160,15 @@
 /// definition and implement @b refresh() member function. Let's take the
 /// same example as in @ref sec_field_tutorial_common_options_read section. There is
 /// a "bundle" field with two members. The first one is a "bitmask", while
-/// the second one is optional 2 byte "int" value. The second member exists 
-/// only if least significant bit of the "bitmask" is not @b 0. There is a 
+/// the second one is optional 2 byte "int" value. The second member exists
+/// only if least significant bit of the "bitmask" is not @b 0. There is a
 /// chance of having inconsistent state when the least significant bit in
 /// the "bitmask" is set, but the optional "int" field is marked to be "missing".
 /// There is a need to provide the custom "refresh" logic that brings the field's
 /// contents into a consistent state.
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-/// struct MyBundle : public 
+/// struct MyBundle : public
 ///     comms::field::Bundle<
 ///         MyFieldBase,
 ///         std::tuple<
@@ -2179,7 +2179,7 @@
 ///         comms::option::def::HasCustomRefresh
 ///     >
 /// {
-///     ... 
+///     ...
 ///
 ///     bool refresh()
 ///     {
@@ -2191,24 +2191,24 @@
 ///         if (field_value().getMode() == expectedMode) {
 ///             return false; // Nothing has been changed
 ///         }
-///     
+///
 ///         field_value().setMode(expectedMode);
 ///         return true; // Field has been updated
 ///     }
 /// };
 /// @endcode
 /// @b NOTE the usage of @ref comms::option::def::HasCustomRefresh option. It notifies
-/// other classes about existence of custom @b refresh functionality 
+/// other classes about existence of custom @b refresh functionality
 /// (instead of default one). Other classes may contain some inner logic to
 /// perform various optimisations if there is no custom @b refresh.
 /// Failure to specify this option may result in incorrect behaviour.
-/// 
+///
 /// @subsection sec_field_tutorial_common_options_write Custom Write Functionality
 /// On some very rare occasions there may be a need to write custom @b write
 /// functionality. It can be achieved by writing custom @b write() member function
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-/// struct MyBundle : public 
+/// struct MyBundle : public
 ///     comms::field::Bundle<
 ///         MyFieldBase,
 ///         std::tuple<...>,
@@ -2222,7 +2222,7 @@
 ///     }
 /// };
 /// @endcode
-/// @b NOTE usage of @ref comms::option::def::HasCustomWrite option. It is 
+/// @b NOTE usage of @ref comms::option::def::HasCustomWrite option. It is
 /// required to let prevent field holding @ref comms::MessageBase
 /// class from attempting to optimize write operation due to possible incorrect
 /// behavior.
@@ -2231,11 +2231,11 @@
 /// Some protocols may include version information either in the transport framing
 /// of every message or in one of the messages used to establish connection. Such
 /// info may influence whether some fields exist, as well as modify other
-/// aspects of the fields, such as validity ranges. 
+/// aspects of the fields, such as validity ranges.
 ///
 /// Every field provides @b setVersion() member function used to notify it about
 /// the version change and @b isVersionDependent() one to inquire at compile time
-/// whether the field contents may change after such notification. 
+/// whether the field contents may change after such notification.
 /// For most fields @b setVersion() function does nothing and
 /// returns @b false, meaning the field has @b NOT been updated (similar to
 /// @ref sec_field_tutorial_common_options_refresh). For complex fields, such
@@ -2268,7 +2268,7 @@
 ///         if (Base::valid()) {
 ///             return true;
 ///         }
-///         
+///
 ///         if (m_version < 6) {
 ///             return false;
 ///         }
@@ -2294,10 +2294,10 @@
 ///
 /// Also @b NOTE, that by default the @b VersionType inner type is defined to
 /// be @b unsigned. If there is a need to change that, the @ref
-/// comms::option::def::VersionType needs to be passed to the definition of the 
+/// comms::option::def::VersionType needs to be passed to the definition of the
 /// common base class of all the fields:
 /// @code
-/// using MyFieldBase = 
+/// using MyFieldBase =
 ///     comms::Field<
 ///         comms::option::def::BigEndian,
 ///         comms::option::def::VersionType<unsigned long long>
@@ -2313,7 +2313,7 @@
 /// For example:
 /// @code
 /// using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-/// using MyField = 
+/// using MyField =
 ///     comms::field::IntValue<
 ///         MyFieldBase,
 ///         std::uint8_t,
@@ -2339,7 +2339,7 @@
 ///
 /// @subsection sec_field_tutorial_common_options_ignore_invalid Ignore Invalid Value
 /// The COMMS library also provides @ref comms::option::def::IgnoreInvalid option. It DOESN'T
-/// report failure on read operation when the invalid value is discovered 
+/// report failure on read operation when the invalid value is discovered
 /// (like @ref comms::option::def::FailOnInvalid does). Instead the field's internal value
 /// remains unchanged, although the read iterator is advanced as if the value
 /// is read. For example:
@@ -2376,7 +2376,7 @@
 /// @subsection sec_field_tutorial_common_options_empty_ser Empty Serialisation
 /// Some protocols may define some constants which are NOT being sent over I/O
 /// link. Sometimes it may be useful to still treat these values as message fields.
-/// Usage of @ref comms::option::def::EmptySerialization (or @ref 
+/// Usage of @ref comms::option::def::EmptySerialization (or @ref
 /// comms::option::def::EmptySerialisation for those who prefer British spelling) can
 /// be used to achieve such effect.
 /// @code
@@ -2387,7 +2387,7 @@
 ///     comms::option::def::DefaultNumValue<5>,
 ///     comms::option::def::EmptySerialization
 /// >;
-/// 
+///
 /// MyField field;
 /// assert(field.length() == 0U); // Not expected to have any serialisation length
 /// assert(field.value() == 5U); // The value is still accessible;
@@ -2401,7 +2401,7 @@
 ///
 /// @section sec_field_tutorial_extension Allowing Further Use of Options
 /// As was mentioned earlier there are options that define how fields are
-/// (de)serialised. These options are expected to be used in protocol fields 
+/// (de)serialised. These options are expected to be used in protocol fields
 /// definition. However, there are options that are application specific. They
 /// may change the data structures being used for storage, or modify default
 /// value and/or valid values. In order to allow such application specific modifications,
@@ -2409,7 +2409,7 @@
 /// variadic template arguments.
 /// @code
 /// template <typename... TExtraOpts>
-/// using MyField = 
+/// using MyField =
 ///     comms::field::IntValue<
 ///         comms::Field<comms::option::def::BigEndian>, // base class of the field
 ///         std::uint16_t,
@@ -2423,7 +2423,7 @@
 /// and/or override the valid values ranges (using @ref comms::option::def::ValidRangesClear).
 /// For example:
 /// @code
-/// using MyUpdatedField = 
+/// using MyUpdatedField =
 ///     MyField<
 ///         comms::option::def::DefaultNumValue<10>,
 ///         comms::option::def::ValidNumValueRange<10, 500>,
@@ -2433,16 +2433,16 @@
 ///
 /// @section sec_field_tutorial_custom_fields Custom Fields
 /// There may be a case when communication protocol demands implementation of
-/// some intricate field's logic that is not covered by the COMMS library. It 
+/// some intricate field's logic that is not covered by the COMMS library. It
 /// is possible to provide custom implementation of the custom field and use
-/// it with other components provided by the library as long as it defines 
+/// it with other components provided by the library as long as it defines
 /// the following minimal interface:
 /// @code
 /// class MyField
 /// {
 /// public:
-///     
-///     // Length required to serialise current value 
+///
+///     // Length required to serialise current value
 ///     std::size_t length() const;
 ///
 ///     // Minimal length required to serialise any value this field may contain
@@ -2475,9 +2475,9 @@
 /// class MyField : public comms::Field<comms::option::def::BigEndian>
 /// {
 /// public:
-///     
+///
 ///     ...
-/// 
+///
 ///     template <typename TIter>
 ///     comms::ErrorStatus read(TIter& iter, std::size_t size)
 ///     {
@@ -2503,7 +2503,7 @@
 /// {
 /// public:
 ///     using ValueType = ...;
-/// 
+///
 ///     ValueType& value() {...}
 ///
 ///     const ValueType& value() const {...}
@@ -2515,7 +2515,7 @@
 /// built-in fields as well as supporting extra options to the existing
 /// fields described in this tutorial. If such new field and/or option is
 /// not described in this tutorial, it should be easy enough for the developer
-/// to master. Please refer to the documentation of the field and/or option 
+/// to master. Please refer to the documentation of the field and/or option
 /// itself.
 ///
 

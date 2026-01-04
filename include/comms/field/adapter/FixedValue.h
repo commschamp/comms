@@ -7,7 +7,6 @@
 
 #pragma once
 
-
 namespace comms
 {
 
@@ -29,7 +28,7 @@ public:
     ValueType& value() = delete;
 
     template <typename U>
-    void setValue(U&& val) = delete;    
+    void setValue(U&& val) = delete;
 
 private:
     using BaseImpl::setValue;
@@ -41,7 +40,4 @@ private:
 }  // namespace field
 
 }  // namespace comms
-
-
-
 

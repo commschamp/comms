@@ -189,14 +189,3 @@
 
 #define COMMS_DEFINE_TRANSPORT_FIELD_ENUM(...) COMMS_EXPAND(COMMS_DEFINE_ENUM(TransportFieldIdx, __VA_ARGS__));
 
-
-
-
-
-
-
-
-
-
-
-

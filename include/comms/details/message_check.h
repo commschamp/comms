@@ -24,7 +24,7 @@ namespace details
 {
 
 template <typename TMessage>
-using MessageStaticNumIdBoolType = 
+using MessageStaticNumIdBoolType =
     typename comms::util::LazyDeepConditional<
         comms::isMessageBase<TMessage>()
     >::template Type<
@@ -41,12 +41,12 @@ struct MessageStaticNumIdCheckHelper
     {
         return value && MessageStaticNumIdBoolType<TMessage>::value;
     }
-};    
+};
 
 template <typename... TMessages>
-using AllMessagesHaveStaticNumIdBoolType = 
+using AllMessagesHaveStaticNumIdBoolType =
     std::integral_constant<
-        bool, 
+        bool,
         comms::util::tupleTypeAccumulate<std::tuple<TMessages...> >(true, MessageStaticNumIdCheckHelper<>())
     >;
 
@@ -77,7 +77,7 @@ class AllMessagesStrongSortedCheckHelper;
 template <bool TMoreThanOne, typename... TParams>
 class AllMessagesStrongSortedCheckHelper<false, TMoreThanOne, TParams...>
 {
-public:    
+public:
     template <typename...>
     using Type = std::false_type;
 };
@@ -85,7 +85,7 @@ public:
 template <typename... TParams>
 class AllMessagesStrongSortedCheckHelper<true, false, TParams...>
 {
-public:    
+public:
     template <typename...>
     using Type = std::true_type;
 };
@@ -95,7 +95,7 @@ class AllMessagesStrongSortedCheckHelper<true, true, TParams...>
 {
 public:
     template <typename TMsg1, typename TMsg2, typename... TRest>
-    using Type = 
+    using Type =
         typename comms::util::Conditional<
             (TMsg1::staticMsgId() < TMsg2::staticMsgId())
         >::template Type<
@@ -110,7 +110,7 @@ class AllMessagesWeakSortedCheckHelper;
 template <bool TMoreThanOne, typename... TParams    >
 class AllMessagesWeakSortedCheckHelper<false, TMoreThanOne, TParams...>
 {
-public:    
+public:
     template <typename... TRest>
     using Type = std::false_type;
 };
@@ -118,7 +118,7 @@ public:
 template <typename... TParams>
 class AllMessagesWeakSortedCheckHelper<true, false, TParams...>
 {
-public:    
+public:
     template <typename... TRest>
     using Type = std::true_type;
 };
@@ -128,7 +128,7 @@ class AllMessagesWeakSortedCheckHelper<true, true, TParams...>
 {
 public:
     template <typename TMsg1, typename TMsg2, typename... TRest>
-    using Type = 
+    using Type =
         typename comms::util::Conditional<
             (TMsg1::staticMsgId() <= TMsg2::staticMsgId())
         >::template Type<
@@ -143,7 +143,7 @@ struct AllMessagesStrongSortedCheckHelperWrap;
 template <typename... TAllMessages>
 struct AllMessagesStrongSortedCheckHelperWrap<std::tuple<TAllMessages...> >
 {
-    static constexpr bool Value = 
+    static constexpr bool Value =
         AllMessagesStrongSortedCheckHelper<
             (AllMessagesHaveStaticNumIdBoolType<TAllMessages...>::value),
             (1U < sizeof...(TAllMessages))
@@ -156,7 +156,7 @@ struct AllMessagesWeakSortedCheckHelperWrap;
 template <typename... TAllMessages>
 struct AllMessagesWeakSortedCheckHelperWrap<std::tuple<TAllMessages...> >
 {
-    static constexpr bool Value = 
+    static constexpr bool Value =
         AllMessagesWeakSortedCheckHelper<
             (AllMessagesHaveStaticNumIdBoolType<TAllMessages...>::value),
             (1U < sizeof...(TAllMessages))

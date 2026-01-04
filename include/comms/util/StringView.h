@@ -8,7 +8,6 @@
 /// @file
 /// @brief Contains comms::util::StringView class.
 
-
 #pragma once
 
 #include "comms/Assert.h"
@@ -576,7 +575,6 @@ bool operator<(const StringView& str1, const StringView& str2)
     return std::lexicographical_compare(str1.begin(), str1.end(), str2.begin(), str2.end());
 }
 
-
 /// @brief Lexicographical compare between the string views.
 /// @see <a href="http://en.cppreference.com/w/cpp/string/basic_string/operator_cmp">Reference</a>
 /// @related StringView
@@ -623,7 +621,6 @@ bool operator!=(const StringView& str1, const StringView& str2)
 {
     return !(str1 == str2);
 }
-
 
 } // namespace util
 

@@ -5,18 +5,18 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include "comms/comms.h"
+#include "comms/frame/checksum/BasicSum.h"
+#include "comms/frame/checksum/Crc.h"
+
+#include "CommsTestCommon.h"
+
 #include <cstdint>
 #include <cstddef>
 #include <algorithm>
 #include <iterator>
 #include <iostream>
 #include <iomanip>
-
-#include "comms/comms.h"
-#include "comms/frame/checksum/BasicSum.h"
-#include "comms/frame/checksum/Crc.h"
-
-#include "CommsTestCommon.h"
 
 CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
@@ -165,7 +165,7 @@ private:
     > ChecksumTypeExtraTransport;
 
     template <typename TTraits>
-    using ChecksumTypeExtraTransportFieldsTraits = 
+    using ChecksumTypeExtraTransportFieldsTraits =
         std::tuple<
             TTraits,
             comms::option::ExtraTransportFields<ChecksumTypeExtraTransport>
@@ -193,7 +193,7 @@ private:
     > HasChecksumFlagsExtraTransport;
 
     template <typename TTraits>
-    using HasChecksumFlagsExtraTransportFieldsTraits = 
+    using HasChecksumFlagsExtraTransportFieldsTraits =
         std::tuple<
             TTraits,
             comms::option::ExtraTransportFields<HasChecksumFlagsExtraTransport>
@@ -227,7 +227,7 @@ private:
             TOptions...
         >
     {
-        using Base = 
+        using Base =
             comms::frame::ChecksumLayer<
                 TField,
                 comms::frame::checksum::Crc_16,
@@ -249,7 +249,6 @@ private:
 
             return Base::doFieldLength(msg);
         }
-
 
         template <typename TMsg, typename TIter>
         static comms::ErrorStatus doReadField(const TMsg* msgPtr, Field& field, TIter& iter, std::size_t len)
@@ -291,7 +290,6 @@ private:
             return fieldTmp.write(iter, len);
         }
 
-
         template <typename TMsg, typename TIter>
         static typename Field::ValueType calculateChecksum(const TMsg* msgPtr, TIter& iter, std::size_t len, bool& checksumValid)
         {
@@ -313,17 +311,17 @@ private:
             if (checksumType == ChecksumType::Crc16) {
                 using Calc = comms::frame::checksum::Crc_16;
                 return Calc()(iter, len);
-            }        
+            }
 
             if (checksumType == ChecksumType::Crc_CCITT) {
                 using Calc = comms::frame::checksum::Crc_CCITT;
                 return Calc()(iter, len);
-            }        
+            }
 
             checksumValid = false;
             return static_cast<typename Field::ValueType>(0);
-        }    
-    };    
+        }
+    };
 
     template <
           typename TField,
@@ -338,7 +336,7 @@ private:
             TOptions...
         >
     {
-        using Base = 
+        using Base =
             comms::frame::ChecksumLayer<
                 TField,
                 comms::frame::checksum::BasicSum<std::uint16_t>,
@@ -387,7 +385,6 @@ private:
             field.setMode(mode);
         }
 
-
         template <typename TMsg, typename TIter>
         static typename Field::ValueType::ValueType calculateChecksum(const TMsg* msgPtr, TIter& iter, std::size_t len, bool& checksumValid)
         {
@@ -405,7 +402,7 @@ private:
             }
 
             return Base::calculateChecksum(msgPtr, iter, len, checksumValid);
-        } 
+        }
 
         template <typename TMsg>
         static std::size_t doFieldLength(const TMsg& msg)
@@ -417,13 +414,13 @@ private:
             return Field::maxLength();
         }
 
-    };    
+    };
 
     template <
-        typename TSyncField, 
-        typename TChecksumField, 
-        typename TSizeField, 
-        typename TIdField, 
+        typename TSyncField,
+        typename TChecksumField,
+        typename TSizeField,
+        typename TIdField,
         typename TChecksumTypeField,
         typename TMessage>
     struct CustomChecksumFrame : public
@@ -472,11 +469,11 @@ private:
     };
 
     template <
-        typename TSyncField, 
-        typename TSizeField, 
-        typename TIdField, 
+        typename TSyncField,
+        typename TSizeField,
+        typename TIdField,
         typename TChecksumFlagsField,
-        typename TChecksumField, 
+        typename TChecksumField,
         typename TMessage>
     struct CustomOptChecksumFrame : public
         comms::frame::SyncPrefixLayer<
@@ -521,7 +518,7 @@ private:
             >;
     public:
         COMMS_FRAME_LAYERS_NAMES_OUTER(sync, size, id, checksumFlags, checksum, payload);
-    };    
+    };
 };
 
 void CustomChecksumLayerTestSuite::test1()

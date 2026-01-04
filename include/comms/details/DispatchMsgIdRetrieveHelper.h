@@ -49,7 +49,7 @@ private:
     using NoIdTag = comms::details::tag::Tag3<>;
 
     template <typename TMessage, typename...>
-    using DynamicCheckTag = 
+    using DynamicCheckTag =
         typename comms::util::LazyShallowConditional<
             comms::isMessage<TMessage>() && TMessage::hasGetId()
         >::template Type<
@@ -58,14 +58,14 @@ private:
         >;
 
     template <typename TMessage>
-    using Tag = 
+    using Tag =
         typename comms::util::LazyShallowConditional<
             messageHasStaticNumId<TMessage>()
         >::template Type<
             HasStaticIdTag,
             DynamicCheckTag,
             TMessage
-        >; 
+        >;
 
     template <typename TMessage, typename... TParams>
     static typename TMessage::MsgIdParamType doGetIdInternal(HasStaticIdTag<TParams...>)
@@ -74,7 +74,7 @@ private:
         static_assert(messageHasStaticNumId<TMessage>(), "Message must define static numeric ID");
 
         return TMessage::doGetId();
-    }      
+    }
 
     template <typename TMessage, typename... TParams>
     static typename TMessage::MsgIdParamType doGetIdInternal(HasDynamicIdTag<TParams...>)
@@ -84,7 +84,7 @@ private:
 
         static const typename TMessage::MsgIdType Id = TMessage().getId();
         return Id;
-    }        
+    }
 };
 
 template <typename TMessage>

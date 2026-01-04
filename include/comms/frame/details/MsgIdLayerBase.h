@@ -30,7 +30,7 @@ class MsgIdLayerBaseHelper
 {
     using ParsedOptionsInternal = comms::frame::details::MsgIdLayerOptionsParser<TOptions...>;
     using ActualLayer = typename ParsedOptionsInternal::template DefineExtendingClass<MsgIdLayer<TField, TMessage, TAllMessages, TNextLayer, TOptions...>>;
-    using TopBase = 
+    using TopBase =
         comms::frame::FrameLayerBase<
             TField,
             TNextLayer,

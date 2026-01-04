@@ -14,6 +14,7 @@
 #include "comms/frame/MsgIdLayer.h"
 #include "comms/frame/MsgSizeLayer.h"
 #include "comms/frame/SyncPrefixLayer.h"
+#include "comms/frame/SyncSuffixLayer.h"
 #include "comms/frame/ChecksumLayer.h"
 #include "comms/frame/ChecksumPrefixLayer.h"
 #include "comms/frame/TransportValueLayer.h"

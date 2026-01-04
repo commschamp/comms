@@ -1,5 +1,5 @@
 # Find COMMS library from CommsChampion Ecosystem
-# 
+#
 # Output is provided using the following variables
 #  CC_COMMS_FOUND - Found COMMS library, use CC_COMMS_INCLUDE_DIRS for includes.
 #  CC_COMMS_INCLUDE_DIRS - Where to find all the headers.
@@ -39,7 +39,5 @@ set (CC_COMMS_FOUND ${LibComms_FOUND})
 
 if (CC_COMMS_FOUND)
     set (CC_COMMS_INCLUDE_DIR ${CC_COMMS_INCLUDE_DIRS})
-endif ()    
-
-
+endif ()
 

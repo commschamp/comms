@@ -1,13 +1,13 @@
 /// @page page_custom_transport_value_layer Defining Custom Transport Value Frame Layer
 /// @tableofcontents
-/// The @b COMMS library provides default @ref comms::frame::TransportValueLayer 
-/// frame layer to handle extra value in transport framing and re-assigning it to the 
-/// message object. 
+/// The @b COMMS library provides default @ref comms::frame::TransportValueLayer
+/// frame layer to handle extra value in transport framing and re-assigning it to the
+/// message object.
 /// However, it may be insufficient (or incorrect) for some particular use cases, such as
-/// using @b bitfield field to store both protocol version and some extra flags. 
-/// The @ref page_frame_tutorial_new_layers section of the 
+/// using @b bitfield field to store both protocol version and some extra flags.
+/// The @ref page_frame_tutorial_new_layers section of the
 /// @ref page_frame_tutorial page explains how to define new (custom)
-/// protocol layer. 
+/// protocol layer.
 ///
 /// However, since @b v3.2 COMMS library provides an ability to extend the existing
 /// definition of @ref comms::frame::TransportValueLayer and customize some bits
@@ -73,7 +73,7 @@
 ///             std::tuple<
 ///                 MessageVersion<>,
 ///                 MessageFlags<>
-///             > 
+///             >
 ///         >,
 ///         comms::option::VersionInExtraTransportFields<0> // Make messages version dependent
 ///     >
@@ -88,9 +88,9 @@
 /// } // namespace my_prot
 /// @endcode
 /// Just to refresh the reader's memory: the usage of #COMMS_MSG_TRANSPORT_FIELDS_NAMES()
-/// macro for the interface definition will generate 
-/// @b transportField_version() and @b transportField_flags() 
-/// convenience member functions to access the stored @b version and @b flags fields, while 
+/// macro for the interface definition will generate
+/// @b transportField_version() and @b transportField_flags()
+/// convenience member functions to access the stored @b version and @b flags fields, while
 /// usage of #COMMS_BITMASK_BITS_SEQ() in the flags field definition will
 /// genereate @b getBitValue_X() and @b setBitValue_X() convenience member
 /// functions to get / set values of the bits (where X is one of the defined
@@ -117,26 +117,26 @@
 ///     // Allow access to internal member fields.
 ///     COMMS_FIELD_MEMBERS_NAMES(version, flags);
 /// };
-/// 
+///
 /// } // my_prot
 /// @endcode
 /// Again, just to refresh the reader's memory: the usage of @ref COMMS_FIELD_MEMBERS_NAMES()
-/// macro for the bitfield definition will generate @b field_X() 
+/// macro for the bitfield definition will generate @b field_X()
 /// convenience access member functions for the listed names.
 ///
-/// Now it's time to actually extend the provided definition of 
+/// Now it's time to actually extend the provided definition of
 /// the @ref comms::frame::TransportValueLayer and support usage of the defined
 /// earlier @b VersionAndFlagsField field.
 /// @code
 /// namespace my_prot
 /// {
-/// 
+///
 /// template <typename TNextLayer>
 /// class VersionAndFlagsLayer : public
 ///     comms::frame::TransportValueLayer<
 ///         VersionAndFlagsField,   // Used field that contains version and flags
-///         std::numeric_limit<std::size_t>::max(), 
-///                              // Index inside the field inside message's transportFields(), 
+///         std::numeric_limit<std::size_t>::max(),
+///                              // Index inside the field inside message's transportFields(),
 ///                              // irrelevant for this situation, because the interface splits
 ///                              // the information into two separate fields.
 ///
@@ -151,7 +151,7 @@
 /// public:
 ///     // Repeat types defined in the base class (not visible by default)
 ///     using Field = typename Base::Field; // same as VersionAndFlagsField
-///     
+///
 ///     // Re-assign the field's value to available message object.
 ///     template <typename TMsg>
 ///     bool reassignFieldValueToMsg(const Field& field, TMsg* msgPtr)
@@ -163,7 +163,7 @@
 ///         msgPtr->transportField_version().value() = field.field_version().value();
 ///         msgPtr->transportField_flags().value() = field.field_flags().value();
 ///         return true;
-///     }  
+///     }
 ///
 ///     // Update the transport field values to be written when message is serialized.
 ///     template <typename TMsg>
@@ -171,19 +171,19 @@
 ///     {
 ///         field.field_version().value() = msg.transportField_version().value();
 ///         field.field_flags().value() = msg.transportField_flags().value();
-///     }    
+///     }
 /// };
 ///
 /// } // namespace my_prot
 /// @endcode
 /// The @ref comms::frame::TransportValueLayer doesn't have any virtual functions and
 /// as the result not able to provide any polymorphic behavior. In order to be
-/// able to extend its default functionality there is a need to use 
+/// able to extend its default functionality there is a need to use
 /// <a href="https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously Recurring Template Pattern</a>.
 /// It is done by passing @ref comms::option::def::ExtendingClass extension option with
 /// the type of the layer class being defined to the @ref comms::frame::TransportValueLayer.
 ///
-/// The extending class can customize the default behavior by overriding 
+/// The extending class can customize the default behavior by overriding
 /// the listed below functions. They do not
 /// necessarily need to be @b static, accessing inner private state of the layer object
 /// is also acceptable.
@@ -194,24 +194,24 @@
 /// @li @ref comms::frame::TransportValueLayer::doFieldLength() "doFieldLength()" - Member
 /// function that is invoked to calculate serialization length of the field.
 /// @li @ref comms::frame::TransportValueLayer::reassignFieldValueToMsg() "reassignFieldValueToMsg()" -
-/// Member function that is invoked to re-assign the transport field value to 
+/// Member function that is invoked to re-assign the transport field value to
 /// the appropriate transport field(s) in the message object.
-/// @li @ref comms::frame::TransportValueLayer::prepareFieldForWrite() "prepareFieldForWrite()" - 
+/// @li @ref comms::frame::TransportValueLayer::prepareFieldForWrite() "prepareFieldForWrite()" -
 /// Member function that is invoked to prepare
 /// the field value before its write (serialization). After the function returns,
 /// the @ref comms::frame::TransportValueLayer will invoke @b write member function
-/// of the passed field in order to serialize it. 
+/// of the passed field in order to serialize it.
 ///
 /// The newly defined custom frame layer can be used instead of
-/// @ref comms::frame::TransportValueLayer when defining 
+/// @ref comms::frame::TransportValueLayer when defining
 /// @ref page_frame_tutorial "framing" of the protocol.
 /// For example:
 /// @code
 /// namespace my_prot
 /// {
-/// 
+///
 /// template <typename TMessage, typename TAllMessages>
-/// struct Frame1 : public 
+/// struct Frame1 : public
 ///     comms::frame::MsgSizeLayer<                   // SIZE
 ///         common::field::IntValue<FieldBase, std::uint16_t>,
 ///         comms::frame::MsgIdLayer<                 // ID
@@ -232,10 +232,9 @@
 /// @endcode
 /// @b NOTE, that the common @ref page_define_prot_interface had to split the
 /// @b version + @b flags bitfield into two separate fields, because in order to properly
-/// support protocol versioning the @b COMMS library requires a version to reside in the 
-/// separate extra transport field index to which is passed to the interface definition 
+/// support protocol versioning the @b COMMS library requires a version to reside in the
+/// separate extra transport field index to which is passed to the interface definition
 /// using @ref comms::option::VersionInExtraTransportFields option. Otherwise automatic
 /// presence of the version dependent optional fields could not be detected.
 ///
-
 

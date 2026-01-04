@@ -18,7 +18,6 @@ namespace frame
 namespace details
 {
 
-
 template <typename... TOptions>
 class SyncPrefixLayerOptionsParser;
 
@@ -27,8 +26,11 @@ class SyncPrefixLayerOptionsParser<>
 {
 public:
     static constexpr bool HasExtendingClass = false;
+    static constexpr bool HasSeekField = false;
 
     using ExtendingClass = void;
+
+    using EscField = void;
 
     template <typename TLayer>
     using DefineExtendingClass = TLayer;
@@ -43,7 +45,16 @@ public:
     using ExtendingClass = T;
 
     template <typename TLayer>
-    using DefineExtendingClass = ExtendingClass;    
+    using DefineExtendingClass = ExtendingClass;
+};
+
+template <typename TEscField, typename... TOptions>
+class SyncPrefixLayerOptionsParser<comms::option::def::FrameLayerSeekField<TEscField>, TOptions...> :
+        public SyncPrefixLayerOptionsParser<TOptions...>
+{
+public:
+    using EscField = TEscField;
+    static constexpr bool HasSeekField = true;
 };
 
 template <typename... TOptions>

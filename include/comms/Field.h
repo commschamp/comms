@@ -92,7 +92,7 @@ public:
     static constexpr bool hasVarLength()
     {
         return false;
-    }         
+    }
 
     /// @brief Default check of whether the field has a consistent value
     ///     for writing.
@@ -116,7 +116,7 @@ public:
     static constexpr bool hasName()
     {
         return false;
-    }     
+    }
 
 protected:
     /// @brief Write data into the output buffer.

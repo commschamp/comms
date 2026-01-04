@@ -35,7 +35,6 @@ public:
     using ForcedDispatch = T;
 };
 
-
 template <typename... TOptions>
 class MsgDispatcherOptionsParser<
     comms::option::app::EmptyOption,

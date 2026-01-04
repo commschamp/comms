@@ -107,7 +107,7 @@ public:
     void setValue(T&& val)
     {
         value() = std::forward<T>(val);
-    }    
+    }
 
     ValueType& createBack()
     {

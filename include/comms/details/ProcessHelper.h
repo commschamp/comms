@@ -34,7 +34,7 @@ namespace  comms
 
 namespace details
 {
-   
+
 struct ProcessHelper
 {
 
@@ -155,6 +155,11 @@ struct ProcessHelper
 
             MsgPtr msg;
             auto es = processSingleWithDispatch(iter, len - consumed, std::forward<TFrame>(frame), msg, handler);
+            if (es == comms::ErrorStatus::ProtocolError) {
+                ++consumed;
+                continue;
+            }
+
             consumed += static_cast<decltype(consumed)>(std::distance(begIter, iter));
             if (es == comms::ErrorStatus::NotEnoughData) {
                 break;
@@ -198,23 +203,23 @@ private:
     using RegularDispatchTag = comms::details::tag::Tag2<>;
 
     template <typename TMsg, typename THandler, typename...>
-    using DispatchTagTmp = 
+    using DispatchTagTmp =
         typename comms::util::LazyShallowConditional<
             details::dispatchMsgPolymorphicIsCompatibleHandler<TMsg, THandler>()
         >::template Type<
             PolymorphicDispatchTag,
             RegularDispatchTag
-        >;     
+        >;
 
     template <typename TMsg, typename THandler, typename...>
-    using DispatchTag = 
+    using DispatchTag =
         typename comms::util::LazyShallowConditional<
             comms::isMessage<TMsg>()
         >::template Type<
             DispatchTagTmp,
             RegularDispatchTag,
             TMsg, THandler
-        >;    
+        >;
 
         template <typename TBufIter, typename TFrame, typename TMsg, typename THandler, typename... TExtraValues>
         static comms::ErrorStatus processSingleWithDispatchInternal(
@@ -235,7 +240,7 @@ private:
             using LocalMsgIdType = details::ProcessMsgIdType<MsgType>;
             LocalMsgIdType id = LocalMsgIdType();
             std::size_t idx = 0U;
-    
+
             auto es =
                 processSingle(
                     bufIter,
@@ -245,11 +250,11 @@ private:
                     comms::frame::msgId(id),
                     comms::frame::msgIndex(idx),
                     extraValues...);
-    
+
             if (es != comms::ErrorStatus::Success) {
                 return es;
             }
-    
+
             using FrameType = typename std::decay<decltype(frame)>::type;
             using AllMessagesType = typename FrameType::AllMessages;
             auto& msgObj = details::processMsgCastToMsgObj(msg);
@@ -274,7 +279,7 @@ private:
                     std::forward<TFrame>(frame),
                     msg,
                     extraValues...);
-    
+
             if (es != comms::ErrorStatus::Success) {
                 return es;
             }
@@ -282,8 +287,8 @@ private:
             auto& msgObj = details::processMsgCastToMsgObj(msg);
             msgObj.dispatch(handler);
             return es;
-        }        
-    
+        }
+
 };
 
 } // namespace details

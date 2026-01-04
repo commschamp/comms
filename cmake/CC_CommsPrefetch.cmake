@@ -1,4 +1,4 @@
-# This file contains contains a function that prefetches comms project. 
+# This file contains contains a function that prefetches comms project.
 
 # ******************************************************
 #     cc_comms_prefetch(
@@ -24,11 +24,11 @@ function (cc_comms_prefetch)
 
     if (NOT CC_FETCH_SRC_DIR)
         message (FATAL_ERROR "The SRC_DIR parameter is not provided")
-    endif ()     
+    endif ()
 
     if (NOT CC_FETCH_REPO)
         set (CC_FETCH_REPO ${CC_FETCH_DEFAULT_REPO})
-    endif ()  
+    endif ()
 
     if (NOT CC_FETCH_TAG)
         set (CC_FETCH_TAG ${CC_FETCH_DEFAULT_TAG})
@@ -47,27 +47,27 @@ function (cc_comms_prefetch)
         execute_process (
             COMMAND ${GIT_EXECUTABLE} checkout ${CC_FETCH_TAG}
             WORKING_DIRECTORY ${CC_FETCH_SRC_DIR}
-        )        
+        )
 
         return ()
-    endif()     
+    endif()
 
     execute_process (
         COMMAND ${CMAKE_COMMAND} -E remove_directory "${CC_FETCH_SRC_DIR}"
     )
-    
+
     execute_process (
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CC_FETCH_SRC_DIR}"
-    )        
-    
+    )
+
     execute_process (
-        COMMAND 
+        COMMAND
             ${GIT_EXECUTABLE} clone -b ${CC_FETCH_TAG} ${CC_FETCH_REPO} ${CC_FETCH_SRC_DIR}
         RESULT_VARIABLE git_result
     )
 
     if (NOT "${git_result}" STREQUAL "0")
         message (WARNING "git clone/checkout failed")
-    endif ()    
+    endif ()
 
 endfunction()
