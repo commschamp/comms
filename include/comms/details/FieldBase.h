@@ -10,6 +10,8 @@
 #include "comms/options.h"
 #include "comms/traits.h"
 
+#include <tuple>
+
 namespace comms
 {
 

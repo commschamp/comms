@@ -16,6 +16,7 @@
 #include "comms/frame/details/ChecksumPrefixLayerBase.h"
 #include "comms/util/type_traits.h"
 
+#include <cstddef>
 #include <iterator>
 #include <type_traits>
 #include <utility>

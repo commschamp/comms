@@ -10,8 +10,9 @@
 #include "comms/Assert.h"
 #include "comms/ErrorStatus.h"
 
-#include <algorithm>
+#include <cstddef>
 #include <limits>
+#include <utility>
 
 namespace comms
 {

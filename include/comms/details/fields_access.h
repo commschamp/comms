@@ -12,7 +12,6 @@
 #include "comms/details/macro_common.h"
 
 #include <tuple>
-#include <type_traits>
 
 #ifdef COMMS_MUST_DEFINE_BASE
 #define COMMS_FIELD_VALUE_ACCESS_FUNC typename Base::ValueType& value()

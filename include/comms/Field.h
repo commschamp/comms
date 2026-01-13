@@ -16,6 +16,7 @@
 #include "comms/details/macro_common.h"
 #include "comms/util/access.h"
 
+#include <cstddef>
 #include <type_traits>
 
 namespace comms

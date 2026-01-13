@@ -12,6 +12,8 @@
 
 #include "comms/frame/checksum/BasicXor.h"
 
+#include <cstdint>
+
 namespace comms
 {
 

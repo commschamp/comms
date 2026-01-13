@@ -11,6 +11,7 @@
 #include "comms/ErrorStatus.h"
 #include "comms/util/type_traits.h"
 
+#include <cstddef>
 #include <cstdint>
 #include <iterator>
 #include <type_traits>

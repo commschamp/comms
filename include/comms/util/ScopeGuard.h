@@ -9,9 +9,7 @@
 /// @brief Contains definition of the "Scope Guard" idiom, see @ref comms::util::ScopeGuard.
 
 #pragma once
-
 #include <functional>
-#include <memory>
 #include <type_traits>
 #include <utility>
 

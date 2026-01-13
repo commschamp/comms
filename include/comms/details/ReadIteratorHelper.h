@@ -12,6 +12,7 @@
 #include "comms/Message.h"
 #include "comms/util/type_traits.h"
 
+#include <type_traits>
 #include <utility>
 
 namespace comms

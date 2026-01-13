@@ -15,6 +15,7 @@
 #include "comms/util/type_traits.h"
 
 #include <array>
+#include <cstddef>
 #include <cstdint>
 #include <limits>
 #include <type_traits>

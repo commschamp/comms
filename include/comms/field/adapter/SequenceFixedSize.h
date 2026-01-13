@@ -14,7 +14,11 @@
 #include "comms/util/detect.h"
 #include "comms/util/type_traits.h"
 
+#include <algorithm>
 #include <cstddef>
+#include <cstdint>
+#include <type_traits>
+#include <utility>
 
 namespace comms
 {

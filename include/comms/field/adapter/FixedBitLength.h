@@ -14,8 +14,8 @@
 #include "comms/util/BitSizeToByteSize.h"
 #include "comms/util/type_traits.h"
 
+#include <cstddef>
 #include <limits>
-#include <type_traits>
 
 namespace comms
 {
