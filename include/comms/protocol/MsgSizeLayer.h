@@ -1,5 +1,5 @@
 //
-// Copyright 2025 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2025 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -13,17 +13,16 @@
 #include "comms/frame/MsgSizeLayer.h"
 #include "comms/protocol/ProtocolLayerBase.h"
 
-namespace comms
-{
+namespace comms {
 
-namespace protocol
-{
+namespace protocol {
 
 /// @brief Alias to the @ref comms::frame::MsgSizeLayer
 /// @deprecated Use @ref comms::frame::MsgSizeLayer class instead
 template <typename TField, typename TNextLayer, typename... TOptions>
-using MsgSizeLayer = comms::frame::MsgSizeLayer<TField, TNextLayer, TOptions...>;
+using MsgSizeLayer =
+    comms::frame::MsgSizeLayer<TField, TNextLayer, TOptions...>;
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace comms
+} // namespace comms

@@ -1,5 +1,5 @@
 //
-// Copyright 2019 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2019 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,46 +10,35 @@
 #include "comms/cast.h"
 #include "comms/util/ScopeGuard.h"
 
-namespace comms
-{
+namespace comms {
 
-namespace field
-{
+namespace field {
 
-namespace adapter
-{
+namespace adapter {
 
-template <typename TActField, typename TBase>
-class FieldType : public TBase
-{
-    using BaseImpl = TBase;
+template <typename TActField, typename TBase> class FieldType : public TBase {
+  using BaseImpl = TBase;
+
 public:
-    using ValueType = typename BaseImpl::ValueType;
+  using ValueType = typename BaseImpl::ValueType;
 
-    bool valid() const
-    {
-        if (m_entered) {
-            return BaseImpl::valid();
-        }
-
-        m_entered = true;
-        auto onExit =
-            comms::util::makeScopeGuard(
-                [this]()
-                {
-                    m_entered = false;
-                });
-
-        return static_cast<const TActField*>(this)->valid();
+  bool valid() const {
+    if (m_entered) {
+      return BaseImpl::valid();
     }
 
+    m_entered = true;
+    auto onExit = comms::util::makeScopeGuard([this]() { m_entered = false; });
+
+    return static_cast<const TActField *>(this)->valid();
+  }
+
 private:
-    mutable bool m_entered = false;
+  mutable bool m_entered = false;
 };
 
-}  // namespace adapter
+} // namespace adapter
 
-}  // namespace field
+} // namespace field
 
-}  // namespace comms
-
+} // namespace comms

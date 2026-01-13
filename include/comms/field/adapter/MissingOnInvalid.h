@@ -1,5 +1,5 @@
 //
-// Copyright 2019 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2019 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -11,72 +11,57 @@
 
 #include <cstddef>
 
-namespace comms
-{
+namespace comms {
 
-namespace field
-{
+namespace field {
 
-namespace adapter
-{
+namespace adapter {
 
-template <typename TBase>
-class MissingOnInvalid : public TBase
-{
-    using BaseImpl = TBase;
+template <typename TBase> class MissingOnInvalid : public TBase {
+  using BaseImpl = TBase;
+
 public:
-
-    template <typename TIter>
-    comms::ErrorStatus read(TIter& iter, std::size_t len)
-    {
-        auto iterTmp = iter;
-        auto es = BaseImpl::read(iterTmp, len);
-        if (es != comms::ErrorStatus::Success) {
-            return es;
-        }
-
-        if (!BaseImpl::valid()) {
-            BaseImpl::setMode(comms::field::OptionalMode::Missing);
-            return es;
-        }
-
-        iter = iterTmp;
-        return es;
+  template <typename TIter>
+  comms::ErrorStatus read(TIter &iter, std::size_t len) {
+    auto iterTmp = iter;
+    auto es = BaseImpl::read(iterTmp, len);
+    if (es != comms::ErrorStatus::Success) {
+      return es;
     }
 
-    static constexpr bool hasReadNoStatus()
-    {
-        return false;
+    if (!BaseImpl::valid()) {
+      BaseImpl::setMode(comms::field::OptionalMode::Missing);
+      return es;
     }
 
-    template <typename TIter>
-    void readNoStatus(TIter& iter) = delete;
+    iter = iterTmp;
+    return es;
+  }
 
-    static constexpr bool hasNonDefaultRefresh()
-    {
-        return true;
+  static constexpr bool hasReadNoStatus() { return false; }
+
+  template <typename TIter> void readNoStatus(TIter &iter) = delete;
+
+  static constexpr bool hasNonDefaultRefresh() { return true; }
+
+  bool refresh() {
+    bool updated = BaseImpl::refresh();
+    auto mode = BaseImpl::getMode();
+    if (!BaseImpl::valid()) {
+      mode = comms::field::OptionalMode::Missing;
     }
 
-    bool refresh()
-    {
-        bool updated = BaseImpl::refresh();
-        auto mode = BaseImpl::getMode();
-        if (!BaseImpl::valid()) {
-            mode = comms::field::OptionalMode::Missing;
-        }
-
-        if (mode == BaseImpl::getMode()) {
-            return updated;
-        }
-
-        BaseImpl::setMode(mode);
-        return true;
+    if (mode == BaseImpl::getMode()) {
+      return updated;
     }
+
+    BaseImpl::setMode(mode);
+    return true;
+  }
 };
 
-}  // namespace adapter
+} // namespace adapter
 
-}  // namespace field
+} // namespace field
 
-}  // namespace comms
-
+} // namespace comms

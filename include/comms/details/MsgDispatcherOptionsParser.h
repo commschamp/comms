@@ -1,5 +1,5 @@
 //
-// Copyright 2019 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2019 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -11,45 +11,34 @@
 
 #include <tuple>
 
-namespace comms
-{
+namespace comms {
 
-namespace details
-{
+namespace details {
 
-template <typename... TOptions>
-class MsgDispatcherOptionsParser;
+template <typename... TOptions> class MsgDispatcherOptionsParser;
 
-template <>
-class MsgDispatcherOptionsParser<>
-{
+template <> class MsgDispatcherOptionsParser<> {
 public:
-    static const bool HasForcedDispatch = false;
-    using ForcedDispatch = void;
+  static const bool HasForcedDispatch = false;
+  using ForcedDispatch = void;
 };
 
 template <typename T, typename... TOptions>
-class MsgDispatcherOptionsParser<comms::option::app::ForceDispatch<T>, TOptions...> :
-        public MsgDispatcherOptionsParser<TOptions...>
-{
+class MsgDispatcherOptionsParser<comms::option::app::ForceDispatch<T>,
+                                 TOptions...>
+    : public MsgDispatcherOptionsParser<TOptions...> {
 public:
-    static const bool HasForcedDispatch = true;
-    using ForcedDispatch = T;
+  static const bool HasForcedDispatch = true;
+  using ForcedDispatch = T;
 };
 
 template <typename... TOptions>
-class MsgDispatcherOptionsParser<
-    comms::option::app::EmptyOption,
-    TOptions...> : public MsgDispatcherOptionsParser<TOptions...>
-{
-};
+class MsgDispatcherOptionsParser<comms::option::app::EmptyOption, TOptions...>
+    : public MsgDispatcherOptionsParser<TOptions...> {};
 
 template <typename... TBundledOptions, typename... TOptions>
-class MsgDispatcherOptionsParser<
-    std::tuple<TBundledOptions...>,
-    TOptions...> : public MsgDispatcherOptionsParser<TBundledOptions..., TOptions...>
-{
-};
+class MsgDispatcherOptionsParser<std::tuple<TBundledOptions...>, TOptions...>
+    : public MsgDispatcherOptionsParser<TBundledOptions..., TOptions...> {};
 
 } // namespace details
 

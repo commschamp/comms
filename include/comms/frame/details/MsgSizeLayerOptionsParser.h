@@ -1,5 +1,5 @@
 //
-// Copyright 2019 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2019 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -11,55 +11,41 @@
 
 #include <tuple>
 
-namespace comms
-{
+namespace comms {
 
-namespace frame
-{
+namespace frame {
 
-namespace details
-{
+namespace details {
 
-template <typename... TOptions>
-class MsgSizeLayerOptionsParser;
+template <typename... TOptions> class MsgSizeLayerOptionsParser;
 
-template <>
-class MsgSizeLayerOptionsParser<>
-{
+template <> class MsgSizeLayerOptionsParser<> {
 public:
-    static constexpr bool HasExtendingClass = false;
+  static constexpr bool HasExtendingClass = false;
 
-    using ExtendingClass = void;
+  using ExtendingClass = void;
 
-    template <typename TLayer>
-    using DefineExtendingClass = TLayer;
+  template <typename TLayer> using DefineExtendingClass = TLayer;
 };
 
 template <typename T, typename... TOptions>
-class MsgSizeLayerOptionsParser<comms::option::def::ExtendingClass<T>, TOptions...> :
-        public MsgSizeLayerOptionsParser<TOptions...>
-{
+class MsgSizeLayerOptionsParser<comms::option::def::ExtendingClass<T>,
+                                TOptions...>
+    : public MsgSizeLayerOptionsParser<TOptions...> {
 public:
-    static constexpr bool HasExtendingClass = true;
-    using ExtendingClass = T;
+  static constexpr bool HasExtendingClass = true;
+  using ExtendingClass = T;
 
-    template <typename TLayer>
-    using DefineExtendingClass = ExtendingClass;
+  template <typename TLayer> using DefineExtendingClass = ExtendingClass;
 };
 
 template <typename... TOptions>
-class MsgSizeLayerOptionsParser<
-    comms::option::app::EmptyOption,
-    TOptions...> : public MsgSizeLayerOptionsParser<TOptions...>
-{
-};
+class MsgSizeLayerOptionsParser<comms::option::app::EmptyOption, TOptions...>
+    : public MsgSizeLayerOptionsParser<TOptions...> {};
 
 template <typename... TBundledOptions, typename... TOptions>
-class MsgSizeLayerOptionsParser<
-    std::tuple<TBundledOptions...>,
-    TOptions...> : public MsgSizeLayerOptionsParser<TBundledOptions..., TOptions...>
-{
-};
+class MsgSizeLayerOptionsParser<std::tuple<TBundledOptions...>, TOptions...>
+    : public MsgSizeLayerOptionsParser<TBundledOptions..., TOptions...> {};
 
 } // namespace details
 

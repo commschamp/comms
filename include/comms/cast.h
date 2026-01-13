@@ -1,5 +1,5 @@
 //
-// Copyright 2019 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2019 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -13,21 +13,19 @@
 #include "comms/details/FieldCastHelper.h"
 #include "comms/details/ValueAssignWrapper.h"
 
-namespace comms
-{
+namespace comms {
 
 /// @brief Helper function to assign value with static_cast to
 ///     appropriate type.
 /// @details Can be used to assign any value, including value of a field.
 ///     @code
 ///     auto someValue = ...;
-///     comms::cast_assign(field.value()) = someValue; // Sets field's value with appropriate static_cast.
+///     comms::cast_assign(field.value()) = someValue; // Sets field's value
+///     with appropriate static_cast.
 ///     @endcode
 /// @note Defined in "comms/cast.h" headerfile
-template <typename T>
-details::ValueAssignWrapper<T> cast_assign(T& value)
-{
-    return details::ValueAssignWrapper<T>(value);
+template <typename T> details::ValueAssignWrapper<T> cast_assign(T &value) {
+  return details::ValueAssignWrapper<T>(value);
 }
 
 /// @brief Cast between fields.
@@ -35,13 +33,14 @@ details::ValueAssignWrapper<T> cast_assign(T& value)
 ///     based on indication bit in some other field. This function can be
 ///     used to cast one field to another type.
 ///     @code
-///     SomeFieldType someField = comms::field_cast<SomeFieldType>(someOtherField);
+///     SomeFieldType someField =
+///     comms::field_cast<SomeFieldType>(someOtherField);
 ///     @endcode
-///     The function will perform some compile time analysis and will do a simple
-///     static_cast between the contained values if they are convertible. Otherwise
-///     the write + read operations will be performed, i.e. the source field will
-///     be written into a temporary buffer, and the target field will perform a
-///     read operation from that buffer.
+///     The function will perform some compile time analysis and will do a
+///     simple static_cast between the contained values if they are convertible.
+///     Otherwise the write + read operations will be performed, i.e. the source
+///     field will be written into a temporary buffer, and the target field will
+///     perform a read operation from that buffer.
 /// @tparam TFieldTo Type to cast to.
 /// @tparam TFieldFrom Type to cast from.
 /// @param[in] field Original field
@@ -49,9 +48,8 @@ details::ValueAssignWrapper<T> cast_assign(T& value)
 ///     original field.
 /// @note Defined in "comms/cast.h" headerfile
 template <typename TFieldTo, typename TFieldFrom>
-TFieldTo field_cast(const TFieldFrom& field)
-{
-    return details::FieldCastHelper<>::template cast<TFieldTo, TFieldFrom>(field);
+TFieldTo field_cast(const TFieldFrom &field) {
+  return details::FieldCastHelper<>::template cast<TFieldTo, TFieldFrom>(field);
 }
 
 } // namespace comms

@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -15,14 +15,11 @@
 
 #include <ratio>
 
-namespace comms
-{
+namespace comms {
 
-namespace traits
-{
+namespace traits {
 
-namespace endian
-{
+namespace endian {
 
 /// @brief Empty class used in traits to indicate Big Endian.
 using Big = util::traits::endian::Big;
@@ -30,10 +27,9 @@ using Big = util::traits::endian::Big;
 /// @brief Empty class used in traits to indicate Little Endian.
 using Little = util::traits::endian::Little;
 
-}  // namespace endian
+} // namespace endian
 
-namespace units
-{
+namespace units {
 
 /// @brief Tag class used to indicate time value
 struct Time {};
@@ -194,8 +190,7 @@ using TerabytesRatio = std::ratio<1024ULL * 1024 * 1024 * 1024, 1>;
 
 } // namespace units
 
-namespace dispatch
-{
+namespace dispatch {
 
 /// @brief Tag class used to indicate polymorphic dispatch
 struct Polymorphic {};
@@ -208,7 +203,6 @@ struct LinearSwitch {};
 
 } // namespace dispatch
 
-}  // namespace traits
+} // namespace traits
 
-}  // namespace comms
-
+} // namespace comms

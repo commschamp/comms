@@ -1,5 +1,5 @@
 //
-// Copyright 2017 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -12,14 +12,11 @@
 
 #include "comms/details/tag.h"
 
-namespace comms
-{
+namespace comms {
 
-namespace field
-{
+namespace field {
 
-namespace tag
-{
+namespace tag {
 
 using RawArrayList = comms::details::tag::Tag1<>;
 using ArrayList = comms::details::tag::Tag2<>;
@@ -33,9 +30,8 @@ using Optional = comms::details::tag::Tag9<>;
 using String = comms::details::tag::Tag10<>;
 using Variant = comms::details::tag::Tag11<>;
 
-}  // namespace tag
+} // namespace tag
 
-}  // namespace field
+} // namespace field
 
-}  // namespace comms
-
+} // namespace comms

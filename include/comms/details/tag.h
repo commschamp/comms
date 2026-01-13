@@ -1,5 +1,5 @@
 //
-// Copyright 2020 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2020 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,50 +7,35 @@
 
 #pragma once
 
-namespace comms
-{
+namespace comms {
 
-namespace details
-{
+namespace details {
 
-namespace tag
-{
+namespace tag {
 
-template<typename...>
-struct Tag1 {};
+template <typename...> struct Tag1 {};
 
-template<typename...>
-struct Tag2 {};
+template <typename...> struct Tag2 {};
 
-template<typename...>
-struct Tag3 {};
+template <typename...> struct Tag3 {};
 
-template<typename...>
-struct Tag4 {};
+template <typename...> struct Tag4 {};
 
-template<typename...>
-struct Tag5 {};
+template <typename...> struct Tag5 {};
 
-template<typename...>
-struct Tag6 {};
+template <typename...> struct Tag6 {};
 
-template<typename...>
-struct Tag7 {};
+template <typename...> struct Tag7 {};
 
-template<typename...>
-struct Tag8 {};
+template <typename...> struct Tag8 {};
 
-template<typename...>
-struct Tag9 {};
+template <typename...> struct Tag9 {};
 
-template<typename...>
-struct Tag10 {};
+template <typename...> struct Tag10 {};
 
-template<typename...>
-struct Tag11 {};
+template <typename...> struct Tag11 {};
 
-template<typename...>
-struct Tag12 {};
+template <typename...> struct Tag12 {};
 
 } // namespace tag
 

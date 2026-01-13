@@ -1,5 +1,5 @@
 //
-// Copyright 2017 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -15,260 +15,226 @@
 #include <tuple>
 #include <type_traits>
 
-namespace comms
-{
+namespace comms {
 
-namespace field
-{
+namespace field {
 
-namespace basic
-{
+namespace basic {
 
-struct CommonFuncs
-{
-    template <typename TField, typename TIter>
-    static comms::ErrorStatus readSequence(TField& field, TIter& iter, std::size_t len)
-    {
-        field.clear();
-        auto remLen = len;
-        while (0 < remLen) {
-            auto& elem = field.createBack();
-            auto es = field.readElement(elem, iter, remLen);
-            if (es != comms::ErrorStatus::Success) {
-                field.value().pop_back();
-                return es;
-            }
-        }
-
-        return ErrorStatus::Success;
-    }
-
-    template <typename TField, typename TIter>
-    static comms::ErrorStatus readSequenceN(TField& field, std::size_t count, TIter& iter, std::size_t& len)
-    {
-        field.clear();
-        while (0 < count) {
-            auto& elem = field.createBack();
-            auto es = field.readElement(elem, iter, len);
-            if (es != comms::ErrorStatus::Success) {
-                field.value().pop_back();
-                return es;
-            }
-            --count;
-        }
-        return comms::ErrorStatus::Success;
-    }
-
-    template <typename TField, typename TIter>
-    static void readSequenceNoStatusN(TField& field, std::size_t count, TIter& iter)
-    {
-        field.clear();
-        while (0 < count) {
-            auto& elem = field.createBack();
-            field.readElementNoStatus(elem, iter);
-            --count;
-        }
-    }
-
-    template <typename TField>
-    static bool canWriteSequence(const TField& field)
-    {
-        for (auto& elem : field.value()) {
-            if (!field.canWriteElement(elem)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    template <typename TField, typename TIter>
-    static comms::ErrorStatus writeSequence(const TField& field, TIter& iter, std::size_t len)
-    {
-        auto es = ErrorStatus::Success;
-        auto remainingLen = len;
-        for (auto& elem : field.value()) {
-            if (!field.canWriteElement(elem)) {
-                es = ErrorStatus::InvalidMsgData;
-                break;
-            }
-
-            es = field.writeElement(elem, iter, remainingLen);
-            if (es != comms::ErrorStatus::Success) {
-                break;
-            }
-        }
-
+struct CommonFuncs {
+  template <typename TField, typename TIter>
+  static comms::ErrorStatus readSequence(TField &field, TIter &iter,
+                                         std::size_t len) {
+    field.clear();
+    auto remLen = len;
+    while (0 < remLen) {
+      auto &elem = field.createBack();
+      auto es = field.readElement(elem, iter, remLen);
+      if (es != comms::ErrorStatus::Success) {
+        field.value().pop_back();
         return es;
+      }
     }
 
-    template <typename TField, typename TIter>
-    static void writeSequenceNoStatus(TField& field, TIter& iter)
-    {
-        for (auto& elem : field.value()) {
-            field.writeElementNoStatus(elem, iter);
-        }
-    }
+    return ErrorStatus::Success;
+  }
 
-    template <typename TField, typename TIter>
-    static comms::ErrorStatus writeSequenceN(const TField& field, std::size_t count, TIter& iter, std::size_t& len)
-    {
-        auto es = ErrorStatus::Success;
-        for (auto& elem : field.value()) {
-            if (count == 0) {
-                break;
-            }
-
-            es = field.writeElement(elem, iter, len);
-            if (es != ErrorStatus::Success) {
-                break;
-            }
-
-            --count;
-        }
-
+  template <typename TField, typename TIter>
+  static comms::ErrorStatus readSequenceN(TField &field, std::size_t count,
+                                          TIter &iter, std::size_t &len) {
+    field.clear();
+    while (0 < count) {
+      auto &elem = field.createBack();
+      auto es = field.readElement(elem, iter, len);
+      if (es != comms::ErrorStatus::Success) {
+        field.value().pop_back();
         return es;
+      }
+      --count;
+    }
+    return comms::ErrorStatus::Success;
+  }
+
+  template <typename TField, typename TIter>
+  static void readSequenceNoStatusN(TField &field, std::size_t count,
+                                    TIter &iter) {
+    field.clear();
+    while (0 < count) {
+      auto &elem = field.createBack();
+      field.readElementNoStatus(elem, iter);
+      --count;
+    }
+  }
+
+  template <typename TField> static bool canWriteSequence(const TField &field) {
+    for (auto &elem : field.value()) {
+      if (!field.canWriteElement(elem)) {
+        return false;
+      }
     }
 
-    template <typename TField, typename TIter>
-    static void writeSequenceNoStatusN(const TField& field, std::size_t count, TIter& iter)
-    {
-        for (auto& elem : field.value()) {
-            if (count == 0) {
-                break;
-            }
+    return true;
+  }
 
-            field.writeElementNoStatus(elem, iter);
-            --count;
-        }
+  template <typename TField, typename TIter>
+  static comms::ErrorStatus writeSequence(const TField &field, TIter &iter,
+                                          std::size_t len) {
+    auto es = ErrorStatus::Success;
+    auto remainingLen = len;
+    for (auto &elem : field.value()) {
+      if (!field.canWriteElement(elem)) {
+        es = ErrorStatus::InvalidMsgData;
+        break;
+      }
+
+      es = field.writeElement(elem, iter, remainingLen);
+      if (es != comms::ErrorStatus::Success) {
+        break;
+      }
     }
 
-    template <typename TIter>
-    static void advanceWriteIterator(TIter& iter, std::size_t len)
-    {
-        using IterType = typename std::decay<decltype(iter)>::type;
-        using ByteType = typename std::iterator_traits<IterType>::value_type;
-        while (len > 0U) {
-            *iter = ByteType();
-            ++iter;
-            --len;
-        }
+    return es;
+  }
+
+  template <typename TField, typename TIter>
+  static void writeSequenceNoStatus(TField &field, TIter &iter) {
+    for (auto &elem : field.value()) {
+      field.writeElementNoStatus(elem, iter);
+    }
+  }
+
+  template <typename TField, typename TIter>
+  static comms::ErrorStatus writeSequenceN(const TField &field,
+                                           std::size_t count, TIter &iter,
+                                           std::size_t &len) {
+    auto es = ErrorStatus::Success;
+    for (auto &elem : field.value()) {
+      if (count == 0) {
+        break;
+      }
+
+      es = field.writeElement(elem, iter, len);
+      if (es != ErrorStatus::Success) {
+        break;
+      }
+
+      --count;
     }
 
-    static constexpr std::size_t maxSupportedLength()
-    {
-        return 0xffff;
+    return es;
+  }
+
+  template <typename TField, typename TIter>
+  static void writeSequenceNoStatusN(const TField &field, std::size_t count,
+                                     TIter &iter) {
+    for (auto &elem : field.value()) {
+      if (count == 0) {
+        break;
+      }
+
+      field.writeElementNoStatus(elem, iter);
+      --count;
     }
+  }
 
-    template <typename TFields, typename TVersionType>
-    static bool setVersionForMembers(TFields& fields, TVersionType version)
-    {
-        return comms::util::tupleAccumulate(fields, false, makeVersionUpdater(version));
+  template <typename TIter>
+  static void advanceWriteIterator(TIter &iter, std::size_t len) {
+    using IterType = typename std::decay<decltype(iter)>::type;
+    using ByteType = typename std::iterator_traits<IterType>::value_type;
+    while (len > 0U) {
+      *iter = ByteType();
+      ++iter;
+      --len;
     }
+  }
 
-    template <typename... TFields>
-    using IsAnyFieldVersionDependentBoolType =
-        typename comms::util::Conditional<
-            comms::util::tupleTypeIsAnyOf<std::tuple<TFields...> >(
-                comms::field::details::FieldVersionDependentCheckHelper<>())
-        >::template Type<
-            std::true_type,
-            std::false_type
-        >;
+  static constexpr std::size_t maxSupportedLength() { return 0xffff; }
 
-    template <typename... TFields>
-    using FieldSelectMaxLengthIntType =
-        std::integral_constant<
-            std::size_t,
-            comms::util::tupleTypeAccumulate<std::tuple<TFields...> >(
-                std::size_t(0), comms::field::details::FieldMaxLengthCalcHelper<>())
-        >;
+  template <typename TFields, typename TVersionType>
+  static bool setVersionForMembers(TFields &fields, TVersionType version) {
+    return comms::util::tupleAccumulate(fields, false,
+                                        makeVersionUpdater(version));
+  }
 
-    template <typename... TFields>
-    using FieldSumMaxLengthIntType =
-        std::integral_constant<
-            std::size_t,
-            comms::util::tupleTypeAccumulate<std::tuple<TFields...> >(
-                std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>())
-        >;
+  template <typename... TFields>
+  using IsAnyFieldVersionDependentBoolType = typename comms::util::Conditional<
+      comms::util::tupleTypeIsAnyOf<std::tuple<TFields...>>(
+          comms::field::details::FieldVersionDependentCheckHelper<>())>::
+      template Type<std::true_type, std::false_type>;
 
-    template <std::size_t TFrom, std::size_t TUntil, typename... TFields>
-    using FieldSumMaxLengthFromUntilIntType =
-        std::integral_constant<
-            std::size_t,
-            comms::util::tupleTypeAccumulateFromUntil<TFrom, TUntil, std::tuple<TFields...> >(
-                std::size_t(0), comms::field::details::FieldMaxLengthSumCalcHelper<>())
-        >;
+  template <typename... TFields>
+  using FieldSelectMaxLengthIntType = std::integral_constant<
+      std::size_t,
+      comms::util::tupleTypeAccumulate<std::tuple<TFields...>>(
+          std::size_t(0), comms::field::details::FieldMaxLengthCalcHelper<>())>;
 
-    template <typename... TFields>
-    using FieldSumMinLengthIntType =
-        std::integral_constant<
-            std::size_t,
-            comms::util::tupleTypeAccumulate<std::tuple<TFields...> >(
-                std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>())
-        >;
+  template <typename... TFields>
+  using FieldSumMaxLengthIntType = std::integral_constant<
+      std::size_t, comms::util::tupleTypeAccumulate<std::tuple<TFields...>>(
+                       std::size_t(0),
+                       comms::field::details::FieldMaxLengthSumCalcHelper<>())>;
 
-    template <std::size_t TFrom, std::size_t TUntil, typename... TFields>
-    using FieldSumMinLengthFromUntilIntType =
-        std::integral_constant<
-            std::size_t,
-            comms::util::tupleTypeAccumulateFromUntil<TFrom, TUntil, std::tuple<TFields...> >(
-                std::size_t(0), comms::field::details::FieldMinLengthSumCalcHelper<>())
-        >;
+  template <std::size_t TFrom, std::size_t TUntil, typename... TFields>
+  using FieldSumMaxLengthFromUntilIntType = std::integral_constant<
+      std::size_t, comms::util::tupleTypeAccumulateFromUntil<
+                       TFrom, TUntil, std::tuple<TFields...>>(
+                       std::size_t(0),
+                       comms::field::details::FieldMaxLengthSumCalcHelper<>())>;
 
-    template <typename... TFields>
-    using FieldSumTotalBitLengthIntType =
-        std::integral_constant<
-            std::size_t,
-            comms::util::tupleTypeAccumulate<std::tuple<TFields...> >(
-                std::size_t(0), comms::field::details::FieldTotalBitLengthSumCalcHelper<>())
-        >;
+  template <typename... TFields>
+  using FieldSumMinLengthIntType = std::integral_constant<
+      std::size_t, comms::util::tupleTypeAccumulate<std::tuple<TFields...>>(
+                       std::size_t(0),
+                       comms::field::details::FieldMinLengthSumCalcHelper<>())>;
 
-    template <std::size_t TFrom, std::size_t TUntil, typename... TFields>
-    using FieldSumTotalBitLengthFromUntilIntType =
-        std::integral_constant<
-            std::size_t,
-            comms::util::tupleTypeAccumulateFromUntil<TFrom, TUntil, std::tuple<TFields...> >(
-                std::size_t(0), comms::field::details::FieldTotalBitLengthSumCalcHelper<>())
-        >;
+  template <std::size_t TFrom, std::size_t TUntil, typename... TFields>
+  using FieldSumMinLengthFromUntilIntType = std::integral_constant<
+      std::size_t, comms::util::tupleTypeAccumulateFromUntil<
+                       TFrom, TUntil, std::tuple<TFields...>>(
+                       std::size_t(0),
+                       comms::field::details::FieldMinLengthSumCalcHelper<>())>;
 
-    template <typename... TFields>
-    using AnyFieldHasNonDefaultRefreshBoolType =
-        typename comms::util::Conditional<
-            comms::util::tupleTypeIsAnyOf<std::tuple<TFields...> >(
-                comms::field::details::FieldNonDefaultRefreshCheckHelper<>())
-        >::template Type<
-            std::true_type,
-            std::false_type
-        >;
+  template <typename... TFields>
+  using FieldSumTotalBitLengthIntType = std::integral_constant<
+      std::size_t,
+      comms::util::tupleTypeAccumulate<std::tuple<TFields...>>(
+          std::size_t(0),
+          comms::field::details::FieldTotalBitLengthSumCalcHelper<>())>;
 
-    template <typename... TFields>
-    using AllFieldsHaveReadNoStatusBoolType =
-        typename comms::util::Conditional<
-            comms::util::tupleTypeAccumulate<std::tuple<TFields...> >(
-                true, comms::field::details::FieldReadNoStatusDetectHelper<>())
-        >::template Type<
-            std::true_type,
-            std::false_type
-        >;
+  template <std::size_t TFrom, std::size_t TUntil, typename... TFields>
+  using FieldSumTotalBitLengthFromUntilIntType = std::integral_constant<
+      std::size_t,
+      comms::util::tupleTypeAccumulateFromUntil<TFrom, TUntil,
+                                                std::tuple<TFields...>>(
+          std::size_t(0),
+          comms::field::details::FieldTotalBitLengthSumCalcHelper<>())>;
 
-    template <typename... TFields>
-    using AllFieldsHaveWriteNoStatusBoolType =
-        typename comms::util::Conditional<
-            comms::util::tupleTypeAccumulate<std::tuple<TFields...> >(
-                true, comms::field::details::FieldWriteNoStatusDetectHelper<>())
-        >::template Type<
-            std::true_type,
-            std::false_type
-        >;
+  template <typename... TFields>
+  using AnyFieldHasNonDefaultRefreshBoolType =
+      typename comms::util::Conditional<
+          comms::util::tupleTypeIsAnyOf<std::tuple<TFields...>>(
+              comms::field::details::FieldNonDefaultRefreshCheckHelper<>())>::
+          template Type<std::true_type, std::false_type>;
+
+  template <typename... TFields>
+  using AllFieldsHaveReadNoStatusBoolType = typename comms::util::Conditional<
+      comms::util::tupleTypeAccumulate<std::tuple<TFields...>>(
+          true, comms::field::details::FieldReadNoStatusDetectHelper<>())>::
+      template Type<std::true_type, std::false_type>;
+
+  template <typename... TFields>
+  using AllFieldsHaveWriteNoStatusBoolType = typename comms::util::Conditional<
+      comms::util::tupleTypeAccumulate<std::tuple<TFields...>>(
+          true, comms::field::details::FieldWriteNoStatusDetectHelper<>())>::
+      template Type<std::true_type, std::false_type>;
 
 private:
-
-    template <typename TVersionType>
-    static comms::field::details::FieldVersionUpdateHelper<TVersionType> makeVersionUpdater(TVersionType version)
-    {
-        return comms::field::details::FieldVersionUpdateHelper<TVersionType>(version);
-    }
+  template <typename TVersionType>
+  static comms::field::details::FieldVersionUpdateHelper<TVersionType>
+  makeVersionUpdater(TVersionType version) {
+    return comms::field::details::FieldVersionUpdateHelper<TVersionType>(
+        version);
+  }
 };
 
 } // namespace basic

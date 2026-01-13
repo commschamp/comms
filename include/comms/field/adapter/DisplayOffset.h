@@ -1,5 +1,5 @@
 //
-// Copyright 2019 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2019 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,31 +7,26 @@
 
 #pragma once
 
-namespace comms
-{
+namespace comms {
 
-namespace field
-{
+namespace field {
 
-namespace adapter
-{
+namespace adapter {
 
 template <std::intmax_t TOffset, typename TBase>
-class DisplayOffset : public TBase
-{
-    using BaseImpl = TBase;
-public:
-    using DisplayOffsetType = typename TBase::DisplayOffsetType;
+class DisplayOffset : public TBase {
+  using BaseImpl = TBase;
 
-    static constexpr DisplayOffsetType displayOffset()
-    {
-        return static_cast<DisplayOffsetType>(TOffset);
-    }
+public:
+  using DisplayOffsetType = typename TBase::DisplayOffsetType;
+
+  static constexpr DisplayOffsetType displayOffset() {
+    return static_cast<DisplayOffsetType>(TOffset);
+  }
 };
 
-}  // namespace adapter
+} // namespace adapter
 
-}  // namespace field
+} // namespace field
 
-}  // namespace comms
-
+} // namespace comms

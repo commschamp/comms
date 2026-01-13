@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -8,8 +8,8 @@
 #pragma once
 
 #include "comms/Assert.h"
-#include "comms/details/tag.h"
 #include "comms/ErrorStatus.h"
+#include "comms/details/tag.h"
 #include "comms/util/type_traits.h"
 
 #include <cstddef>
@@ -18,184 +18,159 @@
 #include <type_traits>
 #include <utility>
 
-namespace comms
-{
+namespace comms {
 
-namespace field
-{
+namespace field {
 
-namespace adapter
-{
+namespace adapter {
 
 template <typename TTermField, typename TBase>
-class SequenceTerminationFieldSuffix : public TBase
-{
-    using BaseImpl = TBase;
-    using TermField = TTermField;
+class SequenceTerminationFieldSuffix : public TBase {
+  using BaseImpl = TBase;
+  using TermField = TTermField;
 
-    static_assert(!TermField::isVersionDependent(),
-            "Suffix fields must not be version dependent");
+  static_assert(!TermField::isVersionDependent(),
+                "Suffix fields must not be version dependent");
 
 public:
-    using ValueType = typename BaseImpl::ValueType;
-    using ElementType = typename BaseImpl::ElementType;
+  using ValueType = typename BaseImpl::ValueType;
+  using ElementType = typename BaseImpl::ElementType;
 
-    SequenceTerminationFieldSuffix() = default;
+  SequenceTerminationFieldSuffix() = default;
 
-    explicit SequenceTerminationFieldSuffix(const ValueType& val)
-      : BaseImpl(val)
-    {
+  explicit SequenceTerminationFieldSuffix(const ValueType &val)
+      : BaseImpl(val) {}
+
+  explicit SequenceTerminationFieldSuffix(ValueType &&val)
+      : BaseImpl(std::move(val)) {}
+
+  SequenceTerminationFieldSuffix(const SequenceTerminationFieldSuffix &) =
+      default;
+  SequenceTerminationFieldSuffix(SequenceTerminationFieldSuffix &&) = default;
+  SequenceTerminationFieldSuffix &
+  operator=(const SequenceTerminationFieldSuffix &) = default;
+  SequenceTerminationFieldSuffix &
+  operator=(SequenceTerminationFieldSuffix &&) = default;
+
+  constexpr std::size_t length() const {
+    return m_termField.length() + BaseImpl::length();
+  }
+
+  static constexpr std::size_t minLength() {
+    return TermField::minLength() + BaseImpl::minLength();
+  }
+
+  static constexpr std::size_t maxLength() {
+    return TermField::maxLength() + BaseImpl::maxLength();
+  }
+
+  template <typename TIter>
+  comms::ErrorStatus read(TIter &iter, std::size_t len) {
+    using IterType = typename std::decay<decltype(iter)>::type;
+    using IterTag = typename std::iterator_traits<IterType>::iterator_category;
+    static_assert(
+        std::is_base_of<std::random_access_iterator_tag, IterTag>::value,
+        "Only random access iterator for reading is supported with "
+        "comms::option::def::SequenceTerminationFieldSuffix option");
+
+    using ReadElemTag = typename comms::util::LazyShallowConditional<
+        std::is_integral<ElementType>::value &&
+        (sizeof(ElementType) ==
+         sizeof(std::uint8_t))>::template Type<RawDataTag, FieldTag>;
+
+    return readInternal(iter, len, ReadElemTag());
+  }
+
+  static constexpr bool hasReadNoStatus() { return false; }
+
+  template <typename TIter> void readNoStatus(TIter &iter) = delete;
+
+  template <typename TIter>
+  comms::ErrorStatus write(TIter &iter, std::size_t len) const {
+    auto trailLen = m_termField.length();
+    auto es = BaseImpl::write(iter, len - trailLen);
+    if (es != comms::ErrorStatus::Success) {
+      return es;
     }
 
-    explicit SequenceTerminationFieldSuffix(ValueType&& val)
-      : BaseImpl(std::move(val))
-    {
-    }
+    return m_termField.write(iter, trailLen);
+  }
 
-    SequenceTerminationFieldSuffix(const SequenceTerminationFieldSuffix&) = default;
-    SequenceTerminationFieldSuffix(SequenceTerminationFieldSuffix&&) = default;
-    SequenceTerminationFieldSuffix& operator=(const SequenceTerminationFieldSuffix&) = default;
-    SequenceTerminationFieldSuffix& operator=(SequenceTerminationFieldSuffix&&) = default;
+  template <typename TIter> void writeNoStatus(TIter &iter) const {
+    BaseImpl::writeNoStatus(iter);
+    m_termField.writeNoStatus(iter);
+  }
 
-    constexpr std::size_t length() const
-    {
-        return m_termField.length() + BaseImpl::length();
-    }
+  TermField &terminationFieldSuffix() { return m_termField; }
 
-    static constexpr std::size_t minLength()
-    {
-        return TermField::minLength() + BaseImpl::minLength();
-    }
-
-    static constexpr std::size_t maxLength()
-    {
-        return TermField::maxLength() + BaseImpl::maxLength();
-    }
-
-    template <typename TIter>
-    comms::ErrorStatus read(TIter& iter, std::size_t len)
-    {
-        using IterType = typename std::decay<decltype(iter)>::type;
-        using IterTag = typename std::iterator_traits<IterType>::iterator_category;
-        static_assert(std::is_base_of<std::random_access_iterator_tag, IterTag>::value,
-            "Only random access iterator for reading is supported with comms::option::def::SequenceTerminationFieldSuffix option");
-
-        using ReadElemTag =
-            typename comms::util::LazyShallowConditional<
-                std::is_integral<ElementType>::value && (sizeof(ElementType) == sizeof(std::uint8_t))
-            >::template Type<
-                RawDataTag,
-                FieldTag
-            >;
-
-        return readInternal(iter, len, ReadElemTag());
-    }
-
-    static constexpr bool hasReadNoStatus()
-    {
-        return false;
-    }
-
-    template <typename TIter>
-    void readNoStatus(TIter& iter) = delete;
-
-    template <typename TIter>
-    comms::ErrorStatus write(TIter& iter, std::size_t len) const
-    {
-        auto trailLen = m_termField.length();
-        auto es = BaseImpl::write(iter, len - trailLen);
-        if (es != comms::ErrorStatus::Success) {
-            return es;
-        }
-
-        return m_termField.write(iter, trailLen);
-    }
-
-    template <typename TIter>
-    void writeNoStatus(TIter& iter) const
-    {
-        BaseImpl::writeNoStatus(iter);
-        m_termField.writeNoStatus(iter);
-    }
-
-    TermField& terminationFieldSuffix()
-    {
-        return m_termField;
-    }
-
-    const TermField& terminationFieldSuffix() const
-    {
-        return m_termField;
-    }
+  const TermField &terminationFieldSuffix() const { return m_termField; }
 
 private:
-    template <typename... TParams>
-    using RawDataTag = comms::details::tag::Tag1<>;
+  template <typename... TParams> using RawDataTag = comms::details::tag::Tag1<>;
 
-    template <typename... TParams>
-    using FieldTag = comms::details::tag::Tag2<>;
+  template <typename... TParams> using FieldTag = comms::details::tag::Tag2<>;
 
-    template <typename TIter, typename... TParams>
-    comms::ErrorStatus readInternal(TIter& iter, std::size_t len, FieldTag<TParams...>)
-    {
-        BaseImpl::clear();
-        while (true) {
-            auto iterCpy = iter;
-            auto es = m_termField.read(iterCpy, len);
-            if (es == comms::ErrorStatus::Success) {
-                std::advance(iter, std::distance(iter, iterCpy));
-                return es;
-            }
+  template <typename TIter, typename... TParams>
+  comms::ErrorStatus readInternal(TIter &iter, std::size_t len,
+                                  FieldTag<TParams...>) {
+    BaseImpl::clear();
+    while (true) {
+      auto iterCpy = iter;
+      auto es = m_termField.read(iterCpy, len);
+      if (es == comms::ErrorStatus::Success) {
+        std::advance(iter, std::distance(iter, iterCpy));
+        return es;
+      }
 
-            auto& elem = BaseImpl::createBack();
-            es = BaseImpl::readElement(elem, iter, len);
-            if (es != comms::ErrorStatus::Success) {
-                BaseImpl::value().pop_back();
-                return es;
-            }
-        }
-
-        return comms::ErrorStatus::Success;
+      auto &elem = BaseImpl::createBack();
+      es = BaseImpl::readElement(elem, iter, len);
+      if (es != comms::ErrorStatus::Success) {
+        BaseImpl::value().pop_back();
+        return es;
+      }
     }
 
-    template <typename TIter, typename... TParams>
-    comms::ErrorStatus readInternal(TIter& iter, std::size_t len, RawDataTag<TParams...>)
-    {
-        std::size_t consumed = 0U;
-        std::size_t termFieldLen = 0U;
-        while (consumed < len) {
-            auto iterCpy = iter + consumed;
-            auto es = m_termField.read(iterCpy, len - consumed);
-            if (es == comms::ErrorStatus::Success) {
-                termFieldLen = static_cast<std::size_t>(std::distance(iter + consumed, iterCpy));
-                break;
-            }
+    return comms::ErrorStatus::Success;
+  }
 
-            ++consumed;
-        }
+  template <typename TIter, typename... TParams>
+  comms::ErrorStatus readInternal(TIter &iter, std::size_t len,
+                                  RawDataTag<TParams...>) {
+    std::size_t consumed = 0U;
+    std::size_t termFieldLen = 0U;
+    while (consumed < len) {
+      auto iterCpy = iter + consumed;
+      auto es = m_termField.read(iterCpy, len - consumed);
+      if (es == comms::ErrorStatus::Success) {
+        termFieldLen =
+            static_cast<std::size_t>(std::distance(iter + consumed, iterCpy));
+        break;
+      }
 
-        if (len <= consumed) {
-            return comms::ErrorStatus::NotEnoughData;
-        }
-
-        auto iterCpy = iter;
-        auto es = BaseImpl::read(iterCpy, consumed);
-        if (es != comms::ErrorStatus::Success) {
-            return es;
-        }
-
-        auto fullConsumeLen = consumed + termFieldLen;
-        COMMS_ASSERT(fullConsumeLen <= len);
-        std::advance(iter, fullConsumeLen);
-        return comms::ErrorStatus::Success;
+      ++consumed;
     }
 
-    TermField m_termField;
+    if (len <= consumed) {
+      return comms::ErrorStatus::NotEnoughData;
+    }
+
+    auto iterCpy = iter;
+    auto es = BaseImpl::read(iterCpy, consumed);
+    if (es != comms::ErrorStatus::Success) {
+      return es;
+    }
+
+    auto fullConsumeLen = consumed + termFieldLen;
+    COMMS_ASSERT(fullConsumeLen <= len);
+    std::advance(iter, fullConsumeLen);
+    return comms::ErrorStatus::Success;
+  }
+
+  TermField m_termField;
 };
 
-}  // namespace adapter
+} // namespace adapter
 
-}  // namespace field
+} // namespace field
 
-}  // namespace comms
-
+} // namespace comms

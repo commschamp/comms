@@ -1,5 +1,5 @@
 //
-// Copyright 2017 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,49 +9,34 @@
 
 #include <utility>
 
-namespace comms
-{
+namespace comms {
 
-namespace field
-{
+namespace field {
 
-namespace adapter
-{
+namespace adapter {
 
-template <typename TBase>
-class InvalidByDefault : public TBase
-{
-    using BaseImpl = TBase;
+template <typename TBase> class InvalidByDefault : public TBase {
+  using BaseImpl = TBase;
+
 public:
+  using ValueType = typename BaseImpl::ValueType;
 
-    using ValueType = typename BaseImpl::ValueType;
+  InvalidByDefault() = default;
 
-    InvalidByDefault() = default;
+  explicit InvalidByDefault(const ValueType &val) : BaseImpl(val) {}
 
-    explicit InvalidByDefault(const ValueType& val)
-      : BaseImpl(val)
-    {
-    }
+  explicit InvalidByDefault(ValueType &&val) : BaseImpl(std::move(val)) {}
 
-    explicit InvalidByDefault(ValueType&& val)
-      : BaseImpl(std::move(val))
-    {
-    }
+  InvalidByDefault(const InvalidByDefault &) = default;
+  InvalidByDefault(InvalidByDefault &&) = default;
+  InvalidByDefault &operator=(const InvalidByDefault &) = default;
+  InvalidByDefault &operator=(InvalidByDefault &&) = default;
 
-    InvalidByDefault(const InvalidByDefault&) = default;
-    InvalidByDefault(InvalidByDefault&&) = default;
-    InvalidByDefault& operator=(const InvalidByDefault&) = default;
-    InvalidByDefault& operator=(InvalidByDefault&&) = default;
-
-    static constexpr bool valid()
-    {
-        return false;
-    }
+  static constexpr bool valid() { return false; }
 };
 
-}  // namespace adapter
+} // namespace adapter
 
-}  // namespace field
+} // namespace field
 
-}  // namespace comms
-
+} // namespace comms

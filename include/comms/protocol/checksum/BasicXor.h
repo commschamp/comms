@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -14,23 +14,19 @@
 
 #include <cstdint>
 
-namespace comms
-{
+namespace comms {
 
-namespace protocol
-{
+namespace protocol {
 
-namespace checksum
-{
+namespace checksum {
 
 /// @brief Alias to the @ref comms::frame::checksum::BasicXor
 /// @deprecated Use @ref comms::frame::checksum::BasicXor class instead
 template <typename TResult = std::uint8_t, TResult TInitValue = 0>
 using BasicXor = comms::frame::checksum::BasicXor<TResult, TInitValue>;
 
-}  // namespace checksum
+} // namespace checksum
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace comms
-
+} // namespace comms

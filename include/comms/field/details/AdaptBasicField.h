@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,239 +7,250 @@
 
 #pragma once
 
-#include "adapters.h"
 #include "OptionsParser.h"
+#include "adapters.h"
 
 #include <cstddef>
 
-namespace comms
-{
+namespace comms {
 
-namespace field
-{
+namespace field {
 
-namespace details
-{
+namespace details {
 
-template<
-    bool T1 = false,
-    bool T2 = false,
-    bool T3 = false,
-    bool T4 = false,
-    bool T5 = false,
-    bool T6 = false>
-struct FieldsOptionsCompatibilityCalc
-{
-    static const std::size_t Value =
-        static_cast<std::size_t>(T1) +\
-        static_cast<std::size_t>(T2) +
-        static_cast<std::size_t>(T3) +
-        static_cast<std::size_t>(T4) +
-        static_cast<std::size_t>(T5) +
-        static_cast<std::size_t>(T6);
+template <bool T1 = false, bool T2 = false, bool T3 = false, bool T4 = false,
+          bool T5 = false, bool T6 = false>
+struct FieldsOptionsCompatibilityCalc {
+  static const std::size_t Value =
+      static_cast<std::size_t>(T1) + static_cast<std::size_t>(T2) +
+      static_cast<std::size_t>(T3) + static_cast<std::size_t>(T4) +
+      static_cast<std::size_t>(T5) + static_cast<std::size_t>(T6);
 };
 
 //--
 
-template <typename TBasic, typename... TOptions>
-class AdaptBasicField
-{
-    using ParsedOptions = OptionsParser<TOptions...>;
+template <typename TBasic, typename... TOptions> class AdaptBasicField {
+  using ParsedOptions = OptionsParser<TOptions...>;
 
-    static const bool CustomReaderIncompatible =
-            ParsedOptions::HasSerOffset ||
-            ParsedOptions::HasFixedLengthLimit ||
-            ParsedOptions::HasFixedBitLengthLimit ||
-            ParsedOptions::HasVarLengthLimits ||
-            ParsedOptions::HasAvailableLengthLimit ||
-            ParsedOptions::HasSequenceElemLengthForcing ||
-            ParsedOptions::HasSequenceSizeForcing ||
-            ParsedOptions::HasSequenceLengthForcing ||
-            ParsedOptions::HasSequenceFixedSize ||
-            ParsedOptions::HasSequenceSizeFieldPrefix ||
-            ParsedOptions::HasSequenceSerLengthFieldPrefix ||
-            ParsedOptions::HasSequenceElemSerLengthFieldPrefix ||
-            ParsedOptions::HasSequenceElemFixedSerLengthFieldPrefix ||
-            ParsedOptions::HasSequenceTrailingFieldSuffix ||
-            ParsedOptions::HasSequenceTerminationFieldSuffix ||
-            ParsedOptions::HasEmptySerialization ||
-            ParsedOptions::HasMissingOnReadFail;
+  static const bool CustomReaderIncompatible =
+      ParsedOptions::HasSerOffset || ParsedOptions::HasFixedLengthLimit ||
+      ParsedOptions::HasFixedBitLengthLimit ||
+      ParsedOptions::HasVarLengthLimits ||
+      ParsedOptions::HasAvailableLengthLimit ||
+      ParsedOptions::HasSequenceElemLengthForcing ||
+      ParsedOptions::HasSequenceSizeForcing ||
+      ParsedOptions::HasSequenceLengthForcing ||
+      ParsedOptions::HasSequenceFixedSize ||
+      ParsedOptions::HasSequenceSizeFieldPrefix ||
+      ParsedOptions::HasSequenceSerLengthFieldPrefix ||
+      ParsedOptions::HasSequenceElemSerLengthFieldPrefix ||
+      ParsedOptions::HasSequenceElemFixedSerLengthFieldPrefix ||
+      ParsedOptions::HasSequenceTrailingFieldSuffix ||
+      ParsedOptions::HasSequenceTerminationFieldSuffix ||
+      ParsedOptions::HasEmptySerialization ||
+      ParsedOptions::HasMissingOnReadFail;
 
-    static const bool VarLengthIncompatible =
-            ParsedOptions::HasFixedLengthLimit ||
-            ParsedOptions::HasFixedBitLengthLimit ||
-            ParsedOptions::HasAvailableLengthLimit;
+  static const bool VarLengthIncompatible =
+      ParsedOptions::HasFixedLengthLimit ||
+      ParsedOptions::HasFixedBitLengthLimit ||
+      ParsedOptions::HasAvailableLengthLimit;
 
-    static_assert(
-            (!ParsedOptions::HasVarLengthLimits) || (!VarLengthIncompatible),
-            "VarLength option is incompatible with FixedLength, FixedBitLength "
-            "and AvailableLengthLimit");
+  static_assert(
+      (!ParsedOptions::HasVarLengthLimits) || (!VarLengthIncompatible),
+      "VarLength option is incompatible with FixedLength, FixedBitLength "
+      "and AvailableLengthLimit");
 
-    static_assert(
-            1U >= FieldsOptionsCompatibilityCalc<
+  static_assert(
+      1U >= FieldsOptionsCompatibilityCalc<
                 ParsedOptions::HasSequenceSizeFieldPrefix,
                 ParsedOptions::HasSequenceSerLengthFieldPrefix,
                 ParsedOptions::HasSequenceFixedSize,
                 ParsedOptions::HasSequenceSizeForcing,
                 ParsedOptions::HasSequenceLengthForcing,
                 ParsedOptions::HasSequenceTerminationFieldSuffix>::Value,
-            "The following options are incompatible, cannot be used together: "
-            "SequenceSizeFieldPrefix, SequenceSerLengthFieldPrefix, "
-            "SequenceFixedSize, SequenceSizeForcingEnabled, SequenceLengthForcingEnabled, "
-            "SequenceTerminationFieldSuffix");
+      "The following options are incompatible, cannot be used together: "
+      "SequenceSizeFieldPrefix, SequenceSerLengthFieldPrefix, "
+      "SequenceFixedSize, SequenceSizeForcingEnabled, "
+      "SequenceLengthForcingEnabled, "
+      "SequenceTerminationFieldSuffix");
 
-    static_assert(
-            1U >= FieldsOptionsCompatibilityCalc<
+  static_assert(
+      1U >= FieldsOptionsCompatibilityCalc<
                 ParsedOptions::HasSequenceElemSerLengthFieldPrefix,
                 ParsedOptions::HasSequenceElemFixedSerLengthFieldPrefix,
                 ParsedOptions::HasSequenceTerminationFieldSuffix>::Value,
-            "The following options are incompatible, cannot be used together: "
-            "SequenceElemSerLengthFieldPrefix, SequenceElemFixedSerLengthFieldPrefix "
-            "SequenceTerminationFieldSuffix");
+      "The following options are incompatible, cannot be used together: "
+      "SequenceElemSerLengthFieldPrefix, SequenceElemFixedSerLengthFieldPrefix "
+      "SequenceTerminationFieldSuffix");
 
-    static_assert(
-            (!ParsedOptions::HasSequenceTrailingFieldSuffix) ||
-            (!ParsedOptions::HasSequenceTerminationFieldSuffix),
-            "The following options are incompatible, cannot be used together: "
-            "SequenceTrailingFieldSuffix, SequenceTerminationFieldSuffix");
+  static_assert(
+      (!ParsedOptions::HasSequenceTrailingFieldSuffix) ||
+          (!ParsedOptions::HasSequenceTerminationFieldSuffix),
+      "The following options are incompatible, cannot be used together: "
+      "SequenceTrailingFieldSuffix, SequenceTerminationFieldSuffix");
 
-    static_assert(
-            (!ParsedOptions::HasFailOnInvalid) ||
-            (!ParsedOptions::HasIgnoreInvalid),
-            "The following options are incompatible, cannot be used together: "
-            "FailOnInvalid, IgnoreInvalid");
+  static_assert(
+      (!ParsedOptions::HasFailOnInvalid) || (!ParsedOptions::HasIgnoreInvalid),
+      "The following options are incompatible, cannot be used together: "
+      "FailOnInvalid, IgnoreInvalid");
 
-    static_assert(
-            1U >= FieldsOptionsCompatibilityCalc<
-                ParsedOptions::HasCustomStorageType,
-                ParsedOptions::HasFixedSizeStorage,
-                ParsedOptions::HasOrigDataView>::Value,
-            "The following options are incompatible, cannot be used together: "
-            "CustomStorageType, FixedSizeStorage, OrigDataView");
+  static_assert(
+      1U >=
+          FieldsOptionsCompatibilityCalc<ParsedOptions::HasCustomStorageType,
+                                         ParsedOptions::HasFixedSizeStorage,
+                                         ParsedOptions::HasOrigDataView>::Value,
+      "The following options are incompatible, cannot be used together: "
+      "CustomStorageType, FixedSizeStorage, OrigDataView");
 
-    static_assert(
-            (!ParsedOptions::HasSequenceFixedSizeUseFixedSizeStorage) ||
-            (ParsedOptions::HasSequenceFixedSize),
-            "The option SequenceFixedSizeUseFixedSizeStorage cannot be used without SequenceFixedSize.");
+  static_assert((!ParsedOptions::HasSequenceFixedSizeUseFixedSizeStorage) ||
+                    (ParsedOptions::HasSequenceFixedSize),
+                "The option SequenceFixedSizeUseFixedSizeStorage cannot be "
+                "used without SequenceFixedSize.");
 
-    static_assert(
-            (!ParsedOptions::HasSequenceFixedSizeUseFixedSizeStorage) ||
-            (!ParsedOptions::HasFixedSizeStorage),
-            "The following options are incompatible, cannot be used together: "
-            "SequenceFixedSizeUseFixedSizeStorage, FixedSizeStorage");
+  static_assert(
+      (!ParsedOptions::HasSequenceFixedSizeUseFixedSizeStorage) ||
+          (!ParsedOptions::HasFixedSizeStorage),
+      "The following options are incompatible, cannot be used together: "
+      "SequenceFixedSizeUseFixedSizeStorage, FixedSizeStorage");
 
-    using FieldTypeAdapted =
-        typename ParsedOptions::template AdaptFieldType<TBasic>;
+  using FieldTypeAdapted =
+      typename ParsedOptions::template AdaptFieldType<TBasic>;
 
-    using InvalidByDefaultAdapted =
-        typename ParsedOptions::template AdaptInvalidByDefault<FieldTypeAdapted>;
+  using InvalidByDefaultAdapted =
+      typename ParsedOptions::template AdaptInvalidByDefault<FieldTypeAdapted>;
 
-    using VersionStorageAdapted =
-        typename ParsedOptions::template AdaptVersionStorage<InvalidByDefaultAdapted>;
+  using VersionStorageAdapted =
+      typename ParsedOptions::template AdaptVersionStorage<
+          InvalidByDefaultAdapted>;
 
-    using SerOffsetAdapted =
-        typename ParsedOptions::template AdaptSerOffset<VersionStorageAdapted>;
+  using SerOffsetAdapted =
+      typename ParsedOptions::template AdaptSerOffset<VersionStorageAdapted>;
 
-    using DisplayOffsetAdapted =
-        typename ParsedOptions::template AdaptDisplayOffset<SerOffsetAdapted>;
+  using DisplayOffsetAdapted =
+      typename ParsedOptions::template AdaptDisplayOffset<SerOffsetAdapted>;
 
-    using VersionsRangeAdapted =
-        typename ParsedOptions::template AdaptVersionsRange<DisplayOffsetAdapted>;
+  using VersionsRangeAdapted =
+      typename ParsedOptions::template AdaptVersionsRange<DisplayOffsetAdapted>;
 
-    using FixedLengthLimitAdapted =
-        typename ParsedOptions::template AdaptFixedLengthLimit<VersionsRangeAdapted>;
+  using FixedLengthLimitAdapted =
+      typename ParsedOptions::template AdaptFixedLengthLimit<
+          VersionsRangeAdapted>;
 
-    using FixedBitLengthLimitAdapted =
-        typename ParsedOptions::template AdaptFixedBitLengthLimit<FixedLengthLimitAdapted>;
+  using FixedBitLengthLimitAdapted =
+      typename ParsedOptions::template AdaptFixedBitLengthLimit<
+          FixedLengthLimitAdapted>;
 
-    using VarLengthLimitsAdapted =
-        typename ParsedOptions::template AdaptVarLengthLimits<FixedBitLengthLimitAdapted>;
+  using VarLengthLimitsAdapted =
+      typename ParsedOptions::template AdaptVarLengthLimits<
+          FixedBitLengthLimitAdapted>;
 
-    using AvailableLengthLimitAdapted =
-        typename ParsedOptions::template AdaptAvailableLengthLimit<VarLengthLimitsAdapted>;
+  using AvailableLengthLimitAdapted =
+      typename ParsedOptions::template AdaptAvailableLengthLimit<
+          VarLengthLimitsAdapted>;
 
-    using SequenceElemLengthForcingAdapted =
-        typename ParsedOptions::template AdaptSequenceElemLengthForcing<AvailableLengthLimitAdapted>;
+  using SequenceElemLengthForcingAdapted =
+      typename ParsedOptions::template AdaptSequenceElemLengthForcing<
+          AvailableLengthLimitAdapted>;
 
-    using SequenceElemSerLengthFieldPrefixAdapted =
-        typename ParsedOptions::template AdaptSequenceElemSerLengthFieldPrefix<SequenceElemLengthForcingAdapted>;
+  using SequenceElemSerLengthFieldPrefixAdapted =
+      typename ParsedOptions::template AdaptSequenceElemSerLengthFieldPrefix<
+          SequenceElemLengthForcingAdapted>;
 
-    using SequenceElemFixedSerLengthFieldPrefixAdapted =
-        typename ParsedOptions::template AdaptSequenceElemFixedSerLengthFieldPrefix<SequenceElemSerLengthFieldPrefixAdapted>;
+  using SequenceElemFixedSerLengthFieldPrefixAdapted = typename ParsedOptions::
+      template AdaptSequenceElemFixedSerLengthFieldPrefix<
+          SequenceElemSerLengthFieldPrefixAdapted>;
 
-    using SequenceSizeForcingAdapted =
-        typename ParsedOptions::template AdaptSequenceSizeForcing<SequenceElemFixedSerLengthFieldPrefixAdapted>;
+  using SequenceSizeForcingAdapted =
+      typename ParsedOptions::template AdaptSequenceSizeForcing<
+          SequenceElemFixedSerLengthFieldPrefixAdapted>;
 
-    using SequenceLengthForcingAdapted =
-        typename ParsedOptions::template AdaptSequenceLengthForcing<SequenceSizeForcingAdapted>;
+  using SequenceLengthForcingAdapted =
+      typename ParsedOptions::template AdaptSequenceLengthForcing<
+          SequenceSizeForcingAdapted>;
 
-    using SequenceFixedSizeAdapted =
-        typename ParsedOptions::template AdaptSequenceFixedSize<SequenceLengthForcingAdapted>;
+  using SequenceFixedSizeAdapted =
+      typename ParsedOptions::template AdaptSequenceFixedSize<
+          SequenceLengthForcingAdapted>;
 
-    using SequenceSizeFieldPrefixAdapted =
-        typename ParsedOptions::template AdaptSequenceSizeFieldPrefix<SequenceFixedSizeAdapted>;
+  using SequenceSizeFieldPrefixAdapted =
+      typename ParsedOptions::template AdaptSequenceSizeFieldPrefix<
+          SequenceFixedSizeAdapted>;
 
-    using SequenceSerLengthFieldPrefixAdapted =
-        typename ParsedOptions::template AdaptSequenceSerLengthFieldPrefix<SequenceSizeFieldPrefixAdapted>;
+  using SequenceSerLengthFieldPrefixAdapted =
+      typename ParsedOptions::template AdaptSequenceSerLengthFieldPrefix<
+          SequenceSizeFieldPrefixAdapted>;
 
-    using SequenceTrailingFieldSuffixAdapted =
-        typename ParsedOptions::template AdaptSequenceTrailingFieldSuffix<SequenceSerLengthFieldPrefixAdapted>;
+  using SequenceTrailingFieldSuffixAdapted =
+      typename ParsedOptions::template AdaptSequenceTrailingFieldSuffix<
+          SequenceSerLengthFieldPrefixAdapted>;
 
-    using SequenceTerminationFieldSuffixAdapted =
-        typename ParsedOptions::template AdaptSequenceTerminationFieldSuffix<SequenceTrailingFieldSuffixAdapted>;
+  using SequenceTerminationFieldSuffixAdapted =
+      typename ParsedOptions::template AdaptSequenceTerminationFieldSuffix<
+          SequenceTrailingFieldSuffixAdapted>;
 
-     using RemLengthMemberFieldAdapted =
-        typename ParsedOptions::template AdaptRemLengthMemberField<SequenceTerminationFieldSuffixAdapted>;
+  using RemLengthMemberFieldAdapted =
+      typename ParsedOptions::template AdaptRemLengthMemberField<
+          SequenceTerminationFieldSuffixAdapted>;
 
-    using DefaultValueInitialiserAdapted =
-        typename ParsedOptions::template AdaptDefaultValueInitialiser<RemLengthMemberFieldAdapted>;
+  using DefaultValueInitialiserAdapted =
+      typename ParsedOptions::template AdaptDefaultValueInitialiser<
+          RemLengthMemberFieldAdapted>;
 
-    using MultiRangeValidationAdapted =
-        typename ParsedOptions::template AdaptMultiRangeValidation<DefaultValueInitialiserAdapted>;
+  using MultiRangeValidationAdapted =
+      typename ParsedOptions::template AdaptMultiRangeValidation<
+          DefaultValueInitialiserAdapted>;
 
-    using CustomValidatorAdapted =
-        typename ParsedOptions::template AdaptCustomValidator<MultiRangeValidationAdapted>;
+  using CustomValidatorAdapted =
+      typename ParsedOptions::template AdaptCustomValidator<
+          MultiRangeValidationAdapted>;
 
-    using FailOnInvalidAdapted =
-        typename ParsedOptions::template AdaptFailOnInvalid<CustomValidatorAdapted>;
+  using FailOnInvalidAdapted =
+      typename ParsedOptions::template AdaptFailOnInvalid<
+          CustomValidatorAdapted>;
 
-    using IgnoreInvalidAdapted =
-        typename ParsedOptions::template AdaptIgnoreInvalid<FailOnInvalidAdapted>;
+  using IgnoreInvalidAdapted =
+      typename ParsedOptions::template AdaptIgnoreInvalid<FailOnInvalidAdapted>;
 
-    using EmptySerializationAdapted =
-        typename ParsedOptions::template AdaptEmptySerialization<IgnoreInvalidAdapted>;
+  using EmptySerializationAdapted =
+      typename ParsedOptions::template AdaptEmptySerialization<
+          IgnoreInvalidAdapted>;
 
-    using CustomReadWrapAdapted =
-        typename ParsedOptions::template AdaptCustomRead<EmptySerializationAdapted>;
+  using CustomReadWrapAdapted =
+      typename ParsedOptions::template AdaptCustomRead<
+          EmptySerializationAdapted>;
 
-    using CustomRefreshWrapAdapted =
-        typename ParsedOptions::template AdaptCustomRefresh<CustomReadWrapAdapted>;
+  using CustomRefreshWrapAdapted =
+      typename ParsedOptions::template AdaptCustomRefresh<
+          CustomReadWrapAdapted>;
 
-    using CustomWriteWrapAdapted =
-        typename ParsedOptions::template AdaptCustomWrite<CustomRefreshWrapAdapted>;
+  using CustomWriteWrapAdapted =
+      typename ParsedOptions::template AdaptCustomWrite<
+          CustomRefreshWrapAdapted>;
 
-    using MissingOnInvalidAdapted =
-        typename ParsedOptions::template AdaptMissingOnInvalid<CustomWriteWrapAdapted>;
+  using MissingOnInvalidAdapted =
+      typename ParsedOptions::template AdaptMissingOnInvalid<
+          CustomWriteWrapAdapted>;
 
-    using MissingOnReadFailAdapted =
-        typename ParsedOptions::template AdaptMissingOnReadFail<MissingOnInvalidAdapted>;
+  using MissingOnReadFailAdapted =
+      typename ParsedOptions::template AdaptMissingOnReadFail<
+          MissingOnInvalidAdapted>;
 
-    using VariantResetOnDestructAdapted =
-        typename ParsedOptions::template AdaptVariantResetOnDestruct<MissingOnReadFailAdapted>;
+  using VariantResetOnDestructAdapted =
+      typename ParsedOptions::template AdaptVariantResetOnDestruct<
+          MissingOnReadFailAdapted>;
 
-    using FixedValueAdapted =
-        typename ParsedOptions::template AdaptFixedValue<VariantResetOnDestructAdapted>;
+  using FixedValueAdapted = typename ParsedOptions::template AdaptFixedValue<
+      VariantResetOnDestructAdapted>;
 
 public:
-    using Type = FixedValueAdapted;
+  using Type = FixedValueAdapted;
 };
 
 template <typename TBasic, typename... TOptions>
 using AdaptBasicFieldT = typename AdaptBasicField<TBasic, TOptions...>::Type;
 
-}  // namespace details
+} // namespace details
 
-}  // namespace field
+} // namespace field
 
-}  // namespace comms
-
+} // namespace comms

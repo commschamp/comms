@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -13,69 +13,53 @@
 #include <cstddef>
 #include <utility>
 
-namespace comms
-{
+namespace comms {
 
-namespace field
-{
+namespace field {
 
-namespace adapter
-{
+namespace adapter {
 
 template <comms::ErrorStatus TStatus, typename TBase>
-class FailOnInvalid : public TBase
-{
-    using BaseImpl = TBase;
+class FailOnInvalid : public TBase {
+  using BaseImpl = TBase;
+
 public:
+  using ValueType = typename BaseImpl::ValueType;
 
-    using ValueType = typename BaseImpl::ValueType;
+  FailOnInvalid() = default;
 
-    FailOnInvalid() = default;
+  explicit FailOnInvalid(const ValueType &val) : BaseImpl(val) {}
 
-    explicit FailOnInvalid(const ValueType& val)
-      : BaseImpl(val)
-    {
+  explicit FailOnInvalid(ValueType &&val) : BaseImpl(std::move(val)) {}
+
+  FailOnInvalid(const FailOnInvalid &) = default;
+  FailOnInvalid(FailOnInvalid &&) = default;
+  FailOnInvalid &operator=(const FailOnInvalid &) = default;
+  FailOnInvalid &operator=(FailOnInvalid &&) = default;
+
+  template <typename TIter>
+  comms::ErrorStatus read(TIter &iter, std::size_t len) {
+    BaseImpl tmp;
+    auto es = tmp.read(iter, len);
+    if (es != comms::ErrorStatus::Success) {
+      return es;
     }
 
-    explicit FailOnInvalid(ValueType&& val)
-      : BaseImpl(std::move(val))
-    {
+    if (!tmp.valid()) {
+      return TStatus;
     }
 
-    FailOnInvalid(const FailOnInvalid&) = default;
-    FailOnInvalid(FailOnInvalid&&) = default;
-    FailOnInvalid& operator=(const FailOnInvalid&) = default;
-    FailOnInvalid& operator=(FailOnInvalid&&) = default;
+    static_cast<BaseImpl &>(*this) = std::move(tmp);
+    return comms::ErrorStatus::Success;
+  }
 
-    template <typename TIter>
-    comms::ErrorStatus read(TIter& iter, std::size_t len)
-    {
-        BaseImpl tmp;
-        auto es = tmp.read(iter, len);
-        if (es != comms::ErrorStatus::Success) {
-            return es;
-        }
+  static constexpr bool hasReadNoStatus() { return false; }
 
-        if (!tmp.valid()) {
-            return TStatus;
-        }
-
-        static_cast<BaseImpl&>(*this) = std::move(tmp);
-        return comms::ErrorStatus::Success;
-    }
-
-    static constexpr bool hasReadNoStatus()
-    {
-        return false;
-    }
-
-    template <typename TIter>
-    void readNoStatus(TIter& iter) = delete;
+  template <typename TIter> void readNoStatus(TIter &iter) = delete;
 };
 
-}  // namespace adapter
+} // namespace adapter
 
-}  // namespace field
+} // namespace field
 
-}  // namespace comms
-
+} // namespace comms

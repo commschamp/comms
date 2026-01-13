@@ -1,12 +1,13 @@
 //
-// Copyright 2017 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// @file
-/// Various compile-time detection functions of whether specific member functions and/or types exist
+/// Various compile-time detection functions of whether specific member
+/// functions and/or types exist
 
 #pragma once
 
@@ -21,17 +22,13 @@
 #include <span>
 #endif // #if COMMS_HAS_CPP20_SPAN
 
-namespace comms
-{
+namespace comms {
 
-namespace util
-{
+namespace util {
 
-namespace detect
-{
+namespace detect {
 
-namespace details
-{
+namespace details {
 
 // MSVC2015 Is not working correctly with VoidT or any other workaround
 // suggested at https://en.cppreference.com/w/cpp/types/void_t
@@ -61,132 +58,121 @@ namespace details
 // using HasClearOp = decltype(std::declval<T&>().clear());
 
 // template <typename T>
-// using HasReserveOp = decltype(std::declval<T&>().reserve(std::declval<typename T::size_type>()));
+// using HasReserveOp =
+// decltype(std::declval<T&>().reserve(std::declval<typename T::size_type>()));
 
-template <typename T>
-struct IsStdSpan
-{
-    static constexpr bool Value = false;
+template <typename T> struct IsStdSpan {
+  static constexpr bool Value = false;
 };
 
 #if COMMS_HAS_CPP20_SPAN
-template <typename T, std::size_t TExt>
-struct IsStdSpan<std::span<T, TExt> >
-{
-    static constexpr bool Value = true;
+template <typename T, std::size_t TExt> struct IsStdSpan<std::span<T, TExt>> {
+  static constexpr bool Value = true;
 };
 #endif // #if COMMS_HAS_CPP20_SPAN
 
-template <typename T>
-class HasClearFunc
-{
-    using No = comms::util::EmptyStruct<>;
+template <typename T> class HasClearFunc {
+  using No = comms::util::EmptyStruct<>;
 
 protected:
-    template <typename C>
-    static auto test(std::nullptr_t) -> decltype(std::declval<C>().clear());
+  template <typename C>
+  static auto test(std::nullptr_t) -> decltype(std::declval<C>().clear());
 
-    template <typename>
-    static No test(...);
+  template <typename> static No test(...);
 
 public:
-    static const bool Value = !std::is_same<No, decltype(test<T>(nullptr))>::value;
+  static const bool Value =
+      !std::is_same<No, decltype(test<T>(nullptr))>::value;
 };
 
-template <typename T>
-class HasReserveFunc
-{
-    using No = comms::util::EmptyStruct<>;
+template <typename T> class HasReserveFunc {
+  using No = comms::util::EmptyStruct<>;
 
 protected:
-    template <typename C>
-    static auto test(std::nullptr_t) -> decltype(std::declval<C>().reserve(0U));
+  template <typename C>
+  static auto test(std::nullptr_t) -> decltype(std::declval<C>().reserve(0U));
 
-    template <typename>
-    static No test(...);
+  template <typename> static No test(...);
 
 public:
-    static const bool Value = !std::is_same<No, decltype(test<T>(nullptr))>::value;
+  static const bool Value =
+      !std::is_same<No, decltype(test<T>(nullptr))>::value;
 };
 
-template <typename T>
-class HasResizeFunc
-{
-    using No = comms::util::EmptyStruct<>;
+template <typename T> class HasResizeFunc {
+  using No = comms::util::EmptyStruct<>;
 
 protected:
-    template <typename C>
-    static auto test(std::nullptr_t) -> decltype(std::declval<C>().resize(0U));
+  template <typename C>
+  static auto test(std::nullptr_t) -> decltype(std::declval<C>().resize(0U));
 
-    template <typename>
-    static No test(...);
+  template <typename> static No test(...);
 
 public:
-    static const bool Value = !std::is_same<No, decltype(test<T>(nullptr))>::value;
+  static const bool Value =
+      !std::is_same<No, decltype(test<T>(nullptr))>::value;
 };
 
-template <typename T>
-class HasRemoveSuffixFunc
-{
-    using No = comms::util::EmptyStruct<>;
+template <typename T> class HasRemoveSuffixFunc {
+  using No = comms::util::EmptyStruct<>;
 
 protected:
-    template <typename C>
-    static auto test(std::nullptr_t) -> decltype(std::declval<C>().remove_suffix(0U));
+  template <typename C>
+  static auto
+      test(std::nullptr_t) -> decltype(std::declval<C>().remove_suffix(0U));
 
-    template <typename>
-    static No test(...);
+  template <typename> static No test(...);
 
 public:
-    static const bool Value = !std::is_same<No, decltype(test<T>(nullptr))>::value;
+  static const bool Value =
+      !std::is_same<No, decltype(test<T>(nullptr))>::value;
 };
 
-template <typename T>
-class HasAssignFunc
-{
-    using No = comms::util::EmptyStruct<>;
+template <typename T> class HasAssignFunc {
+  using No = comms::util::EmptyStruct<>;
 
 protected:
-    template <typename C>
-    static auto test(std::nullptr_t) -> decltype(std::declval<C>().assign(static_cast<typename C::const_pointer>(nullptr), static_cast<typename C::const_pointer>(nullptr)));
+  template <typename C>
+  static auto test(std::nullptr_t)
+      -> decltype(std::declval<C>().assign(
+          static_cast<typename C::const_pointer>(nullptr),
+          static_cast<typename C::const_pointer>(nullptr)));
 
-    template <typename>
-    static No test(...);
+  template <typename> static No test(...);
 
 public:
-    static const bool Value = !std::is_same<No, decltype(test<T>(nullptr))>::value;
+  static const bool Value =
+      !std::is_same<No, decltype(test<T>(nullptr))>::value;
 };
 
-template <typename T>
-class HasPtrSizeConstructor
-{
-    using No = comms::util::EmptyStruct<>;
+template <typename T> class HasPtrSizeConstructor {
+  using No = comms::util::EmptyStruct<>;
 
 protected:
-    template <typename C>
-    static auto test(std::nullptr_t) -> decltype(C(static_cast<typename C::const_pointer>(nullptr), static_cast<typename C::size_type>(0U)));
+  template <typename C>
+  static auto test(std::nullptr_t)
+      -> decltype(C(static_cast<typename C::const_pointer>(nullptr),
+                    static_cast<typename C::size_type>(0U)));
 
-    template <typename>
-    static No test(...);
+  template <typename> static No test(...);
 
 public:
-    static const bool Value = !std::is_same<No, decltype(test<T>(nullptr))>::value;
+  static const bool Value =
+      !std::is_same<No, decltype(test<T>(nullptr))>::value;
 };
 
-template <typename T>
-class HasMaxSizeFunc
-{
-    using No = comms::util::EmptyStruct<>;
+template <typename T> class HasMaxSizeFunc {
+  using No = comms::util::EmptyStruct<>;
 
 protected:
-    template <typename C>
-    static auto test(std::nullptr_t) -> decltype(std::declval<C>().max_size());
+  template <typename C>
+  static auto test(std::nullptr_t) -> decltype(std::declval<C>().max_size());
 
-    template <typename>
-    static No test(...);
+  template <typename> static No test(...);
 
 public:
-    static const bool Value = !std::is_same<No, decltype(test<T>(nullptr))>::value;
+  static const bool Value =
+      !std::is_same<No, decltype(test<T>(nullptr))>::value;
 };
 
 } // namespace details

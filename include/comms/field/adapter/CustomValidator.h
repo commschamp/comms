@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,51 +9,36 @@
 
 #include <utility>
 
-namespace comms
-{
+namespace comms {
 
-namespace field
-{
+namespace field {
 
-namespace adapter
-{
+namespace adapter {
 
 template <typename TValidator, typename TBase>
-class CustomValidator : public TBase
-{
-    using BaseImpl = TBase;
-    using Validator = TValidator;
+class CustomValidator : public TBase {
+  using BaseImpl = TBase;
+  using Validator = TValidator;
 
 public:
+  using ValueType = typename BaseImpl::ValueType;
 
-    using ValueType = typename BaseImpl::ValueType;
+  CustomValidator() = default;
 
-    CustomValidator() = default;
+  explicit CustomValidator(const ValueType &val) : BaseImpl(val) {}
 
-    explicit CustomValidator(const ValueType& val)
-      : BaseImpl(val)
-    {
-    }
+  explicit CustomValidator(ValueType &&val) : BaseImpl(std::move(val)) {}
 
-    explicit CustomValidator(ValueType&& val)
-      : BaseImpl(std::move(val))
-    {
-    }
+  CustomValidator(const CustomValidator &) = default;
+  CustomValidator(CustomValidator &&) = default;
+  CustomValidator &operator=(const CustomValidator &) = default;
+  CustomValidator &operator=(CustomValidator &&) = default;
 
-    CustomValidator(const CustomValidator&) = default;
-    CustomValidator(CustomValidator&&) = default;
-    CustomValidator& operator=(const CustomValidator&) = default;
-    CustomValidator& operator=(CustomValidator&&) = default;
-
-    bool valid() const
-    {
-        return BaseImpl::valid() && (Validator()(*this));
-    }
+  bool valid() const { return BaseImpl::valid() && (Validator()(*this)); }
 };
 
-}  // namespace adapter
+} // namespace adapter
 
-}  // namespace field
+} // namespace field
 
-}  // namespace comms
-
+} // namespace comms

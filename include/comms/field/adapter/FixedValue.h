@@ -1,5 +1,5 @@
 //
-// Copyright 2019 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2019 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,37 +7,30 @@
 
 #pragma once
 
-namespace comms
-{
+namespace comms {
 
-namespace field
-{
+namespace field {
 
-namespace adapter
-{
+namespace adapter {
 
-template <typename TBase>
-class FixedValue : public TBase
-{
-    using BaseImpl = TBase;
+template <typename TBase> class FixedValue : public TBase {
+  using BaseImpl = TBase;
+
 public:
-    using ValueType = typename BaseImpl::ValueType;
+  using ValueType = typename BaseImpl::ValueType;
 
-    using BaseImpl::value;
+  using BaseImpl::value;
 
-    ValueType& value() = delete;
+  ValueType &value() = delete;
 
-    template <typename U>
-    void setValue(U&& val) = delete;
+  template <typename U> void setValue(U &&val) = delete;
 
 private:
-    using BaseImpl::setValue;
-
+  using BaseImpl::setValue;
 };
 
-}  // namespace adapter
+} // namespace adapter
 
-}  // namespace field
+} // namespace field
 
-}  // namespace comms
-
+} // namespace comms
