@@ -9,7 +9,7 @@
 
 #include "comms/cast.h"
 
-#include <utility>
+#include <cstddef>
 
 namespace comms
 {

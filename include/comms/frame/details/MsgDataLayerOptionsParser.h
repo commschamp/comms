@@ -11,6 +11,9 @@
 #include "comms/field/ArrayList.h"
 #include "comms/options.h"
 
+#include <cstdint>
+#include <tuple>
+
 namespace comms
 {
 

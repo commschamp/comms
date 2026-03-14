@@ -10,9 +10,6 @@
 #include "comms/cast.h"
 #include "comms/util/ScopeGuard.h"
 
-#include <type_traits>
-#include <utility>
-
 namespace comms
 {
 

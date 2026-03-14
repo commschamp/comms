@@ -10,6 +10,9 @@
 #include "comms/options.h"
 #include "comms/frame/details/TransportValueLayerAllBases.h"
 
+#include <tuple>
+#include <type_traits>
+
 namespace comms
 {
 

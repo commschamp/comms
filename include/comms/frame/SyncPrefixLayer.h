@@ -15,7 +15,10 @@
 #include "comms/frame/details/SyncPrefixLayerOptionsParser.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <iterator>
+#include <type_traits>
+#include <utility>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4189) // Disable erroneous initialized but not referenced variable warning

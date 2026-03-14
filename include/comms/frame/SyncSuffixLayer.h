@@ -18,6 +18,8 @@
 #include "comms/frame/details/SyncSuffixLayerOptionsParser.h"
 #include "comms/util/type_traits.h"
 
+#include <algorithm>
+#include <cstddef>
 #include <iterator>
 #include <type_traits>
 #include <utility>

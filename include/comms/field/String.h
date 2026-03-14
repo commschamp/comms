@@ -22,12 +22,17 @@
 #include "comms/util/StringView.h"
 #include "comms/util/type_traits.h"
 
+#include <cstddef>
+#include <string>
+#include <type_traits>
+#include <utility>
+
 #if COMMS_HAS_CPP17_STRING_VIEW
 #include <string_view>
 #endif // #if COMMS_HAS_CPP17_STRING_VIEW
 
-#include <vector>
 #include <utility>
+#include <vector>
 
 namespace comms
 {

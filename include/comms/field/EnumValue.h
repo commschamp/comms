@@ -15,6 +15,7 @@
 #include "comms/field/details/OptionsParser.h"
 #include "comms/options.h"
 
+#include <cstddef>
 #include <type_traits>
 #include <utility>
 

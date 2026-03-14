@@ -11,6 +11,9 @@
 #include "comms/options.h"
 #include "comms/util/type_traits.h"
 
+#include <limits>
+#include <tuple>
+
 namespace comms
 {
 

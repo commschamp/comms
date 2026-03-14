@@ -24,8 +24,9 @@
 #include "comms/util/type_traits.h"
 
 #include <algorithm>
+#include <cstddef>
+#include <cstdint>
 #include <iterator>
-#include <limits>
 #include <numeric>
 #include <type_traits>
 #include <utility>

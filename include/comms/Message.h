@@ -21,8 +21,7 @@
 #include "comms/Field.h"
 #include "comms/util/type_traits.h"
 
-#include <cstdint>
-#include <memory>
+#include <cstddef>
 #include <type_traits>
 
 namespace comms

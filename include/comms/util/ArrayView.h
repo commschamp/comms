@@ -12,7 +12,7 @@
 
 #include "comms/Assert.h"
 
-#include <algorithm>
+#include <cstddef>
 #include <iterator>
 
 namespace comms

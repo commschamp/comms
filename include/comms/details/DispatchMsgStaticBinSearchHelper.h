@@ -14,6 +14,7 @@
 #include "comms/MessageBase.h"
 #include "comms/util/type_traits.h"
 
+#include <cstddef>
 #include <type_traits>
 #include <utility>
 

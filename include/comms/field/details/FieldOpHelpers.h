@@ -10,6 +10,7 @@
 #include "comms/CompileControl.h"
 #include "comms/ErrorStatus.h"
 
+#include <cstddef>
 #include <cstdint>
 #include <iterator>
 #include <limits>

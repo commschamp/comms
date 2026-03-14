@@ -15,12 +15,12 @@ CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
 CC_ENABLE_WARNINGS()
 
-#include <cstdint>
-#include <cstddef>
 #include <algorithm>
-#include <iterator>
-#include <iostream>
+#include <cstddef>
+#include <cstdint>
 #include <iomanip>
+#include <iostream>
+#include <iterator>
 
 class CustomChecksumPrefixLayerTestSuite : public CxxTest::TestSuite
 {

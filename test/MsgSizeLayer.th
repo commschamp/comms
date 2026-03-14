@@ -12,9 +12,9 @@ CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
 CC_ENABLE_WARNINGS()
 
-#include <cstdint>
-#include <cstddef>
 #include <algorithm>
+#include <cstddef>
+#include <cstdint>
 #include <iterator>
 
 class MsgSizeLayerTestSuite : public CxxTest::TestSuite

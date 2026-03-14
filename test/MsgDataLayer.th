@@ -12,10 +12,10 @@ CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
 CC_ENABLE_WARNINGS()
 
-#include <cstdint>
-#include <cstddef>
-#include <iostream>
 #include <algorithm>
+#include <cstddef>
+#include <cstdint>
+#include <iostream>
 #include <iterator>
 #include <memory>
 

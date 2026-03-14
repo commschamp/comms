@@ -19,7 +19,7 @@
 #include "comms/util/alloc.h"
 #include "comms/util/type_traits.h"
 
-#include <memory>
+#include <cstddef>
 #include <type_traits>
 #include <utility>
 
