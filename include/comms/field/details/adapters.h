@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2026 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -8,9 +8,9 @@
 #pragma once
 
 #include "comms/field/adapter/AvailableLength.h"
+#include "comms/field/adapter/CustomValidator.h"
 #include "comms/field/adapter/CustomReadWrap.h"
 #include "comms/field/adapter/CustomRefreshWrap.h"
-#include "comms/field/adapter/CustomValidator.h"
 #include "comms/field/adapter/CustomWriteWrap.h"
 #include "comms/field/adapter/DefaultValueInitialiser.h"
 #include "comms/field/adapter/DisplayOffset.h"
@@ -35,9 +35,9 @@
 #include "comms/field/adapter/SequenceSerLengthFieldPrefix.h"
 #include "comms/field/adapter/SequenceSizeFieldPrefix.h"
 #include "comms/field/adapter/SequenceSizeForcing.h"
-#include "comms/field/adapter/SequenceTerminationFieldSuffix.h"
 #include "comms/field/adapter/SequenceTrailingFieldSuffix.h"
+#include "comms/field/adapter/SequenceTerminationFieldSuffix.h"
 #include "comms/field/adapter/SerOffset.h"
-#include "comms/field/adapter/VarLength.h"
 #include "comms/field/adapter/VariantResetOnDestruct.h"
+#include "comms/field/adapter/VarLength.h"
 #include "comms/field/adapter/VersionStorage.h"

@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2026 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -14,122 +14,147 @@
 #include <iterator>
 #include <utility>
 
-namespace comms {
+namespace comms
+{
 
-namespace field {
+namespace field
+{
 
-namespace adapter {
+namespace adapter
+{
 
 template <typename TSizeField, typename TBase>
-class SequenceSizeFieldPrefix : public TBase {
-  using BaseImpl = TBase;
-  using SizeField = TSizeField;
+class SequenceSizeFieldPrefix : public TBase
+{
+    using BaseImpl = TBase;
+    using SizeField = TSizeField;
 
-  static const std::size_t MaxAllowedSize =
-      static_cast<std::size_t>(SizeField::maxValue());
+    static const std::size_t MaxAllowedSize =
+            static_cast<std::size_t>(SizeField::maxValue());
 
-  static_assert(!SizeField::isVersionDependent(),
-                "Prefix fields must not be version dependent");
+    static_assert(!SizeField::isVersionDependent(),
+            "Prefix fields must not be version dependent");
 
 public:
-  using ValueType = typename BaseImpl::ValueType;
-  using ElementType = typename BaseImpl::ElementType;
+    using ValueType = typename BaseImpl::ValueType;
+    using ElementType = typename BaseImpl::ElementType;
 
-  SequenceSizeFieldPrefix() = default;
+    SequenceSizeFieldPrefix() = default;
 
-  explicit SequenceSizeFieldPrefix(const ValueType &val) : BaseImpl(val) {}
-
-  explicit SequenceSizeFieldPrefix(ValueType &&val)
-      : BaseImpl(std::move(val)) {}
-
-  SequenceSizeFieldPrefix(const SequenceSizeFieldPrefix &) = default;
-  SequenceSizeFieldPrefix(SequenceSizeFieldPrefix &&) = default;
-  SequenceSizeFieldPrefix &operator=(const SequenceSizeFieldPrefix &) = default;
-  SequenceSizeFieldPrefix &operator=(SequenceSizeFieldPrefix &&) = default;
-
-  std::size_t length() const {
-    SizeField sizeField;
-    sizeField.setValue(BaseImpl::getValue().size());
-    return sizeField.length() + BaseImpl::length();
-  }
-
-  static constexpr std::size_t minLength() { return SizeField::minLength(); }
-
-  static constexpr std::size_t maxLength() {
-    return SizeField::maxLength() + BaseImpl::maxLength();
-  }
-
-  bool valid() const {
-    if ((!BaseImpl::valid()) || (!canWrite())) {
-      return false;
-    }
-    SizeField sizeField;
-    sizeField.setValue(BaseImpl::getValue().size());
-    return sizeField.valid() && BaseImpl::valid();
-  }
-
-  template <typename TIter>
-  comms::ErrorStatus read(TIter &iter, std::size_t len) {
-    auto fromIter = iter;
-    SizeField sizeField;
-    auto es = sizeField.read(iter, len);
-    if (es != comms::ErrorStatus::Success) {
-      return es;
+    explicit SequenceSizeFieldPrefix(const ValueType& val)
+      : BaseImpl(val)
+    {
     }
 
-    auto diff = static_cast<std::size_t>(std::distance(fromIter, iter));
-    COMMS_ASSERT(diff <= len);
-    len -= diff;
-
-    auto count = static_cast<std::size_t>(sizeField.getValue());
-    return BaseImpl::readN(count, iter, len);
-  }
-
-  template <typename TIter> void readNoStatus(TIter &iter) {
-    SizeField sizeField;
-    sizeField.readNoStatus(iter);
-    auto count = static_cast<std::size_t>(sizeField.getValue());
-    BaseImpl::readNoStatusN(count, iter);
-  }
-
-  bool canWrite() const {
-    if (!BaseImpl::canWrite()) {
-      return false;
+    explicit SequenceSizeFieldPrefix(ValueType&& val)
+      : BaseImpl(std::move(val))
+    {
     }
 
-    if (MaxAllowedSize < BaseImpl::getValue().size()) {
-      return false;
+    SequenceSizeFieldPrefix(const SequenceSizeFieldPrefix&) = default;
+    SequenceSizeFieldPrefix(SequenceSizeFieldPrefix&&) = default;
+    SequenceSizeFieldPrefix& operator=(const SequenceSizeFieldPrefix&) = default;
+    SequenceSizeFieldPrefix& operator=(SequenceSizeFieldPrefix&&) = default;
+
+    std::size_t length() const
+    {
+        SizeField sizeField;
+        sizeField.setValue(BaseImpl::getValue().size());
+        return sizeField.length() + BaseImpl::length();
     }
 
-    SizeField sizeField;
-    sizeField.setValue(BaseImpl::getValue().size());
-    return sizeField.canWrite();
-  }
-
-  template <typename TIter>
-  comms::ErrorStatus write(TIter &iter, std::size_t len) const {
-    if (!canWrite()) {
-      return comms::ErrorStatus::InvalidMsgData;
+    static constexpr std::size_t minLength()
+    {
+        return SizeField::minLength();
     }
 
-    SizeField sizeField;
-    sizeField.setValue(BaseImpl::getValue().size());
-    auto es = sizeField.write(iter, len);
-    if (es != comms::ErrorStatus::Success) {
-      return es;
+    static constexpr std::size_t maxLength()
+    {
+        return SizeField::maxLength() + BaseImpl::maxLength();
     }
 
-    COMMS_ASSERT(sizeField.length() <= len);
-    return BaseImpl::write(iter, len - sizeField.length());
-  }
+    bool valid() const
+    {
+        if ((!BaseImpl::valid()) || (!canWrite())) {
+            return false;
+        }
+        SizeField sizeField;
+        sizeField.setValue(BaseImpl::getValue().size());
+        return sizeField.valid() && BaseImpl::valid();
+    }
 
-  static constexpr bool hasWriteNoStatus() { return false; }
+    template <typename TIter>
+    comms::ErrorStatus read(TIter& iter, std::size_t len)
+    {
+        auto fromIter = iter;
+        SizeField sizeField;
+        auto es = sizeField.read(iter, len);
+        if (es != comms::ErrorStatus::Success) {
+            return es;
+        }
 
-  template <typename TIter> void writeNoStatus(TIter &iter) const = delete;
+        auto diff = static_cast<std::size_t>(std::distance(fromIter, iter));
+        COMMS_ASSERT(diff <= len);
+        len -= diff;
+
+        auto count = static_cast<std::size_t>(sizeField.getValue());
+        return BaseImpl::readN(count, iter, len);
+    }
+
+    template <typename TIter>
+    void readNoStatus(TIter& iter)
+    {
+        SizeField sizeField;
+        sizeField.readNoStatus(iter);
+        auto count = static_cast<std::size_t>(sizeField.getValue());
+        BaseImpl::readNoStatusN(count, iter);
+    }
+
+    bool canWrite() const
+    {
+        if (!BaseImpl::canWrite()) {
+            return false;
+        }
+
+        if (MaxAllowedSize < BaseImpl::getValue().size()) {
+            return false;
+        }
+
+        SizeField sizeField;
+        sizeField.setValue(BaseImpl::getValue().size());
+        return sizeField.canWrite();
+    }
+
+    template <typename TIter>
+    comms::ErrorStatus write(TIter& iter, std::size_t len) const
+    {
+        if (!canWrite()) {
+            return comms::ErrorStatus::InvalidMsgData;
+        }
+
+        SizeField sizeField;
+        sizeField.setValue(BaseImpl::getValue().size());
+        auto es = sizeField.write(iter, len);
+        if (es != comms::ErrorStatus::Success) {
+            return es;
+        }
+
+        COMMS_ASSERT(sizeField.length() <= len);
+        return BaseImpl::write(iter, len - sizeField.length());
+    }
+
+    static constexpr bool hasWriteNoStatus()
+    {
+        return false;
+    }
+
+    template <typename TIter>
+    void writeNoStatus(TIter& iter) const = delete;
 };
 
-} // namespace adapter
+}  // namespace adapter
 
-} // namespace field
+}  // namespace field
 
-} // namespace comms
+}  // namespace comms
+

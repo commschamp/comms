@@ -1,712 +1,814 @@
 //
-// Copyright 2014 - 2026 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include "CommsTestCommon.h"
 #include "comms/comms.h"
+#include "CommsTestCommon.h"
 
 CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
 CC_ENABLE_WARNINGS()
 
-#include <algorithm>
-#include <cstddef>
 #include <cstdint>
+#include <cstddef>
+#include <algorithm>
 #include <iterator>
 
-class MsgSizeLayerTestSuite : public CxxTest::TestSuite {
+class MsgSizeLayerTestSuite : public CxxTest::TestSuite
+{
 public:
-  void test1();
-  void test2();
-  void test3();
-  void test4();
-  void test5();
-  void test6();
-  void test7();
-  void test8();
-  void test9();
-  void test10();
-  void test11();
-  void test12();
-  void test13();
-  void test14();
-  void test15();
-  void test16();
-  void test17();
-  void test18();
-  void test19();
-  void test20();
+    void test1();
+    void test2();
+    void test3();
+    void test4();
+    void test5();
+    void test6();
+    void test7();
+    void test8();
+    void test9();
+    void test10();
+    void test11();
+    void test12();
+    void test13();
+    void test14();
+    void test15();
+    void test16();
+    void test17();
+    void test18();
+    void test19();
+    void test20();
 
 private:
-  typedef std::tuple<
-      comms::option::MsgIdType<MessageType>, comms::option::IdInfoInterface,
-      comms::option::ReadIterator<const char *>,
-      comms::option::ValidCheckInterface, comms::option::LengthInfoInterface>
-      CommonOptions;
 
-  typedef std::tuple<comms::option::MsgIdType<MessageType>,
-                     comms::option::IdInfoInterface,
-                     comms::option::ReadIterator<const char *>,
-                     comms::option::ValidCheckInterface>
-      NoLengthOptions;
+    typedef std::tuple<
+        comms::option::MsgIdType<MessageType>,
+        comms::option::IdInfoInterface,
+        comms::option::ReadIterator<const char*>,
+        comms::option::ValidCheckInterface,
+        comms::option::LengthInfoInterface
+    > CommonOptions;
 
-  typedef std::tuple<comms::option::BigEndian,
-                     comms::option::WriteIterator<char *>, CommonOptions>
-      BeTraits;
+    typedef std::tuple<
+        comms::option::MsgIdType<MessageType>,
+        comms::option::IdInfoInterface,
+        comms::option::ReadIterator<const char*>,
+        comms::option::ValidCheckInterface
+    > NoLengthOptions;
 
-  typedef std::tuple<comms::option::BigEndian,
-                     comms::option::WriteIterator<char *>, NoLengthOptions>
-      BeNoLengthTraits;
+    typedef std::tuple<
+        comms::option::BigEndian,
+        comms::option::WriteIterator<char*>,
+        CommonOptions
+    > BeTraits;
 
-  typedef std::tuple<comms::option::BigEndian,
-                     comms::option::WriteIterator<
-                         std::back_insert_iterator<std::vector<char>>>,
-                     CommonOptions>
-      BeBackInsertTraits;
+    typedef std::tuple<
+        comms::option::BigEndian,
+        comms::option::WriteIterator<char*>,
+        NoLengthOptions
+    > BeNoLengthTraits;
 
-  typedef std::tuple<comms::option::BigEndian,
-                     comms::option::WriteIterator<
-                         std::back_insert_iterator<std::vector<char>>>,
-                     NoLengthOptions>
-      BeNoLengthBackInsertTraits;
+    typedef std::tuple<
+        comms::option::BigEndian,
+        comms::option::WriteIterator<std::back_insert_iterator<std::vector<char> > >,
+        CommonOptions
+    > BeBackInsertTraits;
 
-  typedef std::tuple<comms::option::LittleEndian,
-                     comms::option::WriteIterator<char *>, CommonOptions>
-      LeTraits;
+    typedef std::tuple<
+        comms::option::BigEndian,
+        comms::option::WriteIterator<std::back_insert_iterator<std::vector<char> > >,
+        NoLengthOptions
+    > BeNoLengthBackInsertTraits;
 
-  typedef std::tuple<comms::option::MsgIdType<MessageType>,
-                     comms::option::BigEndian>
-      NonPolymorphicBigEndianTraits;
+    typedef std::tuple<
+        comms::option::LittleEndian,
+        comms::option::WriteIterator<char*>,
+        CommonOptions
+    > LeTraits;
 
-  typedef TestMessageBase<BeTraits> BeMsgBase;
-  typedef TestMessageBase<BeNoLengthTraits> BeNoLengthMsgBase;
-  typedef TestMessageBase<LeTraits> LeMsgBase;
-  typedef TestMessageBase<BeBackInsertTraits> BeBackInsertMsgBase;
-  typedef TestMessageBase<BeNoLengthBackInsertTraits>
-      BeNoLengthBackInsertMsgBase;
-  typedef comms::Message<NonPolymorphicBigEndianTraits>
-      BeNonPolymorphicMessageBase;
+    typedef std::tuple<
+        comms::option::MsgIdType<MessageType>,
+        comms::option::BigEndian
+    > NonPolymorphicBigEndianTraits;
 
-  typedef BeMsgBase::Field BeField;
-  typedef LeMsgBase::Field LeField;
-  typedef BeBackInsertMsgBase::Field BeBackInserTField;
+    typedef TestMessageBase<BeTraits> BeMsgBase;
+    typedef TestMessageBase<BeNoLengthTraits> BeNoLengthMsgBase;
+    typedef TestMessageBase<LeTraits> LeMsgBase;
+    typedef TestMessageBase<BeBackInsertTraits> BeBackInsertMsgBase;
+    typedef TestMessageBase<BeNoLengthBackInsertTraits> BeNoLengthBackInsertMsgBase;
+    typedef comms::Message<NonPolymorphicBigEndianTraits> BeNonPolymorphicMessageBase;
 
-  typedef Message1<BeMsgBase> BeMsg1;
-  typedef Message1<BeNoLengthMsgBase> BeNoLengthMsg1;
-  typedef Message1<BeNoLengthBackInsertMsgBase> BeNoLengthBackInsertMsg1;
-  typedef Message1<LeMsgBase> LeMsg1;
-  typedef Message1<BeBackInsertMsgBase> BeBackInsertMsg1;
-  typedef Message2<BeMsgBase> BeMsg2;
-  typedef Message2<LeMsgBase> LeMsg2;
-  typedef Message3<BeMsgBase> BeMsg3;
-  typedef Message3<LeMsgBase> LeMsg3;
-  typedef Message3<BeBackInsertMsgBase> BeBackInsertMsg3;
-  typedef Message1<BeNonPolymorphicMessageBase> NonPolymorphicBeMsg1;
-  typedef Message2<BeNonPolymorphicMessageBase> NonPolymorphicBeMsg2;
+    typedef BeMsgBase::Field BeField;
+    typedef LeMsgBase::Field LeField;
+    typedef BeBackInsertMsgBase::Field BeBackInserTField;
 
-  template <typename TField, std::size_t TSize, std::size_t TOffset = 0>
-  using SizeField = comms::field::IntValue<
-      TField, unsigned, comms::option::FixedLength<TSize>,
-      comms::option::NumValueSerOffset<static_cast<std::intmax_t>(TOffset)>>;
+    typedef Message1<BeMsgBase> BeMsg1;
+    typedef Message1<BeNoLengthMsgBase> BeNoLengthMsg1;
+    typedef Message1<BeNoLengthBackInsertMsgBase> BeNoLengthBackInsertMsg1;
+    typedef Message1<LeMsgBase> LeMsg1;
+    typedef Message1<BeBackInsertMsgBase> BeBackInsertMsg1;
+    typedef Message2<BeMsgBase> BeMsg2;
+    typedef Message2<LeMsgBase> LeMsg2;
+    typedef Message3<BeMsgBase> BeMsg3;
+    typedef Message3<LeMsgBase> LeMsg3;
+    typedef Message3<BeBackInsertMsgBase> BeBackInsertMsg3;
+    typedef Message1<BeNonPolymorphicMessageBase> NonPolymorphicBeMsg1;
+    typedef Message2<BeNonPolymorphicMessageBase> NonPolymorphicBeMsg2;
 
-  template <typename TField, std::size_t TMin = 1, std::size_t TMax = 4>
-  using VarLenSizeField =
-      comms::field::IntValue<TField, unsigned,
-                             comms::option::VarLength<TMin, TMax>>;
-
-  template <typename TField> using SizeField20 = SizeField<TField, 2, 0>;
-  using BeSizeField20 = SizeField20<BeField>;
-  using LeSizeField20 = SizeField20<LeField>;
-  using BeBackInsertSizeField20 = SizeField20<BeBackInserTField>;
-
-  template <typename TField> using SizeField30 = SizeField<TField, 3, 0>;
-  using BeSizeField30 = SizeField30<BeField>;
-  using LeSizeField30 = SizeField30<LeField>;
-
-  template <typename TField> using SizeField22 = SizeField<TField, 2, 2>;
-  using BeSizeField22 = SizeField22<BeField>;
-  using LeSizeField22 = SizeField22<LeField>;
-
-  template <typename TField>
-  class ComplexLengthField
-      : public comms::field::Bundle<
+    template <typename TField, std::size_t TSize, std::size_t TOffset = 0>
+    using SizeField =
+        comms::field::IntValue<
             TField,
-            std::tuple<comms::field::IntValue<TField, std::uint8_t>,
-                       comms::field::Optional<
-                           comms::field::IntValue<TField, std::uint32_t>,
-                           comms::option::def::OptionalMissingByDefault>>,
+            unsigned,
+            comms::option::FixedLength<TSize>,
+            comms::option::NumValueSerOffset<static_cast<std::intmax_t>(TOffset)>
+        >;
+
+    template <typename TField, std::size_t TMin = 1, std::size_t TMax = 4>
+    using VarLenSizeField =
+        comms::field::IntValue<
+            TField,
+            unsigned,
+            comms::option::VarLength<TMin, TMax>
+        >;
+
+    template <typename TField>
+    using SizeField20 = SizeField<TField, 2, 0>;
+    using BeSizeField20 = SizeField20<BeField>;
+    using LeSizeField20 = SizeField20<LeField>;
+    using BeBackInsertSizeField20 = SizeField20<BeBackInserTField>;
+
+    template <typename TField>
+    using SizeField30 = SizeField<TField, 3, 0>;
+    using BeSizeField30 = SizeField30<BeField>;
+    using LeSizeField30 = SizeField30<LeField>;
+
+    template <typename TField>
+    using SizeField22 = SizeField<TField, 2, 2>;
+    using BeSizeField22 = SizeField22<BeField>;
+    using LeSizeField22 = SizeField22<LeField>;
+
+    template <typename TField>
+    class ComplexLengthField : public
+        comms::field::Bundle<
+            TField,
+            std::tuple<
+                comms::field::IntValue<TField, std::uint8_t>,
+                comms::field::Optional<
+                    comms::field::IntValue<TField, std::uint32_t>,
+                    comms::option::def::OptionalMissingByDefault
+                >
+            >,
             comms::option::def::HasCustomRead,
-            comms::option::def::HasCustomRefresh> {
-    using Base = comms::field::Bundle<
-        TField,
-        std::tuple<comms::field::IntValue<TField, std::uint8_t>,
-                   comms::field::Optional<
-                       comms::field::IntValue<TField, std::uint32_t>,
-                       comms::option::def::OptionalMissingByDefault>>,
-        comms::option::def::HasCustomRead,
-        comms::option::def::HasCustomRefresh>;
+            comms::option::def::HasCustomRefresh
+        >
+    {
+        using Base =
+            comms::field::Bundle<
+                TField,
+                std::tuple<
+                    comms::field::IntValue<TField, std::uint8_t>,
+                    comms::field::Optional<
+                        comms::field::IntValue<TField, std::uint32_t>,
+                        comms::option::def::OptionalMissingByDefault
+                    >
+                >,
+                comms::option::def::HasCustomRead,
+                comms::option::def::HasCustomRefresh
+            >;
+    public:
+        COMMS_FIELD_MEMBERS_NAMES(first, second);
 
-  public:
-    COMMS_FIELD_MEMBERS_NAMES(first, second);
+        std::size_t getValue() const
+        {
+            if (field_first().value() != 0U) {
+                return static_cast<std::size_t>(field_first().value());
+            }
 
-    std::size_t getValue() const {
-      if (field_first().value() != 0U) {
-        return static_cast<std::size_t>(field_first().value());
-      }
+            return static_cast<std::size_t>(field_second().field().value());
+        }
 
-      return static_cast<std::size_t>(field_second().field().value());
-    }
+        template <typename U>
+        void setValue(U&& val)
+        {
+            if ((val != 0U) && (val <= std::numeric_limits<typename Field_first::ValueType>::max())) {
+                comms::cast_assign(field_first().value()) = val;
+                field_second().setMissing();
+                return;
+            }
 
-    template <typename U> void setValue(U &&val) {
-      if ((val != 0U) &&
-          (val <=
-           std::numeric_limits<typename Field_first::ValueType>::max())) {
-        comms::cast_assign(field_first().value()) = val;
-        field_second().setMissing();
-        return;
-      }
+            field_first().value() = 0U;
+            comms::cast_assign(field_second().field().value()) = val;
+            field_second().setExists();
+        }
 
-      field_first().value() = 0U;
-      comms::cast_assign(field_second().field().value()) = val;
-      field_second().setExists();
-    }
+        static constexpr std::size_t maxValue()
+        {
+            return std::numeric_limits<typename Field_second::Field::ValueType>::max();
+        }
 
-    static constexpr std::size_t maxValue() {
-      return std::numeric_limits<
-          typename Field_second::Field::ValueType>::max();
-    }
+        // VS2015 doesn't treat inherited minLength() and maxLength() as constexpr
+        static constexpr std::size_t minLength()
+        {
+            return 1U;
+        }
 
-    // VS2015 doesn't treat inherited minLength() and maxLength() as constexpr
-    static constexpr std::size_t minLength() { return 1U; }
+        static constexpr std::size_t maxLength()
+        {
+            return 5U;
+        }
 
-    static constexpr std::size_t maxLength() { return 5U; }
+        template <typename TIter>
+        comms::ErrorStatus read(TIter& iter, std::size_t len)
+        {
+            auto es = Base::template readUntilAndUpdateLen<FieldIdx_second>(iter, len);
+            if (es != comms::ErrorStatus::Success) {
+                return es;
+            }
 
-    template <typename TIter>
-    comms::ErrorStatus read(TIter &iter, std::size_t len) {
-      auto es =
-          Base::template readUntilAndUpdateLen<FieldIdx_second>(iter, len);
-      if (es != comms::ErrorStatus::Success) {
-        return es;
-      }
+            refresh();
+            return Base::template readFrom<FieldIdx_second>(iter, len);
+        }
 
-      refresh();
-      return Base::template readFrom<FieldIdx_second>(iter, len);
-    }
+        bool refresh()
+        {
+            auto mode = comms::field::OptionalMode::Missing;
+            if (field_first().value() == 0U) {
+                mode = comms::field::OptionalMode::Exists;
+            }
 
-    bool refresh() {
-      auto mode = comms::field::OptionalMode::Missing;
-      if (field_first().value() == 0U) {
-        mode = comms::field::OptionalMode::Exists;
-      }
+            if (field_second().getMode() == mode) {
+                return false;
+            }
 
-      if (field_second().getMode() == mode) {
-        return false;
-      }
+            field_second().setMode(mode);
+            return true;
+        }
+    };
 
-      field_second().setMode(mode);
-      return true;
-    }
-  };
+    using BeSizeComplexField = ComplexLengthField<BeField>;
 
-  using BeSizeComplexField = ComplexLengthField<BeField>;
+    template <typename TField>
+    using VarLenSizeFieldDef = VarLenSizeField<TField>;
+    using BeVarLenSizeField = VarLenSizeFieldDef<BeField>;
+    using LeVarLenSizeField = VarLenSizeFieldDef<LeField>;
 
-  template <typename TField> using VarLenSizeFieldDef = VarLenSizeField<TField>;
-  using BeVarLenSizeField = VarLenSizeFieldDef<BeField>;
-  using LeVarLenSizeField = VarLenSizeFieldDef<LeField>;
+    template <typename TField, std::size_t TLen>
+    using IdField =
+        comms::field::EnumValue<
+            TField,
+            MessageType,
+            comms::option::FixedLength<TLen>
+        >;
 
-  template <typename TField, std::size_t TLen>
-  using IdField = comms::field::EnumValue<TField, MessageType,
-                                          comms::option::FixedLength<TLen>>;
+    template <typename TField>
+    using IdField1 = IdField<TField, 1>;
+    using BeIdField1 = IdField1<BeField>;
+    using LeIdField1 = IdField1<LeField>;
+    using BeBackInsertIdField1 = IdField1<BeBackInserTField>;
 
-  template <typename TField> using IdField1 = IdField<TField, 1>;
-  using BeIdField1 = IdField1<BeField>;
-  using LeIdField1 = IdField1<LeField>;
-  using BeBackInsertIdField1 = IdField1<BeBackInserTField>;
+    template <typename TField>
+    using IdField2 = IdField<TField, 2>;
+    using BeIdField2 = IdField2<BeField>;
+    using LeIdField2 = IdField2<LeField>;
 
-  template <typename TField> using IdField2 = IdField<TField, 2>;
-  using BeIdField2 = IdField2<BeField>;
-  using LeIdField2 = IdField2<LeField>;
+    template <typename TSizeField, typename TIdField, typename TMessage>
+    class Frame : public
+        comms::frame::MsgSizeLayer<
+            TSizeField,
+            comms::frame::MsgIdLayer<
+                TIdField,
+                TMessage,
+                AllTestMessages<TMessage>,
+                comms::frame::MsgDataLayer<>
+            >
+        >
+    {
+        using Base =
+            comms::frame::MsgSizeLayer<
+                TSizeField,
+                comms::frame::MsgIdLayer<
+                    TIdField,
+                    TMessage,
+                    AllTestMessages<TMessage>,
+                    comms::frame::MsgDataLayer<>
+                >
+            >;
+    public:
+        COMMS_FRAME_LAYERS_NAMES_INNER(payload, id, size);
+    };
 
-  template <typename TSizeField, typename TIdField, typename TMessage>
-  class Frame
-      : public comms::frame::MsgSizeLayer<
-            TSizeField, comms::frame::MsgIdLayer<
-                            TIdField, TMessage, AllTestMessages<TMessage>,
-                            comms::frame::MsgDataLayer<>>> {
-    using Base = comms::frame::MsgSizeLayer<
-        TSizeField,
-        comms::frame::MsgIdLayer<TIdField, TMessage, AllTestMessages<TMessage>,
-                                 comms::frame::MsgDataLayer<>>>;
+    template <typename TIdField, typename TSizeField, typename TMessage>
+    class RevFrame : public
+        comms::frame::MsgIdLayer<
+            TIdField,
+            TMessage,
+            AllTestMessages<TMessage>,
+            comms::frame::MsgSizeLayer<
+                TSizeField,
+                comms::frame::MsgDataLayer<>
+            >
+        >
+    {
+        using Base =
+            comms::frame::MsgIdLayer<
+                TIdField,
+                TMessage,
+                AllTestMessages<TMessage>,
+                comms::frame::MsgSizeLayer<
+                    TSizeField,
+                    comms::frame::MsgDataLayer<>
+                >
+            >;
+    public:
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, size, payload);
+    };
 
-  public:
-    COMMS_FRAME_LAYERS_NAMES_INNER(payload, id, size);
-  };
+    template <typename TSizeField, typename TIdField, typename TMessage>
+    using InPlaceFrame =
+        comms::frame::MsgSizeLayer<
+            TSizeField,
+            comms::frame::MsgIdLayer<
+                TIdField,
+                TMessage,
+                AllTestMessages<TMessage>,
+                comms::frame::MsgDataLayer<>,
+                comms::option::InPlaceAllocation
+            >
+        >;
 
-  template <typename TIdField, typename TSizeField, typename TMessage>
-  class RevFrame
-      : public comms::frame::MsgIdLayer<
-            TIdField, TMessage, AllTestMessages<TMessage>,
-            comms::frame::MsgSizeLayer<TSizeField,
-                                       comms::frame::MsgDataLayer<>>> {
-    using Base = comms::frame::MsgIdLayer<
-        TIdField, TMessage, AllTestMessages<TMessage>,
-        comms::frame::MsgSizeLayer<TSizeField, comms::frame::MsgDataLayer<>>>;
+    template <typename TMsgBase>
+    class GenericMsg : public
+        comms::GenericMessage<TMsgBase>
+    {
+        using Base = comms::GenericMessage<TMsgBase>;
+    public:
+        using MsgIdParamType = typename Base::MsgIdParamType;
 
-  public:
-    COMMS_FRAME_LAYERS_NAMES_OUTER(id, size, payload);
-  };
+        explicit GenericMsg(MsgIdParamType id) : Base(id) {}
+        GenericMsg(const GenericMsg&) = default;
 
-  template <typename TSizeField, typename TIdField, typename TMessage>
-  using InPlaceFrame = comms::frame::MsgSizeLayer<
-      TSizeField,
-      comms::frame::MsgIdLayer<TIdField, TMessage, AllTestMessages<TMessage>,
-                               comms::frame::MsgDataLayer<>,
-                               comms::option::InPlaceAllocation>>;
+        const char* doName() const
+        {
+            return "Generic Message";
+        }
+    };
 
-  template <typename TMsgBase>
-  class GenericMsg : public comms::GenericMessage<TMsgBase> {
-    using Base = comms::GenericMessage<TMsgBase>;
+    template <typename TSizeField, typename TIdField, typename TMessage>
+    using GenMsgFrame =
+        comms::frame::MsgSizeLayer<
+            TSizeField,
+            comms::frame::MsgIdLayer<
+                TIdField,
+                TMessage,
+                AllTestMessages<TMessage>,
+                comms::frame::MsgDataLayer<>,
+                comms::option::SupportGenericMessage<GenericMsg<TMessage> >
+            >
+        >;
 
-  public:
-    using MsgIdParamType = typename Base::MsgIdParamType;
-
-    explicit GenericMsg(MsgIdParamType id) : Base(id) {}
-    GenericMsg(const GenericMsg &) = default;
-
-    const char *doName() const { return "Generic Message"; }
-  };
-
-  template <typename TSizeField, typename TIdField, typename TMessage>
-  using GenMsgFrame = comms::frame::MsgSizeLayer<
-      TSizeField,
-      comms::frame::MsgIdLayer<
-          TIdField, TMessage, AllTestMessages<TMessage>,
-          comms::frame::MsgDataLayer<>,
-          comms::option::SupportGenericMessage<GenericMsg<TMessage>>>>;
 };
 
-void MsgSizeLayerTestSuite::test1() {
-  static const char Buf[] = {0x0,  0x3,  MessageType1,
-                             0x01, 0x02, static_cast<char>(0x3f)};
+void MsgSizeLayerTestSuite::test1()
+{
+    static const char Buf[] = {
+        0x0, 0x3, MessageType1, 0x01, 0x02, static_cast<char>(0x3f)
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  Frame<BeSizeField20, BeIdField1, BeMsgBase> frame;
-  auto &sizeLayer = frame.layer_size();
-  using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
-  static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
-  static_cast<void>(sizeLayer);
+    Frame<BeSizeField20, BeIdField1, BeMsgBase> frame;
+    auto& sizeLayer = frame.layer_size();
+    using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
+    static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
+    static_cast<void>(sizeLayer);
 
-  auto &idLayer = frame.layer_id();
-  using IdLayerType = typename std::decay<decltype(idLayer)>::type;
-  static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
-  static_cast<void>(idLayer);
+    auto& idLayer = frame.layer_id();
+    using IdLayerType = typename std::decay<decltype(idLayer)>::type;
+    static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
+    static_cast<void>(idLayer);
 
-  auto &payloadLayer = frame.layer_payload();
-  using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
-  static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(),
-                "Invalid layer");
-  static_cast<void>(payloadLayer);
+    auto& payloadLayer = frame.layer_payload();
+    using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
+    static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(), "Invalid layer");
+    static_cast<void>(payloadLayer);
 
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
-  auto &msg1 = dynamic_cast<BeMsg1 &>(*msgPtr);
-  TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+    auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
+    TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
 
-  InPlaceFrame<BeSizeField20, BeIdField1, BeMsgBase> inPlaceFrame;
-  auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr2);
-  TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType1);
-  auto &msg2 = dynamic_cast<BeMsg1 &>(*msgPtr2);
-  TS_ASSERT_EQUALS(std::get<0>(msg2.fields()).value(), 0x0102);
+    InPlaceFrame<BeSizeField20, BeIdField1, BeMsgBase> inPlaceFrame;
+    auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr2);
+    TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType1);
+    auto& msg2 = dynamic_cast<BeMsg1&>(*msgPtr2);
+    TS_ASSERT_EQUALS(std::get<0>(msg2.fields()).value(), 0x0102);
 
-  TS_ASSERT_EQUALS(msg1, msg2);
+    TS_ASSERT_EQUALS(msg1, msg2);
 
-  GenMsgFrame<BeSizeField20, BeIdField1, BeMsgBase> genMsgFrame;
-  auto msgPtr3 = commonReadWriteMsgTest(genMsgFrame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr3);
-  TS_ASSERT_EQUALS(msgPtr3->getId(), MessageType1);
-  auto &msg3 = dynamic_cast<BeMsg1 &>(*msgPtr2);
-  TS_ASSERT_EQUALS(std::get<0>(msg3.fields()).value(), 0x0102);
+    GenMsgFrame<BeSizeField20, BeIdField1, BeMsgBase> genMsgFrame;
+    auto msgPtr3 = commonReadWriteMsgTest(genMsgFrame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr3);
+    TS_ASSERT_EQUALS(msgPtr3->getId(), MessageType1);
+    auto& msg3 = dynamic_cast<BeMsg1&>(*msgPtr2);
+    TS_ASSERT_EQUALS(std::get<0>(msg3.fields()).value(), 0x0102);
 
-  TS_ASSERT_EQUALS(msg1, msg3);
+    TS_ASSERT_EQUALS(msg1, msg3);
 
-  auto msgPtr4 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize,
-                                        comms::ErrorStatus::MsgAllocFailure);
-  TS_ASSERT(!msgPtr4);
+    auto msgPtr4 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize, comms::ErrorStatus::MsgAllocFailure);
+    TS_ASSERT(!msgPtr4);
 }
 
-void MsgSizeLayerTestSuite::test2() {
-  LeMsg1 msg;
-  std::get<0>(msg.fields()).value() = 0x0304;
+void MsgSizeLayerTestSuite::test2()
+{
+    LeMsg1 msg;
+    std::get<0>(msg.fields()).value() = 0x0304;
 
-  static const char ExpectedBuf[] = {0x4, 0x0,  0x0, MessageType1,
-                                     0x0, 0x04, 0x03};
+    static const char ExpectedBuf[] = {
+        0x4, 0x0, 0x0, MessageType1, 0x0, 0x04, 0x03
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
-  char buf[BufSize] = {0};
+    static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
+    char buf[BufSize] = {0};
 
-  Frame<LeSizeField30, LeIdField2, LeMsgBase> frame;
-  commonWriteReadMsgTest(frame, msg, buf, BufSize, &ExpectedBuf[0]);
+    Frame<LeSizeField30, LeIdField2, LeMsgBase> frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, &ExpectedBuf[0]);
 
-  InPlaceFrame<LeSizeField30, LeIdField2, LeMsgBase> inPlaceFrame;
-  commonWriteReadMsgTest(inPlaceFrame, msg, buf, BufSize, &ExpectedBuf[0]);
+    InPlaceFrame<LeSizeField30, LeIdField2, LeMsgBase> inPlaceFrame;
+    commonWriteReadMsgTest(inPlaceFrame, msg, buf, BufSize, &ExpectedBuf[0]);
 }
 
-void MsgSizeLayerTestSuite::test3() {
-  static const char Buf[] = {0x0, 0x2, MessageType1, 0x00, 0x00};
+void MsgSizeLayerTestSuite::test3()
+{
+    static const char Buf[] = {
+        0x0, 0x2, MessageType1, 0x00, 0x00
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  Frame<BeSizeField20, BeIdField1, BeMsgBase> frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize,
-                                       comms::ErrorStatus::ProtocolError);
-  TS_ASSERT(!msgPtr);
+    Frame<BeSizeField20, BeIdField1, BeMsgBase> frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::ProtocolError);
+    TS_ASSERT(!msgPtr);
 
-  InPlaceFrame<BeSizeField20, BeIdField1, BeMsgBase> inPlaceFrame;
-  auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize,
-                                        comms::ErrorStatus::ProtocolError);
-  TS_ASSERT(!msgPtr2);
+    InPlaceFrame<BeSizeField20, BeIdField1, BeMsgBase> inPlaceFrame;
+    auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize, comms::ErrorStatus::ProtocolError);
+    TS_ASSERT(!msgPtr2);
 }
 
-void MsgSizeLayerTestSuite::test4() {
-  static const char Buf[] = {0x0};
+void MsgSizeLayerTestSuite::test4()
+{
+    static const char Buf[] = {
+        0x0
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  Frame<BeSizeField20, BeIdField1, BeMsgBase> frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize,
-                                       comms::ErrorStatus::NotEnoughData);
-  TS_ASSERT(!msgPtr);
+    Frame<BeSizeField20, BeIdField1, BeMsgBase> frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
+    TS_ASSERT(!msgPtr);
 
-  InPlaceFrame<BeSizeField20, BeIdField1, BeMsgBase> inPlaceFrame;
-  auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize,
-                                        comms::ErrorStatus::NotEnoughData);
-  TS_ASSERT(!msgPtr2);
+    InPlaceFrame<BeSizeField20, BeIdField1, BeMsgBase> inPlaceFrame;
+    auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
+    TS_ASSERT(!msgPtr2);
 }
 
-void MsgSizeLayerTestSuite::test5() {
-  LeMsg1 msg;
-  std::get<0>(msg.fields()).value() = 0x0203;
+void MsgSizeLayerTestSuite::test5()
+{
+    LeMsg1 msg;
+    std::get<0>(msg.fields()).value() = 0x0203;
 
-  char buf[2] = {0};
-  static const std::size_t BufSize = std::extent<decltype(buf)>::value;
+    char buf[2] = {0};
+    static const std::size_t BufSize = std::extent<decltype(buf)>::value;
 
-  Frame<LeSizeField30, LeIdField2, LeMsgBase> frame;
-  commonWriteReadMsgTest(frame, msg, buf, BufSize, nullptr,
-                         comms::ErrorStatus::BufferOverflow);
+    Frame<LeSizeField30, LeIdField2, LeMsgBase> frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
 
-  InPlaceFrame<LeSizeField30, LeIdField2, LeMsgBase> inPlaceFrame;
-  commonWriteReadMsgTest(inPlaceFrame, msg, buf, BufSize, nullptr,
-                         comms::ErrorStatus::BufferOverflow);
+    InPlaceFrame<LeSizeField30, LeIdField2, LeMsgBase> inPlaceFrame;
+    commonWriteReadMsgTest(inPlaceFrame, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
 }
 
-void MsgSizeLayerTestSuite::test6() {
-  static const char Buf[] = {MessageType1, 0x0,  0x2,
-                             0x01,         0x02, static_cast<char>(0x3f)};
+void MsgSizeLayerTestSuite::test6()
+{
+    static const char Buf[] = {
+        MessageType1, 0x0, 0x2, 0x01, 0x02, static_cast<char>(0x3f)
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  RevFrame<BeIdField1, BeSizeField20, BeMsgBase> frame;
-  auto &sizeLayer = frame.layer_size();
-  using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
-  static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
-  static_cast<void>(sizeLayer);
+    RevFrame<BeIdField1, BeSizeField20, BeMsgBase> frame;
+    auto& sizeLayer = frame.layer_size();
+    using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
+    static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
+    static_cast<void>(sizeLayer);
 
-  auto &idLayer = frame.layer_id();
-  using IdLayerType = typename std::decay<decltype(idLayer)>::type;
-  static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
-  static_cast<void>(idLayer);
+    auto& idLayer = frame.layer_id();
+    using IdLayerType = typename std::decay<decltype(idLayer)>::type;
+    static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
+    static_cast<void>(idLayer);
 
-  auto &payloadLayer = frame.layer_payload();
-  using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
-  static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(),
-                "Invalid layer");
-  static_cast<void>(payloadLayer);
+    auto& payloadLayer = frame.layer_payload();
+    using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
+    static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(), "Invalid layer");
+    static_cast<void>(payloadLayer);
 
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
-  auto &msg = dynamic_cast<BeMsg1 &>(*msgPtr);
-  TS_ASSERT_EQUALS(std::get<0>(msg.fields()).value(), 0x0102);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+    auto& msg = dynamic_cast<BeMsg1&>(*msgPtr);
+    TS_ASSERT_EQUALS(std::get<0>(msg.fields()).value(), 0x0102);
 }
 
-void MsgSizeLayerTestSuite::test7() {
-  static const char Buf[] = {MessageType1, 0x0, 0x4, 0x01, 0x02};
+void MsgSizeLayerTestSuite::test7()
+{
+    static const char Buf[] = {
+        MessageType1, 0x0, 0x4, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  RevFrame<BeIdField1, BeSizeField22, BeMsgBase> frame;
-  auto &sizeLayer = frame.layer_size();
-  using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
-  static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
-  static_cast<void>(sizeLayer);
+    RevFrame<BeIdField1, BeSizeField22, BeMsgBase> frame;
+    auto& sizeLayer = frame.layer_size();
+    using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
+    static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
+    static_cast<void>(sizeLayer);
 
-  auto &idLayer = frame.layer_id();
-  using IdLayerType = typename std::decay<decltype(idLayer)>::type;
-  static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
-  static_cast<void>(idLayer);
+    auto& idLayer = frame.layer_id();
+    using IdLayerType = typename std::decay<decltype(idLayer)>::type;
+    static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
+    static_cast<void>(idLayer);
 
-  auto &payloadLayer = frame.layer_payload();
-  using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
-  static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(),
-                "Invalid layer");
-  static_cast<void>(payloadLayer);
+    auto& payloadLayer = frame.layer_payload();
+    using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
+    static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(), "Invalid layer");
+    static_cast<void>(payloadLayer);
 
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
-  auto &msg = dynamic_cast<BeMsg1 &>(*msgPtr);
-  TS_ASSERT_EQUALS(std::get<0>(msg.fields()).value(), 0x0102);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+    auto& msg = dynamic_cast<BeMsg1&>(*msgPtr);
+    TS_ASSERT_EQUALS(std::get<0>(msg.fields()).value(), 0x0102);
 }
 
-void MsgSizeLayerTestSuite::test8() {
-  static const char Buf[] = {0x0,  0x3,  MessageType1,
-                             0x01, 0x02, static_cast<char>(0x3f)};
+void MsgSizeLayerTestSuite::test8()
+{
+    static const char Buf[] = {
+        0x0, 0x3, MessageType1, 0x01, 0x02, static_cast<char>(0x3f)
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  Frame<BeBackInsertSizeField20, BeBackInsertIdField1, BeBackInsertMsgBase>
-      frame;
-  auto msgPtr = vectorBackInsertReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
-  auto &msg1 = dynamic_cast<BeBackInsertMsg1 &>(*msgPtr);
-  TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
+    Frame<BeBackInsertSizeField20, BeBackInsertIdField1, BeBackInsertMsgBase> frame;
+    auto msgPtr = vectorBackInsertReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+    auto& msg1 = dynamic_cast<BeBackInsertMsg1&>(*msgPtr);
+    TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
 
-  InPlaceFrame<BeBackInsertSizeField20, BeBackInsertIdField1,
-               BeBackInsertMsgBase>
-      inPlaceFrame;
-  auto msgPtr2 =
-      vectorBackInsertReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr2);
-  TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType1);
-  auto &msg2 = dynamic_cast<BeBackInsertMsg1 &>(*msgPtr2);
-  TS_ASSERT_EQUALS(std::get<0>(msg2.fields()).value(), 0x0102);
+    InPlaceFrame<BeBackInsertSizeField20, BeBackInsertIdField1, BeBackInsertMsgBase> inPlaceFrame;
+    auto msgPtr2 = vectorBackInsertReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr2);
+    TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType1);
+    auto& msg2 = dynamic_cast<BeBackInsertMsg1&>(*msgPtr2);
+    TS_ASSERT_EQUALS(std::get<0>(msg2.fields()).value(), 0x0102);
 
-  TS_ASSERT_EQUALS(msg1, msg2);
+    TS_ASSERT_EQUALS(msg1, msg2);
 
-  auto msgPtr3 = vectorBackInsertReadWriteMsgTest(
-      inPlaceFrame, &Buf[0], BufSize, comms::ErrorStatus::MsgAllocFailure);
-  TS_ASSERT(!msgPtr3);
+    auto msgPtr3 = vectorBackInsertReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize, comms::ErrorStatus::MsgAllocFailure);
+    TS_ASSERT(!msgPtr3);
 }
 
-void MsgSizeLayerTestSuite::test9() {
-  BeBackInsertMsg3 msg;
-  TS_ASSERT(!msg.valid());
-  auto &fields = msg.fields();
-  std::get<0>(fields).value() = 0x01020304;
-  std::get<1>(fields).value() = 0x05;
-  std::get<2>(fields).value() = 0x0607;
-  std::get<3>(fields).value() = 0x08090a;
+void MsgSizeLayerTestSuite::test9()
+{
+    BeBackInsertMsg3 msg;
+    TS_ASSERT(!msg.valid());
+    auto& fields = msg.fields();
+    std::get<0>(fields).value() = 0x01020304;
+    std::get<1>(fields).value() = 0x05;
+    std::get<2>(fields).value() = 0x0607;
+    std::get<3>(fields).value() = 0x08090a;
 
-  static const char ExpectedBuf[] = {0x0, 0xb, MessageType3, 0x1, 0x2, 0x3, 0x4,
-                                     0x5, 0x6, 0x7,          0x8, 0x9, 0xa};
-  static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
+    static const char ExpectedBuf[] = {
+        0x0, 0xb, MessageType3, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa
+    };
+    static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
 
-  Frame<BeBackInsertSizeField20, BeBackInsertIdField1, BeBackInsertMsgBase>
-      frame;
-  vectorBackInsertWriteReadMsgTest(frame, msg, ExpectedBuf, BufSize);
+    Frame<BeBackInsertSizeField20, BeBackInsertIdField1, BeBackInsertMsgBase> frame;
+    vectorBackInsertWriteReadMsgTest(frame, msg, ExpectedBuf, BufSize);
 }
 
-void MsgSizeLayerTestSuite::test10() {
-  RevFrame<BeIdField1, BeSizeField22, BeMsgBase> frame;
-  auto msgPtr1 = frame.createMsg(MessageType1);
-  TS_ASSERT(msgPtr1);
-  TS_ASSERT_EQUALS(msgPtr1->getId(), MessageType1);
-  auto msgPtr2 = frame.createMsg(MessageType2);
-  TS_ASSERT(msgPtr2);
-  TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType2);
-  auto msgPtr3 = frame.createMsg(MessageType3);
-  TS_ASSERT(msgPtr3);
-  TS_ASSERT_EQUALS(msgPtr3->getId(), MessageType3);
+void MsgSizeLayerTestSuite::test10()
+{
+    RevFrame<BeIdField1, BeSizeField22, BeMsgBase> frame;
+    auto msgPtr1 = frame.createMsg(MessageType1);
+    TS_ASSERT(msgPtr1);
+    TS_ASSERT_EQUALS(msgPtr1->getId(), MessageType1);
+    auto msgPtr2 = frame.createMsg(MessageType2);
+    TS_ASSERT(msgPtr2);
+    TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType2);
+    auto msgPtr3 = frame.createMsg(MessageType3);
+    TS_ASSERT(msgPtr3);
+    TS_ASSERT_EQUALS(msgPtr3->getId(), MessageType3);
 }
 
-void MsgSizeLayerTestSuite::test11() {
-  static const char Buf[] = {0x0, 0xb, MessageType3, 0x1, 0x2, 0x3, 0x4,
-                             0x5, 0x6, 0x7,          0x8, 0x9, 0xa};
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+void MsgSizeLayerTestSuite::test11()
+{
+    static const char Buf[] = {
+        0x0, 0xb, MessageType3, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa
+    };
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = Frame<BeSizeField20, BeIdField1, BeMsgBase>;
-  TestFrame frame;
+    using TestFrame = Frame<BeSizeField20, BeIdField1, BeMsgBase>;
+    TestFrame frame;
 
-  using AllFields = TestFrame::AllFields;
-  AllFields fields;
+    using AllFields = TestFrame::AllFields;
+    AllFields fields;
 
-  auto msgPtr = commonReadWriteMsgTest(frame, fields, Buf, BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType3);
+    auto msgPtr = commonReadWriteMsgTest(frame, fields, Buf, BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType3);
 
-  TS_ASSERT_EQUALS(std::get<0>(fields).value(), 0x0b);
-  TS_ASSERT_EQUALS(std::get<1>(fields).value(), MessageType3);
+    TS_ASSERT_EQUALS(std::get<0>(fields).value(), 0x0b);
+    TS_ASSERT_EQUALS(std::get<1>(fields).value(), MessageType3);
 
-  auto &msg = dynamic_cast<BeMsg3 &>(*msgPtr);
-  auto &msgFields = msg.fields();
-  TS_ASSERT_EQUALS(std::get<0>(msgFields).value(), 0x01020304);
-  TS_ASSERT_EQUALS(std::get<1>(msgFields).value(), 0x05);
-  TS_ASSERT_EQUALS(std::get<2>(msgFields).value(), 0x0607);
-  TS_ASSERT_EQUALS(std::get<3>(msgFields).value(), 0x08090a);
+    auto& msg = dynamic_cast<BeMsg3&>(*msgPtr);
+    auto& msgFields = msg.fields();
+    TS_ASSERT_EQUALS(std::get<0>(msgFields).value(), 0x01020304);
+    TS_ASSERT_EQUALS(std::get<1>(msgFields).value(), 0x05);
+    TS_ASSERT_EQUALS(std::get<2>(msgFields).value(), 0x0607);
+    TS_ASSERT_EQUALS(std::get<3>(msgFields).value(), 0x08090a);
 }
 
-void MsgSizeLayerTestSuite::test12() {
-  BeNoLengthMsg1 msg;
-  std::get<0>(msg.fields()).value() = 0x0304;
+void MsgSizeLayerTestSuite::test12()
+{
+    BeNoLengthMsg1 msg;
+    std::get<0>(msg.fields()).value() = 0x0304;
 
-  static const char ExpectedBuf[] = {0x0, 0x3, MessageType1, 0x03, 0x04};
+    static const char ExpectedBuf[] = {
+        0x0, 0x3, MessageType1, 0x03, 0x04
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
-  char buf[BufSize] = {0};
+    static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
+    char buf[BufSize] = {0};
 
-  Frame<BeSizeField20, BeIdField1, BeNoLengthMsgBase> frame;
-  commonWriteReadMsgTest(frame, msg, buf, BufSize, &ExpectedBuf[0]);
+    Frame<BeSizeField20, BeIdField1, BeNoLengthMsgBase> frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, &ExpectedBuf[0]);
 }
 
-void MsgSizeLayerTestSuite::test13() {
-  BeNoLengthBackInsertMsg1 msg;
-  std::get<0>(msg.fields()).value() = 0x0304;
+void MsgSizeLayerTestSuite::test13()
+{
+    BeNoLengthBackInsertMsg1 msg;
+    std::get<0>(msg.fields()).value() = 0x0304;
 
-  static const char ExpectedBuf[] = {0x0, 0x4, 0x0, MessageType1, 0x03, 0x04};
+    static const char ExpectedBuf[] = {
+        0x0, 0x4, 0x0, MessageType1, 0x03, 0x04
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
-  Frame<BeSizeField20, BeIdField2, BeNoLengthBackInsertMsgBase> frame;
-  vectorBackInsertWriteReadMsgTest(frame, msg, ExpectedBuf, BufSize);
+    static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
+    Frame<BeSizeField20, BeIdField2, BeNoLengthBackInsertMsgBase> frame;
+    vectorBackInsertWriteReadMsgTest(frame, msg, ExpectedBuf, BufSize);
 }
 
-void MsgSizeLayerTestSuite::test14() {
-  static const char Buf[] = {0x0,  0x3,  UnusedValue1,
-                             0x01, 0x02, static_cast<char>(0x3f)};
+void MsgSizeLayerTestSuite::test14()
+{
+    static const char Buf[] = {
+        0x0, 0x3, UnusedValue1, 0x01, 0x02, static_cast<char>(0x3f)
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  GenMsgFrame<BeSizeField20, BeIdField1, BeMsgBase> frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), UnusedValue1);
+    GenMsgFrame<BeSizeField20, BeIdField1, BeMsgBase> frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), UnusedValue1);
 
-  auto &msg1 = dynamic_cast<GenericMsg<BeMsgBase> &>(*msgPtr);
-  TS_ASSERT_EQUALS(msg1.field_data().value().size(), 2U);
-  TS_ASSERT_EQUALS(msg1.field_data().value()[0], 0x01);
-  TS_ASSERT_EQUALS(msg1.field_data().value()[1], 0x02);
+    auto& msg1 = dynamic_cast<GenericMsg<BeMsgBase>&>(*msgPtr);
+    TS_ASSERT_EQUALS(msg1.field_data().value().size(), 2U);
+    TS_ASSERT_EQUALS(msg1.field_data().value()[0], 0x01);
+    TS_ASSERT_EQUALS(msg1.field_data().value()[1], 0x02);
+
 }
 
-void MsgSizeLayerTestSuite::test15() {
-  static const char Buf[] = {0x0,  0x3,  MessageType1,
-                             0x01, 0x02, static_cast<char>(0x3f)};
+void MsgSizeLayerTestSuite::test15()
+{
+    static const char Buf[] = {
+        0x0, 0x3, MessageType1, 0x01, 0x02, static_cast<char>(0x3f)
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame =
-      Frame<BeSizeField20, BeIdField1, BeNonPolymorphicMessageBase>;
-  TestFrame frame;
-  NonPolymorphicBeMsg1 msg;
-  commonReadWriteMsgDirectTest(frame, msg, &Buf[0], BufSize);
-  TS_ASSERT_EQUALS(std::get<0>(msg.fields()).value(), 0x0102);
+    using TestFrame = Frame<BeSizeField20, BeIdField1, BeNonPolymorphicMessageBase>;
+    TestFrame frame;
+    NonPolymorphicBeMsg1 msg;
+    commonReadWriteMsgDirectTest(frame, msg, &Buf[0], BufSize);
+    TS_ASSERT_EQUALS(std::get<0>(msg.fields()).value(), 0x0102);
 
-  TestFrame::AllFields fields;
-  commonReadWriteMsgDirectTest(frame, fields, msg, &Buf[0], BufSize);
-  TS_ASSERT_EQUALS(std::get<0>(fields).value(), 3U);
-  TS_ASSERT_EQUALS(std::get<1>(fields).value(), MessageType1);
+    TestFrame::AllFields fields;
+    commonReadWriteMsgDirectTest(frame, fields, msg, &Buf[0], BufSize);
+    TS_ASSERT_EQUALS(std::get<0>(fields).value(), 3U);
+    TS_ASSERT_EQUALS(std::get<1>(fields).value(), MessageType1);
 
-  NonPolymorphicBeMsg2 msg2;
-  commonReadWriteMsgDirectTest(frame, msg2, &Buf[0], BufSize,
-                               comms::ErrorStatus::InvalidMsgId);
+    NonPolymorphicBeMsg2 msg2;
+    commonReadWriteMsgDirectTest(frame, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
 
-  TestFrame::AllFields fields2;
-  commonReadWriteMsgDirectTest(frame, fields2, msg2, &Buf[0], BufSize,
-                               comms::ErrorStatus::InvalidMsgId);
+    TestFrame::AllFields fields2;
+    commonReadWriteMsgDirectTest(frame, fields2, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
 
-  TS_ASSERT_EQUALS(std::get<0>(fields2).value(), 3U);
-  TS_ASSERT_EQUALS(std::get<1>(fields2).value(), MessageType1);
+    TS_ASSERT_EQUALS(std::get<0>(fields2).value(), 3U);
+    TS_ASSERT_EQUALS(std::get<1>(fields2).value(), MessageType1);
 }
 
-void MsgSizeLayerTestSuite::test16() {
-  static const char Buf[] = {
-      static_cast<char>(0x84), 0x0, MessageType1, 0x01, 0x02,
-  };
+void MsgSizeLayerTestSuite::test16()
+{
+    static const char Buf[] = {
+        static_cast<char>(0x84), 0x0, MessageType1, 0x01, 0x02,
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  Frame<LeVarLenSizeField, LeIdField1, LeMsgBase> frame;
-  auto &sizeLayer = frame.layer_size();
-  using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
-  static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
-  static_cast<void>(sizeLayer);
+    Frame<LeVarLenSizeField, LeIdField1, LeMsgBase> frame;
+    auto& sizeLayer = frame.layer_size();
+    using SizeLayerType = typename std::decay<decltype(sizeLayer)>::type;
+    static_assert(comms::frame::isMsgSizeLayer<SizeLayerType>(), "Invalid layer");
+    static_cast<void>(sizeLayer);
 
-  auto &idLayer = frame.layer_id();
-  using IdLayerType = typename std::decay<decltype(idLayer)>::type;
-  static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
-  static_cast<void>(idLayer);
+    auto& idLayer = frame.layer_id();
+    using IdLayerType = typename std::decay<decltype(idLayer)>::type;
+    static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
+    static_cast<void>(idLayer);
 
-  auto &payloadLayer = frame.layer_payload();
-  using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
-  static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(),
-                "Invalid layer");
-  static_cast<void>(payloadLayer);
+    auto& payloadLayer = frame.layer_payload();
+    using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
+    static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(), "Invalid layer");
+    static_cast<void>(payloadLayer);
 
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize,
-                                       comms::ErrorStatus::NotEnoughData);
-  TS_ASSERT(!msgPtr)
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::NotEnoughData);
+    TS_ASSERT(!msgPtr)
 }
 
-void MsgSizeLayerTestSuite::test17() {
-  static const char Buf[] = {static_cast<char>(0x81), 0x0, MessageType2};
+void MsgSizeLayerTestSuite::test17()
+{
+    static const char Buf[] = {
+        static_cast<char>(0x81), 0x0, MessageType2
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = Frame<LeVarLenSizeField, LeIdField1, LeMsgBase>;
-  TestFrame frame;
+    using TestFrame = Frame<LeVarLenSizeField, LeIdField1, LeMsgBase>;
+    TestFrame frame;
 
-  TestFrame::MsgPtr msg;
-  auto readIter = &Buf[0];
-  auto es = frame.read(msg, readIter, BufSize);
-  TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-  TS_ASSERT(msg);
-  TS_ASSERT_EQUALS(msg->getId(), MessageType2);
-  TS_ASSERT_EQUALS(frame.length(*msg), BufSize - 1);
+    TestFrame::MsgPtr msg;
+    auto readIter = &Buf[0];
+    auto es = frame.read(msg, readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT(msg);
+    TS_ASSERT_EQUALS(msg->getId(), MessageType2);
+    TS_ASSERT_EQUALS(frame.length(*msg), BufSize - 1);
 }
 
-void MsgSizeLayerTestSuite::test18() {
-  static const char Buf[] = {
-      0x0, 0x5, MessageType1, 0x01, 0x02,
-  };
+void MsgSizeLayerTestSuite::test18()
+{
+    static const char Buf[] = {
+        0x0, 0x5, MessageType1, 0x01, 0x02,
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame =
-      Frame<BeSizeField20, BeIdField1, BeNonPolymorphicMessageBase>;
-  TestFrame frame;
-  NonPolymorphicBeMsg1 msg;
-  auto readIter = &Buf[0];
-  std::size_t missingSize = 0U;
-  auto es = frame.read(msg, readIter, BufSize,
-                       comms::frame::missingSize(missingSize));
-  TS_ASSERT_EQUALS(es, comms::ErrorStatus::NotEnoughData);
-  TS_ASSERT_EQUALS(missingSize, 2U);
+    using TestFrame = Frame<BeSizeField20, BeIdField1, BeNonPolymorphicMessageBase>;
+    TestFrame frame;
+    NonPolymorphicBeMsg1 msg;
+    auto readIter = &Buf[0];
+    std::size_t missingSize = 0U;
+    auto es = frame.read(msg, readIter, BufSize, comms::frame::missingSize(missingSize));
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::NotEnoughData);
+    TS_ASSERT_EQUALS(missingSize, 2U);
 }
 
-void MsgSizeLayerTestSuite::test19() {
-  static const char Buf[] = {0x0,  0x3,  0x7f,
-                             0x01, 0x02, static_cast<char>(0x3f)};
+void MsgSizeLayerTestSuite::test19()
+{
+    static const char Buf[] = {
+        0x0, 0x3, 0x7f, 0x01, 0x02, static_cast<char>(0x3f)
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  Frame<BeSizeField20, BeIdField1, BeMsgBase> frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize,
-                                       comms::ErrorStatus::InvalidMsgId);
-  TS_ASSERT(!msgPtr);
+    Frame<BeSizeField20, BeIdField1, BeMsgBase> frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
+    TS_ASSERT(!msgPtr);
 }
 
-void MsgSizeLayerTestSuite::test20() {
-  static const char Buf[] = {0x3, MessageType1, 0x01, 0x02,
-                             static_cast<char>(0x3f)};
+void MsgSizeLayerTestSuite::test20()
+{
+    static const char Buf[] = {
+        0x3, MessageType1, 0x01, 0x02, static_cast<char>(0x3f)
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  Frame<BeSizeComplexField, BeIdField1, BeMsgBase> frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
+    Frame<BeSizeComplexField, BeIdField1, BeMsgBase> frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
 }

@@ -1,5 +1,5 @@
 //
-// Copyright 2017 - 2026 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -27,70 +27,65 @@
 #define COMMS_LAYER_TYPE_15 COMMS_EXPAND(::NextLayer) COMMS_LAYER_TYPE_14
 #define COMMS_LAYER_TYPE_16 COMMS_EXPAND(::NextLayer) COMMS_LAYER_TYPE_15
 
-#define COMMS_DO_LAYER_TYPE_INTERNAL_(N, B_)                                   \
-  typename B_ COMMS_EXPAND(COMMS_LAYER_TYPE_##N)
-#define COMMS_DO_LAYER_TYPE_INTERNAL(N, B_)                                    \
-  COMMS_EXPAND(COMMS_DO_LAYER_TYPE_INTERNAL_(N, B_))
-#define COMMS_DO_LAYER_TYPE(B_, ...)                                           \
-  COMMS_EXPAND(COMMS_DO_LAYER_TYPE_INTERNAL(COMMS_NUM_ARGS(__VA_ARGS__), B_))
+#define COMMS_DO_LAYER_TYPE_INTERNAL_(N, B_) typename B_ COMMS_EXPAND(COMMS_LAYER_TYPE_ ## N)
+#define COMMS_DO_LAYER_TYPE_INTERNAL(N, B_) COMMS_EXPAND(COMMS_DO_LAYER_TYPE_INTERNAL_(N, B_))
+#define COMMS_DO_LAYER_TYPE(B_, ...) \
+    COMMS_EXPAND(COMMS_DO_LAYER_TYPE_INTERNAL(COMMS_NUM_ARGS(__VA_ARGS__), B_))
 
-#define COMMS_LAYER_TYPE_ALIAS(c_, B_, n_)                                     \
-  using COMMS_CONCATENATE(Layer_, n_) = COMMS_DO_LAYER_TYPE_INTERNAL(c_, B_);
+#define COMMS_LAYER_TYPE_ALIAS(c_, B_, n_) \
+    using COMMS_CONCATENATE(Layer_, n_) = COMMS_DO_LAYER_TYPE_INTERNAL(c_, B_);
 
 #define COMMS_LAYER_TYPE_ALIAS_1(B_, n_) COMMS_LAYER_TYPE_ALIAS(1, B_, n_)
-#define COMMS_LAYER_TYPE_ALIAS_2(B_, n_, ...)                                  \
-  COMMS_LAYER_TYPE_ALIAS(2, B_, n_)                                            \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_1(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_3(B_, n_, ...)                                  \
-  COMMS_LAYER_TYPE_ALIAS(3, B_, n_)                                            \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_2(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_4(B_, n_, ...)                                  \
-  COMMS_LAYER_TYPE_ALIAS(4, B_, n_)                                            \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_3(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_5(B_, n_, ...)                                  \
-  COMMS_LAYER_TYPE_ALIAS(5, B_, n_)                                            \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_4(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_6(B_, n_, ...)                                  \
-  COMMS_LAYER_TYPE_ALIAS(6, B_, n_)                                            \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_5(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_7(B_, n_, ...)                                  \
-  COMMS_LAYER_TYPE_ALIAS(7, B_, n_)                                            \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_6(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_8(B_, n_, ...)                                  \
-  COMMS_LAYER_TYPE_ALIAS(8, B_, n_)                                            \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_7(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_9(B_, n_, ...)                                  \
-  COMMS_LAYER_TYPE_ALIAS(9, B_, n_)                                            \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_8(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_10(B_, n_, ...)                                 \
-  COMMS_LAYER_TYPE_ALIAS(10, B_, n_)                                           \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_9(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_11(B_, n_, ...)                                 \
-  COMMS_LAYER_TYPE_ALIAS(11, B_, n_)                                           \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_10(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_12(B_, n_, ...)                                 \
-  COMMS_LAYER_TYPE_ALIAS(12, B_, n_)                                           \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_11(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_13(B_, n_, ...)                                 \
-  COMMS_LAYER_TYPE_ALIAS(13, B_, n_)                                           \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_12(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_14(B_, n_, ...)                                 \
-  COMMS_LAYER_TYPE_ALIAS(14, B_, n_)                                           \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_13(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_15(B_, n_, ...)                                 \
-  COMMS_LAYER_TYPE_ALIAS(15, B_, n_)                                           \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_14(B_, __VA_ARGS__))
-#define COMMS_LAYER_TYPE_ALIAS_16(B_, n_, ...)                                 \
-  COMMS_LAYER_TYPE_ALIAS(16, B_, n_)                                           \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_15(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_2(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(2, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_1(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_3(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(3, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_2(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_4(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(4, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_3(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_5(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(5, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_4(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_6(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(6, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_5(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_7(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(7, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_6(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_8(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(8, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_7(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_9(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(9, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_8(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_10(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(10, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_9(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_11(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(11, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_10(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_12(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(12, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_11(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_13(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(13, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_12(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_14(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(14, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_13(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_15(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(15, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_14(B_, __VA_ARGS__))
+#define COMMS_LAYER_TYPE_ALIAS_16(B_, n_, ...) \
+    COMMS_LAYER_TYPE_ALIAS(16, B_, n_) \
+    COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_15(B_, __VA_ARGS__))
 
-#define COMMS_DO_LAYER_TYPE_ALIAS_INTERNAL_(N, B_, ...)                        \
-  COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_##N(B_, __VA_ARGS__))
-#define COMMS_DO_LAYER_TYPE_ALIAS_INTERNAL(N, B_, ...)                         \
-  COMMS_EXPAND(COMMS_DO_LAYER_TYPE_ALIAS_INTERNAL_(N, B_, __VA_ARGS__))
-#define COMMS_DO_LAYER_TYPE_ALIAS(B_, ...)                                     \
-  COMMS_EXPAND(COMMS_DO_LAYER_TYPE_ALIAS_INTERNAL(COMMS_NUM_ARGS(__VA_ARGS__), \
-                                                  B_, __VA_ARGS__))
+#define COMMS_DO_LAYER_TYPE_ALIAS_INTERNAL_(N, B_, ...) COMMS_EXPAND(COMMS_LAYER_TYPE_ALIAS_ ## N(B_, __VA_ARGS__))
+#define COMMS_DO_LAYER_TYPE_ALIAS_INTERNAL(N, B_, ...) COMMS_EXPAND(COMMS_DO_LAYER_TYPE_ALIAS_INTERNAL_(N, B_, __VA_ARGS__))
+#define COMMS_DO_LAYER_TYPE_ALIAS(B_, ...) \
+    COMMS_EXPAND(COMMS_DO_LAYER_TYPE_ALIAS_INTERNAL(COMMS_NUM_ARGS(__VA_ARGS__), B_, __VA_ARGS__))
 
 #define COMMS_LAYER_CALL_1 COMMS_EXPAND(.thisLayer())
 #define COMMS_LAYER_CALL_2 COMMS_EXPAND(.nextLayer())
@@ -109,96 +104,81 @@
 #define COMMS_LAYER_CALL_15 COMMS_EXPAND(.nextLayer()) COMMS_LAYER_CALL_14
 #define COMMS_LAYER_CALL_16 COMMS_EXPAND(.nextLayer()) COMMS_LAYER_CALL_15
 
-#define COMMS_DO_LAYER_CALL_INTERNAL_(N, B_)                                   \
-  COMMS_EXPAND(B_) COMMS_EXPAND(COMMS_LAYER_CALL_##N)
-#define COMMS_DO_LAYER_CALL_INTERNAL(N, B_)                                    \
-  COMMS_EXPAND(COMMS_DO_LAYER_CALL_INTERNAL_(N, B_))
-#define COMMS_DO_LAYER_CALL(B_, ...)                                           \
-  COMMS_EXPAND(COMMS_DO_LAYER_CALL_INTERNAL(COMMS_NUM_ARGS(__VA_ARGS__), B_))
+#define COMMS_DO_LAYER_CALL_INTERNAL_(N, B_) COMMS_EXPAND(B_) COMMS_EXPAND(COMMS_LAYER_CALL_ ## N)
+#define COMMS_DO_LAYER_CALL_INTERNAL(N, B_) COMMS_EXPAND(COMMS_DO_LAYER_CALL_INTERNAL_(N, B_))
+#define COMMS_DO_LAYER_CALL(B_, ...) \
+    COMMS_EXPAND(COMMS_DO_LAYER_CALL_INTERNAL(COMMS_NUM_ARGS(__VA_ARGS__), B_))
 
 #ifdef COMMS_MUST_DEFINE_BASE
 
-#define COMMS_ACCESS_LAYER_FUNC(c_, n_)                                        \
-  COMMS_DO_LAYER_TYPE_INTERNAL(c_, Base) & COMMS_CONCATENATE(layer_, n_)()
-#define COMMS_ACCESS_LAYER_CONST_FUNC(c_, n_)                                  \
-  const COMMS_DO_LAYER_TYPE_INTERNAL(c_, Base) &                               \
-      COMMS_CONCATENATE(layer_, n_)() const
+#define COMMS_ACCESS_LAYER_FUNC(c_, n_) \
+    COMMS_DO_LAYER_TYPE_INTERNAL(c_, Base)& COMMS_CONCATENATE(layer_, n_)()
+#define COMMS_ACCESS_LAYER_CONST_FUNC(c_, n_) \
+    const COMMS_DO_LAYER_TYPE_INTERNAL(c_, Base)& COMMS_CONCATENATE(layer_, n_)() const
 
 #else // #ifdef COMMS_MUST_DEFINE_BASE
-#define COMMS_ACCESS_LAYER_FUNC(c_, n_)                                        \
-  FUNC_AUTO_REF_RETURN(                                                        \
-      COMMS_CONCATENATE(layer_, n_),                                           \
-      decltype(COMMS_DO_LAYER_CALL_INTERNAL(                                   \
-          c_, COMMS_EXPAND(comms::frame::toFrameLayerBase(*this)))))
-#define COMMS_ACCESS_LAYER_CONST_FUNC(c_, n_)                                  \
-  FUNC_AUTO_REF_RETURN_CONST(                                                  \
-      COMMS_CONCATENATE(layer_, n_),                                           \
-      decltype(COMMS_DO_LAYER_CALL_INTERNAL(                                   \
-          c_, COMMS_EXPAND(comms::frame::toFrameLayerBase(*this)))))
+#define COMMS_ACCESS_LAYER_FUNC(c_, n_) FUNC_AUTO_REF_RETURN(COMMS_CONCATENATE(layer_, n_), decltype(COMMS_DO_LAYER_CALL_INTERNAL(c_, COMMS_EXPAND(comms::frame::toFrameLayerBase(*this)))))
+#define COMMS_ACCESS_LAYER_CONST_FUNC(c_, n_) FUNC_AUTO_REF_RETURN_CONST(COMMS_CONCATENATE(layer_, n_), decltype(COMMS_DO_LAYER_CALL_INTERNAL(c_, COMMS_EXPAND(comms::frame::toFrameLayerBase(*this)))))
 
 #endif // #ifdef COMMS_MUST_DEFINE_BASE
 
-#define COMMS_ACCESS_LAYER_ACC_FUNC(c_, n_)                                    \
-  COMMS_ACCESS_LAYER_FUNC(c_, n_) {                                            \
-    return COMMS_DO_LAYER_CALL_INTERNAL(                                       \
-        c_, comms::frame::toFrameLayerBase(*this));                            \
-  }                                                                            \
-  COMMS_ACCESS_LAYER_CONST_FUNC(c_, n_) {                                      \
-    return COMMS_DO_LAYER_CALL_INTERNAL(                                       \
-        c_, comms::frame::toFrameLayerBase(*this));                            \
-  }
+#define COMMS_ACCESS_LAYER_ACC_FUNC(c_, n_) \
+    COMMS_ACCESS_LAYER_FUNC(c_, n_) {\
+        return COMMS_DO_LAYER_CALL_INTERNAL(c_, comms::frame::toFrameLayerBase(*this)); \
+    } \
+    COMMS_ACCESS_LAYER_CONST_FUNC(c_, n_) {\
+        return COMMS_DO_LAYER_CALL_INTERNAL(c_, comms::frame::toFrameLayerBase(*this)); \
+    }
 
 #define COMMS_ACCESS_LAYER_ACC_FUNC_1(n_) COMMS_ACCESS_LAYER_ACC_FUNC(1, n_)
-#define COMMS_ACCESS_LAYER_ACC_FUNC_2(n_, ...)                                 \
-  COMMS_ACCESS_LAYER_ACC_FUNC(2, n_)                                           \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_1(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_3(n_, ...)                                 \
-  COMMS_ACCESS_LAYER_ACC_FUNC(3, n_)                                           \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_2(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_4(n_, ...)                                 \
-  COMMS_ACCESS_LAYER_ACC_FUNC(4, n_)                                           \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_3(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_5(n_, ...)                                 \
-  COMMS_ACCESS_LAYER_ACC_FUNC(5, n_)                                           \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_4(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_6(n_, ...)                                 \
-  COMMS_ACCESS_LAYER_ACC_FUNC(6, n_)                                           \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_5(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_7(n_, ...)                                 \
-  COMMS_ACCESS_LAYER_ACC_FUNC(7, n_)                                           \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_6(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_8(n_, ...)                                 \
-  COMMS_ACCESS_LAYER_ACC_FUNC(8, n_)                                           \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_7(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_9(n_, ...)                                 \
-  COMMS_ACCESS_LAYER_ACC_FUNC(9, n_)                                           \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_8(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_10(n_, ...)                                \
-  COMMS_ACCESS_LAYER_ACC_FUNC(10, n_)                                          \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_9(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_11(n_, ...)                                \
-  COMMS_ACCESS_LAYER_ACC_FUNC(11, n_)                                          \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_10(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_12(n_, ...)                                \
-  COMMS_ACCESS_LAYER_ACC_FUNC(12, n_)                                          \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_11(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_13(n_, ...)                                \
-  COMMS_ACCESS_LAYER_ACC_FUNC(13, n_)                                          \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_12(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_14(n_, ...)                                \
-  COMMS_ACCESS_LAYER_ACC_FUNC(14, n_)                                          \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_13(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_15(n_, ...)                                \
-  COMMS_ACCESS_LAYER_ACC_FUNC(15, n_)                                          \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_14(__VA_ARGS__))
-#define COMMS_ACCESS_LAYER_ACC_FUNC_16(n_, ...)                                \
-  COMMS_ACCESS_LAYER_ACC_FUNC(16, n_)                                          \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_15(c_, __VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_2(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(2, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_1(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_3(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(3, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_2(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_4(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(4, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_3(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_5(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(5, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_4(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_6(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(6, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_5(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_7(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(7, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_6(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_8(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(8, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_7(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_9(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(9, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_8(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_10(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(10, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_9(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_11(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(11, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_10(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_12(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(12, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_11(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_13(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(13, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_12(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_14(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(14, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_13(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_15(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(15, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_14(__VA_ARGS__))
+#define COMMS_ACCESS_LAYER_ACC_FUNC_16(n_, ...) \
+    COMMS_ACCESS_LAYER_ACC_FUNC(16, n_) \
+    COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_15(c_, __VA_ARGS__))
 
-#define COMMS_CHOOSE_ACCESS_LAYER_ACC_FUNC_(N, ...)                            \
-  COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_##N(__VA_ARGS__))
-#define COMMS_CHOOSE_ACCESS_LAYER_ACC_FUNC(N, ...)                             \
-  COMMS_EXPAND(COMMS_CHOOSE_ACCESS_LAYER_ACC_FUNC_(N, __VA_ARGS__))
-#define COMMS_DO_ACCESS_LAYER_ACC_FUNC(...)                                    \
-  COMMS_EXPAND(COMMS_CHOOSE_ACCESS_LAYER_ACC_FUNC(COMMS_NUM_ARGS(__VA_ARGS__), \
-                                                  __VA_ARGS__))
+#define COMMS_CHOOSE_ACCESS_LAYER_ACC_FUNC_(N, ...) COMMS_EXPAND(COMMS_ACCESS_LAYER_ACC_FUNC_ ## N(__VA_ARGS__))
+#define  COMMS_CHOOSE_ACCESS_LAYER_ACC_FUNC(N, ...) COMMS_EXPAND(COMMS_CHOOSE_ACCESS_LAYER_ACC_FUNC_(N, __VA_ARGS__))
+#define COMMS_DO_ACCESS_LAYER_ACC_FUNC(...) \
+    COMMS_EXPAND(COMMS_CHOOSE_ACCESS_LAYER_ACC_FUNC(COMMS_NUM_ARGS(__VA_ARGS__), __VA_ARGS__))
+

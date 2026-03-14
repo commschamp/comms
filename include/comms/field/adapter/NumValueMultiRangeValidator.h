@@ -1,5 +1,5 @@
 //
-// Copyright 2017 - 2026 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -12,69 +12,82 @@
 #include <type_traits>
 #include <utility>
 
-namespace comms {
+namespace comms
+{
 
-namespace field {
+namespace field
+{
 
-namespace adapter {
+namespace adapter
+{
 
 template <typename TRanges, typename TBase>
-class NumValueMultiRangeValidator : public TBase {
-  using BaseImpl = TBase;
+class NumValueMultiRangeValidator : public TBase
+{
+    using BaseImpl = TBase;
 
-  static_assert(comms::util::isTuple<TRanges>(), "TRanges must be a tuple");
+    static_assert(comms::util::isTuple<TRanges>(), "TRanges must be a tuple");
 
 public:
-  using ValueType = typename BaseImpl::ValueType;
 
-  static_assert(
-      std::is_integral<ValueType>::value || std::is_enum<ValueType>::value ||
-          std::is_floating_point<ValueType>::value,
-      "Only numeric fields are supported for multi range validation.");
+    using ValueType = typename BaseImpl::ValueType;
 
-  NumValueMultiRangeValidator() = default;
+    static_assert(
+        std::is_integral<ValueType>::value || std::is_enum<ValueType>::value || std::is_floating_point<ValueType>::value,
+        "Only numeric fields are supported for multi range validation.");
 
-  explicit NumValueMultiRangeValidator(const ValueType &val) : BaseImpl(val) {}
+    NumValueMultiRangeValidator() = default;
 
-  explicit NumValueMultiRangeValidator(ValueType &&val)
-      : BaseImpl(std::move(val)) {}
-
-  NumValueMultiRangeValidator(const NumValueMultiRangeValidator &) = default;
-  NumValueMultiRangeValidator(NumValueMultiRangeValidator &&) = default;
-  NumValueMultiRangeValidator &
-  operator=(const NumValueMultiRangeValidator &) = default;
-  NumValueMultiRangeValidator &
-  operator=(NumValueMultiRangeValidator &&) = default;
-
-  bool valid() const {
-    return BaseImpl::valid() && comms::util::tupleTypeAccumulate<TRanges>(
-                                    false, Validator(BaseImpl::getValue()));
-  }
-
-private:
-  class Validator {
-  public:
-    Validator(ValueType val) : m_val(val) {}
-
-    template <typename TRange> bool operator()(bool val) const {
-      static_cast<void>(val);
-      static_assert(comms::util::isTuple<TRange>(), "TRange must be a tuple");
-      static_assert(std::tuple_size<TRange>::value == 2,
-                    "Tuple with 2 elements is expected");
-      using MinVal = typename std::tuple_element<0, TRange>::type;
-      using MaxVal = typename std::tuple_element<1, TRange>::type;
-      static_assert(MinVal::value <= MaxVal::value, "Invalid range");
-      return val || ((static_cast<ValueType>(MinVal::value) <= m_val) &&
-                     (m_val <= static_cast<ValueType>(MaxVal::value)));
+    explicit NumValueMultiRangeValidator(const ValueType& val)
+      : BaseImpl(val)
+    {
     }
 
-  private:
-    ValueType m_val;
-  };
+    explicit NumValueMultiRangeValidator(ValueType&& val)
+      : BaseImpl(std::move(val))
+    {
+    }
+
+    NumValueMultiRangeValidator(const NumValueMultiRangeValidator&) = default;
+    NumValueMultiRangeValidator(NumValueMultiRangeValidator&&) = default;
+    NumValueMultiRangeValidator& operator=(const NumValueMultiRangeValidator&) = default;
+    NumValueMultiRangeValidator& operator=(NumValueMultiRangeValidator&&) = default;
+
+    bool valid() const
+    {
+        return BaseImpl::valid() &&
+               comms::util::tupleTypeAccumulate<TRanges>(false, Validator(BaseImpl::getValue()));
+    }
+
+private:
+    class Validator
+    {
+    public:
+        Validator(ValueType val) : m_val(val) {}
+
+        template <typename TRange>
+        bool operator()(bool val) const
+        {
+            static_cast<void>(val);
+            static_assert(comms::util::isTuple<TRange>(), "TRange must be a tuple");
+            static_assert(std::tuple_size<TRange>::value == 2, "Tuple with 2 elements is expected");
+            using MinVal = typename std::tuple_element<0, TRange>::type;
+            using MaxVal = typename std::tuple_element<1, TRange>::type;
+            static_assert(MinVal::value <= MaxVal::value, "Invalid range");
+            return
+                val  ||
+                ((static_cast<ValueType>(MinVal::value) <= m_val) &&
+                (m_val <= static_cast<ValueType>(MaxVal::value)));
+        }
+
+    private:
+        ValueType m_val;
+    };
 };
 
-} // namespace adapter
+}  // namespace adapter
 
-} // namespace field
+}  // namespace field
 
-} // namespace comms
+}  // namespace comms
+

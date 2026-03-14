@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2026 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -25,20 +25,20 @@
 #include <utility>
 
 COMMS_MSVC_WARNING_PUSH
-COMMS_MSVC_WARNING_DISABLE(
-    4127) // Disable warning about constant conditional expressions
+COMMS_MSVC_WARNING_DISABLE(4127) // Disable warning about constant conditional expressions
 
-namespace comms {
+namespace comms
+{
 
-namespace field {
+namespace field
+{
 
 /// @brief Field that represent integral value.
 /// @tparam TFieldBase Base class for this field, expected to be a variant of
 ///     comms::Field.
 /// @tparam T Basic underlying integral type.
 /// @tparam TOptions Zero or more options that modify/refine default behaviour
-///     of the field. If no option is provided The field's value is serialised
-///     as is.
+///     of the field. If no option is provided The field's value is serialised as is.
 ///     @code
 ///         using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
 ///         using MyField =comms::field::IntValue<MyFieldBase, std::uint16_t>;
@@ -48,8 +48,7 @@ namespace field {
 ///     be serialised using big endian notation.@n
 ///     Supported options are:
 ///     @li @ref comms::option::def::AvailableLengthLimit
-///     @li @ref comms::option::def::DefaultValueInitialiser or @ref
-///     comms::option::def::DefaultNumValue.
+///     @li @ref comms::option::def::DefaultValueInitialiser or @ref comms::option::def::DefaultNumValue.
 ///     @li comms::option::def::EmptySerialization
 ///     @li @ref comms::option::def::DisplayOffset
 ///     @li @ref comms::option::def::FailOnInvalid
@@ -66,483 +65,545 @@ namespace field {
 ///     @li @ref comms::option::def::ScalingRatio
 ///     @li @b comms::option::def::Units* - all variants of value units, see
 ///         @ref sec_field_tutorial_int_value_units for details.
-///     @li @ref comms::option::def::ValidNumValueRange, @ref
-///     comms::option::def::ValidNumValue,
-///         @ref comms::option::def::ValidBigUnsignedNumValueRange, @ref
-///         comms::option::def::ValidBigUnsignedNumValue
+///     @li @ref comms::option::def::ValidNumValueRange, @ref comms::option::def::ValidNumValue,
+///         @ref comms::option::def::ValidBigUnsignedNumValueRange, @ref comms::option::def::ValidBigUnsignedNumValue
 ///     @li @ref comms::option::def::ValidRangesClear
 ///     @li @ref comms::option::def::VarLength
 ///     @li @ref comms::option::def::VersionStorage
 /// @extends comms::Field
 /// @headerfile comms/field/IntValue.h
 template <typename TFieldBase, typename T, typename... TOptions>
-class IntValue
-    : public details::AdaptBasicFieldT<basic::IntValue<TFieldBase, T>,
-                                       TOptions...> {
-  using BaseImpl =
-      details::AdaptBasicFieldT<basic::IntValue<TFieldBase, T>, TOptions...>;
-
+class IntValue : public details::AdaptBasicFieldT<basic::IntValue<TFieldBase, T>, TOptions...>
+{
+    using BaseImpl = details::AdaptBasicFieldT<basic::IntValue<TFieldBase, T>, TOptions...>;
 public:
-  /// @brief Base class provided in the first template parameter.
-  using FieldBase = TFieldBase;
 
-  /// @brief Endian used for serialisation.
-  using Endian = typename BaseImpl::Endian;
+    /// @brief Base class provided in the first template parameter.
+    using FieldBase = TFieldBase;
 
-  /// @brief Version type
-  using VersionType = typename BaseImpl::VersionType;
+    /// @brief Endian used for serialisation.
+    using Endian = typename BaseImpl::Endian;
 
-  /// @brief All the options provided to this class bundled into struct.
-  using ParsedOptions = details::OptionsParser<TOptions...>;
+    /// @brief Version type
+    using VersionType = typename BaseImpl::VersionType;
 
-  /// @brief Tag indicating type of the field
-  using CommsTag = typename BaseImpl::CommsTag;
+    /// @brief All the options provided to this class bundled into struct.
+    using ParsedOptions = details::OptionsParser<TOptions...>;
 
-  /// @brief Type of underlying integral value.
-  /// @details Same as template parameter T to this class.
-  using ValueType = typename BaseImpl::ValueType;
+    /// @brief Tag indicating type of the field
+    using CommsTag = typename BaseImpl::CommsTag;
 
-  /// @brief Units type defined by any of the @b comms::option::def::Units*
-  /// option
-  /// @details Aliased to @b void if no relevant options is used.
-  using UnitsType = typename ParsedOptions::UnitsType;
+    /// @brief Type of underlying integral value.
+    /// @details Same as template parameter T to this class.
+    using ValueType = typename BaseImpl::ValueType;
 
-  /// @brief Scaling ratio defined by the @ref comms::option::def::ScalingRatio
-  /// option.
-  /// @details Equals to <b>std::ratio&lt;1, 1&gt;</b> if the option hasn't been
-  /// used
-  using ScalingRatio = typename ParsedOptions::ScalingRatio;
+    /// @brief Units type defined by any of the @b comms::option::def::Units* option
+    /// @details Aliased to @b void if no relevant options is used.
+    using UnitsType = typename ParsedOptions::UnitsType;
 
-  /// @brief Scaling ratio determined by the forced units via the @b
-  /// comms::option::def::Units* option.
-  /// @details Equals to <b>std::ratio&lt;1, 1&gt;</b> if the option hasn't been
-  /// used.
-  using UnitsRatio = typename ParsedOptions::UnitsRatio;
+    /// @brief Scaling ratio defined by the @ref comms::option::def::ScalingRatio option.
+    /// @details Equals to <b>std::ratio&lt;1, 1&gt;</b> if the option hasn't been used
+    using ScalingRatio = typename ParsedOptions::ScalingRatio;
 
-  /// @brief Type of actual extending field specified via
-  ///     @ref comms::option::def::FieldType.
-  /// @details @b void if @ref comms::option::def::FieldType hasn't been
-  /// applied.
-  using FieldType = typename ParsedOptions::FieldType;
+    /// @brief Scaling ratio determined by the forced units via the @b comms::option::def::Units* option.
+    /// @details Equals to <b>std::ratio&lt;1, 1&gt;</b> if the option hasn't been used.
+    using UnitsRatio = typename ParsedOptions::UnitsRatio;
 
-  /// @brief Default constructor
-  /// @details Initialises internal value to 0.
-  IntValue() = default;
+    /// @brief Type of actual extending field specified via
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;
 
-  /// @brief Constructor
-  explicit IntValue(const ValueType &val) : BaseImpl(val) {}
+    /// @brief Default constructor
+    /// @details Initialises internal value to 0.
+    IntValue() = default;
 
-  /// @brief Copy constructor
-  IntValue(const IntValue &) = default;
+    /// @brief Constructor
+    explicit IntValue(const ValueType& val)
+      : BaseImpl(val)
+    {
+    }
 
-  /// @brief Destructor
-  ~IntValue() noexcept = default;
+    /// @brief Copy constructor
+    IntValue(const IntValue&) = default;
 
-  /// @brief Copy assignment
-  IntValue &operator=(const IntValue &) = default;
+    /// @brief Destructor
+    ~IntValue() noexcept = default;
 
-  /// @brief Compile time inquiry of whether @ref
-  /// comms::option::def::FailOnInvalid option
-  ///     has been used.
-  static constexpr bool hasFailOnInvalid() {
-    return ParsedOptions::HasFailOnInvalid;
-  }
+    /// @brief Copy assignment
+    IntValue& operator=(const IntValue&) = default;
 
-  /// @brief Compile time inquiry of whether @ref
-  /// comms::option::def::IgnoreInvalid option
-  ///     has been used.
-  static constexpr bool hasIgnoreInvalid() {
-    return ParsedOptions::HasIgnoreInvalid;
-  }
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FailOnInvalid option
+    ///     has been used.
+    static constexpr bool hasFailOnInvalid()
+    {
+        return ParsedOptions::HasFailOnInvalid;
+    }
 
-  /// @brief Compile time inquiry of whether @ref
-  /// comms::option::def::EmptySerialization option
-  ///     has been used.
-  static constexpr bool hasEmptySerialization() {
-    return ParsedOptions::HasEmptySerialization;
-  }
+    /// @brief Compile time inquiry of whether @ref comms::option::def::IgnoreInvalid option
+    ///     has been used.
+    static constexpr bool hasIgnoreInvalid()
+    {
+        return ParsedOptions::HasIgnoreInvalid;
+    }
 
-  /// @brief Compile time inquiry of whether units have been set via any of the
-  ///     @b comms::option::def::Units* options.
-  static constexpr bool hasUnits() { return ParsedOptions::HasUnits; }
+    /// @brief Compile time inquiry of whether @ref comms::option::def::EmptySerialization option
+    ///     has been used.
+    static constexpr bool hasEmptySerialization()
+    {
+        return ParsedOptions::HasEmptySerialization;
+    }
 
-  /// @brief Compile time inquiry of whether scaling ratio has been provided via
-  ///     @ref comms::option::def::ScalingRatio option.
-  static constexpr bool hasScaling() {
-    return ParsedOptions::HasScalingRatio &&
-           !std::is_same<ScalingRatio, std::ratio<1, 1>>::value;
-  }
+    /// @brief Compile time inquiry of whether units have been set via any of the
+    ///     @b comms::option::def::Units* options.
+    static constexpr bool hasUnits()
+    {
+        return ParsedOptions::HasUnits;
+    }
 
-  /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType
-  /// option
-  ///     has been used.
-  static constexpr bool hasFieldType() { return ParsedOptions::HasFieldType; }
+    /// @brief Compile time inquiry of whether scaling ratio has been provided via
+    ///     @ref comms::option::def::ScalingRatio option.
+    static constexpr bool hasScaling()
+    {
+        return ParsedOptions::HasScalingRatio && !std::is_same<ScalingRatio, std::ratio<1, 1> >::value;
+    }
 
-  /// @brief Compile time inquiry of whether @ref comms::option::def::VarLength
-  /// option
-  ///     has been used.
-  static constexpr bool hasVarLength() {
-    return ParsedOptions::HasVarLengthLimits;
-  }
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }
 
-  /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue
-  /// option
-  ///     has been used.
-  static constexpr bool hasFixedValue() { return ParsedOptions::HasFixedValue; }
+    /// @brief Compile time inquiry of whether @ref comms::option::def::VarLength option
+    ///     has been used.
+    static constexpr bool hasVarLength()
+    {
+        return ParsedOptions::HasVarLengthLimits;
+    }
 
-  /// @brief Compile time inquiry of whether @ref
-  /// comms::option::def::DisplayOffset option
-  ///     has been used.
-  static constexpr bool hasDisplayOffset() {
-    return ParsedOptions::HasDisplayOffset;
-  }
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
+    ///     has been used.
+    static constexpr bool hasFixedValue()
+    {
+        return ParsedOptions::HasFixedValue;
+    }
 
-  /// @brief Compile time inquiry of whether @ref comms::option::def::HasName
-  /// option
-  ///     has been used.
-  static constexpr bool hasName() { return ParsedOptions::HasName; }
+    /// @brief Compile time inquiry of whether @ref comms::option::def::DisplayOffset option
+    ///     has been used.
+    static constexpr bool hasDisplayOffset()
+    {
+        return ParsedOptions::HasDisplayOffset;
+    }
 
-  /// @brief Scales value according to ratio specified in provided
-  ///     @ref comms::option::def::ScalingRatio option.
-  /// @details If @ref comms::option::def::ScalingRatio option wasn't used, then
-  ///     comms::option::def::ScalingRatio<1,1> is assumed.
-  /// @tparam TRet Return type for the scaled value.
-  /// @return "(value() * Scaling_Num) / Scaling_Denom" when all values are
-  ///     casted to TRet type.
-  template <typename TRet> constexpr TRet getScaled() const {
-    using TagTmp = typename comms::util::LazyShallowConditional<
-        ParsedOptions::HasScalingRatio>::template Type<HasScalingRatioTag,
-                                                       NoScalingRatioTag>;
+    /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
+    ///     has been used.
+    static constexpr bool hasName()
+    {
+        return ParsedOptions::HasName;
+    }
 
-    return scaleAsInternal<TRet>(TagTmp());
-  }
+    /// @brief Scales value according to ratio specified in provided
+    ///     @ref comms::option::def::ScalingRatio option.
+    /// @details If @ref comms::option::def::ScalingRatio option wasn't used, then
+    ///     comms::option::def::ScalingRatio<1,1> is assumed.
+    /// @tparam TRet Return type for the scaled value.
+    /// @return "(value() * Scaling_Num) / Scaling_Denom" when all values are
+    ///     casted to TRet type.
+    template <typename TRet>
+    constexpr TRet getScaled() const
+    {
+        using TagTmp =
+            typename comms::util::LazyShallowConditional<
+                ParsedOptions::HasScalingRatio
+            >::template Type<
+                HasScalingRatioTag,
+                NoScalingRatioTag
+            >;
 
-  /// @brief Same as getScaled()
-  template <typename TRet> constexpr TRet scaleAs() const {
-    return getScaled<TRet>();
-  }
+        return scaleAsInternal<TRet>(TagTmp());
+    }
 
-  /// @brief Opposite operation to getScaled().
-  /// @details Allows to assign scaled value, assigns "(val * Scaling_Denom) /
-  /// Scaling_Num"
-  ///     to the value of the field.
-  /// @param[in] val Scaled value.
-  template <typename TScaled> void setScaled(TScaled val) {
-    using TagTmp = typename comms::util::LazyShallowConditional<
-        ParsedOptions::HasScalingRatio>::template Type<HasScalingRatioTag,
-                                                       NoScalingRatioTag>;
+    /// @brief Same as getScaled()
+    template <typename TRet>
+    constexpr TRet scaleAs() const
+    {
+        return getScaled<TRet>();
+    }
 
-    return setScaledInternal(val, TagTmp());
-  }
+    /// @brief Opposite operation to getScaled().
+    /// @details Allows to assign scaled value, assigns "(val * Scaling_Denom) / Scaling_Num"
+    ///     to the value of the field.
+    /// @param[in] val Scaled value.
+    template <typename TScaled>
+    void setScaled(TScaled val)
+    {
+        using TagTmp =
+            typename comms::util::LazyShallowConditional<
+                ParsedOptions::HasScalingRatio
+            >::template Type<
+                HasScalingRatioTag,
+                NoScalingRatioTag
+            >;
 
-  /// @brief Get access to integral value storage.
-  const ValueType &value() const { return BaseImpl::value(); }
+        return setScaledInternal(val, TagTmp());
+    }
 
-  /// @brief Get access to integral value storage.
-  ValueType &value() { return BaseImpl::value(); }
+    /// @brief Get access to integral value storage.
+    const ValueType& value() const
+    {
+        return BaseImpl::value();
+    }
 
-  /// @brief Get value
-  /// @details Implemented by calling @b value(), but can be overriden in the
-  /// derived class
-  const ValueType &getValue() const { return BaseImpl::getValue(); }
+    /// @brief Get access to integral value storage.
+    ValueType& value()
+    {
+        return BaseImpl::value();
+    }
 
-  /// @brief Set value
-  /// @details Implemented as re-assigning to @b value(), but can be overriden
-  /// in the derived class.
-  template <typename U> void setValue(U &&val) {
-    BaseImpl::setValue(std::forward<U>(val));
-  }
+    /// @brief Get value
+    /// @details Implemented by calling @b value(), but can be overriden in the derived class
+    const ValueType& getValue() const
+    {
+        return BaseImpl::getValue();
+    }
 
-  /// @brief Get display value
-  /// @details Retrieving value by taking into account the display offset
-  /// provided by the @ref comms::option::def::DisplayOffset option
-  ///     if such was used.
-  ValueType getDisplayValue() const {
-    return static_cast<ValueType>(getValue() + BaseImpl::displayOffset());
-  }
+    /// @brief Set value
+    /// @details Implemented as re-assigning to @b value(), but can be overriden in the derived class.
+    template <typename U>
+    void setValue(U&& val)
+    {
+        BaseImpl::setValue(std::forward<U>(val));
+    }
 
-  /// @brief Set display value
-  /// @details Updating inner value by taking into account the display offset
-  /// provided by the @ref comms::option::def::DisplayOffset option
-  ///     if such was used.
-  template <typename U> void setDisplayValue(U &&val) {
-    setValue(val - BaseImpl::displayOffset());
-  }
+    /// @brief Get display value
+    /// @details Retrieving value by taking into account the display offset provided by the @ref comms::option::def::DisplayOffset option
+    ///     if such was used.
+    ValueType getDisplayValue() const
+    {
+        return static_cast<ValueType>(getValue() + BaseImpl::displayOffset());
+    }
 
-  /// @brief Get maximal numeric value the field can hold.
-  static constexpr ValueType maxValue() {
-    return std::numeric_limits<ValueType>::max();
-  }
+    /// @brief Set display value
+    /// @details Updating inner value by taking into account the display offset provided by the @ref comms::option::def::DisplayOffset option
+    ///     if such was used.
+    template <typename U>
+    void setDisplayValue(U&& val)
+    {
+        setValue(val - BaseImpl::displayOffset());
+    }
 
-  /// @brief Get minimal numeric value the field can hold.
-  static constexpr ValueType minValue() {
-    return std::numeric_limits<ValueType>::min();
-  }
+    /// @brief Get maximal numeric value the field can hold.
+    static constexpr ValueType maxValue()
+    {
+        return std::numeric_limits<ValueType>::max();
+    }
 
-  /// @brief Get length required to serialise the current field value.
-  /// @return Number of bytes it will take to serialise the field value.
-  constexpr std::size_t length() const { return BaseImpl::length(); }
+    /// @brief Get minimal numeric value the field can hold.
+    static constexpr ValueType minValue()
+    {
+        return std::numeric_limits<ValueType>::min();
+    }
 
-  /// @brief Get minimal length that is required to serialise field of this
-  /// type.
-  /// @return Minimal number of bytes required serialise the field value.
-  static constexpr std::size_t minLength() { return BaseImpl::minLength(); }
+    /// @brief Get length required to serialise the current field value.
+    /// @return Number of bytes it will take to serialise the field value.
+    constexpr std::size_t length() const
+    {
+        return BaseImpl::length();
+    }
 
-  /// @brief Get maximal length that is required to serialise field of this
-  /// type.
-  /// @return Maximal number of bytes required serialise the field value.
-  static constexpr std::size_t maxLength() { return BaseImpl::maxLength(); }
+    /// @brief Get minimal length that is required to serialise field of this type.
+    /// @return Minimal number of bytes required serialise the field value.
+    static constexpr std::size_t minLength()
+    {
+        return BaseImpl::minLength();
+    }
 
-  /// @brief Check validity of the field value.
-  bool valid() const { return BaseImpl::valid(); }
+    /// @brief Get maximal length that is required to serialise field of this type.
+    /// @return Maximal number of bytes required serialise the field value.
+    static constexpr std::size_t maxLength()
+    {
+        return BaseImpl::maxLength();
+    }
 
-  /// @brief Refresh the field's value
-  /// @return @b true if the value has been updated, @b false otherwise
-  bool refresh() { return BaseImpl::refresh(); }
+    /// @brief Check validity of the field value.
+    bool valid() const
+    {
+        return BaseImpl::valid();
+    }
 
-  /// @brief Read field value from input data sequence
-  /// @param[in, out] iter Iterator to read the data.
-  /// @param[in] size Number of bytes available for reading.
-  /// @return Status of read operation.
-  /// @post Iterator is advanced.
-  template <typename TIter> ErrorStatus read(TIter &iter, std::size_t size) {
-    return BaseImpl::read(iter, size);
-  }
+    /// @brief Refresh the field's value
+    /// @return @b true if the value has been updated, @b false otherwise
+    bool refresh()
+    {
+        return BaseImpl::refresh();
+    }
 
-  /// @brief Compile time check of whether the field has @b proper
-  ///     @ref readNoStatus() member function.
-  static constexpr bool hasReadNoStatus() {
-    return BaseImpl::hasReadNoStatus();
-  }
+    /// @brief Read field value from input data sequence
+    /// @param[in, out] iter Iterator to read the data.
+    /// @param[in] size Number of bytes available for reading.
+    /// @return Status of read operation.
+    /// @post Iterator is advanced.
+    template <typename TIter>
+    ErrorStatus read(TIter& iter, std::size_t size)
+    {
+        return BaseImpl::read(iter, size);
+    }
 
-  /// @brief Read field value from input data sequence without error check and
-  /// status report.
-  /// @details Similar to @ref read(), but doesn't perform any correctness
-  ///     checks and doesn't report any failures.
-  /// @param[in, out] iter Iterator to read the data.
-  /// @post Iterator is advanced.
-  template <typename TIter> void readNoStatus(TIter &iter) {
-    BaseImpl::readNoStatus(iter);
-  }
+    /// @brief Compile time check of whether the field has @b proper
+    ///     @ref readNoStatus() member function.
+    static constexpr bool hasReadNoStatus()
+    {
+        return BaseImpl::hasReadNoStatus();
+    }
 
-  /// @brief Check of whether the field has a consistent value for writing.
-  bool canWrite() const { return BaseImpl::canWrite(); }
+    /// @brief Read field value from input data sequence without error check and status report.
+    /// @details Similar to @ref read(), but doesn't perform any correctness
+    ///     checks and doesn't report any failures.
+    /// @param[in, out] iter Iterator to read the data.
+    /// @post Iterator is advanced.
+    template <typename TIter>
+    void readNoStatus(TIter& iter)
+    {
+        BaseImpl::readNoStatus(iter);
+    }
 
-  /// @brief Write current field value to output data sequence
-  /// @param[in, out] iter Iterator to write the data.
-  /// @param[in] size Maximal number of bytes that can be written.
-  /// @return Status of write operation.
-  /// @post Iterator is advanced.
-  template <typename TIter>
-  ErrorStatus write(TIter &iter, std::size_t size) const {
-    return BaseImpl::write(iter, size);
-  }
+    /// @brief Check of whether the field has a consistent value for writing.
+    bool canWrite() const
+    {
+        return BaseImpl::canWrite();
+    }
 
-  /// @brief Compile time check of whether the field has @b proper
-  ///     @ref writeNoStatus() member function.
-  static constexpr bool hasWriteNoStatus() {
-    return BaseImpl::hasWriteNoStatus();
-  }
+    /// @brief Write current field value to output data sequence
+    /// @param[in, out] iter Iterator to write the data.
+    /// @param[in] size Maximal number of bytes that can be written.
+    /// @return Status of write operation.
+    /// @post Iterator is advanced.
+    template <typename TIter>
+    ErrorStatus write(TIter& iter, std::size_t size) const
+    {
+        return BaseImpl::write(iter, size);
+    }
 
-  /// @brief Write current field value to output data sequence  without error
-  /// check and status report.
-  /// @details Similar to @ref write(), but doesn't perform any correctness
-  ///     checks and doesn't report any failures.
-  /// @param[in, out] iter Iterator to write the data.
-  /// @post Iterator is advanced.
-  template <typename TIter> void writeNoStatus(TIter &iter) const {
-    BaseImpl::writeNoStatus(iter);
-  }
+    /// @brief Compile time check of whether the field has @b proper
+    ///     @ref writeNoStatus() member function.
+    static constexpr bool hasWriteNoStatus()
+    {
+        return BaseImpl::hasWriteNoStatus();
+    }
 
-  /// @brief Compile time check if this class is version dependent
-  static constexpr bool isVersionDependent() {
-    return ParsedOptions::HasCustomVersionUpdate ||
-           BaseImpl::isVersionDependent();
-  }
+    /// @brief Write current field value to output data sequence  without error check and status report.
+    /// @details Similar to @ref write(), but doesn't perform any correctness
+    ///     checks and doesn't report any failures.
+    /// @param[in, out] iter Iterator to write the data.
+    /// @post Iterator is advanced.
+    template <typename TIter>
+    void writeNoStatus(TIter& iter) const
+    {
+        BaseImpl::writeNoStatus(iter);
+    }
 
-  /// @brief Compile time check if this class has non-default refresh
-  /// functionality
-  static constexpr bool hasNonDefaultRefresh() {
-    return BaseImpl::hasNonDefaultRefresh();
-  }
+    /// @brief Compile time check if this class is version dependent
+    static constexpr bool isVersionDependent()
+    {
+        return ParsedOptions::HasCustomVersionUpdate || BaseImpl::isVersionDependent();
+    }
 
-  /// @brief Get version of the field.
-  /// @details Exists only if @ref comms::option::def::VersionStorage option has
-  /// been provided.
-  VersionType getVersion() const { return BaseImpl::getVersion(); }
+    /// @brief Compile time check if this class has non-default refresh functionality
+    static constexpr bool hasNonDefaultRefresh()
+    {
+        return BaseImpl::hasNonDefaultRefresh();
+    }
 
-  /// @brief Default implementation of version update.
-  /// @return @b true in case the field contents have changed, @b false
-  /// otherwise
-  bool setVersion(VersionType version) { return BaseImpl::setVersion(version); }
+    /// @brief Get version of the field.
+    /// @details Exists only if @ref comms::option::def::VersionStorage option has been provided.
+    VersionType getVersion() const
+    {
+        return BaseImpl::getVersion();
+    }
 
-  /// @brief Force serialization length of the field.
-  /// @details Available only when @ref comms::option::def::AvailableLengthLimit
-  ///     option is used for field definition.
-  /// @param[in] len Forced serialization length.
-  ///     @li 0 means default serialization length determined by the storage
-  ///     type
-  ///     @li positive value means limit of the serialization length
-  ///     @li negative value means the length is determined by the stored value
-  void setForcedLength(int len) { BaseImpl::setForcedLength(len); }
+    /// @brief Default implementation of version update.
+    /// @return @b true in case the field contents have changed, @b false otherwise
+    bool setVersion(VersionType version)
+    {
+        return BaseImpl::setVersion(version);
+    }
 
-  /// @brief Get forced serialization length
-  /// @see @ref setForcedLength()
-  int getForcedLength() const { return BaseImpl::getForcedLength(); }
+    /// @brief Force serialization length of the field.
+    /// @details Available only when @ref comms::option::def::AvailableLengthLimit
+    ///     option is used for field definition.
+    /// @param[in] len Forced serialization length.
+    ///     @li 0 means default serialization length determined by the storage type
+    ///     @li positive value means limit of the serialization length
+    ///     @li negative value means the length is determined by the stored value
+    void setForcedLength(int len)
+    {
+        BaseImpl::setForcedLength(len);
+    }
+
+    /// @brief Get forced serialization length
+    /// @see @ref setForcedLength()
+    int getForcedLength() const
+    {
+        return BaseImpl::getForcedLength();
+    }
 
 protected:
-  using BaseImpl::readData;
-  using BaseImpl::writeData;
+    using BaseImpl::readData;
+    using BaseImpl::writeData;
 
 private:
-  template <typename... TParams>
-  using HasScalingRatioTag = comms::details::tag::Tag1<>;
+    template <typename... TParams>
+    using HasScalingRatioTag = comms::details::tag::Tag1<>;
 
-  template <typename... TParams>
-  using NoScalingRatioTag = comms::details::tag::Tag2<>;
+    template <typename... TParams>
+    using NoScalingRatioTag = comms::details::tag::Tag2<>;
 
-  template <typename... TParams>
-  using ScaleAsFpTag = comms::details::tag::Tag3<>;
+    template <typename... TParams>
+    using ScaleAsFpTag = comms::details::tag::Tag3<>;
 
-  template <typename... TParams>
-  using ScaleAsIntTag = comms::details::tag::Tag4<>;
+    template <typename... TParams>
+    using ScaleAsIntTag = comms::details::tag::Tag4<>;
 
-  template <typename TRet, typename... TParams>
-  TRet scaleAsInternal(HasScalingRatioTag<TParams...>) const {
-    using TagTmp = typename comms::util::LazyShallowConditional<
-        std::is_floating_point<TRet>::value>::template Type<ScaleAsFpTag,
-                                                            ScaleAsIntTag>;
+    template <typename TRet, typename... TParams>
+    TRet scaleAsInternal(HasScalingRatioTag<TParams...>) const
+    {
+        using TagTmp =
+            typename comms::util::LazyShallowConditional<
+                std::is_floating_point<TRet>::value
+            >::template Type<
+                ScaleAsFpTag,
+                ScaleAsIntTag
+            >;
 
-    return scaleAsInternal<TRet>(TagTmp());
-  }
-
-  template <typename TRet, typename... TParams>
-  TRet scaleAsInternal(ScaleAsFpTag<TParams...>) const {
-    static_assert(std::is_floating_point<TRet>::value,
-                  "TRet is expected to be floating point type");
-    return static_cast<TRet>(BaseImpl::value()) *
-           (static_cast<TRet>(ParsedOptions::ScalingRatio::num) /
-            static_cast<TRet>(ParsedOptions::ScalingRatio::den));
-  }
-
-  template <typename TRet, typename... TParams>
-  TRet scaleAsInternal(ScaleAsIntTag<TParams...>) const {
-    static_assert(std::is_integral<TRet>::value,
-                  "TRet is expected to be integral type");
-
-    using CastType =
-        typename comms::util::Conditional<std::is_signed<TRet>::value>::
-            template Type<std::intmax_t, std::uintmax_t>;
-
-    return static_cast<TRet>((static_cast<CastType>(BaseImpl::value()) *
-                              ParsedOptions::ScalingRatio::num) /
-                             ParsedOptions::ScalingRatio::den);
-  }
-
-  template <typename TRet, typename... TParams>
-  TRet scaleAsInternal(NoScalingRatioTag<TParams...>) const {
-    return static_cast<TRet>(BaseImpl::value());
-  }
-
-  template <typename TScaled, typename... TParams>
-  void setScaledInternal(TScaled val, HasScalingRatioTag<TParams...>) {
-    using TagTmp = typename comms::util::LazyShallowConditional<
-        std::is_floating_point<typename std::decay<decltype(val)>::type>::
-            value>::template Type<ScaleAsFpTag, ScaleAsIntTag>;
-
-    setScaledInternal(val, TagTmp());
-  }
-
-  template <typename TScaled, typename... TParams>
-  void setScaledInternal(TScaled val, ScaleAsFpTag<TParams...>) {
-    using DecayedType = typename std::decay<decltype(val)>::type;
-    auto epsilon = DecayedType(0);
-    if (ParsedOptions::ScalingRatio::num < ParsedOptions::ScalingRatio::den) {
-      epsilon = static_cast<DecayedType>(ParsedOptions::ScalingRatio::num) /
-                static_cast<DecayedType>(ParsedOptions::ScalingRatio::den + 1);
+        return scaleAsInternal<TRet>(TagTmp());
     }
 
-    if (epsilon < DecayedType(0)) {
-      epsilon = -epsilon;
+    template <typename TRet, typename... TParams>
+    TRet scaleAsInternal(ScaleAsFpTag<TParams...>) const
+    {
+        static_assert(std::is_floating_point<TRet>::value,
+            "TRet is expected to be floating point type");
+        return static_cast<TRet>(BaseImpl::value()) * (static_cast<TRet>(ParsedOptions::ScalingRatio::num) / static_cast<TRet>(ParsedOptions::ScalingRatio::den));
     }
 
-    if (val < DecayedType(0)) {
-      epsilon = -epsilon;
+    template <typename TRet, typename... TParams>
+    TRet scaleAsInternal(ScaleAsIntTag<TParams...>) const
+    {
+        static_assert(std::is_integral<TRet>::value,
+            "TRet is expected to be integral type");
+
+        using CastType =
+            typename comms::util::Conditional<
+                std::is_signed<TRet>::value
+            >::template Type<
+                std::intmax_t,
+                std::uintmax_t
+            >;
+
+        return
+            static_cast<TRet>(
+                (static_cast<CastType>(BaseImpl::value()) * ParsedOptions::ScalingRatio::num) / ParsedOptions::ScalingRatio::den);
     }
 
-    BaseImpl::value() = static_cast<ValueType>(
-        ((val + epsilon) *
-         static_cast<DecayedType>(ParsedOptions::ScalingRatio::den)) /
-        static_cast<DecayedType>(ParsedOptions::ScalingRatio::num));
-  }
+    template <typename TRet, typename... TParams>
+    TRet scaleAsInternal(NoScalingRatioTag<TParams...>) const
+    {
+        return static_cast<TRet>(BaseImpl::value());
+    }
 
-  template <typename TScaled, typename... TParams>
-  void setScaledInternal(TScaled val, ScaleAsIntTag<TParams...>) {
-    using CastType = typename comms::util::Conditional<
-        std::is_signed<typename std::decay<decltype(val)>::type>::value>::
-        template Type<std::intmax_t, std::uintmax_t>;
+    template <typename TScaled, typename... TParams>
+    void setScaledInternal(TScaled val, HasScalingRatioTag<TParams...>)
+    {
+        using TagTmp =
+            typename comms::util::LazyShallowConditional<
+                std::is_floating_point<typename std::decay<decltype(val)>::type>::value
+            >::template Type<
+                ScaleAsFpTag,
+                ScaleAsIntTag
+            >;
 
-    BaseImpl::value() = static_cast<ValueType>(
-        (static_cast<CastType>(val) * ParsedOptions::ScalingRatio::den) /
-        static_cast<CastType>(ParsedOptions::ScalingRatio::num));
-  }
+        setScaledInternal(val, TagTmp());
+    }
 
-  template <typename TScaled, typename... TParams>
-  void setScaledInternal(TScaled val, NoScalingRatioTag<TParams...>) {
-    BaseImpl::value() = static_cast<ValueType>(val);
-  }
+    template <typename TScaled, typename... TParams>
+    void setScaledInternal(TScaled val, ScaleAsFpTag<TParams...>)
+    {
+        using DecayedType = typename std::decay<decltype(val)>::type;
+        auto epsilon = DecayedType(0);
+        if (ParsedOptions::ScalingRatio::num < ParsedOptions::ScalingRatio::den) {
+            epsilon = static_cast<DecayedType>(ParsedOptions::ScalingRatio::num) / static_cast<DecayedType>(ParsedOptions::ScalingRatio::den + 1);
+        }
 
-  static_assert(!ParsedOptions::HasSequenceElemLengthForcing,
-                "comms::option::def::SequenceElemLengthForcingEnabled option "
-                "is not applicable to IntValue field");
-  static_assert(!ParsedOptions::HasSequenceSizeForcing,
-                "comms::option::def::SequenceSizeForcingEnabled option is not "
-                "applicable to IntValue field");
-  static_assert(!ParsedOptions::HasSequenceLengthForcing,
-                "comms::option::def::SequenceLengthForcingEnabled option is "
-                "not applicable to IntValue field");
-  static_assert(!ParsedOptions::HasSequenceFixedSize,
-                "comms::option::def::SequenceFixedSize option is not "
-                "applicable to IntValue field");
-  static_assert(!ParsedOptions::HasSequenceFixedSizeUseFixedSizeStorage,
-                "comms::option::app::SequenceFixedSizeUseFixedSizeStorage "
-                "option is not applicable to IntValue field");
-  static_assert(!ParsedOptions::HasSequenceSizeFieldPrefix,
-                "comms::option::def::SequenceSizeFieldPrefix option is not "
-                "applicable to IntValue field");
-  static_assert(!ParsedOptions::HasSequenceSerLengthFieldPrefix,
-                "comms::option::def::SequenceSerLengthFieldPrefix option is "
-                "not applicable to IntValue field");
-  static_assert(!ParsedOptions::HasSequenceElemSerLengthFieldPrefix,
-                "comms::option::def::SequenceElemSerLengthFieldPrefix option "
-                "is not applicable to IntValue field");
-  static_assert(!ParsedOptions::HasSequenceElemFixedSerLengthFieldPrefix,
-                "comms::option::def::SequenceElemSerLengthFixedFieldPrefix "
-                "option is not applicable to IntValue field");
-  static_assert(!ParsedOptions::HasSequenceTrailingFieldSuffix,
-                "comms::option::def::SequenceTrailingFieldSuffix option is not "
-                "applicable to IntValue field");
-  static_assert(!ParsedOptions::HasSequenceTerminationFieldSuffix,
-                "comms::option::def::SequenceTerminationFieldSuffix option is "
-                "not applicable to IntValue field");
-  static_assert(!ParsedOptions::HasFixedSizeStorage,
-                "comms::option::app::FixedSizeStorage option is not applicable "
-                "to IntValue field");
-  static_assert(!ParsedOptions::HasCustomStorageType,
-                "comms::option::app::CustomStorageType option is not "
-                "applicable to IntValue field");
-  static_assert(!ParsedOptions::HasOrigDataView,
-                "comms::option::app::OrigDataView option is not applicable to "
-                "IntValue field");
-  static_assert(!ParsedOptions::HasVersionsRange,
-                "comms::option::def::ExistsBetweenVersions (or similar) option "
-                "is not applicable to IntValue field");
-  static_assert(!ParsedOptions::HasMissingOnReadFail,
-                "comms::option::def::MissingOnReadFail option is not "
-                "applicable to IntValue field");
-  static_assert(!ParsedOptions::HasMissingOnInvalid,
-                "comms::option::def::MissingOnInvalid option is not applicable "
-                "to IntValue field");
+        if (epsilon < DecayedType(0)) {
+            epsilon = -epsilon;
+        }
+
+        if (val < DecayedType(0)) {
+            epsilon = -epsilon;
+        }
+
+        BaseImpl::value() =
+            static_cast<ValueType>(
+                ((val + epsilon) * static_cast<DecayedType>(ParsedOptions::ScalingRatio::den)) / static_cast<DecayedType>(ParsedOptions::ScalingRatio::num));
+    }
+
+    template <typename TScaled, typename... TParams>
+    void setScaledInternal(TScaled val, ScaleAsIntTag<TParams...>)
+    {
+        using CastType =
+            typename comms::util::Conditional<
+                std::is_signed<typename std::decay<decltype(val)>::type>::value
+            >::template Type<
+                std::intmax_t,
+                std::uintmax_t
+            >;
+
+        BaseImpl::value() =
+            static_cast<ValueType>(
+                (static_cast<CastType>(val) * ParsedOptions::ScalingRatio::den) / static_cast<CastType>(ParsedOptions::ScalingRatio::num));
+    }
+
+    template <typename TScaled, typename... TParams>
+    void setScaledInternal(TScaled val, NoScalingRatioTag<TParams...>)
+    {
+        BaseImpl::value() = static_cast<ValueType>(val);
+    }
+
+    static_assert(!ParsedOptions::HasSequenceElemLengthForcing,
+        "comms::option::def::SequenceElemLengthForcingEnabled option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasSequenceSizeForcing,
+        "comms::option::def::SequenceSizeForcingEnabled option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasSequenceLengthForcing,
+        "comms::option::def::SequenceLengthForcingEnabled option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasSequenceFixedSize,
+        "comms::option::def::SequenceFixedSize option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasSequenceFixedSizeUseFixedSizeStorage,
+        "comms::option::app::SequenceFixedSizeUseFixedSizeStorage option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasSequenceSizeFieldPrefix,
+        "comms::option::def::SequenceSizeFieldPrefix option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasSequenceSerLengthFieldPrefix,
+        "comms::option::def::SequenceSerLengthFieldPrefix option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasSequenceElemSerLengthFieldPrefix,
+        "comms::option::def::SequenceElemSerLengthFieldPrefix option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasSequenceElemFixedSerLengthFieldPrefix,
+        "comms::option::def::SequenceElemSerLengthFixedFieldPrefix option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasSequenceTrailingFieldSuffix,
+        "comms::option::def::SequenceTrailingFieldSuffix option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasSequenceTerminationFieldSuffix,
+        "comms::option::def::SequenceTerminationFieldSuffix option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasFixedSizeStorage,
+        "comms::option::app::FixedSizeStorage option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasCustomStorageType,
+        "comms::option::app::CustomStorageType option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasOrigDataView,
+        "comms::option::app::OrigDataView option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasVersionsRange,
+        "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasMissingOnReadFail,
+            "comms::option::def::MissingOnReadFail option is not applicable to IntValue field");
+    static_assert(!ParsedOptions::HasMissingOnInvalid,
+            "comms::option::def::MissingOnInvalid option is not applicable to IntValue field");
 };
 
 /// @brief Equality comparison operator.
@@ -551,9 +612,11 @@ private:
 /// @return true in case fields are equal, false otherwise.
 /// @related IntValue
 template <typename TFieldBase, typename T, typename... TOptions>
-bool operator==(const IntValue<TFieldBase, T, TOptions...> &field1,
-                const IntValue<TFieldBase, T, TOptions...> &field2) noexcept {
-  return field1.value() == field2.value();
+bool operator==(
+    const IntValue<TFieldBase, T, TOptions...>& field1,
+    const IntValue<TFieldBase, T, TOptions...>& field2) noexcept
+{
+    return field1.value() == field2.value();
 }
 
 /// @brief Non-equality comparison operator.
@@ -562,21 +625,24 @@ bool operator==(const IntValue<TFieldBase, T, TOptions...> &field1,
 /// @return true in case fields are NOT equal, false otherwise.
 /// @related IntValue
 template <typename TFieldBase, typename T, typename... TOptions>
-bool operator!=(const IntValue<TFieldBase, T, TOptions...> &field1,
-                const IntValue<TFieldBase, T, TOptions...> &field2) noexcept {
-  return field1.value() != field2.value();
+bool operator!=(
+    const IntValue<TFieldBase, T, TOptions...>& field1,
+    const IntValue<TFieldBase, T, TOptions...>& field2) noexcept
+{
+    return field1.value() != field2.value();
 }
 
 /// @brief Equivalence comparison operator.
 /// @param[in] field1 First field.
 /// @param[in] field2 Second field.
-/// @return true in case value of the first field is lower than than the value
-/// of the second.
+/// @return true in case value of the first field is lower than than the value of the second.
 /// @related IntValue
 template <typename TFieldBase, typename T, typename... TOptions>
-bool operator<(const IntValue<TFieldBase, T, TOptions...> &field1,
-               const IntValue<TFieldBase, T, TOptions...> &field2) noexcept {
-  return field1.value() < field2.value();
+bool operator<(
+    const IntValue<TFieldBase, T, TOptions...>& field1,
+    const IntValue<TFieldBase, T, TOptions...>& field2) noexcept
+{
+    return field1.value() < field2.value();
 }
 
 /// @brief Compile time check function of whether a provided type is any
@@ -584,32 +650,37 @@ bool operator<(const IntValue<TFieldBase, T, TOptions...> &field1,
 /// @tparam T Any type.
 /// @return true in case provided type is any variant of @ref IntValue
 /// @related comms::field::IntValue
-template <typename T> constexpr bool isIntValue() {
-  return std::is_same<typename T::CommsTag, tag::Int>::value;
+template <typename T>
+constexpr bool isIntValue()
+{
+    return std::is_same<typename T::CommsTag, tag::Int>::value;
 }
 
-/// @brief Upcast type of the field definition to its parent
-/// comms::field::IntValue type
+/// @brief Upcast type of the field definition to its parent comms::field::IntValue type
 ///     in order to have access to its internal types.
 /// @related comms::field::IntValue
 template <typename TFieldBase, typename T, typename... TOptions>
-inline IntValue<TFieldBase, T, TOptions...> &
-toFieldBase(IntValue<TFieldBase, T, TOptions...> &field) {
-  return field;
+inline
+IntValue<TFieldBase, T, TOptions...>&
+toFieldBase(IntValue<TFieldBase, T, TOptions...>& field)
+{
+    return field;
 }
 
-/// @brief Upcast type of the field definition to its parent
-/// comms::field::IntValue type
+/// @brief Upcast type of the field definition to its parent comms::field::IntValue type
 ///     in order to have access to its internal types.
 /// @related comms::field::IntValue
 template <typename TFieldBase, typename T, typename... TOptions>
-inline const IntValue<TFieldBase, T, TOptions...> &
-toFieldBase(const IntValue<TFieldBase, T, TOptions...> &field) {
-  return field;
+inline
+const IntValue<TFieldBase, T, TOptions...>&
+toFieldBase(const IntValue<TFieldBase, T, TOptions...>& field)
+{
+    return field;
 }
 
-} // namespace field
+}  // namespace field
 
-} // namespace comms
+}  // namespace comms
 
 COMMS_MSVC_WARNING_POP
+

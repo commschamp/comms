@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2026 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,12 +10,12 @@
 
 #pragma once
 
-#include "comms/Field.h"
 #include "comms/details/bits_access.h"
 #include "comms/details/gen_enum.h"
-#include "comms/field/IntValue.h"
+#include "comms/Field.h"
 #include "comms/field/details/AdaptBasicField.h"
 #include "comms/field/details/OptionsParser.h"
+#include "comms/field/IntValue.h"
 #include "comms/field/tag.h"
 #include "comms/util/SizeToType.h"
 
@@ -23,29 +23,37 @@
 #include <type_traits>
 #include <utility>
 
-namespace comms {
+namespace comms
+{
 
-namespace field {
+namespace field
+{
 
-namespace details {
+namespace details
+{
 
-template <bool THasFixedLength> struct BitmaskUndertlyingType;
+template <bool THasFixedLength>
+struct BitmaskUndertlyingType;
 
-template <> struct BitmaskUndertlyingType<true> {
-  template <typename TOptionsBundle>
-  using Type = typename comms::util::SizeToType<TOptionsBundle::FixedLength,
-                                                false>::Type;
+template <>
+struct BitmaskUndertlyingType<true>
+{
+    template <typename TOptionsBundle>
+    using Type = typename comms::util::SizeToType<TOptionsBundle::FixedLength, false>::Type;
 };
 
-template <> struct BitmaskUndertlyingType<false> {
-  template <typename TOptionsBundle> using Type = unsigned;
+template <>
+struct BitmaskUndertlyingType<false>
+{
+    template <typename TOptionsBundle>
+    using Type = unsigned;
 };
 
 template <typename TOptionsBundle>
-using BitmaskUndertlyingTypeT = typename BitmaskUndertlyingType<
-    TOptionsBundle::HasFixedLengthLimit>::template Type<TOptionsBundle>;
+using BitmaskUndertlyingTypeT =
+    typename BitmaskUndertlyingType<TOptionsBundle::HasFixedLengthLimit>::template Type<TOptionsBundle>;
 
-} // namespace details
+}  // namespace details
 
 /// @brief Bitmask value field.
 /// @details Quite often communication protocols specify bitmask values, where
@@ -64,19 +72,17 @@ using BitmaskUndertlyingTypeT = typename BitmaskUndertlyingType<
 ///         using MyField =comms::field::EnumValue<MyFieldBase>;
 ///     @endcode
 ///     The serialised value of the field in the example above will consume
-///     sizeof(unsigned) bytes, because the underlying type chosen to be
-///     "unsigned" by default. Example below specifies simple bitmask value
-///     field with 2 bytes serialisation length:
+///     sizeof(unsigned) bytes, because the underlying type chosen to be "unsigned"
+///     by default. Example below specifies simple bitmask value field with
+///     2 bytes serialisation length:
 ///     @code
 ///         using MyFieldBase = comms::Field<comms::option::def::BigEndian>;
-///         using MyField =comms::field::EnumValue<MyFieldBase,
-///         comms::option::def::FixedLength<2> >;
+///         using MyField =comms::field::EnumValue<MyFieldBase, comms::option::def::FixedLength<2> >;
 ///     @endcode
 ///     Supported options are:
 ///     @li @ref comms::option::def::AvailableLengthLimit
 ///     @li @ref comms::option::def::BitmaskReservedBits.
-///     @li @ref comms::option::def::DefaultValueInitialiser or
-///     comms::option::def::DefaultNumValue.
+///     @li @ref comms::option::def::DefaultValueInitialiser or comms::option::def::DefaultNumValue.
 ///     @li @ref comms::option::def::EmptySerialization
 ///     @li @ref comms::option::def::FailOnInvalid
 ///     @li @ref comms::option::def::FieldType
@@ -96,339 +102,383 @@ using BitmaskUndertlyingTypeT = typename BitmaskUndertlyingType<
 /// @see COMMS_BITMASK_BITS_SEQ()
 /// @see COMMS_BITMASK_BITS_SEQ_NOTEMPLATE()
 template <typename TFieldBase, typename... TOptions>
-class BitmaskValue : public TFieldBase {
-  using BaseImpl = TFieldBase;
+class BitmaskValue : public TFieldBase
+{
+    using BaseImpl = TFieldBase;
 
-  using OptionsBundle = details::OptionsParser<TOptions...>;
+    using OptionsBundle = details::OptionsParser<TOptions...>;
 
-  using IntValueType = details::BitmaskUndertlyingTypeT<OptionsBundle>;
+    using IntValueType = details::BitmaskUndertlyingTypeT<OptionsBundle>;
 
-  using IntValueField = IntValue<TFieldBase, IntValueType, TOptions...>;
+    using IntValueField =
+        IntValue<
+            TFieldBase,
+            IntValueType,
+            TOptions...
+        >;
 
 public:
-  /// @brief Base class provided in the first template parameter.
-  using FieldBase = TFieldBase;
+    /// @brief Base class provided in the first template parameter.
+    using FieldBase = TFieldBase;
 
-  /// @brief Endian used for serialisation.
-  using Endian = typename BaseImpl::Endian;
+    /// @brief Endian used for serialisation.
+    using Endian = typename BaseImpl::Endian;
 
-  /// @brief Version type
-  using VersionType = typename BaseImpl::VersionType;
+    /// @brief Version type
+    using VersionType = typename BaseImpl::VersionType;
 
-  /// @brief All the options provided to this class bundled into struct.
-  using ParsedOptions = OptionsBundle;
+    /// @brief All the options provided to this class bundled into struct.
+    using ParsedOptions = OptionsBundle;
 
-  /// @brief Tag indicating type of the field
-  using CommsTag = tag::Bitmask;
+    /// @brief Tag indicating type of the field
+    using CommsTag = tag::Bitmask;
 
-  /// @brief Type of underlying integral value.
-  /// @details Unsigned integral type, which depends on the length of the
-  ///     mask determined by the @ref comms::option::def::FixedLength option.
-  using ValueType = typename IntValueField::ValueType;
+    /// @brief Type of underlying integral value.
+    /// @details Unsigned integral type, which depends on the length of the
+    ///     mask determined by the @ref comms::option::def::FixedLength option.
+    using ValueType = typename IntValueField::ValueType;
 
-  /// @brief Type of actual extending field specified via
-  ///     @ref comms::option::def::FieldType.
-  /// @details @b void if @ref comms::option::def::FieldType hasn't been
-  /// applied.
-  using FieldType = typename ParsedOptions::FieldType;
+    /// @brief Type of actual extending field specified via
+    ///     @ref comms::option::def::FieldType.
+    /// @details @b void if @ref comms::option::def::FieldType hasn't been applied.
+    using FieldType = typename ParsedOptions::FieldType;
 
-  /// @brief Default constructor.
-  /// @brief Initial bitmask has all bits cleared (equals 0)
-  BitmaskValue() = default;
+    /// @brief Default constructor.
+    /// @brief Initial bitmask has all bits cleared (equals 0)
+    BitmaskValue() = default;
 
-  /// @brief Constructor
-  /// @param[in] val Value of the field to initialise it with.
-  explicit BitmaskValue(const ValueType &val) : m_intValue(val) {}
-
-  /// @brief Copy constructor
-  BitmaskValue(const BitmaskValue &) = default;
-
-  /// @brief Destructor
-  ~BitmaskValue() noexcept = default;
-
-  /// @brief Copy assignment
-  BitmaskValue &operator=(const BitmaskValue &) = default;
-
-  /// @brief Compile time inquiry of whether @ref
-  /// comms::option::def::FailOnInvalid option
-  ///     has been used.
-  static constexpr bool hasFailOnInvalid() {
-    return ParsedOptions::HasFailOnInvalid;
-  }
-
-  /// @brief Compile time inquiry of whether @ref
-  /// comms::option::def::IgnoreInvalid option
-  ///     has been used.
-  static constexpr bool hasIgnoreInvalid() {
-    return ParsedOptions::HasIgnoreInvalid;
-  }
-
-  /// @brief Compile time inquiry of whether @ref
-  /// comms::option::def::EmptySerialization option
-  ///     has been used.
-  static constexpr bool hasEmptySerialization() {
-    return ParsedOptions::HasEmptySerialization;
-  }
-
-  /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType
-  /// option
-  ///     has been used.
-  static constexpr bool hasFieldType() { return ParsedOptions::HasFieldType; }
-
-  /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue
-  /// option
-  ///     has been used.
-  static constexpr bool hasFixedValue() { return ParsedOptions::HasFixedValue; }
-
-  /// @brief Compile time inquiry of whether @ref comms::option::def::HasName
-  /// option
-  ///     has been used.
-  static constexpr bool hasName() { return ParsedOptions::HasName; }
-
-  /// @brief Get access to underlying mask value storage.
-  /// @return Const reference to the underlying stored value.
-  const ValueType &value() const { return m_intValue.value(); }
-
-  /// @brief Get access to underlying mask value storage.
-  /// @return Reference to the underlying stored value.
-  ValueType &value() { return m_intValue.value(); }
-
-  /// @brief Get value
-  const ValueType &getValue() const { return m_intValue.getValue(); }
-
-  /// @brief Set value
-  template <typename U> void setValue(U &&val) {
-    m_intValue.setValue(std::forward<U>(val));
-  }
-
-  /// @brief Get length required to serialise the current field value.
-  /// @return Number of bytes it will take to serialise the field value.
-  constexpr std::size_t length() const { return m_intValue.length(); }
-
-  /// @brief Get maximal length that is required to serialise field of this
-  /// type.
-  /// @return Maximal number of bytes required serialise the field value.
-  static constexpr std::size_t maxLength() {
-    return IntValueField::maxLength();
-  }
-
-  /// @brief Get minimal length that is required to serialise field of this
-  /// type.
-  /// @return Minimal number of bytes required serialise the field value.
-  static constexpr std::size_t minLength() {
-    return IntValueField::minLength();
-  }
-
-  /// @brief Read field value from input data sequence
-  /// @param[in, out] iter Iterator to read the data.
-  /// @param[in] size Number of bytes available for reading.
-  /// @return Status of read operation.
-  /// @post Iterator is advanced.
-  template <typename TIter> ErrorStatus read(TIter &iter, std::size_t size) {
-    return m_intValue.read(iter, size);
-  }
-
-  /// @brief Compile time check of whether the field has @b proper
-  ///     @ref readNoStatus() member function.
-  static constexpr bool hasReadNoStatus() {
-    return BaseImpl::hasReadNoStatus();
-  }
-
-  /// @brief Read field value from input data sequence without error check and
-  /// status report.
-  /// @details Similar to @ref read(), but doesn't perform any correctness
-  ///     checks and doesn't report any failures.
-  /// @param[in, out] iter Iterator to read the data.
-  /// @post Iterator is advanced.
-  template <typename TIter> void readNoStatus(TIter &iter) {
-    m_intValue.readNoStatus(iter);
-  }
-
-  /// @brief Check of whether the field has a consistent value for writing.
-  bool canWrite() const { return BaseImpl::canWrite(); }
-
-  /// @brief Write current field value to output data sequence
-  /// @param[in, out] iter Iterator to write the data.
-  /// @param[in] size Maximal number of bytes that can be written.
-  /// @return Status of write operation.
-  /// @post Iterator is advanced.
-  template <typename TIter>
-  ErrorStatus write(TIter &iter, std::size_t size) const {
-    return m_intValue.write(iter, size);
-  }
-
-  /// @brief Compile time check of whether the field has @b proper
-  ///     @ref writeNoStatus() member function.
-  static constexpr bool hasWriteNoStatus() {
-    return BaseImpl::hasWriteNoStatus();
-  }
-
-  /// @brief Write current field value to output data sequence  without error
-  /// check and status report.
-  /// @details Similar to @ref write(), but doesn't perform any correctness
-  ///     checks and doesn't report any failures.
-  /// @param[in, out] iter Iterator to write the data.
-  /// @post Iterator is advanced.
-  template <typename TIter> void writeNoStatus(TIter &iter) const {
-    m_intValue.writeNoStatus(iter);
-  }
-
-  /// @brief Check validity of the field value.
-  constexpr bool valid() const { return m_intValue.valid(); }
-
-  /// @brief Refresh contents of the field
-  /// @return @b true in case the field's value has been updated, @b false
-  /// otherwise
-  bool refresh() { return m_intValue.refresh(); }
-
-  /// @brief Check whether all bits from provided mask are set.
-  /// @param[in] mask Mask to check against
-  /// @return true in case all the bits are set, false otherwise
-  bool hasAllBitsSet(ValueType mask) const { return (value() & mask) == mask; }
-
-  /// @brief Check whether any bits from provided mask are set.
-  /// @param[in] mask Mask to check against
-  /// @return true in case at least one of the bits is set, false otherwise.
-  bool hasAnyBitsSet(ValueType mask) const { return (value() & mask) != 0; }
-
-  /// @brief Set all the provided bits.
-  /// @details Equivalent to @code value() |= mask; @endcode
-  /// @param[in] mask Mask of bits to set.
-  void setBits(ValueType mask) { value() |= mask; }
-
-  /// @brief Set all the provided bits.
-  /// @details Equivalent to @code value() &= (~mask); @endcode
-  /// @param[in] mask Mask of bits to clear.
-  void clearBits(ValueType mask) { value() &= static_cast<ValueType>(~mask); }
-
-  /// @brief Get bit value
-  bool getBitValue(unsigned bitNum) const {
-    return hasAllBitsSet(
-        static_cast<ValueType>(static_cast<ValueType>(1U) << bitNum));
-  }
-
-  /// @brief Set bit value
-  void setBitValue(unsigned bitNum, bool val) {
-    auto mask = static_cast<ValueType>(static_cast<ValueType>(1U) << bitNum);
-    if (val) {
-      setBits(mask);
-    } else {
-      clearBits(mask);
+    /// @brief Constructor
+    /// @param[in] val Value of the field to initialise it with.
+    explicit BitmaskValue(const ValueType& val)
+       : m_intValue(val)
+    {
     }
-  }
 
-  /// @brief Compile time check if this class is version dependent
-  static constexpr bool isVersionDependent() {
-    return IntValueField::isVersionDependent();
-  }
+    /// @brief Copy constructor
+    BitmaskValue(const BitmaskValue&) = default;
 
-  /// @brief Compile time check if this class has non-default refresh
-  /// functionality
-  static constexpr bool hasNonDefaultRefresh() {
-    return BaseImpl::hasNonDefaultRefresh();
-  }
+    /// @brief Destructor
+    ~BitmaskValue() noexcept = default;
 
-  /// @brief Get version of the field.
-  /// @details Exists only if @ref comms::option::def::VersionStorage option has
-  /// been provided.
-  VersionType getVersion() const { return m_intValue.getVersion(); }
+    /// @brief Copy assignment
+    BitmaskValue& operator=(const BitmaskValue&) = default;
 
-  /// @brief Default implementation of version update.
-  /// @return @b true in case the field contents have changed, @b false
-  /// otherwise
-  bool setVersion(VersionType version) {
-    return m_intValue.setVersion(version);
-  }
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FailOnInvalid option
+    ///     has been used.
+    static constexpr bool hasFailOnInvalid()
+    {
+        return ParsedOptions::HasFailOnInvalid;
+    }
 
-  /// @brief Force serialization length of the field.
-  /// @details Available only when @ref comms::option::def::AvailableLengthLimit
-  ///     option is used for field definition.
-  /// @param[in] len Forced serialization length.
-  ///     @li 0 means default serialization length determined by the storage
-  ///     type
-  ///     @li positive value means limit of the serialization length
-  ///     @li negative value means the length is determined by the stored value
-  void setForcedLength(int len) { m_intValue.setForcedLength(len); }
+    /// @brief Compile time inquiry of whether @ref comms::option::def::IgnoreInvalid option
+    ///     has been used.
+    static constexpr bool hasIgnoreInvalid()
+    {
+        return ParsedOptions::HasIgnoreInvalid;
+    }
 
-  /// @brief Get forced serialization length
-  /// @see @ref setForcedLength()
-  int getForcedLength() const { return m_intValue.getForcedLength(); }
+    /// @brief Compile time inquiry of whether @ref comms::option::def::EmptySerialization option
+    ///     has been used.
+    static constexpr bool hasEmptySerialization()
+    {
+        return ParsedOptions::HasEmptySerialization;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FieldType option
+    ///     has been used.
+    static constexpr bool hasFieldType()
+    {
+        return ParsedOptions::HasFieldType;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::FixedValue option
+    ///     has been used.
+    static constexpr bool hasFixedValue()
+    {
+        return ParsedOptions::HasFixedValue;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::HasName option
+    ///     has been used.
+    static constexpr bool hasName()
+    {
+        return ParsedOptions::HasName;
+    }
+
+    /// @brief Get access to underlying mask value storage.
+    /// @return Const reference to the underlying stored value.
+    const ValueType& value() const
+    {
+        return m_intValue.value();
+    }
+
+    /// @brief Get access to underlying mask value storage.
+    /// @return Reference to the underlying stored value.
+    ValueType& value()
+    {
+        return m_intValue.value();
+    }
+
+    /// @brief Get value
+    const ValueType& getValue() const
+    {
+        return m_intValue.getValue();
+    }
+
+    /// @brief Set value
+    template <typename U>
+    void setValue(U&& val)
+    {
+        m_intValue.setValue(std::forward<U>(val));
+    }
+
+    /// @brief Get length required to serialise the current field value.
+    /// @return Number of bytes it will take to serialise the field value.
+    constexpr std::size_t length() const
+    {
+        return m_intValue.length();
+    }
+
+    /// @brief Get maximal length that is required to serialise field of this type.
+    /// @return Maximal number of bytes required serialise the field value.
+    static constexpr std::size_t maxLength()
+    {
+        return IntValueField::maxLength();
+    }
+
+    /// @brief Get minimal length that is required to serialise field of this type.
+    /// @return Minimal number of bytes required serialise the field value.
+    static constexpr std::size_t minLength()
+    {
+        return IntValueField::minLength();
+    }
+
+    /// @brief Read field value from input data sequence
+    /// @param[in, out] iter Iterator to read the data.
+    /// @param[in] size Number of bytes available for reading.
+    /// @return Status of read operation.
+    /// @post Iterator is advanced.
+    template <typename TIter>
+    ErrorStatus read(TIter& iter, std::size_t size)
+    {
+        return m_intValue.read(iter, size);
+    }
+
+    /// @brief Compile time check of whether the field has @b proper
+    ///     @ref readNoStatus() member function.
+    static constexpr bool hasReadNoStatus()
+    {
+        return BaseImpl::hasReadNoStatus();
+    }
+
+    /// @brief Read field value from input data sequence without error check and status report.
+    /// @details Similar to @ref read(), but doesn't perform any correctness
+    ///     checks and doesn't report any failures.
+    /// @param[in, out] iter Iterator to read the data.
+    /// @post Iterator is advanced.
+    template <typename TIter>
+    void readNoStatus(TIter& iter)
+    {
+        m_intValue.readNoStatus(iter);
+    }
+
+    /// @brief Check of whether the field has a consistent value for writing.
+    bool canWrite() const
+    {
+        return BaseImpl::canWrite();
+    }
+
+    /// @brief Write current field value to output data sequence
+    /// @param[in, out] iter Iterator to write the data.
+    /// @param[in] size Maximal number of bytes that can be written.
+    /// @return Status of write operation.
+    /// @post Iterator is advanced.
+    template <typename TIter>
+    ErrorStatus write(TIter& iter, std::size_t size) const
+    {
+        return m_intValue.write(iter, size);
+    }
+
+    /// @brief Compile time check of whether the field has @b proper
+    ///     @ref writeNoStatus() member function.
+    static constexpr bool hasWriteNoStatus()
+    {
+        return BaseImpl::hasWriteNoStatus();
+    }
+
+    /// @brief Write current field value to output data sequence  without error check and status report.
+    /// @details Similar to @ref write(), but doesn't perform any correctness
+    ///     checks and doesn't report any failures.
+    /// @param[in, out] iter Iterator to write the data.
+    /// @post Iterator is advanced.
+    template <typename TIter>
+    void writeNoStatus(TIter& iter) const
+    {
+        m_intValue.writeNoStatus(iter);
+    }
+
+    /// @brief Check validity of the field value.
+    constexpr bool valid() const
+    {
+        return m_intValue.valid();
+    }
+
+    /// @brief Refresh contents of the field
+    /// @return @b true in case the field's value has been updated, @b false otherwise
+    bool refresh()
+    {
+        return m_intValue.refresh();
+    }
+
+    /// @brief Check whether all bits from provided mask are set.
+    /// @param[in] mask Mask to check against
+    /// @return true in case all the bits are set, false otherwise
+    bool hasAllBitsSet(ValueType mask) const
+    {
+        return (value() & mask) == mask;
+    }
+
+    /// @brief Check whether any bits from provided mask are set.
+    /// @param[in] mask Mask to check against
+    /// @return true in case at least one of the bits is set, false otherwise.
+    bool hasAnyBitsSet(ValueType mask) const
+    {
+        return (value() & mask) != 0;
+    }
+
+    /// @brief Set all the provided bits.
+    /// @details Equivalent to @code value() |= mask; @endcode
+    /// @param[in] mask Mask of bits to set.
+    void setBits(ValueType mask)
+    {
+        value() |= mask;
+    }
+
+    /// @brief Set all the provided bits.
+    /// @details Equivalent to @code value() &= (~mask); @endcode
+    /// @param[in] mask Mask of bits to clear.
+    void clearBits(ValueType mask)
+    {
+        value() &= static_cast<ValueType>(~mask);
+    }
+
+    /// @brief Get bit value
+    bool getBitValue(unsigned bitNum) const
+    {
+        return hasAllBitsSet(
+            static_cast<ValueType>(static_cast<ValueType>(1U) << bitNum));
+    }
+
+    /// @brief Set bit value
+    void setBitValue(unsigned bitNum, bool val)
+    {
+        auto mask = static_cast<ValueType>(static_cast<ValueType>(1U) << bitNum);
+        if (val) {
+            setBits(mask);
+        }
+        else {
+            clearBits(mask);
+        }
+    }
+
+    /// @brief Compile time check if this class is version dependent
+    static constexpr bool isVersionDependent()
+    {
+        return IntValueField::isVersionDependent();
+    }
+
+    /// @brief Compile time check if this class has non-default refresh functionality
+    static constexpr bool hasNonDefaultRefresh()
+    {
+        return BaseImpl::hasNonDefaultRefresh();
+    }
+
+    /// @brief Get version of the field.
+    /// @details Exists only if @ref comms::option::def::VersionStorage option has been provided.
+    VersionType getVersion() const
+    {
+        return m_intValue.getVersion();
+    }
+
+    /// @brief Default implementation of version update.
+    /// @return @b true in case the field contents have changed, @b false otherwise
+    bool setVersion(VersionType version)
+    {
+        return m_intValue.setVersion(version);
+    }
+
+    /// @brief Force serialization length of the field.
+    /// @details Available only when @ref comms::option::def::AvailableLengthLimit
+    ///     option is used for field definition.
+    /// @param[in] len Forced serialization length.
+    ///     @li 0 means default serialization length determined by the storage type
+    ///     @li positive value means limit of the serialization length
+    ///     @li negative value means the length is determined by the stored value
+    void setForcedLength(int len)
+    {
+        m_intValue.setForcedLength(len);
+    }
+
+    /// @brief Get forced serialization length
+    /// @see @ref setForcedLength()
+    int getForcedLength() const
+    {
+        return m_intValue.getForcedLength();
+    }
 
 protected:
-  using BaseImpl::readData;
-  using BaseImpl::writeData;
+    using BaseImpl::readData;
+    using BaseImpl::writeData;
 
 private:
-  static_assert(!ParsedOptions::HasSerOffset,
-                "comms::option::def::NumValueSerOffset option is not "
-                "applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasVarLengthLimits,
-                "comms::option::def::VarLength option is not applicable to "
-                "BitmaskValue field");
-  static_assert(!ParsedOptions::HasSequenceElemLengthForcing,
-                "comms::option::def::SequenceElemLengthForcingEnabled option "
-                "is not applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasSequenceSizeForcing,
-                "comms::option::def::SequenceSizeForcingEnabled option is not "
-                "applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasSequenceLengthForcing,
-                "comms::option::def::SequenceLengthForcingEnabled option is "
-                "not applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasSequenceFixedSize,
-                "comms::option::def::SequenceFixedSize option is not "
-                "applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasSequenceFixedSizeUseFixedSizeStorage,
-                "comms::option::app::SequenceFixedSizeUseFixedSizeStorage "
-                "option is not applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasSequenceSizeFieldPrefix,
-                "comms::option::def::SequenceSizeFieldPrefix option is not "
-                "applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasSequenceSerLengthFieldPrefix,
-                "comms::option::def::SequenceSerLengthFieldPrefix option is "
-                "not applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasSequenceElemSerLengthFieldPrefix,
-                "comms::option::def::SequenceElemSerLengthFieldPrefix option "
-                "is not applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasSequenceElemFixedSerLengthFieldPrefix,
-                "comms::option::def::SequenceElemSerLengthFixedFieldPrefix "
-                "option is not applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasSequenceTrailingFieldSuffix,
-                "comms::option::def::SequenceTrailingFieldSuffix option is not "
-                "applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasSequenceTerminationFieldSuffix,
-                "comms::option::def::SequenceTerminationFieldSuffix option is "
-                "not applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasFixedSizeStorage,
-                "comms::option::app::FixedSizeStorage option is not applicable "
-                "to BitmaskValue field");
-  static_assert(!ParsedOptions::HasCustomStorageType,
-                "comms::option::app::CustomStorageType option is not "
-                "applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasScalingRatio,
-                "comms::option::def::ScalingRatio option is not applicable to "
-                "BitmaskValue field");
-  static_assert(!ParsedOptions::HasUnits,
-                "comms::option::def::Units option is not applicable to "
-                "BitmaskValue field");
-  static_assert(!ParsedOptions::HasOrigDataView,
-                "comms::option::app::OrigDataView option is not applicable to "
-                "BitmaskValue field");
-  static_assert(!ParsedOptions::HasMultiRangeValidation,
-                "comms::option::def::ValidNumValueRange (or similar) option is "
-                "not applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasVersionsRange,
-                "comms::option::def::ExistsBetweenVersions (or similar) option "
-                "is not applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasInvalidByDefault,
-                "comms::option::def::InvalidByDefault option is not applicable "
-                "to BitmaskValue field");
-  static_assert(!ParsedOptions::HasMissingOnReadFail,
-                "comms::option::def::MissingOnReadFail option is not "
-                "applicable to BitmaskValue field");
-  static_assert(!ParsedOptions::HasMissingOnInvalid,
-                "comms::option::def::MissingOnInvalid option is not applicable "
-                "to BitmaskValue field");
-  IntValueField m_intValue;
+
+    static_assert(!ParsedOptions::HasSerOffset,
+        "comms::option::def::NumValueSerOffset option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasVarLengthLimits,
+        "comms::option::def::VarLength option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasSequenceElemLengthForcing,
+        "comms::option::def::SequenceElemLengthForcingEnabled option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasSequenceSizeForcing,
+        "comms::option::def::SequenceSizeForcingEnabled option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasSequenceLengthForcing,
+        "comms::option::def::SequenceLengthForcingEnabled option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasSequenceFixedSize,
+        "comms::option::def::SequenceFixedSize option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasSequenceFixedSizeUseFixedSizeStorage,
+        "comms::option::app::SequenceFixedSizeUseFixedSizeStorage option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasSequenceSizeFieldPrefix,
+        "comms::option::def::SequenceSizeFieldPrefix option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasSequenceSerLengthFieldPrefix,
+        "comms::option::def::SequenceSerLengthFieldPrefix option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasSequenceElemSerLengthFieldPrefix,
+        "comms::option::def::SequenceElemSerLengthFieldPrefix option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasSequenceElemFixedSerLengthFieldPrefix,
+        "comms::option::def::SequenceElemSerLengthFixedFieldPrefix option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasSequenceTrailingFieldSuffix,
+        "comms::option::def::SequenceTrailingFieldSuffix option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasSequenceTerminationFieldSuffix,
+        "comms::option::def::SequenceTerminationFieldSuffix option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasFixedSizeStorage,
+        "comms::option::app::FixedSizeStorage option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasCustomStorageType,
+        "comms::option::app::CustomStorageType option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasScalingRatio,
+        "comms::option::def::ScalingRatio option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasUnits,
+        "comms::option::def::Units option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasOrigDataView,
+        "comms::option::app::OrigDataView option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasMultiRangeValidation,
+        "comms::option::def::ValidNumValueRange (or similar) option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasVersionsRange,
+        "comms::option::def::ExistsBetweenVersions (or similar) option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasInvalidByDefault,
+        "comms::option::def::InvalidByDefault option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasMissingOnReadFail,
+            "comms::option::def::MissingOnReadFail option is not applicable to BitmaskValue field");
+    static_assert(!ParsedOptions::HasMissingOnInvalid,
+            "comms::option::def::MissingOnInvalid option is not applicable to BitmaskValue field");
+    IntValueField m_intValue;
 };
 
 // Implementation
@@ -439,9 +489,11 @@ private:
 /// @return true in case fields are equal, false otherwise.
 /// @related BitmaskValue
 template <typename TFieldBase, typename... TOptions>
-bool operator==(const BitmaskValue<TFieldBase, TOptions...> &field1,
-                const BitmaskValue<TFieldBase, TOptions...> &field2) noexcept {
-  return field1.value() == field2.value();
+bool operator==(
+    const BitmaskValue<TFieldBase, TOptions...>& field1,
+    const BitmaskValue<TFieldBase, TOptions...>& field2) noexcept
+{
+    return field1.value() == field2.value();
 }
 
 /// @brief Non-equality comparison operator.
@@ -450,21 +502,24 @@ bool operator==(const BitmaskValue<TFieldBase, TOptions...> &field1,
 /// @return true in case fields are NOT equal, false otherwise.
 /// @related BitmaskValue
 template <typename TFieldBase, typename... TOptions>
-bool operator!=(const BitmaskValue<TFieldBase, TOptions...> &field1,
-                const BitmaskValue<TFieldBase, TOptions...> &field2) noexcept {
-  return field1.value() != field2.value();
+bool operator!=(
+    const BitmaskValue<TFieldBase, TOptions...>& field1,
+    const BitmaskValue<TFieldBase, TOptions...>& field2) noexcept
+{
+    return field1.value() != field2.value();
 }
 
 /// @brief Equivalence comparison operator.
 /// @param[in] field1 First field.
 /// @param[in] field2 Second field.
-/// @return true in case value of the first field is lower than than the value
-/// of the second.
+/// @return true in case value of the first field is lower than than the value of the second.
 /// @related BitmaskValue
 template <typename TFieldBase, typename... TOptions>
-bool operator<(const BitmaskValue<TFieldBase, TOptions...> &field1,
-               const BitmaskValue<TFieldBase, TOptions...> &field2) noexcept {
-  return field1.value() < field2.value();
+bool operator<(
+    const BitmaskValue<TFieldBase, TOptions...>& field1,
+    const BitmaskValue<TFieldBase, TOptions...>& field2) noexcept
+{
+    return field1.value() < field2.value();
 }
 
 /// @brief Compile time check function of whether a provided type is any
@@ -472,28 +527,32 @@ bool operator<(const BitmaskValue<TFieldBase, TOptions...> &field1,
 /// @tparam T Any type.
 /// @return true in case provided type is any variant of @ref BitmaskValue
 /// @related comms::field::BitmaskValue
-template <typename T> constexpr bool isBitmaskValue() {
-  return std::is_same<typename T::CommsTag, tag::Bitmask>::value;
+template <typename T>
+constexpr bool isBitmaskValue()
+{
+    return std::is_same<typename T::CommsTag, tag::Bitmask>::value;
 }
 
-/// @brief Upcast type of the field definition to its parent
-/// comms::field::BitmaskValue type
+/// @brief Upcast type of the field definition to its parent comms::field::BitmaskValue type
 ///     in order to have access to its internal types.
 /// @related comms::field::BitmaskValue
 template <typename TFieldBase, typename... TOptions>
-inline BitmaskValue<TFieldBase, TOptions...> &
-toFieldBase(BitmaskValue<TFieldBase, TOptions...> &field) {
-  return field;
+inline
+BitmaskValue<TFieldBase, TOptions...>&
+toFieldBase(BitmaskValue<TFieldBase, TOptions...>& field)
+{
+    return field;
 }
 
-/// @brief Upcast type of the field definition to its parent
-/// comms::field::BitmaskValue type
+/// @brief Upcast type of the field definition to its parent comms::field::BitmaskValue type
 ///     in order to have access to its internal types.
 /// @related comms::field::BitmaskValue
 template <typename TFieldBase, typename... TOptions>
-inline const BitmaskValue<TFieldBase, TOptions...> &
-toFieldBase(const BitmaskValue<TFieldBase, TOptions...> &field) {
-  return field;
+inline
+const BitmaskValue<TFieldBase, TOptions...>&
+toFieldBase(const BitmaskValue<TFieldBase, TOptions...>& field)
+{
+    return field;
 }
 
 /// @brief Provide names for bits in comms::field::BitmaskValue field.
@@ -513,13 +572,13 @@ toFieldBase(const BitmaskValue<TFieldBase, TOptions...> &field) {
 ///         BitIdx_numOfValues
 ///     };
 ///     @endcode
-///     @b NOTE, that provided names @b first, @b second, @b third, and @b
-///     fourth have found their way to the enum @b BitIdx. @n Also note, that
-///     there is automatically added @b BitIdx_numOfValues value to the end of
-///     @b BitIdx enum.
+///     @b NOTE, that provided names @b first, @b second, @b third, and @b fourth have
+///     found their way to the enum @b BitIdx. @n
+///     Also note, that there is automatically added @b BitIdx_numOfValues
+///     value to the end of @b BitIdx enum.
 ///
-///     It is possible to assign values to the provided names. It could be
-///     useful when skipping some unused bits. For example
+///     It is possible to assign values to the provided names. It could be useful
+///     when skipping some unused bits. For example
 ///     @code
 ///     COMMS_BITMASK_BITS(first=1, third=3, fourth);
 ///     @endcode
@@ -546,16 +605,14 @@ toFieldBase(const BitmaskValue<TFieldBase, TOptions...> &field) {
 /// @note Defined in "comms/field/BitmaskValue.h"
 #define COMMS_BITMASK_BITS(...) COMMS_DEFINE_ENUM(BitIdx, __VA_ARGS__)
 
-/// @brief Generate access functions for bits in comms::field::BitmaskValue
-/// field.
+/// @brief Generate access functions for bits in comms::field::BitmaskValue field.
 /// @details The #COMMS_BITMASK_BITS() macro defines @b BitIdx enum to
 ///     be able to access internal bits. However, an ability to provide
 ///     values to the enumeration values using @b =val suffixes doesn't
 ///     allow generation of convenience access functions to the bits. That's
 ///     why COMMS_BITMASK_BITS_ACCESS() macro was introduced. For every name
 ///     listed in the parameters list, @b getBitValue_*() and @b setBitValue_*()
-///     functions will be generated. For example, having the following
-///     definition
+///     functions will be generated. For example, having the following definition
 ///     @code
 ///     struct MyField : public comms::field::BitmaskValue<...>
 ///     {
@@ -608,9 +665,9 @@ toFieldBase(const BitmaskValue<TFieldBase, TOptions...> &field) {
 /// @related comms::field::BitmaskValue
 /// @warning Some compilers, such as @b clang or early versions of @b g++
 ///     may have problems compiling code generated by this macro even
-///     though it uses valid C++11 constructs in attempt to automatically
-///     identify the type of the base class. If the compilation fails, and this
-///     macro resides inside a @b NON-template class, please use
+///     though it uses valid C++11 constructs in attempt to automatically identify the
+///     type of the base class. If the compilation fails,
+///     and this macro resides inside a @b NON-template class, please use
 ///     @ref COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE() macro instead. In
 ///     case this macro needs to reside inside a @b template class, then
 ///     there is a need to define inner @b Base type, which specifies
@@ -640,26 +697,29 @@ toFieldBase(const BitmaskValue<TFieldBase, TOptions...> &field) {
 ///     }
 ///     @endcode
 /// @note Defined in "comms/field/BitmaskValue.h"
-#define COMMS_BITMASK_BITS_ACCESS(...)                                         \
-  COMMS_AS_BITMASK_FUNC { return comms::field::toFieldBase(*this); }           \
-  COMMS_AS_BITMASK_CONST_FUNC { return comms::field::toFieldBase(*this); }     \
-  COMMS_DO_BIT_ACC_FUNC(asBitmask(), __VA_ARGS__)
+#define COMMS_BITMASK_BITS_ACCESS(...) \
+    COMMS_AS_BITMASK_FUNC { \
+        return comms::field::toFieldBase(*this); \
+    }\
+    COMMS_AS_BITMASK_CONST_FUNC { \
+        return comms::field::toFieldBase(*this); \
+    } \
+    COMMS_DO_BIT_ACC_FUNC(asBitmask(), __VA_ARGS__)
 
 /// @brief Similar to #COMMS_BITMASK_BITS_ACCESS(), but dedicated for
 ///     non-template classes.
 /// @details The #COMMS_BITMASK_BITS_ACCESS() macro is a generic one,
 ///     which can be used in any class (template, or non-template). However,
-///     some compilers (such as <b>g++-4.9</b> and below, @b clang-4.0 and
-///     below) may fail to compile it even though it uses valid C++11
-///     constructs. If the compilation fails and the class it is being used in
-///     is @b NOT a template one, please use @ref
-///     COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE() instead.
+///     some compilers (such as <b>g++-4.9</b> and below, @b clang-4.0 and below) may fail
+///     to compile it even though it uses valid C++11 constructs. If the
+///     compilation fails and the class it is being used in is @b NOT a
+///     template one, please use @ref COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE()
+///     instead.
 /// @related comms::field::BitmaskValue
-#define COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE(...)                              \
-  COMMS_DO_BIT_ACC_FUNC((*this), __VA_ARGS__)
+#define COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE(...) \
+    COMMS_DO_BIT_ACC_FUNC((*this), __VA_ARGS__)
 
-/// @brief Combine usage of #COMMS_BITMASK_BITS() and
-/// #COMMS_BITMASK_BITS_ACCESS().
+/// @brief Combine usage of #COMMS_BITMASK_BITS() and #COMMS_BITMASK_BITS_ACCESS().
 /// @details When assigned bit names start at bit 0 and go sequentially without
 ///     any gaps in the middle, i.e. don't have any @b =val suffixes, then use
 ///     COMMS_BITMASK_BITS_SEQ() macro to name the bits. It is defined to use
@@ -697,9 +757,9 @@ toFieldBase(const BitmaskValue<TFieldBase, TOptions...> &field) {
 /// @related comms::field::BitmaskValue
 /// @warning Some compilers, such as @b clang or early versions of @b g++
 ///     may have problems compiling code generated by this macro even
-///     though it uses valid C++11 constructs in attempt to automatically
-///     identify the type of the base class. If the compilation fails, and this
-///     macro resides inside a @b NON-template class, please use
+///     though it uses valid C++11 constructs in attempt to automatically identify the
+///     type of the base class. If the compilation fails,
+///     and this macro resides inside a @b NON-template class, please use
 ///     @ref COMMS_BITMASK_BITS_SEQ_NOTEMPLATE() macro instead. In
 ///     case this macro needs to reside inside a @b template class, then
 ///     there is a need to define inner @b Base type, which specifies
@@ -728,25 +788,26 @@ toFieldBase(const BitmaskValue<TFieldBase, TOptions...> &field) {
 ///     }
 ///     @endcode
 /// @note Defined in "comms/field/BitmaskValue.h"
-#define COMMS_BITMASK_BITS_SEQ(...)                                            \
-  COMMS_BITMASK_BITS(__VA_ARGS__)                                              \
-  COMMS_BITMASK_BITS_ACCESS(__VA_ARGS__)
+#define COMMS_BITMASK_BITS_SEQ(...) \
+    COMMS_BITMASK_BITS(__VA_ARGS__) \
+    COMMS_BITMASK_BITS_ACCESS(__VA_ARGS__)
 
 /// @brief Similar to #COMMS_BITMASK_BITS_SEQ(), but dedicated for
 ///     non-template classes.
 /// @details The #COMMS_BITMASK_BITS_SEQ() macro is a generic one,
 ///     which can be used in any class (template, or non-template). However,
-///     some compilers (such as <b>g++-4.9</b> and below, @b clang-4.0 and
-///     below) may fail to compile it even though it uses valid C++11
-///     constructs. If the compilation fails and the class it is being used in
-///     is @b NOT a template one, please use @ref
-///     COMMS_BITMASK_BITS_SEQ_NOTEMPLATE() instead.
+///     some compilers (such as <b>g++-4.9</b> and below, @b clang-4.0 and below) may fail
+///     to compile it even though it uses valid C++11 constructs. If the
+///     compilation fails and the class it is being used in is @b NOT a
+///     template one, please use @ref COMMS_BITMASK_BITS_SEQ_NOTEMPLATE()
+///     instead.
 /// @related comms::field::BitmaskValue
 /// @note Defined in "comms/field/BitmaskValue.h"
-#define COMMS_BITMASK_BITS_SEQ_NOTEMPLATE(...)                                 \
-  COMMS_BITMASK_BITS(__VA_ARGS__)                                              \
-  COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE(__VA_ARGS__)
+#define COMMS_BITMASK_BITS_SEQ_NOTEMPLATE(...) \
+    COMMS_BITMASK_BITS(__VA_ARGS__) \
+    COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE(__VA_ARGS__)
 
-} // namespace field
+}  // namespace field
 
-} // namespace comms
+}  // namespace comms
+

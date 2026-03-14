@@ -1,5 +1,5 @@
 //
-// Copyright 2025 - 2026 (C). Alex Robenko. All rights reserved.
+// Copyright 2025 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,38 +7,45 @@
 
 #pragma once
 
-#include "comms/frame/FrameLayerBase.h"
 #include "comms/frame/details/SyncSuffixLayerOptionsParser.h"
+#include "comms/frame/FrameLayerBase.h"
 
-namespace comms {
+namespace comms
+{
 
-namespace frame {
+namespace frame
+{
 
 // Forward declaration
 template <typename TField, typename TNextLayer, typename... TOptions>
 class SyncSuffixLayer;
 
-namespace details {
+namespace details
+{
 
 template <typename TField, typename TNextLayer, typename... TOptions>
-class SyncSuffixLayerBaseHelper {
-  using ParsedOptionsInternal =
-      comms::frame::details::SyncSuffixLayerOptionsParser<TOptions...>;
-  using ActualLayer =
-      typename ParsedOptionsInternal::template DefineExtendingClass<
-          SyncSuffixLayer<TField, TNextLayer, TOptions...>>;
+class SyncSuffixLayerBaseHelper
+{
+    using ParsedOptionsInternal = comms::frame::details::SyncSuffixLayerOptionsParser<TOptions...>;
+    using ActualLayer =
+        typename ParsedOptionsInternal::template DefineExtendingClass<
+            SyncSuffixLayer<TField, TNextLayer, TOptions...>
+        >;
 
-  using TopBase = comms::frame::FrameLayerBase<
-      TField, TNextLayer, ActualLayer,
-      comms::option::def::FrameLayerDisallowReadUntilDataSplit>;
+    using TopBase =
+        comms::frame::FrameLayerBase<
+            TField,
+            TNextLayer,
+            ActualLayer,
+            comms::option::def::FrameLayerDisallowReadUntilDataSplit
+        >;
 
 public:
-  using Base = TopBase;
+    using Base = TopBase;
 };
 
 template <typename TField, typename TNextLayer, typename... TOptions>
-using SyncSuffixLayerBase =
-    typename SyncSuffixLayerBaseHelper<TField, TNextLayer, TOptions...>::Base;
+using SyncSuffixLayerBase = typename SyncSuffixLayerBaseHelper<TField, TNextLayer, TOptions...>::Base;
 
 } // namespace details
 

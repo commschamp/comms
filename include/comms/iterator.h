@@ -1,5 +1,5 @@
 //
-// Copyright 2019 - 2026 (C). Alex Robenko. All rights reserved.
+// Copyright 2019 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -8,8 +8,7 @@
 #pragma once
 
 /// @file
-/// @brief Provides auxiliary functions for retrieving best type of iterator for
-/// read/write operations
+/// @brief Provides auxiliary functions for retrieving best type of iterator for read/write operations
 
 #include "comms/details/ReadIteratorHelper.h"
 #include "comms/details/WriteIteratorHelper.h"
@@ -17,18 +16,17 @@
 #include <type_traits>
 #include <utility>
 
-namespace comms {
+namespace comms
+{
 
 /// @brief Create and initialise iterator for message read
 /// @tparam TMessage Type of message interface class or smart pointer to it.
 /// @param[in] iter Iterator value.
 /// @return The same @b iter value, but casted to appropriate type
 template <typename TMessage, typename TIter>
-auto readIteratorFor(TIter &&iter)
-    -> decltype(details::ReadIteratorHelper<>::template get<TMessage>(
-        std::forward<TIter>(iter))) {
-  return details::ReadIteratorHelper<>::template get<TMessage>(
-      std::forward<TIter>(iter));
+auto readIteratorFor(TIter&& iter) -> decltype(details::ReadIteratorHelper<>::template get<TMessage>(std::forward<TIter>(iter)))
+{
+    return details::ReadIteratorHelper<>::template get<TMessage>(std::forward<TIter>(iter));
 }
 
 /// @brief Create and initialise iterator for message read
@@ -37,13 +35,11 @@ auto readIteratorFor(TIter &&iter)
 /// @param[in] iter Iterator value.
 /// @return The same @b iter value, but casted to appropriate type
 template <typename TMessage, typename TIter>
-auto readIteratorFor(TMessage &&msg, TIter &&iter)
-    -> decltype(details::ReadIteratorHelper<>::template get<
-                typename std::decay<decltype(msg)>::type>(
-        std::forward<TIter>(iter))) {
-  static_cast<void>(msg);
-  return details::ReadIteratorHelper<>::template get<
-      typename std::decay<decltype(msg)>::type>(std::forward<TIter>(iter));
+auto readIteratorFor(TMessage&& msg, TIter&& iter) ->
+    decltype(details::ReadIteratorHelper<>::template get<typename std::decay<decltype(msg)>::type>(std::forward<TIter>(iter)))
+{
+    static_cast<void>(msg);
+    return details::ReadIteratorHelper<>::template get<typename std::decay<decltype(msg)>::type>(std::forward<TIter>(iter));
 }
 
 /// @brief Create and initialise iterator for message write
@@ -51,11 +47,9 @@ auto readIteratorFor(TMessage &&msg, TIter &&iter)
 /// @param[in] iter Iterator value.
 /// @return The same @b iter value, but casted to appropriate type
 template <typename TMessage, typename TIter>
-auto writeIteratorFor(TIter &&iter)
-    -> decltype(details::WriteIteratorHelper<>::template get<TMessage>(
-        std::forward<TIter>(iter))) {
-  return details::WriteIteratorHelper<>::template get<TMessage>(
-      std::forward<TIter>(iter));
+auto writeIteratorFor(TIter&& iter) -> decltype(details::WriteIteratorHelper<>::template get<TMessage>(std::forward<TIter>(iter)))
+{
+    return details::WriteIteratorHelper<>::template get<TMessage>(std::forward<TIter>(iter));
 }
 
 /// @brief Create and initialise iterator for message write
@@ -64,13 +58,11 @@ auto writeIteratorFor(TIter &&iter)
 /// @param[in] iter Iterator value.
 /// @return The same @b iter value, but casted to appropriate type
 template <typename TMessage, typename TIter>
-auto writeIteratorFor(TMessage &&msg, TIter &&iter)
-    -> decltype(details::WriteIteratorHelper<>::template get<
-                typename std::decay<decltype(msg)>::type>(
-        std::forward<TIter>(iter))) {
-  static_cast<void>(msg);
-  return details::WriteIteratorHelper<>::template get<
-      typename std::decay<decltype(msg)>::type>(std::forward<TIter>(iter));
+auto writeIteratorFor(TMessage&& msg, TIter&& iter) ->
+    decltype(details::WriteIteratorHelper<>::template get<typename std::decay<decltype(msg)>::type>(std::forward<TIter>(iter)))
+{
+    static_cast<void>(msg);
+    return details::WriteIteratorHelper<>::template get<typename std::decay<decltype(msg)>::type>(std::forward<TIter>(iter));
 }
 
 } // namespace comms

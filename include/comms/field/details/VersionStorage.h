@@ -1,5 +1,5 @@
 //
-// Copyright 2019 - 2026 (C). Alex Robenko. All rights reserved.
+// Copyright 2019 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,17 +7,25 @@
 
 #pragma once
 
-namespace comms {
+namespace comms
+{
 
-namespace field {
+namespace field
+{
 
-namespace details {
+namespace details
+{
 
-template <typename TVersionType> struct VersionStorage {
-  TVersionType getVersion() const { return m_version; }
+template <typename TVersionType>
+struct VersionStorage
+{
+    TVersionType getVersion() const
+    {
+        return m_version;
+    }
 
 protected:
-  TVersionType m_version = TVersionType();
+    TVersionType m_version = TVersionType();
 };
 
 } // namespace details

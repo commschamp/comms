@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2026 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -13,68 +13,86 @@
 #include <limits>
 #include <utility>
 
-namespace comms {
+namespace comms
+{
 
-namespace field {
+namespace field
+{
 
-namespace adapter {
+namespace adapter
+{
 
-template <typename TBase> class SequenceSizeForcing : public TBase {
-  using BaseImpl = TBase;
-
+template <typename TBase>
+class SequenceSizeForcing : public TBase
+{
+    using BaseImpl = TBase;
 public:
-  using ValueType = typename BaseImpl::ValueType;
-  using ElementType = typename BaseImpl::ElementType;
+    using ValueType = typename BaseImpl::ValueType;
+    using ElementType = typename BaseImpl::ElementType;
 
-  SequenceSizeForcing() = default;
+    SequenceSizeForcing() = default;
 
-  explicit SequenceSizeForcing(const ValueType &val) : BaseImpl(val) {}
-
-  explicit SequenceSizeForcing(ValueType &&val) : BaseImpl(std::move(val)) {}
-
-  SequenceSizeForcing(const SequenceSizeForcing &) = default;
-  SequenceSizeForcing(SequenceSizeForcing &&) = default;
-  SequenceSizeForcing &operator=(const SequenceSizeForcing &) = default;
-  SequenceSizeForcing &operator=(SequenceSizeForcing &&) = default;
-
-  void forceReadElemCount(std::size_t val) {
-    COMMS_ASSERT(val != Cleared);
-    m_forced = val;
-  }
-
-  void clearReadElemCount() { m_forced = Cleared; }
-
-  template <typename TIter>
-  comms::ErrorStatus read(TIter &iter, std::size_t len) {
-    if (m_forced == Cleared) {
-      return BaseImpl::read(iter, len);
+    explicit SequenceSizeForcing(const ValueType& val)
+      : BaseImpl(val)
+    {
     }
 
-    return BaseImpl::readN(m_forced, iter, len);
-  }
-
-  template <typename TIter>
-  ErrorStatus readN(std::size_t count, TIter &iter, std::size_t &len) = delete;
-
-  template <typename TIter> void readNoStatus(TIter &iter) {
-    if (m_forced == Cleared) {
-      BaseImpl::readNoStatus(iter);
-      return;
+    explicit SequenceSizeForcing(ValueType&& val)
+      : BaseImpl(std::move(val))
+    {
     }
 
-    BaseImpl::readNoStatusN(m_forced, iter);
-  }
+    SequenceSizeForcing(const SequenceSizeForcing&) = default;
+    SequenceSizeForcing(SequenceSizeForcing&&) = default;
+    SequenceSizeForcing& operator=(const SequenceSizeForcing&) = default;
+    SequenceSizeForcing& operator=(SequenceSizeForcing&&) = default;
 
-  template <typename TIter>
-  void readNoStatusN(std::size_t count, TIter &iter) = delete;
+    void forceReadElemCount(std::size_t val)
+    {
+        COMMS_ASSERT(val != Cleared);
+        m_forced = val;
+    }
+
+    void clearReadElemCount()
+    {
+        m_forced = Cleared;
+    }
+
+    template <typename TIter>
+    comms::ErrorStatus read(TIter& iter, std::size_t len)
+    {
+        if (m_forced == Cleared) {
+            return BaseImpl::read(iter, len);
+        }
+
+        return BaseImpl::readN(m_forced, iter, len);
+    }
+
+    template <typename TIter>
+    ErrorStatus readN(std::size_t count, TIter& iter, std::size_t& len) = delete;
+
+    template <typename TIter>
+    void readNoStatus(TIter& iter)
+    {
+        if (m_forced == Cleared) {
+            BaseImpl::readNoStatus(iter);
+            return;
+        }
+
+        BaseImpl::readNoStatusN(m_forced, iter);
+    }
+
+    template <typename TIter>
+    void readNoStatusN(std::size_t count, TIter& iter) = delete;
 
 private:
-  static const std::size_t Cleared = std::numeric_limits<std::size_t>::max();
-  std::size_t m_forced = Cleared;
+    static const std::size_t Cleared = std::numeric_limits<std::size_t>::max();
+    std::size_t m_forced = Cleared;
 };
 
-} // namespace adapter
+}  // namespace adapter
 
-} // namespace field
+}  // namespace field
 
-} // namespace comms
+}  // namespace comms
+

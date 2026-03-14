@@ -1,1057 +1,1199 @@
 //
-// Copyright 2014 - 2026 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include "CommsTestCommon.h"
 #include "comms/comms.h"
+#include "CommsTestCommon.h"
 
 CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
 CC_ENABLE_WARNINGS()
 
-#include <algorithm>
-#include <cstddef>
 #include <cstdint>
+#include <cstddef>
+#include <algorithm>
 #include <iterator>
 
-class MsgIdLayerTestSuite : public CxxTest::TestSuite {
+class MsgIdLayerTestSuite : public CxxTest::TestSuite
+{
 public:
-  void test1();
-  void test2();
-  void test3();
-  void test4();
-  void test5();
-  void test6();
-  void test7();
-  void test8();
-  void test9();
-  void test10();
-  void test11();
-  void test12();
-  void test13();
-  void test14();
-  void test15();
-  void test16();
-  void test17();
-  void test18();
-  void test19();
-  void test20();
-  void test21();
-  void test22();
-  void test23();
-  void test24();
-  void test25();
-  void test26();
-  void test27();
-  void test28();
-  void test29();
-  void test30();
-  void test31();
-  void test32();
-  void test33();
-  void test34();
-  void test35();
+    void test1();
+    void test2();
+    void test3();
+    void test4();
+    void test5();
+    void test6();
+    void test7();
+    void test8();
+    void test9();
+    void test10();
+    void test11();
+    void test12();
+    void test13();
+    void test14();
+    void test15();
+    void test16();
+    void test17();
+    void test18();
+    void test19();
+    void test20();
+    void test21();
+    void test22();
+    void test23();
+    void test24();
+    void test25();
+    void test26();
+    void test27();
+    void test28();
+    void test29();
+    void test30();
+    void test31();
+    void test32();
+    void test33();
+    void test34();
+    void test35();
 
 private:
-  struct EmptyHandler {
-    template <typename TMsg> void handle(TMsg &msg) { static_cast<void>(msg); }
-  };
 
-  using CommonOptions = std::tuple<
-      comms::option::MsgIdType<MessageType>, comms::option::IdInfoInterface,
-      comms::option::ReadIterator<const char *>,
-      comms::option::WriteIterator<char *>, comms::option::ValidCheckInterface,
-      comms::option::LengthInfoInterface>;
+    struct EmptyHandler
+    {
+        template <typename TMsg>
+        void handle(TMsg& msg)
+        {
+            static_cast<void>(msg);
+        }
+    };
 
-  typedef std::tuple<comms::option::BigEndian, CommonOptions> BeTraits;
+    using CommonOptions =
+        std::tuple<
+            comms::option::MsgIdType<MessageType>,
+            comms::option::IdInfoInterface,
+            comms::option::ReadIterator<const char*>,
+            comms::option::WriteIterator<char*>,
+            comms::option::ValidCheckInterface,
+            comms::option::LengthInfoInterface
+        >;
 
-  typedef std::tuple<comms::option::LittleEndian, CommonOptions> LeTraits;
+    typedef std::tuple<
+        comms::option::BigEndian,
+        CommonOptions
+    > BeTraits;
 
-  typedef std::tuple<comms::option::MsgIdType<MessageType>,
-                     comms::option::BigEndian>
-      NonPolymorphicBigEndianTraits;
+    typedef std::tuple<
+        comms::option::LittleEndian,
+        CommonOptions
+    > LeTraits;
 
-  typedef std::tuple<comms::option::BigEndian,
-                     comms::option::app::Handler<EmptyHandler>, CommonOptions>
-      DispatchBeTraits;
+    typedef std::tuple<
+        comms::option::MsgIdType<MessageType>,
+        comms::option::BigEndian
+    > NonPolymorphicBigEndianTraits;
 
-  typedef TestMessageBase<BeTraits> BeMsgBase;
-  typedef TestMessageBase<LeTraits> LeMsgBase;
-  typedef TestMessageBase<DispatchBeTraits> BeDispatchMsgBase;
+    typedef std::tuple<
+        comms::option::BigEndian,
+        comms::option::app::Handler<EmptyHandler>,
+        CommonOptions
+    > DispatchBeTraits;
 
-  struct BeOnlyDestructorPolymorphicMessageBase
-      : public comms::Message<NonPolymorphicBigEndianTraits> {
-    virtual ~BeOnlyDestructorPolymorphicMessageBase() = default;
-  };
+    typedef TestMessageBase<BeTraits> BeMsgBase;
+    typedef TestMessageBase<LeTraits> LeMsgBase;
+    typedef TestMessageBase<DispatchBeTraits> BeDispatchMsgBase;
 
-  using BeNonPolymorphicMessageBase =
-      comms::Message<NonPolymorphicBigEndianTraits>;
+    struct BeOnlyDestructorPolymorphicMessageBase : public comms::Message<NonPolymorphicBigEndianTraits>
+    {
+        virtual ~BeOnlyDestructorPolymorphicMessageBase() = default;
+    };
 
-  typedef BeMsgBase::Field BeField;
-  typedef LeMsgBase::Field LeField;
+    using BeNonPolymorphicMessageBase = comms::Message<NonPolymorphicBigEndianTraits>;
 
-  typedef Message1<BeMsgBase> BeMsg1;
-  typedef Message1<LeMsgBase> LeMsg1;
-  typedef Message2<BeMsgBase> BeMsg2;
-  typedef Message2<LeMsgBase> LeMsg2;
-  typedef Message3<BeMsgBase> BeMsg3;
-  typedef Message3<LeMsgBase> LeMsg3;
-  typedef Message90_1<BeMsgBase> BeMsg90_1;
-  typedef Message90_2<BeMsgBase> BeMsg90_2;
+    typedef BeMsgBase::Field BeField;
+    typedef LeMsgBase::Field LeField;
 
-  typedef Message1<BeOnlyDestructorPolymorphicMessageBase>
-      OnlyDestructorVirtualBeMsg1;
-  typedef Message2<BeOnlyDestructorPolymorphicMessageBase>
-      OnlyDestructorVirtualBeMsg2;
+    typedef Message1<BeMsgBase> BeMsg1;
+    typedef Message1<LeMsgBase> LeMsg1;
+    typedef Message2<BeMsgBase> BeMsg2;
+    typedef Message2<LeMsgBase> LeMsg2;
+    typedef Message3<BeMsgBase> BeMsg3;
+    typedef Message3<LeMsgBase> LeMsg3;
+    typedef Message90_1<BeMsgBase> BeMsg90_1;
+    typedef Message90_2<BeMsgBase> BeMsg90_2;
 
-  typedef Message1<BeNonPolymorphicMessageBase> NonPolymorphicBeMsg1;
-  typedef Message2<BeNonPolymorphicMessageBase> NonPolymorphicBeMsg2;
-  typedef comms::GenericMessage<BeNonPolymorphicMessageBase>
-      NonPolymorphicBeGenericMsg;
+    typedef Message1<BeOnlyDestructorPolymorphicMessageBase> OnlyDestructorVirtualBeMsg1;
+    typedef Message2<BeOnlyDestructorPolymorphicMessageBase> OnlyDestructorVirtualBeMsg2;
 
-  template <typename TField>
-  using Field1 = comms::field::EnumValue<TField, MessageType,
-                                         comms::option::FixedLength<1>>;
+    typedef Message1<BeNonPolymorphicMessageBase> NonPolymorphicBeMsg1;
+    typedef Message2<BeNonPolymorphicMessageBase> NonPolymorphicBeMsg2;
+    typedef comms::GenericMessage<BeNonPolymorphicMessageBase> NonPolymorphicBeGenericMsg;
 
-  template <typename TField>
-  using Field2 = comms::field::EnumValue<TField, MessageType,
-                                         comms::option::FixedLength<2>>;
+    template <typename TField>
+    using Field1 =
+        comms::field::EnumValue<
+            TField,
+            MessageType,
+            comms::option::FixedLength<1>
+        >;
 
-  template <typename TField>
-  using Field3 = comms::field::EnumValue<TField, MessageType,
-                                         comms::option::FixedLength<3>>;
+    template <typename TField>
+    using Field2 =
+        comms::field::EnumValue<
+            TField,
+            MessageType,
+            comms::option::FixedLength<2>
+        >;
 
-  template <typename TField>
-  class Field4
-      : public comms::field::Bitfield<
+    template <typename TField>
+    using Field3 =
+        comms::field::EnumValue<
+            TField,
+            MessageType,
+            comms::option::FixedLength<3>
+        >;
+
+    template <typename TField>
+    class Field4 : public
+        comms::field::Bitfield<
             TField,
             std::tuple<
-                comms::field::EnumValue<TField, MessageType,
-                                        comms::option::FixedBitLength<6>>,
-                comms::field::IntValue<TField, std::uint8_t,
-                                       comms::option::FixedBitLength<2>>>> {
-    using Base = comms::field::Bitfield<
-        TField,
-        std::tuple<comms::field::EnumValue<TField, MessageType,
-                                           comms::option::FixedBitLength<6>>,
-                   comms::field::IntValue<TField, std::uint8_t,
-                                          comms::option::FixedBitLength<2>>>>;
+                comms::field::EnumValue<
+                    TField,
+                    MessageType,
+                    comms::option::FixedBitLength<6>
+                >,
+                comms::field::IntValue<
+                    TField,
+                    std::uint8_t,
+                    comms::option::FixedBitLength<2>
+                >
+            >
+        >
+    {
+        using Base =
+            comms::field::Bitfield<
+                TField,
+                std::tuple<
+                    comms::field::EnumValue<
+                        TField,
+                        MessageType,
+                        comms::option::FixedBitLength<6>
+                    >,
+                    comms::field::IntValue<
+                        TField,
+                        std::uint8_t,
+                        comms::option::FixedBitLength<2>
+                    >
+                >
+            >;
+    public:
+        COMMS_FIELD_MEMBERS_NAMES(id, flags);
 
-  public:
-    COMMS_FIELD_MEMBERS_NAMES(id, flags);
-
-    MessageType getValue() const { return field_id().getValue(); }
-
-    template <typename U> void setValue(U &&val) { field_id().setValue(val); }
-  };
-
-  typedef Field1<BeField> BeField1;
-  typedef Field1<LeField> LeField1;
-  typedef Field2<BeField> BeField2;
-  typedef Field2<LeField> LeField2;
-  typedef Field3<BeField> BeField3;
-  typedef Field3<LeField> LeField3;
-  typedef Field4<BeField> BeField4;
-
-  template <typename TField, typename TMessage,
-            template <class> class TAllMessages = AllTestMessages>
-  class Frame : public comms::frame::MsgIdLayer<TField, TMessage,
-                                                TAllMessages<TMessage>,
-                                                comms::frame::MsgDataLayer<>> {
-    using Base =
-        comms::frame::MsgIdLayer<TField, TMessage, TAllMessages<TMessage>,
-                                 comms::frame::MsgDataLayer<>>;
-
-  public:
-    COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-  };
-
-  template <typename TField, typename TMessage,
-            template <class> class TAllMessages = AllTestMessages>
-  class InPlaceFrame
-      : public comms::frame::MsgIdLayer<
-            TField, TMessage, TAllMessages<TMessage>,
-            comms::frame::MsgDataLayer<>, comms::option::InPlaceAllocation> {
-    using Base =
-        comms::frame::MsgIdLayer<TField, TMessage, TAllMessages<TMessage>,
-                                 comms::frame::MsgDataLayer<>,
-                                 comms::option::InPlaceAllocation>;
-
-  public:
-    COMMS_FRAME_LAYERS_NAMES(payload, id);
-  };
-
-  template <typename TField, typename TMessage>
-  class NoMessagesFrame
-      : public comms::frame::MsgIdLayer<TField, TMessage, std::tuple<>,
-                                        comms::frame::MsgDataLayer<>> {
-    using Base = comms::frame::MsgIdLayer<TField, TMessage, std::tuple<>,
-                                          comms::frame::MsgDataLayer<>>;
-
-  public:
-    COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-  };
-
-  template <typename TField, typename TMessage,
-            template <class> class TAllMessages = AllTestMessages>
-  class GenericMessageFrame
-      : public comms::frame::MsgIdLayer<TField, TMessage,
-                                        TAllMessages<TMessage>,
-                                        comms::frame::MsgDataLayer<>,
-                                        comms::option::SupportGenericMessage<
-                                            comms::GenericMessage<TMessage>>> {
-    using Base = comms::frame::MsgIdLayer<
-        TField, TMessage, TAllMessages<TMessage>, comms::frame::MsgDataLayer<>,
-        comms::option::SupportGenericMessage<comms::GenericMessage<TMessage>>>;
-
-  public:
-    COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-  };
-
-  template <typename TField, typename TMessage,
-            template <class> class TAllMessages = AllTestMessages>
-  class GenericMessageInPlaceAllocFrame
-      : public comms::frame::MsgIdLayer<TField, TMessage,
-                                        TAllMessages<TMessage>,
-                                        comms::frame::MsgDataLayer<>,
-                                        comms::option::SupportGenericMessage<
-                                            comms::GenericMessage<TMessage>>,
-                                        comms::option::InPlaceAllocation> {
-    using Base = comms::frame::MsgIdLayer<
-        TField, TMessage, TAllMessages<TMessage>, comms::frame::MsgDataLayer<>,
-        comms::option::SupportGenericMessage<comms::GenericMessage<TMessage>>,
-        comms::option::InPlaceAllocation>;
-
-  public:
-    COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-  };
-
-  template <typename TField, typename TMessage,
-            template <class> class TAllMessages = AllTestMessages>
-  class FramePolymorphic : public comms::frame::MsgIdLayer<
-                               TField, TMessage, TAllMessages<TMessage>,
-                               comms::frame::MsgDataLayer<>,
-                               comms::option::ForceDispatchPolymorphic> {
-    using Base =
-        comms::frame::MsgIdLayer<TField, TMessage, TAllMessages<TMessage>,
-                                 comms::frame::MsgDataLayer<>,
-                                 comms::option::ForceDispatchPolymorphic>;
-
-  public:
-    COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-  };
-
-  template <typename TField, typename TMessage,
-            template <class> class TAllMessages = AllTestMessages>
-  class FrameStaticBinSearch
-      : public comms::frame::MsgIdLayer<
-            TField, TMessage, TAllMessages<TMessage>,
-            comms::frame::MsgDataLayer<>,
-            comms::option::ForceDispatchStaticBinSearch> {
-    using Base =
-        comms::frame::MsgIdLayer<TField, TMessage, TAllMessages<TMessage>,
-                                 comms::frame::MsgDataLayer<>,
-                                 comms::option::ForceDispatchStaticBinSearch>;
-
-  public:
-    COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-  };
-
-  template <typename TField, typename TMessage,
-            template <class> class TAllMessages = AllTestMessages>
-  class FrameLinearSwitch : public comms::frame::MsgIdLayer<
-                                TField, TMessage, TAllMessages<TMessage>,
-                                comms::frame::MsgDataLayer<>,
-                                comms::option::ForceDispatchLinearSwitch> {
-    using Base =
-        comms::frame::MsgIdLayer<TField, TMessage, TAllMessages<TMessage>,
-                                 comms::frame::MsgDataLayer<>,
-                                 comms::option::ForceDispatchLinearSwitch>;
-
-  public:
-    COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-  };
-
-  template <typename TInterface> class CustomMsgFactory {
-  public:
-    using Message = TInterface;
-    using MsgIdParamType = typename TInterface::MsgIdParamType;
-    using MsgIdType = typename TInterface::MsgIdType;
-    using MsgPtr = typename std::unique_ptr<TInterface>;
-    using CreateFailureReason = comms::MsgFactoryCreateFailureReason;
-    using GenericMessage = typename comms::GenericMessage<Message>;
-
-    MsgPtr createMsg(MsgIdParamType id, unsigned idx = 0U,
-                     CreateFailureReason *reason = nullptr) const {
-      static_cast<void>(idx);
-      auto updateReasonFunc = [&reason](CreateFailureReason r) {
-        if (reason != nullptr) {
-          *reason = r;
-        }
-      };
-
-      if (msgCount(id) <= idx) {
-        updateReasonFunc(CreateFailureReason::InvalidId);
-        return MsgPtr();
-      }
-
-      updateReasonFunc(CreateFailureReason::None);
-
-      switch (id) {
-      case MessageType1: {
-        COMMS_ASSERT(idx == 0);
-        return MsgPtr(new Message1<Message>);
-      }
-      case MessageType2: {
-        COMMS_ASSERT(idx == 0);
-        return MsgPtr(new Message2<Message>);
-      }
-      case MessageType3: {
-        COMMS_ASSERT(idx == 0);
-        return MsgPtr(new Message3<Message>);
-      }
-      case MessageType4: {
-        COMMS_ASSERT(idx == 0);
-        return MsgPtr(new Message4<Message>);
-      }
-      case MessageType5: {
-        COMMS_ASSERT(idx == 0);
-        return MsgPtr(new Message5<Message>);
-      }
-      case MessageType6: {
-        COMMS_ASSERT(idx == 0);
-        return MsgPtr(new Message6<Message>);
-      }
-      case MessageType7: {
-        COMMS_ASSERT(idx == 0);
-        return MsgPtr(new Message7<Message>);
-      }
-      case MessageType8: {
-        COMMS_ASSERT(idx == 0);
-        return MsgPtr(new Message8<Message>);
-      }
-      case MessageType9: {
-        COMMS_ASSERT(idx == 0);
-        return MsgPtr(new Message7<Message>);
-      }
-      case MessageType10: {
-        COMMS_ASSERT(idx == 0);
-        return MsgPtr(new Message10<Message>);
-      }
-      case MessageType90: {
-        if (idx == 0) {
-          return MsgPtr(new Message90_1<Message>);
+        MessageType getValue() const
+        {
+            return field_id().getValue();
         }
 
-        COMMS_ASSERT(idx == 1);
-        return MsgPtr(new Message90_2<Message>);
-      }
-      default: {
-        break;
-      }
-      }
+        template <typename U>
+        void setValue(U&& val)
+        {
+            field_id().setValue(val);
+        }
 
-      updateReasonFunc(CreateFailureReason::InvalidId);
-      return MsgPtr();
-    }
+    };
 
-    MsgPtr createGenericMsg(MsgIdParamType id, unsigned idx = 0U) const {
-      static_cast<void>(idx);
-      return MsgPtr(new GenericMessage(id));
-    }
+    typedef Field1<BeField> BeField1;
+    typedef Field1<LeField> LeField1;
+    typedef Field2<BeField> BeField2;
+    typedef Field2<LeField> LeField2;
+    typedef Field3<BeField> BeField3;
+    typedef Field3<LeField> LeField3;
+    typedef Field4<BeField> BeField4;
 
-    bool canAllocate() const { return true; }
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
+    class Frame : public
+        comms::frame::MsgIdLayer<
+            TField,
+            TMessage,
+            TAllMessages<TMessage>,
+            comms::frame::MsgDataLayer<>
+        >
+    {
+        using Base =
+            comms::frame::MsgIdLayer<
+                TField,
+                TMessage,
+                TAllMessages<TMessage>,
+                comms::frame::MsgDataLayer<>
+            >;
+    public:
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
+    };
 
-    std::size_t msgCount(MsgIdParamType id) const {
-      switch (id) {
-      case MessageType1:
-        return 1;
-      case MessageType2:
-        return 1;
-      case MessageType3:
-        return 1;
-      case MessageType4:
-        return 1;
-      case MessageType5:
-        return 1;
-      case MessageType6:
-        return 1;
-      case MessageType7:
-        return 1;
-      case MessageType8:
-        return 1;
-      case MessageType9:
-        return 1;
-      case MessageType10:
-        return 1;
-      case MessageType90:
-        return 2;
-      default: {
-        break;
-      }
-      }
-
-      return 0U;
-    }
-
-    static constexpr bool hasUniqueIds() { return false; }
-
-    static constexpr bool isDispatchPolymorphic() { return false; }
-
-    static constexpr bool isDispatchStaticBinSearch() { return false; }
-
-    static constexpr bool isDispatchLinearSwitch() { return false; }
-
-    static constexpr bool hasInPlaceAllocation() { return false; }
-
-    static constexpr bool hasGenericMessageSupport() { return true; }
-
-    static constexpr bool hasForcedDispatch() { return true; }
-  };
-
-  template <typename TInterface, typename TAllMessages, typename... TOptions>
-  using CustomMsgFactoryTempl = CustomMsgFactory<TInterface>;
-
-  template <typename TField, typename TMessage,
-            template <class> class TAllMessages = AllTestMessages>
-  class FrameCustomFactory
-      : public comms::frame::MsgIdLayer<
-            TField, TMessage, TAllMessages<TMessage>,
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
+    class InPlaceFrame : public
+        comms::frame::MsgIdLayer<
+            TField,
+            TMessage,
+            TAllMessages<TMessage>,
             comms::frame::MsgDataLayer<>,
-            comms::option::app::MsgFactory<CustomMsgFactory<TMessage>>> {
-    using Base = comms::frame::MsgIdLayer<
-        TField, TMessage, TAllMessages<TMessage>, comms::frame::MsgDataLayer<>,
-        comms::option::app::MsgFactory<CustomMsgFactory<TMessage>>>;
+            comms::option::InPlaceAllocation
+        >
+    {
+        using Base =
+            comms::frame::MsgIdLayer<
+                TField,
+                TMessage,
+                TAllMessages<TMessage>,
+                comms::frame::MsgDataLayer<>,
+                comms::option::InPlaceAllocation
+            >;
+    public:
+        COMMS_FRAME_LAYERS_NAMES(payload, id);
+    };
 
-  public:
-    COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-  };
+    template <typename TField, typename TMessage>
+    class NoMessagesFrame : public
+        comms::frame::MsgIdLayer<
+            TField,
+            TMessage,
+            std::tuple<>,
+            comms::frame::MsgDataLayer<>
+        >
+    {
+        using Base =
+            comms::frame::MsgIdLayer<
+                TField,
+                TMessage,
+                std::tuple<>,
+                comms::frame::MsgDataLayer<>
+            >;
+    public:
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
+    };
 
-  template <typename TField, typename TMessage,
-            template <class> class TAllMessages = AllTestMessages>
-  class FrameCustomFactoryTempl
-      : public comms::frame::MsgIdLayer<
-            TField, TMessage, TAllMessages<TMessage>,
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
+    class GenericMessageFrame : public
+        comms::frame::MsgIdLayer<
+            TField,
+            TMessage,
+            TAllMessages<TMessage>,
             comms::frame::MsgDataLayer<>,
-            comms::option::app::MsgFactoryTempl<CustomMsgFactoryTempl>> {
-    using Base = comms::frame::MsgIdLayer<
-        TField, TMessage, TAllMessages<TMessage>, comms::frame::MsgDataLayer<>,
-        comms::option::app::MsgFactoryTempl<CustomMsgFactoryTempl>>;
+            comms::option::SupportGenericMessage<comms::GenericMessage<TMessage> >
+        >
+    {
+        using Base =
+            comms::frame::MsgIdLayer<
+                TField,
+                TMessage,
+                TAllMessages<TMessage>,
+                comms::frame::MsgDataLayer<>,
+                comms::option::SupportGenericMessage<comms::GenericMessage<TMessage> >
+            >;
+    public:
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
+    };
 
-  public:
-    COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
-  };
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
+    class GenericMessageInPlaceAllocFrame : public
+        comms::frame::MsgIdLayer<
+            TField,
+            TMessage,
+            TAllMessages<TMessage>,
+            comms::frame::MsgDataLayer<>,
+            comms::option::SupportGenericMessage<comms::GenericMessage<TMessage> >,
+            comms::option::InPlaceAllocation
+        >
+    {
+        using Base =
+            comms::frame::MsgIdLayer<
+                TField,
+                TMessage,
+                TAllMessages<TMessage>,
+                comms::frame::MsgDataLayer<>,
+                comms::option::SupportGenericMessage<comms::GenericMessage<TMessage> >,
+                comms::option::InPlaceAllocation
+            >;
+    public:
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
+    };
+
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
+    class FramePolymorphic : public
+        comms::frame::MsgIdLayer<
+            TField,
+            TMessage,
+            TAllMessages<TMessage>,
+            comms::frame::MsgDataLayer<>,
+            comms::option::ForceDispatchPolymorphic
+        >
+    {
+        using Base =
+            comms::frame::MsgIdLayer<
+                TField,
+                TMessage,
+                TAllMessages<TMessage>,
+                comms::frame::MsgDataLayer<>,
+                comms::option::ForceDispatchPolymorphic
+            >;
+    public:
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
+    };
+
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
+    class FrameStaticBinSearch : public
+        comms::frame::MsgIdLayer<
+            TField,
+            TMessage,
+            TAllMessages<TMessage>,
+            comms::frame::MsgDataLayer<>,
+            comms::option::ForceDispatchStaticBinSearch
+        >
+    {
+        using Base =
+            comms::frame::MsgIdLayer<
+                TField,
+                TMessage,
+                TAllMessages<TMessage>,
+                comms::frame::MsgDataLayer<>,
+                comms::option::ForceDispatchStaticBinSearch
+            >;
+    public:
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
+    };
+
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
+    class FrameLinearSwitch : public
+        comms::frame::MsgIdLayer<
+            TField,
+            TMessage,
+            TAllMessages<TMessage>,
+            comms::frame::MsgDataLayer<>,
+            comms::option::ForceDispatchLinearSwitch
+        >
+    {
+        using Base =
+            comms::frame::MsgIdLayer<
+                TField,
+                TMessage,
+                TAllMessages<TMessage>,
+                comms::frame::MsgDataLayer<>,
+                comms::option::ForceDispatchLinearSwitch
+            >;
+    public:
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
+    };
+
+    template <typename TInterface>
+    class CustomMsgFactory
+    {
+    public:
+        using Message = TInterface;
+        using MsgIdParamType = typename TInterface::MsgIdParamType;
+        using MsgIdType = typename TInterface::MsgIdType;
+        using MsgPtr = typename std::unique_ptr<TInterface>;
+        using CreateFailureReason = comms::MsgFactoryCreateFailureReason;
+        using GenericMessage = typename comms::GenericMessage<Message>;
+
+        MsgPtr createMsg(MsgIdParamType id, unsigned idx = 0U, CreateFailureReason* reason = nullptr) const
+        {
+            static_cast<void>(idx);
+            auto updateReasonFunc =
+                [&reason](CreateFailureReason r)
+                {
+                    if (reason != nullptr) {
+                        *reason = r;
+                    }
+                };
+
+            if (msgCount(id) <= idx) {
+                updateReasonFunc(CreateFailureReason::InvalidId);
+                return MsgPtr();
+            }
+
+            updateReasonFunc(CreateFailureReason::None);
+
+            switch (id) {
+                case MessageType1: {
+                    COMMS_ASSERT(idx == 0);
+                    return MsgPtr(new Message1<Message>);
+                }
+                case MessageType2: {
+                    COMMS_ASSERT(idx == 0);
+                    return MsgPtr(new Message2<Message>);
+                }
+                case MessageType3: {
+                    COMMS_ASSERT(idx == 0);
+                    return MsgPtr(new Message3<Message>);
+                }
+                case MessageType4: {
+                    COMMS_ASSERT(idx == 0);
+                    return MsgPtr(new Message4<Message>);
+                }
+                case MessageType5: {
+                    COMMS_ASSERT(idx == 0);
+                    return MsgPtr(new Message5<Message>);
+                }
+                case MessageType6: {
+                    COMMS_ASSERT(idx == 0);
+                    return MsgPtr(new Message6<Message>);
+                }
+                case MessageType7: {
+                    COMMS_ASSERT(idx == 0);
+                    return MsgPtr(new Message7<Message>);
+                }
+                case MessageType8: {
+                    COMMS_ASSERT(idx == 0);
+                    return MsgPtr(new Message8<Message>);
+                }
+                case MessageType9: {
+                    COMMS_ASSERT(idx == 0);
+                    return MsgPtr(new Message7<Message>);
+                }
+                case MessageType10: {
+                    COMMS_ASSERT(idx == 0);
+                    return MsgPtr(new Message10<Message>);
+                }
+                case MessageType90: {
+                    if (idx == 0) {
+                        return MsgPtr(new Message90_1<Message>);
+                    }
+
+                    COMMS_ASSERT(idx == 1);
+                    return MsgPtr(new Message90_2<Message>);
+                }
+                default: {
+                    break;
+                }
+            }
+
+            updateReasonFunc(CreateFailureReason::InvalidId);
+            return MsgPtr();
+        }
+
+        MsgPtr createGenericMsg(MsgIdParamType id, unsigned idx = 0U) const
+        {
+            static_cast<void>(idx);
+            return MsgPtr(new GenericMessage(id));
+        }
+
+        bool canAllocate() const
+        {
+            return true;
+        }
+
+        std::size_t msgCount(MsgIdParamType id) const
+        {
+            switch (id) {
+                case MessageType1: return 1;
+                case MessageType2: return 1;
+                case MessageType3: return 1;
+                case MessageType4: return 1;
+                case MessageType5: return 1;
+                case MessageType6: return 1;
+                case MessageType7: return 1;
+                case MessageType8: return 1;
+                case MessageType9: return 1;
+                case MessageType10: return 1;
+                case MessageType90: return 2;
+                default: {
+                    break;
+                }
+            }
+
+            return 0U;
+        }
+
+        static constexpr bool hasUniqueIds()
+        {
+            return false;
+        }
+
+        static constexpr bool isDispatchPolymorphic()
+        {
+            return false;
+        }
+
+        static constexpr bool isDispatchStaticBinSearch()
+        {
+            return false;
+        }
+
+        static constexpr bool isDispatchLinearSwitch()
+        {
+            return false;
+        }
+
+        static constexpr bool hasInPlaceAllocation()
+        {
+            return false;
+        }
+
+        static constexpr bool hasGenericMessageSupport()
+        {
+            return true;
+        }
+
+        static constexpr bool hasForcedDispatch()
+        {
+            return true;
+        }
+    };
+
+    template <typename TInterface, typename TAllMessages, typename... TOptions>
+    using CustomMsgFactoryTempl = CustomMsgFactory<TInterface>;
+
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
+    class FrameCustomFactory : public
+        comms::frame::MsgIdLayer<
+            TField,
+            TMessage,
+            TAllMessages<TMessage>,
+            comms::frame::MsgDataLayer<>,
+            comms::option::app::MsgFactory<CustomMsgFactory<TMessage> >
+        >
+    {
+    using Base =
+        comms::frame::MsgIdLayer<
+            TField,
+            TMessage,
+            TAllMessages<TMessage>,
+            comms::frame::MsgDataLayer<>,
+            comms::option::app::MsgFactory<CustomMsgFactory<TMessage> >
+        >;
+
+    public:
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
+    };
+
+    template <typename TField, typename TMessage, template<class> class TAllMessages = AllTestMessages>
+    class FrameCustomFactoryTempl : public
+        comms::frame::MsgIdLayer<
+            TField,
+            TMessage,
+            TAllMessages<TMessage>,
+            comms::frame::MsgDataLayer<>,
+            comms::option::app::MsgFactoryTempl<CustomMsgFactoryTempl>
+        >
+    {
+    using Base =
+        comms::frame::MsgIdLayer<
+            TField,
+            TMessage,
+            TAllMessages<TMessage>,
+            comms::frame::MsgDataLayer<>,
+            comms::option::app::MsgFactoryTempl<CustomMsgFactoryTempl>
+        >;
+
+    public:
+        COMMS_FRAME_LAYERS_NAMES_OUTER(id, payload);
+    };
 };
 
-void MsgIdLayerTestSuite::test1() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
+void MsgIdLayerTestSuite::test1()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = Frame<BeField1, BeMsgBase>;
-  static_assert(!TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
+    using TestFrame = Frame<BeField1, BeMsgBase>;
+    static_assert(!TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
 
-  TestFrame frame;
-  static_cast<void>(frame.layer_id());
-  auto &payloadLayer = frame.layer_payload();
-  using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
-  static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(),
-                "Invalid layer");
-  static_cast<void>(payloadLayer);
+    TestFrame frame;
+    static_cast<void>(frame.layer_id());
+    auto& payloadLayer = frame.layer_payload();
+    using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
+    static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(), "Invalid layer");
+    static_cast<void>(payloadLayer);
 
-  auto &idLayer =
-      static_cast<const Frame<BeField1, BeMsgBase> &>(frame).layer_id();
-  using IdLayerType = typename std::decay<decltype(idLayer)>::type;
-  static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
-  static_cast<void>(idLayer);
+    auto& idLayer = static_cast<const Frame<BeField1, BeMsgBase>&>(frame).layer_id();
+    using IdLayerType = typename std::decay<decltype(idLayer)>::type;
+    static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
+    static_cast<void>(idLayer);
 
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
-  auto &msg1 = dynamic_cast<BeMsg1 &>(*msgPtr);
-  TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+    auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
+    TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
 
-  InPlaceFrame<BeField1, BeMsgBase> inPlaceFrame;
-  auto &inPlacePayloadLayer = inPlaceFrame.layer_payload();
-  using InPlacePayloadLayerType =
-      typename std::decay<decltype(inPlacePayloadLayer)>::type;
-  static_assert(comms::frame::isMsgDataLayer<InPlacePayloadLayerType>(),
-                "Invalid layer");
-  static_cast<void>(inPlacePayloadLayer);
+    InPlaceFrame<BeField1, BeMsgBase> inPlaceFrame;
+    auto& inPlacePayloadLayer = inPlaceFrame.layer_payload();
+    using InPlacePayloadLayerType = typename std::decay<decltype(inPlacePayloadLayer)>::type;
+    static_assert(comms::frame::isMsgDataLayer<InPlacePayloadLayerType>(), "Invalid layer");
+    static_cast<void>(inPlacePayloadLayer);
 
-  auto &inPlaceIdLayer =
-      static_cast<const InPlaceFrame<BeField1, BeMsgBase> &>(inPlaceFrame)
-          .layer_id();
-  using InPlaceIdLayerType =
-      typename std::decay<decltype(inPlaceIdLayer)>::type;
-  static_assert(comms::frame::isMsgIdLayer<InPlaceIdLayerType>(),
-                "Invalid layer");
-  static_cast<void>(inPlaceIdLayer);
+    auto& inPlaceIdLayer = static_cast<const InPlaceFrame<BeField1, BeMsgBase>&>(inPlaceFrame).layer_id();
+    using InPlaceIdLayerType = typename std::decay<decltype(inPlaceIdLayer)>::type;
+    static_assert(comms::frame::isMsgIdLayer<InPlaceIdLayerType>(), "Invalid layer");
+    static_cast<void>(inPlaceIdLayer);
 
-  auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr2);
-  TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType1);
-  auto &msg2 = dynamic_cast<BeMsg1 &>(*msgPtr2);
-  TS_ASSERT_EQUALS(std::get<0>(msg2.fields()).value(), 0x0102);
+    auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr2);
+    TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType1);
+    auto& msg2 = dynamic_cast<BeMsg1&>(*msgPtr2);
+    TS_ASSERT_EQUALS(std::get<0>(msg2.fields()).value(), 0x0102);
 
-  TS_ASSERT_EQUALS(msg1, msg2);
+    TS_ASSERT_EQUALS(msg1, msg2);
 
-  auto msgPtr3 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize,
-                                        comms::ErrorStatus::MsgAllocFailure);
-  TS_ASSERT(!msgPtr3);
+    auto msgPtr3 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize, comms::ErrorStatus::MsgAllocFailure);
+    TS_ASSERT(!msgPtr3);
 }
 
-void MsgIdLayerTestSuite::test2() {
-  BeMsg1 msg;
-  std::get<0>(msg.fields()).value() = 0x0203;
+void MsgIdLayerTestSuite::test2()
+{
+    BeMsg1 msg;
+    std::get<0>(msg.fields()).value() = 0x0203;
 
-  static const char ExpectedBuf[] = {0x0, MessageType1, 0x02, 0x03};
+    static const char ExpectedBuf[] = {
+        0x0, MessageType1, 0x02, 0x03
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(ExpectedBuf)>::value;
 
-  char buf[BufSize] = {0};
+    char buf[BufSize] = {0};
 
-  Frame<BeField2, BeMsgBase> frame;
-  commonWriteReadMsgTest(frame, msg, buf, BufSize, &ExpectedBuf[0]);
+    Frame<BeField2, BeMsgBase> frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, &ExpectedBuf[0]);
 
-  InPlaceFrame<BeField2, BeMsgBase> inPlaceFrame;
-  commonWriteReadMsgTest(inPlaceFrame, msg, buf, BufSize, &ExpectedBuf[0]);
+    InPlaceFrame<BeField2, BeMsgBase> inPlaceFrame;
+    commonWriteReadMsgTest(inPlaceFrame, msg, buf, BufSize, &ExpectedBuf[0]);
+
 }
 
-void MsgIdLayerTestSuite::test3() {
-  static const char Buf[] = {MessageType2, 0, 0};
+void MsgIdLayerTestSuite::test3()
+{
+    static const char Buf[] = {
+        MessageType2, 0, 0
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  Frame<LeField3, LeMsgBase> frame;
+    Frame<LeField3, LeMsgBase> frame;
 
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType2);
-  auto &msg1 = dynamic_cast<LeMsg2 &>(*msgPtr);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType2);
+    auto& msg1 = dynamic_cast<LeMsg2&>(*msgPtr);
 
-  InPlaceFrame<LeField3, LeMsgBase> inPlaceFrame;
-  auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr2);
-  TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType2);
-  auto &msg2 = dynamic_cast<LeMsg2 &>(*msgPtr2);
-  TS_ASSERT_EQUALS(msg1, msg2);
+    InPlaceFrame<LeField3, LeMsgBase> inPlaceFrame;
+    auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr2);
+    TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType2);
+    auto& msg2 = dynamic_cast<LeMsg2&>(*msgPtr2);
+    TS_ASSERT_EQUALS(msg1, msg2);
 
-  auto msgPtr3 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize,
-                                        comms::ErrorStatus::MsgAllocFailure);
-  TS_ASSERT(!msgPtr3);
+    auto msgPtr3 = commonReadWriteMsgTest(inPlaceFrame, &Buf[0], BufSize, comms::ErrorStatus::MsgAllocFailure);
+    TS_ASSERT(!msgPtr3);
 
-  CountHandler<LeMsgBase> handler;
-  comms::processAllWithDispatch(&Buf[0], BufSize, frame, handler);
-  TS_ASSERT_EQUALS(handler.getCustomCount(), 1U);
-  TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
+    CountHandler<LeMsgBase> handler;
+    comms::processAllWithDispatch(&Buf[0], BufSize, frame, handler);
+    TS_ASSERT_EQUALS(handler.getCustomCount(), 1U);
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
 }
 
-void MsgIdLayerTestSuite::test4() {
-  static const char Buf[] = {0x0, UnusedValue1, 0x00, 0x00};
+void MsgIdLayerTestSuite::test4()
+{
+    static const char Buf[] = {
+        0x0, UnusedValue1, 0x00, 0x00
+    };
 
-  static const auto BufSize = std::extent<decltype(Buf)>::value;
+    static const auto BufSize = std::extent<decltype(Buf)>::value;
 
-  Frame<BeField2, BeMsgBase> frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, Buf, BufSize,
-                                       comms::ErrorStatus::InvalidMsgId);
-  TS_ASSERT(!msgPtr);
+    Frame<BeField2, BeMsgBase> frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, Buf, BufSize, comms::ErrorStatus::InvalidMsgId);
+    TS_ASSERT(!msgPtr);
 
-  InPlaceFrame<BeField2, BeMsgBase> inPlaceFrame;
-  auto inPlaceMsgPtr = commonReadWriteMsgTest(inPlaceFrame, Buf, BufSize,
-                                              comms::ErrorStatus::InvalidMsgId);
-  TS_ASSERT(!inPlaceMsgPtr);
+    InPlaceFrame<BeField2, BeMsgBase> inPlaceFrame;
+    auto inPlaceMsgPtr = commonReadWriteMsgTest(inPlaceFrame, Buf, BufSize, comms::ErrorStatus::InvalidMsgId);
+    TS_ASSERT(!inPlaceMsgPtr);
 }
 
-void MsgIdLayerTestSuite::test5() {
-  BeMsg1 msg;
-  std::get<0>(msg.fields()).value() = 0x0203;
+void MsgIdLayerTestSuite::test5()
+{
+    BeMsg1 msg;
+    std::get<0>(msg.fields()).value() = 0x0203;
 
-  char buf[2] = {0};
-  static const auto BufSize = std::extent<decltype(buf)>::value;
+    char buf[2] = {0};
+    static const auto BufSize = std::extent<decltype(buf)>::value;
 
-  Frame<BeField3, BeMsgBase> frame;
-  commonWriteReadMsgTest(frame, msg, buf, BufSize, nullptr,
-                         comms::ErrorStatus::BufferOverflow);
+    Frame<BeField3, BeMsgBase> frame;
+    commonWriteReadMsgTest(frame, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
 
-  InPlaceFrame<BeField3, BeMsgBase> inPlaceFrame;
-  commonWriteReadMsgTest(inPlaceFrame, msg, buf, BufSize, nullptr,
-                         comms::ErrorStatus::BufferOverflow);
+    InPlaceFrame<BeField3, BeMsgBase> inPlaceFrame;
+    commonWriteReadMsgTest(inPlaceFrame, msg, buf, BufSize, nullptr, comms::ErrorStatus::BufferOverflow);
 }
 
-void MsgIdLayerTestSuite::test6() {
-  Frame<BeField2, BeMsgBase> frame;
+void MsgIdLayerTestSuite::test6()
+{
+    Frame<BeField2, BeMsgBase> frame;
 
-  auto msgPtr = frame.createMsg(MessageType3);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType3);
-  TS_ASSERT(!msgPtr->valid());
-  auto *msg3 = dynamic_cast<BeMsg3 *>(msgPtr.get());
-  TS_ASSERT(msg3 != nullptr);
+    auto msgPtr = frame.createMsg(MessageType3);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType3);
+    TS_ASSERT(!msgPtr->valid());
+    auto* msg3 = dynamic_cast<BeMsg3*>(msgPtr.get());
+    TS_ASSERT(msg3 != nullptr);
 }
 
-void MsgIdLayerTestSuite::test7() {
-  static const char Buf[] = {MessageType1, 0x0, 0x01, 0x02};
+void MsgIdLayerTestSuite::test7()
+{
+    static const char Buf[] = {
+        MessageType1, 0x0, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  typedef Frame<LeField2, LeMsgBase> ProtFrame;
-  ProtFrame::AllFields fields;
-  ProtFrame frame;
+    typedef Frame<LeField2, LeMsgBase> ProtFrame;
+    ProtFrame::AllFields fields;
+    ProtFrame frame;
 
-  auto msgPtr = commonReadWriteMsgTest(frame, fields, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
-  auto &msg1 = dynamic_cast<LeMsg1 &>(*msgPtr);
-  TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0201);
-  TS_ASSERT_EQUALS(frame.accessCachedField(fields).value(), MessageType1);
-  TS_ASSERT_EQUALS(frame.nextLayer().accessCachedField(fields).value(),
-                   std::vector<std::uint8_t>({0x01, 0x02}));
+    auto msgPtr = commonReadWriteMsgTest(frame, fields, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+    auto& msg1 = dynamic_cast<LeMsg1&>(*msgPtr);
+    TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0201);
+    TS_ASSERT_EQUALS(frame.accessCachedField(fields).value(), MessageType1);
+    TS_ASSERT_EQUALS(frame.nextLayer().accessCachedField(fields).value(), std::vector<std::uint8_t>({0x01, 0x02}));
 
-  typedef InPlaceFrame<LeField2, LeMsgBase> InPlaceProtFrame;
-  InPlaceProtFrame::AllFields fields2;
-  InPlaceProtFrame inPlaceFrame;
-  auto msgPtr2 =
-      commonReadWriteMsgTest(inPlaceFrame, fields2, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr2);
-  TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType1);
-  auto &msg2 = dynamic_cast<LeMsg1 &>(*msgPtr2);
-  TS_ASSERT_EQUALS(std::get<0>(msg2.fields()).value(), 0x0201);
+    typedef InPlaceFrame<LeField2, LeMsgBase> InPlaceProtFrame;
+    InPlaceProtFrame::AllFields fields2;
+    InPlaceProtFrame inPlaceFrame;
+    auto msgPtr2 = commonReadWriteMsgTest(inPlaceFrame, fields2, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr2);
+    TS_ASSERT_EQUALS(msgPtr2->getId(), MessageType1);
+    auto& msg2 = dynamic_cast<LeMsg1&>(*msgPtr2);
+    TS_ASSERT_EQUALS(std::get<0>(msg2.fields()).value(), 0x0201);
 
-  TS_ASSERT_EQUALS(msg1, msg2);
-  TS_ASSERT_EQUALS(fields, fields2);
+    TS_ASSERT_EQUALS(msg1, msg2);
+    TS_ASSERT_EQUALS(fields, fields2);
 }
 
-void MsgIdLayerTestSuite::test8() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
+void MsgIdLayerTestSuite::test8()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using ProtFrame = Frame<BeField1, BeOnlyDestructorPolymorphicMessageBase>;
-  ProtFrame frame;
-  OnlyDestructorVirtualBeMsg1 msg;
-  TS_ASSERT_EQUALS(msg.doGetId(), MessageType1);
-  commonReadWriteMsgDirectTest(frame, msg, &Buf[0], BufSize);
-  TS_ASSERT_EQUALS(std::get<0>(msg.fields()).value(), 0x0102);
+    using ProtFrame = Frame<BeField1, BeOnlyDestructorPolymorphicMessageBase>;
+    ProtFrame frame;
+    OnlyDestructorVirtualBeMsg1 msg;
+    TS_ASSERT_EQUALS(msg.doGetId(), MessageType1);
+    commonReadWriteMsgDirectTest(frame, msg, &Buf[0], BufSize);
+    TS_ASSERT_EQUALS(std::get<0>(msg.fields()).value(), 0x0102);
 
-  ProtFrame::AllFields fields;
-  commonReadWriteMsgDirectTest(frame, fields, msg, &Buf[0], BufSize);
-  TS_ASSERT_EQUALS(std::get<0>(fields).value(), MessageType1);
+    ProtFrame::AllFields fields;
+    commonReadWriteMsgDirectTest(frame, fields, msg, &Buf[0], BufSize);
+    TS_ASSERT_EQUALS(std::get<0>(fields).value(), MessageType1);
 
-  OnlyDestructorVirtualBeMsg2 msg2;
-  TS_ASSERT_EQUALS(msg2.doGetId(), MessageType2);
-  commonReadWriteMsgDirectTest(frame, msg2, &Buf[0], BufSize,
-                               comms::ErrorStatus::InvalidMsgId);
+    OnlyDestructorVirtualBeMsg2 msg2;
+    TS_ASSERT_EQUALS(msg2.doGetId(), MessageType2);
+    commonReadWriteMsgDirectTest(frame, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
 
-  ProtFrame::AllFields fields2;
-  std::get<0>(fields2).value() =
-      MessageType5; // just to make sure it is updated.
-  commonReadWriteMsgDirectTest(frame, fields2, msg2, &Buf[0], BufSize,
-                               comms::ErrorStatus::InvalidMsgId);
-  TS_ASSERT_EQUALS(std::get<0>(fields2).value(), MessageType1);
+    ProtFrame::AllFields fields2;
+    std::get<0>(fields2).value() = MessageType5; // just to make sure it is updated.
+    commonReadWriteMsgDirectTest(frame, fields2, msg2, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
+    TS_ASSERT_EQUALS(std::get<0>(fields2).value(), MessageType1);
 }
 
-void MsgIdLayerTestSuite::test9() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
+void MsgIdLayerTestSuite::test9()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using ProtFrame = NoMessagesFrame<BeField1, BeMsgBase>;
-  ProtFrame frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize,
-                                       comms::ErrorStatus::InvalidMsgId);
-  TS_ASSERT(!msgPtr);
+    using ProtFrame = NoMessagesFrame<BeField1, BeMsgBase>;
+    ProtFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
+    TS_ASSERT(!msgPtr);
 }
 
-void MsgIdLayerTestSuite::test10() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
+void MsgIdLayerTestSuite::test10()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using ProtFrame = Frame<BeField1, BeOnlyDestructorPolymorphicMessageBase>;
-  ProtFrame frame;
-  ProtFrame::MsgPtr msg;
-  auto readIter = &Buf[0];
-  auto es = frame.read(msg, readIter, BufSize);
-  TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-  auto *castedMsg = dynamic_cast<OnlyDestructorVirtualBeMsg1 *>(msg.get());
-  TS_ASSERT(castedMsg != nullptr);
-  TS_ASSERT_EQUALS(std::get<0>(castedMsg->fields()).value(), 0x0102);
+    using ProtFrame = Frame<BeField1, BeOnlyDestructorPolymorphicMessageBase>;
+    ProtFrame frame;
+    ProtFrame::MsgPtr msg;
+    auto readIter = &Buf[0];
+    auto es = frame.read(msg, readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    auto* castedMsg = dynamic_cast<OnlyDestructorVirtualBeMsg1*>(msg.get());
+    TS_ASSERT(castedMsg != nullptr);
+    TS_ASSERT_EQUALS(std::get<0>(castedMsg->fields()).value(), 0x0102);
 
-  std::vector<std::uint8_t> outBuf;
-  auto writeIter = std::back_inserter(outBuf);
-  es = frame.write(*castedMsg, writeIter, outBuf.max_size());
-  TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-  TS_ASSERT_EQUALS(outBuf.size(), BufSize);
-  TS_ASSERT(std::equal(outBuf.begin(), outBuf.end(), &Buf[0]));
+    std::vector<std::uint8_t> outBuf;
+    auto writeIter = std::back_inserter(outBuf);
+    es = frame.write(*castedMsg, writeIter, outBuf.max_size());
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS(outBuf.size(), BufSize);
+    TS_ASSERT(std::equal(outBuf.begin(), outBuf.end(), &Buf[0]));
 }
 
-void MsgIdLayerTestSuite::test11() {
-  static const char Buf[] = {
-      MessageType5,
-      0x01,
-      0x02,
-      0x03,
-  };
+void MsgIdLayerTestSuite::test11()
+{
+    static const char Buf[] = {
+        MessageType5, 0x01, 0x02, 0x03,
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = Frame<BeField1, BeMsgBase, Messages_1to3>;
-  static_assert(TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
+    using TestFrame = Frame<BeField1, BeMsgBase, Messages_1to3>;
+    static_assert(TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
 
-  TestFrame frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize,
-                                       comms::ErrorStatus::InvalidMsgId);
-  TS_ASSERT(!msgPtr);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize, comms::ErrorStatus::InvalidMsgId);
+    TS_ASSERT(!msgPtr);
 }
 
-void MsgIdLayerTestSuite::test12() {
-  static const char Buf[] = {
-      MessageType5,
-      0x01,
-      0x02,
-      0x03,
-  };
+void MsgIdLayerTestSuite::test12()
+{
+    static const char Buf[] = {
+        MessageType5, 0x01, 0x02, 0x03,
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = GenericMessageFrame<BeField1, BeMsgBase, Messages_1to3>;
-  static_assert(TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
+    using TestFrame = GenericMessageFrame<BeField1, BeMsgBase, Messages_1to3>;
+    static_assert(TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
 
-  TestFrame frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType5);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType5);
 }
 
 template <typename TMsgBase>
 using Test13Messages =
-    std::tuple<Message1<TMsgBase>, Message2<TMsgBase>, Message90_1<TMsgBase>>;
+    std::tuple<
+        Message1<TMsgBase>,
+        Message2<TMsgBase>,
+        Message90_1<TMsgBase>
+    >;
 
-void MsgIdLayerTestSuite::test13() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
+void MsgIdLayerTestSuite::test13()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = Frame<BeField1, BeMsgBase, Test13Messages>;
-  static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
-  static_assert(TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
+    using TestFrame = Frame<BeField1, BeMsgBase, Test13Messages>;
+    static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
+    static_assert(TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
 
-  TestFrame frame;
-  static_cast<void>(frame.layer_id());
-  auto &payloadLayer = frame.layer_payload();
-  using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
-  static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(),
-                "Invalid layer");
-  static_cast<void>(payloadLayer);
+    TestFrame frame;
+    static_cast<void>(frame.layer_id());
+    auto& payloadLayer = frame.layer_payload();
+    using PayloadLayerType = typename std::decay<decltype(payloadLayer)>::type;
+    static_assert(comms::frame::isMsgDataLayer<PayloadLayerType>(), "Invalid layer");
+    static_cast<void>(payloadLayer);
 
-  auto &idLayer = frame.layer_id();
-  using IdLayerType = typename std::decay<decltype(idLayer)>::type;
-  static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
-  static_cast<void>(idLayer);
+    auto& idLayer = frame.layer_id();
+    using IdLayerType = typename std::decay<decltype(idLayer)>::type;
+    static_assert(comms::frame::isMsgIdLayer<IdLayerType>(), "Invalid layer");
+    static_cast<void>(idLayer);
 
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
-  auto &msg1 = dynamic_cast<BeMsg1 &>(*msgPtr);
-  TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+    auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
+    TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
 }
 
-void MsgIdLayerTestSuite::test14() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
+void MsgIdLayerTestSuite::test14()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = FramePolymorphic<BeField1, BeMsgBase>;
-  static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-  static_assert(
-      std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch,
-                   comms::traits::dispatch::Polymorphic>::value,
-      "Invalid options");
-  static_assert(TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
+    using TestFrame = FramePolymorphic<BeField1, BeMsgBase>;
+    static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value,
+        "Invalid options");
+    static_assert(TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
 
-  TestFrame frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
-  auto &msg1 = dynamic_cast<BeMsg1 &>(*msgPtr);
-  TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+    auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
+    TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
 }
 
 template <typename TMsgBase>
 using Test15Messages =
-    std::tuple<Message1<TMsgBase>, Message5<TMsgBase>, Message90_1<TMsgBase>>;
-void MsgIdLayerTestSuite::test15() {
-  static const char Buf[] = {MessageType90, 0x0, 0x01, 0x02, 0x03, 0x04};
+    std::tuple<
+        Message1<TMsgBase>,
+        Message5<TMsgBase>,
+        Message90_1<TMsgBase>
+    >;
+void MsgIdLayerTestSuite::test15()
+{
+    static const char Buf[] = {
+        MessageType90, 0x0, 0x01, 0x02, 0x03, 0x04
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = FramePolymorphic<BeField1, BeMsgBase, Test15Messages>;
-  static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-  static_assert(
-      std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch,
-                   comms::traits::dispatch::Polymorphic>::value,
-      "Invalid options");
-  static_assert(TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
+    using TestFrame = FramePolymorphic<BeField1, BeMsgBase, Test15Messages>;
+    static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value,
+        "Invalid options");
+    static_assert(TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
 
-  TestFrame frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType90);
-  auto &msg90 = dynamic_cast<BeMsg90_1 &>(*msgPtr);
-  TS_ASSERT_EQUALS(msg90.field_value1().value(), 0x01020304);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType90);
+    auto& msg90 = dynamic_cast<BeMsg90_1&>(*msgPtr);
+    TS_ASSERT_EQUALS(msg90.field_value1().value(), 0x01020304);
 }
 
 template <typename TMsgBase>
-using Test16Messages = std::tuple<Message1<TMsgBase>, Message5<TMsgBase>,
-                                  Message90_1<TMsgBase>, Message90_2<TMsgBase>>;
-void MsgIdLayerTestSuite::test16() {
-  static const char Buf[] = {MessageType90, 0x1, 0x01, 0x02, 0x03, 0x04};
+using Test16Messages =
+    std::tuple<
+        Message1<TMsgBase>,
+        Message5<TMsgBase>,
+        Message90_1<TMsgBase>,
+        Message90_2<TMsgBase>
+    >;
+void MsgIdLayerTestSuite::test16()
+{
+    static const char Buf[] = {
+        MessageType90, 0x1, 0x01, 0x02, 0x03, 0x04
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = FramePolymorphic<BeField1, BeMsgBase, Test16Messages>;
-  static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-  static_assert(
-      std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch,
-                   comms::traits::dispatch::Polymorphic>::value,
-      "Invalid options");
-  static_assert(TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
+    using TestFrame = FramePolymorphic<BeField1, BeMsgBase, Test16Messages>;
+    static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::Polymorphic>::value,
+        "Invalid options");
+    static_assert(TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
 
-  TestFrame frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType90);
-  auto &msg90 = dynamic_cast<BeMsg90_2 &>(*msgPtr);
-  TS_ASSERT_EQUALS(msg90.field_value1().value(), 0x01);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType90);
+    auto& msg90 = dynamic_cast<BeMsg90_2&>(*msgPtr);
+    TS_ASSERT_EQUALS(msg90.field_value1().value(), 0x01);
 }
 
-void MsgIdLayerTestSuite::test17() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
+void MsgIdLayerTestSuite::test17()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = FrameStaticBinSearch<BeField1, BeMsgBase>;
-  static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-  static_assert(
-      std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch,
-                   comms::traits::dispatch::StaticBinSearch>::value,
-      "Invalid options");
-  static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
-  static_assert(TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
+    using TestFrame = FrameStaticBinSearch<BeField1, BeMsgBase>;
+    static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value,
+        "Invalid options");
+    static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
+    static_assert(TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
 
-  TestFrame frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
-  auto &msg1 = dynamic_cast<BeMsg1 &>(*msgPtr);
-  TS_ASSERT_EQUALS(msg1.field_value1().value(), 0x0102);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+    auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
+    TS_ASSERT_EQUALS(msg1.field_value1().value(), 0x0102);
 }
 
 template <typename TMsgBase>
 using Test18Messages =
-    std::tuple<Message1<TMsgBase>, Message5<TMsgBase>, Message90_1<TMsgBase>>;
-void MsgIdLayerTestSuite::test18() {
-  static const char Buf[] = {MessageType90, 0x0, 0x01, 0x02, 0x03, 0x04};
+    std::tuple<
+        Message1<TMsgBase>,
+        Message5<TMsgBase>,
+        Message90_1<TMsgBase>
+    >;
+void MsgIdLayerTestSuite::test18()
+{
+    static const char Buf[] = {
+        MessageType90, 0x0, 0x01, 0x02, 0x03, 0x04
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = FrameStaticBinSearch<BeField1, BeMsgBase, Test18Messages>;
-  static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-  static_assert(
-      std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch,
-                   comms::traits::dispatch::StaticBinSearch>::value,
-      "Invalid options");
-  static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
-  static_assert(TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
+    using TestFrame = FrameStaticBinSearch<BeField1, BeMsgBase, Test18Messages>;
+    static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value,
+        "Invalid options");
+    static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
+    static_assert(TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
 
-  TestFrame frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType90);
-  auto &msg90 = dynamic_cast<BeMsg90_1 &>(*msgPtr);
-  TS_ASSERT_EQUALS(msg90.field_value1().value(), 0x01020304);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType90);
+    auto& msg90 = dynamic_cast<BeMsg90_1&>(*msgPtr);
+    TS_ASSERT_EQUALS(msg90.field_value1().value(), 0x01020304);
 }
 
 template <typename TMsgBase>
-using Test19Messages = std::tuple<Message1<TMsgBase>, Message5<TMsgBase>,
-                                  Message90_1<TMsgBase>, Message90_2<TMsgBase>>;
-void MsgIdLayerTestSuite::test19() {
-  static const char Buf[] = {MessageType90, 0x1, 0x01, 0x02, 0x03, 0x04};
+using Test19Messages =
+    std::tuple<
+        Message1<TMsgBase>,
+        Message5<TMsgBase>,
+        Message90_1<TMsgBase>,
+        Message90_2<TMsgBase>
+    >;
+void MsgIdLayerTestSuite::test19()
+{
+    static const char Buf[] = {
+        MessageType90, 0x1, 0x01, 0x02, 0x03, 0x04
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = FrameStaticBinSearch<BeField1, BeMsgBase, Test19Messages>;
-  static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-  static_assert(
-      std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch,
-                   comms::traits::dispatch::StaticBinSearch>::value,
-      "Invalid options");
-  static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
-  static_assert(TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
+    using TestFrame = FrameStaticBinSearch<BeField1, BeMsgBase, Test19Messages>;
+    static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::StaticBinSearch>::value,
+        "Invalid options");
+    static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
+    static_assert(TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
 
-  TestFrame frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType90);
-  auto &msg90 = dynamic_cast<BeMsg90_2 &>(*msgPtr);
-  TS_ASSERT_EQUALS(msg90.field_value1().value(), 0x01);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType90);
+    auto& msg90 = dynamic_cast<BeMsg90_2&>(*msgPtr);
+    TS_ASSERT_EQUALS(msg90.field_value1().value(), 0x01);
 }
 
-void MsgIdLayerTestSuite::test20() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
+void MsgIdLayerTestSuite::test20()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = FrameLinearSwitch<BeField1, BeMsgBase>;
-  static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-  static_assert(
-      std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch,
-                   comms::traits::dispatch::LinearSwitch>::value,
-      "Invalid options");
-  static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
-  static_assert(TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
+    using TestFrame = FrameLinearSwitch<BeField1, BeMsgBase>;
+    static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value,
+        "Invalid options");
+    static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
+    static_assert(TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
 
-  TestFrame frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
-  auto &msg1 = dynamic_cast<BeMsg1 &>(*msgPtr);
-  TS_ASSERT_EQUALS(msg1.field_value1().value(), 0x0102);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+    auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
+    TS_ASSERT_EQUALS(msg1.field_value1().value(), 0x0102);
 }
 
 template <typename TMsgBase>
 using Test21Messages =
-    std::tuple<Message1<TMsgBase>, Message5<TMsgBase>, Message90_1<TMsgBase>>;
-void MsgIdLayerTestSuite::test21() {
-  static const char Buf[] = {MessageType90, 0x0, 0x01, 0x02, 0x03, 0x04};
+    std::tuple<
+        Message1<TMsgBase>,
+        Message5<TMsgBase>,
+        Message90_1<TMsgBase>
+    >;
+void MsgIdLayerTestSuite::test21()
+{
+    static const char Buf[] = {
+        MessageType90, 0x0, 0x01, 0x02, 0x03, 0x04
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = FrameLinearSwitch<BeField1, BeMsgBase, Test21Messages>;
-  static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-  static_assert(
-      std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch,
-                   comms::traits::dispatch::LinearSwitch>::value,
-      "Invalid options");
-  static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
-  static_assert(TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
+    using TestFrame = FrameLinearSwitch<BeField1, BeMsgBase, Test21Messages>;
+    static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value,
+        "Invalid options");
+    static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
+    static_assert(TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
 
-  TestFrame frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType90);
-  auto &msg90 = dynamic_cast<BeMsg90_1 &>(*msgPtr);
-  TS_ASSERT_EQUALS(msg90.field_value1().value(), 0x01020304);
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType90);
+    auto& msg90 = dynamic_cast<BeMsg90_1&>(*msgPtr);
+    TS_ASSERT_EQUALS(msg90.field_value1().value(), 0x01020304);
 }
 
 template <typename TMsgBase>
-using Test22Messages = std::tuple<Message1<TMsgBase>, Message5<TMsgBase>,
-                                  Message90_1<TMsgBase>, Message90_2<TMsgBase>>;
-void MsgIdLayerTestSuite::test22() {
-  static const char Buf[] = {MessageType90, 0x1, 0x01, 0x02, 0x03, 0x04};
-
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
-
-  using TestFrame = FrameLinearSwitch<BeField1, BeMsgBase, Test22Messages>;
-  static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-  static_assert(
-      std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch,
-                   comms::traits::dispatch::LinearSwitch>::value,
-      "Invalid options");
-  static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
-  static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
-  static_assert(TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
-
-  TestFrame frame;
-  auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-  TS_ASSERT(msgPtr);
-  TS_ASSERT_EQUALS(msgPtr->getId(), MessageType90);
-  auto &msg90 = dynamic_cast<BeMsg90_2 &>(*msgPtr);
-  TS_ASSERT_EQUALS(msg90.field_value1().value(), 0x01);
-}
-
-void MsgIdLayerTestSuite::test23() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
-
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
-
-  using ProtFrame = Frame<BeField1, BeNonPolymorphicMessageBase>;
-  ProtFrame frame;
-  ProtFrame::MsgPtr msg;
-
-  auto readIter = &Buf[0];
-  auto es = frame.read(msg, readIter, BufSize);
-  TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-  auto *msg1 = static_cast<NonPolymorphicBeMsg1 *>(msg.get());
-  TS_ASSERT_EQUALS(msg1->field_value1().value(), 0x0102);
-
-  unsigned msg1Destructed = 0U;
-  msg1->setDestructorCounter(msg1Destructed);
-  auto msgMoved = std::move(msg);
-  msg.reset();
-  TS_ASSERT_EQUALS(msg1Destructed, 0U);
-  msgMoved.reset();
-  TS_ASSERT_EQUALS(msg1Destructed, 1U);
-}
-
-void MsgIdLayerTestSuite::test24() {
-  static const char Buf[] = {MessageType1, static_cast<char>(0xab),
-                             static_cast<char>(0xcd)};
-
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
-
-  using ProtFrame = InPlaceFrame<BeField1, BeNonPolymorphicMessageBase>;
-  ProtFrame frame;
-  ProtFrame::MsgPtr msg;
-
-  auto readIter = &Buf[0];
-  auto es = frame.read(msg, readIter, BufSize);
-  TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-  auto *msg1 = static_cast<NonPolymorphicBeMsg1 *>(msg.get());
-  TS_ASSERT_EQUALS(msg1->field_value1().value(), 0xabcd);
-
-  unsigned msg1Destructed = 0U;
-  msg1->setDestructorCounter(msg1Destructed);
-  auto msgMoved = std::move(msg);
-  msg.reset();
-  TS_ASSERT_EQUALS(msg1Destructed, 0U);
-  msgMoved.reset();
-  TS_ASSERT_EQUALS(msg1Destructed, 1U);
-}
-
-void MsgIdLayerTestSuite::test25() {
-  using ProtFrame = GenericMessageFrame<BeField1, BeNonPolymorphicMessageBase>;
-  do {
-    static const char Buf[] = {MessageType1, 0x01, 0x02};
+using Test22Messages =
+    std::tuple<
+        Message1<TMsgBase>,
+        Message5<TMsgBase>,
+        Message90_1<TMsgBase>,
+        Message90_2<TMsgBase>
+    >;
+void MsgIdLayerTestSuite::test22()
+{
+    static const char Buf[] = {
+        MessageType90, 0x1, 0x01, 0x02, 0x03, 0x04
+    };
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
+    using TestFrame = FrameLinearSwitch<BeField1, BeMsgBase, Test22Messages>;
+    static_assert(TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
+    static_assert(std::is_same<TestFrame::MsgFactory::ParsedOptions::ForcedDispatch, comms::traits::dispatch::LinearSwitch>::value,
+        "Invalid options");
+    static_assert(!TestFrame::isDispatchPolymorphic(), "Wrong dispatch");
+    static_assert(!TestFrame::isDispatchStaticBinSearch(), "Wrong dispatch");
+    static_assert(TestFrame::isDispatchLinearSwitch(), "Wrong dispatch");
+
+    TestFrame frame;
+    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    TS_ASSERT(msgPtr);
+    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType90);
+    auto& msg90 = dynamic_cast<BeMsg90_2&>(*msgPtr);
+    TS_ASSERT_EQUALS(msg90.field_value1().value(), 0x01);
+}
+
+void MsgIdLayerTestSuite::test23()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
+
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    using ProtFrame = Frame<BeField1, BeNonPolymorphicMessageBase>;
     ProtFrame frame;
     ProtFrame::MsgPtr msg;
+
     auto readIter = &Buf[0];
     auto es = frame.read(msg, readIter, BufSize);
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-    auto *msg1 = static_cast<NonPolymorphicBeMsg1 *>(msg.get());
+    auto* msg1 = static_cast<NonPolymorphicBeMsg1*>(msg.get());
     TS_ASSERT_EQUALS(msg1->field_value1().value(), 0x0102);
 
     unsigned msg1Destructed = 0U;
@@ -1061,42 +1203,25 @@ void MsgIdLayerTestSuite::test25() {
     TS_ASSERT_EQUALS(msg1Destructed, 0U);
     msgMoved.reset();
     TS_ASSERT_EQUALS(msg1Destructed, 1U);
-  } while (false);
-
-  do {
-    static const char Buf[] = {0x40, 0x01, 0x02, 0x03, 0x04};
-
-    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
-
-    ProtFrame frame;
-    ProtFrame::MsgPtr msg;
-    auto readIter = &Buf[0];
-    auto es = frame.read(msg, readIter, BufSize);
-    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-    auto *genMsg = static_cast<NonPolymorphicBeGenericMsg *>(msg.get());
-    auto &data = genMsg->field_data().value();
-    TS_ASSERT_EQUALS(data.size(), BufSize - 1);
-    TS_ASSERT(std::equal(data.begin(), data.end(), &Buf[1]));
-    auto msgMoved = std::move(msg);
-    msg.reset();
-  } while (false);
 }
 
-void MsgIdLayerTestSuite::test26() {
-  using ProtFrame =
-      GenericMessageInPlaceAllocFrame<BeField1, BeNonPolymorphicMessageBase>;
-  do {
-    static const char Buf[] = {MessageType1, 0x01, 0x02};
+void MsgIdLayerTestSuite::test24()
+{
+    static const char Buf[] = {
+        MessageType1, static_cast<char>(0xab), static_cast<char>(0xcd)
+    };
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
+    using ProtFrame = InPlaceFrame<BeField1, BeNonPolymorphicMessageBase>;
     ProtFrame frame;
     ProtFrame::MsgPtr msg;
+
     auto readIter = &Buf[0];
     auto es = frame.read(msg, readIter, BufSize);
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-    auto *msg1 = static_cast<NonPolymorphicBeMsg1 *>(msg.get());
-    TS_ASSERT_EQUALS(msg1->field_value1().value(), 0x0102);
+    auto* msg1 = static_cast<NonPolymorphicBeMsg1*>(msg.get());
+    TS_ASSERT_EQUALS(msg1->field_value1().value(), 0xabcd);
 
     unsigned msg1Destructed = 0U;
     msg1->setDestructorCounter(msg1Destructed);
@@ -1105,258 +1230,357 @@ void MsgIdLayerTestSuite::test26() {
     TS_ASSERT_EQUALS(msg1Destructed, 0U);
     msgMoved.reset();
     TS_ASSERT_EQUALS(msg1Destructed, 1U);
-  } while (false);
+}
 
-  do {
-    static const char Buf[] = {0x40, 0x01, 0x02, 0x03, 0x04};
+void MsgIdLayerTestSuite::test25()
+{
+    using ProtFrame = GenericMessageFrame<BeField1, BeNonPolymorphicMessageBase>;
+    do {
+        static const char Buf[] = {
+            MessageType1, 0x01, 0x02
+        };
+
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        ProtFrame frame;
+        ProtFrame::MsgPtr msg;
+        auto readIter = &Buf[0];
+        auto es = frame.read(msg, readIter, BufSize);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+        auto* msg1 = static_cast<NonPolymorphicBeMsg1*>(msg.get());
+        TS_ASSERT_EQUALS(msg1->field_value1().value(), 0x0102);
+
+        unsigned msg1Destructed = 0U;
+        msg1->setDestructorCounter(msg1Destructed);
+        auto msgMoved = std::move(msg);
+        msg.reset();
+        TS_ASSERT_EQUALS(msg1Destructed, 0U);
+        msgMoved.reset();
+        TS_ASSERT_EQUALS(msg1Destructed, 1U);
+    } while (false);
+
+    do {
+        static const char Buf[] = {
+            0x40, 0x01, 0x02, 0x03, 0x04
+        };
+
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        ProtFrame frame;
+        ProtFrame::MsgPtr msg;
+        auto readIter = &Buf[0];
+        auto es = frame.read(msg, readIter, BufSize);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+        auto* genMsg = static_cast<NonPolymorphicBeGenericMsg*>(msg.get());
+        auto& data = genMsg->field_data().value();
+        TS_ASSERT_EQUALS(data.size(), BufSize - 1);
+        TS_ASSERT(std::equal(data.begin(), data.end(), &Buf[1]));
+        auto msgMoved = std::move(msg);
+        msg.reset();
+    } while (false);
+}
+
+void MsgIdLayerTestSuite::test26()
+{
+    using ProtFrame = GenericMessageInPlaceAllocFrame<BeField1, BeNonPolymorphicMessageBase>;
+    do {
+        static const char Buf[] = {
+            MessageType1, 0x01, 0x02
+        };
+
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        ProtFrame frame;
+        ProtFrame::MsgPtr msg;
+        auto readIter = &Buf[0];
+        auto es = frame.read(msg, readIter, BufSize);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+        auto* msg1 = static_cast<NonPolymorphicBeMsg1*>(msg.get());
+        TS_ASSERT_EQUALS(msg1->field_value1().value(), 0x0102);
+
+        unsigned msg1Destructed = 0U;
+        msg1->setDestructorCounter(msg1Destructed);
+        auto msgMoved = std::move(msg);
+        msg.reset();
+        TS_ASSERT_EQUALS(msg1Destructed, 0U);
+        msgMoved.reset();
+        TS_ASSERT_EQUALS(msg1Destructed, 1U);
+    } while (false);
+
+    do {
+        static const char Buf[] = {
+            0x40, 0x01, 0x02, 0x03, 0x04
+        };
+
+        static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+        ProtFrame frame;
+        ProtFrame::MsgPtr msg;
+        auto readIter = &Buf[0];
+        auto es = frame.read(msg, readIter, BufSize);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+        auto* genMsg = static_cast<NonPolymorphicBeGenericMsg*>(msg.get());
+        auto& data = genMsg->field_data().value();
+        TS_ASSERT_EQUALS(data.size(), BufSize - 1);
+        TS_ASSERT(std::equal(data.begin(), data.end(), &Buf[1]));
+
+        auto msgMoved = std::move(msg);
+        msg.reset();
+    } while (false);
+}
+
+void MsgIdLayerTestSuite::test27()
+{
+    static const char Buf[] = {
+        MessageType1,
+    };
 
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
+    using ProtFrame = Frame<BeField1, BeOnlyDestructorPolymorphicMessageBase>;
     ProtFrame frame;
     ProtFrame::MsgPtr msg;
     auto readIter = &Buf[0];
-    auto es = frame.read(msg, readIter, BufSize);
+    std::size_t missingSize = 0U;
+    std::size_t missingSize2 = 0U;
+    std::size_t msgIndex = 0U;
+    MessageType msgId = MessageType();
+    auto es =
+        frame.read(
+            msg,
+            readIter,
+            BufSize,
+            comms::frame::missingSize(missingSize),
+            comms::frame::msgId(msgId),
+            comms::frame::msgIndex(msgIndex),
+            comms::frame::missingSize(missingSize2));
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::NotEnoughData);
+    TS_ASSERT_EQUALS(missingSize, 2U);
+    TS_ASSERT_EQUALS(missingSize, missingSize2);
+}
+
+void MsgIdLayerTestSuite::test28()
+{
+    static const char Buf[] = {
+        MessageType5, 0x01, 0x02, 0x03
+    };
+
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    using ProtFrame = Frame<BeField1, BeOnlyDestructorPolymorphicMessageBase, Messages_1to5>;
+    ProtFrame frame;
+    ProtFrame::MsgPtr msg;
+    auto readIter = &Buf[0];
+    MessageType msgId = MessageType();
+    std::size_t msgIndex = 100U;
+    MessageType msgId2 = MessageType();
+    std::size_t msgIndex2 = 100U;
+
+    auto es =
+        frame.read(
+            msg,
+            readIter,
+            BufSize,
+            comms::frame::msgId(msgId),
+            comms::frame::msgIndex(msgIndex),
+            comms::frame::msgId(msgId2),
+            comms::frame::msgIndex(msgIndex2));
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-    auto *genMsg = static_cast<NonPolymorphicBeGenericMsg *>(msg.get());
-    auto &data = genMsg->field_data().value();
-    TS_ASSERT_EQUALS(data.size(), BufSize - 1);
-    TS_ASSERT(std::equal(data.begin(), data.end(), &Buf[1]));
-
-    auto msgMoved = std::move(msg);
-    msg.reset();
-  } while (false);
+    TS_ASSERT_EQUALS(msgId, MessageType5);
+    TS_ASSERT_EQUALS(msgId, msgId2);
+    TS_ASSERT_EQUALS(msgIndex, 0U);
+    TS_ASSERT_EQUALS(msgIndex, msgIndex2);
 }
 
-void MsgIdLayerTestSuite::test27() {
-  static const char Buf[] = {
-      MessageType1,
-  };
+void MsgIdLayerTestSuite::test29()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using ProtFrame = Frame<BeField1, BeOnlyDestructorPolymorphicMessageBase>;
-  ProtFrame frame;
-  ProtFrame::MsgPtr msg;
-  auto readIter = &Buf[0];
-  std::size_t missingSize = 0U;
-  std::size_t missingSize2 = 0U;
-  std::size_t msgIndex = 0U;
-  MessageType msgId = MessageType();
-  auto es =
-      frame.read(msg, readIter, BufSize, comms::frame::missingSize(missingSize),
-                 comms::frame::msgId(msgId), comms::frame::msgIndex(msgIndex),
-                 comms::frame::missingSize(missingSize2));
-  TS_ASSERT_EQUALS(es, comms::ErrorStatus::NotEnoughData);
-  TS_ASSERT_EQUALS(missingSize, 2U);
-  TS_ASSERT_EQUALS(missingSize, missingSize2);
+    using ProtFrame = Frame<BeField1, BeNonPolymorphicMessageBase>;
+
+    ProtFrame frame;
+    CountHandler<BeNonPolymorphicMessageBase> handler;
+
+    comms::processAllWithDispatch(&Buf[0], BufSize, frame, handler);
+    TS_ASSERT_EQUALS(handler.getCustomCount(), 1U);
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
+
+    using Dispatcher = comms::MsgDispatcher<comms::option::ForceDispatchStaticBinSearch>;
+    comms::processAllWithDispatchViaDispatcher<Dispatcher>(&Buf[0], BufSize, frame, handler);
+    TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
 }
 
-void MsgIdLayerTestSuite::test28() {
-  static const char Buf[] = {MessageType5, 0x01, 0x02, 0x03};
+void MsgIdLayerTestSuite::test30()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using ProtFrame =
-      Frame<BeField1, BeOnlyDestructorPolymorphicMessageBase, Messages_1to5>;
-  ProtFrame frame;
-  ProtFrame::MsgPtr msg;
-  auto readIter = &Buf[0];
-  MessageType msgId = MessageType();
-  std::size_t msgIndex = 100U;
-  MessageType msgId2 = MessageType();
-  std::size_t msgIndex2 = 100U;
+    using ProtFrame = Frame<BeField1, BeNonPolymorphicMessageBase, Messages_1to3>;
 
-  auto es =
-      frame.read(msg, readIter, BufSize, comms::frame::msgId(msgId),
-                 comms::frame::msgIndex(msgIndex), comms::frame::msgId(msgId2),
-                 comms::frame::msgIndex(msgIndex2));
-  TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-  TS_ASSERT_EQUALS(msgId, MessageType5);
-  TS_ASSERT_EQUALS(msgId, msgId2);
-  TS_ASSERT_EQUALS(msgIndex, 0U);
-  TS_ASSERT_EQUALS(msgIndex, msgIndex2);
+    ProtFrame frame;
+    CountHandler<BeNonPolymorphicMessageBase> handler;
+
+    NonPolymorphicBeMsg1 msg1;
+    auto readIter = &Buf[0];
+    auto es = comms::processSingleWithDispatch(readIter, BufSize, frame, msg1, handler);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS((std::size_t)std::distance(&Buf[0], readIter), BufSize);
+    TS_ASSERT_EQUALS(handler.getCustomCount(), 1U);
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
+
+    using Dispatcher = comms::MsgDispatcher<comms::option::ForceDispatchLinearSwitch>;
+    readIter = &Buf[0];
+    comms::processSingleWithDispatchViaDispatcher<Dispatcher>(readIter, BufSize, frame, msg1, handler);
+    TS_ASSERT_EQUALS((std::size_t)std::distance(&Buf[0], readIter), BufSize);
+    TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
 }
 
-void MsgIdLayerTestSuite::test29() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
+void MsgIdLayerTestSuite::test31()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using ProtFrame = Frame<BeField1, BeNonPolymorphicMessageBase>;
+    using ProtFrame = Frame<BeField1, BeNonPolymorphicMessageBase, Messages_1to5>;
 
-  ProtFrame frame;
-  CountHandler<BeNonPolymorphicMessageBase> handler;
+    ProtFrame frame;
+    CountHandler<BeNonPolymorphicMessageBase> handler;
 
-  comms::processAllWithDispatch(&Buf[0], BufSize, frame, handler);
-  TS_ASSERT_EQUALS(handler.getCustomCount(), 1U);
-  TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
+    NonPolymorphicBeMsg1 msg1;
+    auto readIter = &Buf[0];
+    auto es = comms::processSingleWithDispatch(readIter, BufSize, frame, msg1, handler);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS((std::size_t)std::distance(&Buf[0], readIter), BufSize);
+    TS_ASSERT_EQUALS(handler.getCustomCount(), 1U);
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
 
-  using Dispatcher =
-      comms::MsgDispatcher<comms::option::ForceDispatchStaticBinSearch>;
-  comms::processAllWithDispatchViaDispatcher<Dispatcher>(&Buf[0], BufSize,
-                                                         frame, handler);
-  TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
-  TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
+    using Dispatcher = comms::MsgDispatcher<comms::option::ForceDispatchLinearSwitch>;
+    readIter = &Buf[0];
+    comms::processSingleWithDispatchViaDispatcher<Dispatcher>(readIter, BufSize, frame, msg1, handler);
+    TS_ASSERT_EQUALS((std::size_t)std::distance(&Buf[0], readIter), BufSize);
+    TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
+    TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
 }
 
-void MsgIdLayerTestSuite::test30() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
+void MsgIdLayerTestSuite::test32()
+{
+    static const char Buf[] = {
+        static_cast<char>(static_cast<unsigned>(0x80) | static_cast<unsigned>(MessageType1)), 0x0a, 0x0b
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using ProtFrame = Frame<BeField1, BeNonPolymorphicMessageBase, Messages_1to3>;
-
-  ProtFrame frame;
-  CountHandler<BeNonPolymorphicMessageBase> handler;
-
-  NonPolymorphicBeMsg1 msg1;
-  auto readIter = &Buf[0];
-  auto es =
-      comms::processSingleWithDispatch(readIter, BufSize, frame, msg1, handler);
-  TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-  TS_ASSERT_EQUALS((std::size_t)std::distance(&Buf[0], readIter), BufSize);
-  TS_ASSERT_EQUALS(handler.getCustomCount(), 1U);
-  TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
-
-  using Dispatcher =
-      comms::MsgDispatcher<comms::option::ForceDispatchLinearSwitch>;
-  readIter = &Buf[0];
-  comms::processSingleWithDispatchViaDispatcher<Dispatcher>(
-      readIter, BufSize, frame, msg1, handler);
-  TS_ASSERT_EQUALS((std::size_t)std::distance(&Buf[0], readIter), BufSize);
-  TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
-  TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
-}
-
-void MsgIdLayerTestSuite::test31() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
-
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
-
-  using ProtFrame = Frame<BeField1, BeNonPolymorphicMessageBase, Messages_1to5>;
-
-  ProtFrame frame;
-  CountHandler<BeNonPolymorphicMessageBase> handler;
-
-  NonPolymorphicBeMsg1 msg1;
-  auto readIter = &Buf[0];
-  auto es =
-      comms::processSingleWithDispatch(readIter, BufSize, frame, msg1, handler);
-  TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-  TS_ASSERT_EQUALS((std::size_t)std::distance(&Buf[0], readIter), BufSize);
-  TS_ASSERT_EQUALS(handler.getCustomCount(), 1U);
-  TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
-
-  using Dispatcher =
-      comms::MsgDispatcher<comms::option::ForceDispatchLinearSwitch>;
-  readIter = &Buf[0];
-  comms::processSingleWithDispatchViaDispatcher<Dispatcher>(
-      readIter, BufSize, frame, msg1, handler);
-  TS_ASSERT_EQUALS((std::size_t)std::distance(&Buf[0], readIter), BufSize);
-  TS_ASSERT_EQUALS(handler.getCustomCount(), 2U);
-  TS_ASSERT_EQUALS(handler.getBaseCount(), 0U);
-}
-
-void MsgIdLayerTestSuite::test32() {
-  static const char Buf[] = {
-      static_cast<char>(static_cast<unsigned>(0x80) |
-                        static_cast<unsigned>(MessageType1)),
-      0x0a, 0x0b};
-
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
-
-  using TestFrame = Frame<BeField4, BeMsgBase>;
-  static_assert(!TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
-
-  TestFrame frame;
-  TestFrame::MsgPtr msgPtr;
-  auto readIter = comms::readIteratorFor(msgPtr, &Buf[0]);
-
-  auto es = frame.read(msgPtr, readIter, BufSize);
-  TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-  TS_ASSERT(msgPtr);
-  auto *msg1 = dynamic_cast<BeMsg1 *>(msgPtr.get());
-  TS_ASSERT(msg1 != nullptr)
-  TS_ASSERT_EQUALS(std::get<0>(msg1->fields()).value(), 0x0a0b);
-}
-
-void MsgIdLayerTestSuite::test33() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
-
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
-
-  do {
-    using TestFrame = FrameCustomFactory<BeField1, BeMsgBase>;
+    using TestFrame = Frame<BeField4, BeMsgBase>;
+    static_assert(!TestFrame::MsgFactory::hasForcedDispatch(), "Invalid options");
 
     TestFrame frame;
+    TestFrame::MsgPtr msgPtr;
+    auto readIter = comms::readIteratorFor(msgPtr, &Buf[0]);
 
-    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+    auto es = frame.read(msgPtr, readIter, BufSize);
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT(msgPtr);
-    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
-    auto &msg1 = dynamic_cast<BeMsg1 &>(*msgPtr);
-    TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
-  } while (false);
+    auto* msg1 = dynamic_cast<BeMsg1*>(msgPtr.get());
+    TS_ASSERT(msg1 != nullptr)
+    TS_ASSERT_EQUALS(std::get<0>(msg1->fields()).value(), 0x0a0b);
+}
 
-  do {
-    using TestFrame = FrameCustomFactoryTempl<BeField1, BeMsgBase>;
+void MsgIdLayerTestSuite::test33()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
 
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    do {
+        using TestFrame = FrameCustomFactory<BeField1, BeMsgBase>;
+
+        TestFrame frame;
+
+        auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+        TS_ASSERT(msgPtr);
+        TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+        auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
+        TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
+    } while (false);
+
+    do {
+        using TestFrame = FrameCustomFactoryTempl<BeField1, BeMsgBase>;
+
+        TestFrame frame;
+
+        auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
+        TS_ASSERT(msgPtr);
+        TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
+        auto& msg1 = dynamic_cast<BeMsg1&>(*msgPtr);
+        TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
+    } while (false);
+}
+
+void MsgIdLayerTestSuite::test34()
+{
+    // Testing read with pre-allocated message object
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
+
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    using TestFrame = Frame<BeField1, BeMsgBase>;
     TestFrame frame;
+    {
+        TestFrame::MsgPtr msgPtr;
+        msgPtr.reset(new BeMsg1);
+        auto readIter = &Buf[0];
+        auto es = frame.read(*msgPtr, readIter, BufSize);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    }
 
-    auto msgPtr = commonReadWriteMsgTest(frame, &Buf[0], BufSize);
-    TS_ASSERT(msgPtr);
-    TS_ASSERT_EQUALS(msgPtr->getId(), MessageType1);
-    auto &msg1 = dynamic_cast<BeMsg1 &>(*msgPtr);
-    TS_ASSERT_EQUALS(std::get<0>(msg1.fields()).value(), 0x0102);
-  } while (false);
+    {
+        TestFrame::MsgPtr msgPtr;
+        msgPtr.reset(new BeMsg2);
+        auto readIter = &Buf[0];
+        auto es = frame.read(*msgPtr, readIter, BufSize);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::InvalidMsgId);
+    }
+
+    {
+        TestFrame::MsgPtr msgPtr;
+        msgPtr.reset(new BeMsg1);
+        auto readIter = &Buf[0];
+        auto es = comms::processSingle(readIter, BufSize, frame, *msgPtr);
+        TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    }
 }
 
-void MsgIdLayerTestSuite::test34() {
-  // Testing read with pre-allocated message object
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
+void MsgIdLayerTestSuite::test35()
+{
+    static const char Buf[] = {
+        MessageType1, 0x01, 0x02
+    };
 
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
 
-  using TestFrame = Frame<BeField1, BeMsgBase>;
-  TestFrame frame;
-  {
-    TestFrame::MsgPtr msgPtr;
-    msgPtr.reset(new BeMsg1);
+    using ProtFrame = Frame<BeField1, BeDispatchMsgBase>;
+
+    ProtFrame frame;
+    EmptyHandler handler;
+
+    Message1<BeDispatchMsgBase> msg1;
     auto readIter = &Buf[0];
-    auto es = frame.read(*msgPtr, readIter, BufSize);
+    auto es = comms::processSingleWithDispatch(readIter, BufSize, frame, msg1, handler);
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-  }
-
-  {
-    TestFrame::MsgPtr msgPtr;
-    msgPtr.reset(new BeMsg2);
-    auto readIter = &Buf[0];
-    auto es = frame.read(*msgPtr, readIter, BufSize);
-    TS_ASSERT_EQUALS(es, comms::ErrorStatus::InvalidMsgId);
-  }
-
-  {
-    TestFrame::MsgPtr msgPtr;
-    msgPtr.reset(new BeMsg1);
-    auto readIter = &Buf[0];
-    auto es = comms::processSingle(readIter, BufSize, frame, *msgPtr);
-    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-  }
-}
-
-void MsgIdLayerTestSuite::test35() {
-  static const char Buf[] = {MessageType1, 0x01, 0x02};
-
-  static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
-
-  using ProtFrame = Frame<BeField1, BeDispatchMsgBase>;
-
-  ProtFrame frame;
-  EmptyHandler handler;
-
-  Message1<BeDispatchMsgBase> msg1;
-  auto readIter = &Buf[0];
-  auto es =
-      comms::processSingleWithDispatch(readIter, BufSize, frame, msg1, handler);
-  TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-  TS_ASSERT_EQUALS((std::size_t)std::distance(&Buf[0], readIter), BufSize);
+    TS_ASSERT_EQUALS((std::size_t)std::distance(&Buf[0], readIter), BufSize);
 }

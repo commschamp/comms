@@ -1,5 +1,5 @@
 //
-// Copyright 2020 - 2026 (C). Alex Robenko. All rights reserved.
+// Copyright 2020 - 2025 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -12,21 +12,32 @@
 #include <cstddef>
 #include <type_traits>
 
-namespace comms {
+namespace comms
+{
 
-namespace details {
+namespace details
+{
 
-enum class DispatchMsgTypeEnum { Multiple, Single, None };
+enum class DispatchMsgTypeEnum
+{
+    Multiple,
+    Single,
+    None
+};
 
 template <std::size_t TCount>
 using DispatchMsgHelperIntType =
-    typename comms::util::Conditional<TCount == 0U>::template Type<
+    typename comms::util::Conditional<
+        TCount == 0U
+    >::template Type<
         std::integral_constant<DispatchMsgTypeEnum, DispatchMsgTypeEnum::None>,
-        typename comms::util::Conditional<TCount == 1U>::template Type<
-            std::integral_constant<DispatchMsgTypeEnum,
-                                   DispatchMsgTypeEnum::Single>,
-            std::integral_constant<DispatchMsgTypeEnum,
-                                   DispatchMsgTypeEnum::Multiple>>>;
+        typename comms::util::Conditional<
+            TCount == 1U
+        >::template Type<
+            std::integral_constant<DispatchMsgTypeEnum, DispatchMsgTypeEnum::Single>,
+            std::integral_constant<DispatchMsgTypeEnum, DispatchMsgTypeEnum::Multiple>
+        >
+    >;
 
 } // namespace details
 
