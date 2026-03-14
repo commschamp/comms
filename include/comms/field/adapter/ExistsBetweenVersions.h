@@ -14,8 +14,9 @@
 #include "comms/util/type_traits.h"
 
 #include <algorithm>
+#include <cstdint>
 #include <limits>
-#include <utility>
+#include <type_traits>
 
 COMMS_GNU_WARNING_PUSH
 COMMS_GNU_WARNING_DISABLE("-Wtype-limits")

@@ -16,9 +16,6 @@
 #include "comms/details/macro_common.h"
 #include "comms/details/MessageImplBuilder.h"
 
-#include <cstddef>
-#include <type_traits>
-
 namespace comms
 {
 

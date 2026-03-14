@@ -14,8 +14,8 @@
 #include "comms/MessageBase.h"
 #include "comms/options.h"
 
-#include <cstdint>
 #include <tuple>
+#include <cstdint>
 
 namespace comms
 {

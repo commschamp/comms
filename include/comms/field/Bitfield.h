@@ -15,8 +15,6 @@
 #include "comms/field/details/AdaptBasicField.h"
 #include "comms/options.h"
 
-#include <cstddef>
-#include <type_traits>
 #include <utility>
 
 namespace comms

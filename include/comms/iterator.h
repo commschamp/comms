@@ -13,7 +13,6 @@
 #include "comms/details/ReadIteratorHelper.h"
 #include "comms/details/WriteIteratorHelper.h"
 
-#include <type_traits>
 #include <utility>
 
 namespace comms

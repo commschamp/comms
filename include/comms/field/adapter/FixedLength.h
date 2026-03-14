@@ -13,8 +13,7 @@
 #include "comms/util/SizeToType.h"
 #include "comms/util/type_traits.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <type_traits>
 #include <limits>
 
 namespace comms

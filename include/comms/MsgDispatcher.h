@@ -17,7 +17,6 @@
 #include "comms/traits.h"
 #include "comms/util/type_traits.h"
 
-#include <cstddef>
 #include <type_traits>
 #include <utility>
 

@@ -18,7 +18,6 @@
 #include "comms/frame/details/ChecksumLayerOptionsParser.h"
 #include "comms/util/type_traits.h"
 
-#include <cstddef>
 #include <iterator>
 #include <type_traits>
 #include <utility>

@@ -21,7 +21,6 @@
 #include "comms/util/Tuple.h"
 #include "comms/util/type_traits.h"
 
-#include <cstddef>
 #include <iterator>
 #include <tuple>
 #include <type_traits>

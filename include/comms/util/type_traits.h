@@ -12,7 +12,6 @@
 
 #include "comms/util/details/type_traits.h"
 
-#include <cstddef>
 #include <type_traits>
 
 namespace comms

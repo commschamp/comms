@@ -16,8 +16,6 @@
 #include "comms/options.h"
 #include "comms/util/Tuple.h"
 
-#include <cstddef>
-#include <type_traits>
 #include <utility>
 
 namespace comms

@@ -10,8 +10,6 @@
 #include "adapters.h"
 #include "OptionsParser.h"
 
-#include <cstddef>
-
 namespace comms
 {
 

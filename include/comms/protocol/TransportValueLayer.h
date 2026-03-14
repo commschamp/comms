@@ -13,8 +13,6 @@
 #include "comms/frame/TransportValueLayer.h"
 #include "comms/protocol/ProtocolLayerBase.h"
 
-#include <cstddef>
-
 namespace comms
 {
 

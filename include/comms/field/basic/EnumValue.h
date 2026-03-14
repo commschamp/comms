@@ -11,7 +11,6 @@
 #include "comms/field/basic/IntValue.h"
 #include "comms/field/tag.h"
 
-#include <cstddef>
 #include <type_traits>
 #include <utility>
 

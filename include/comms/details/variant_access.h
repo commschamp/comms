@@ -12,6 +12,7 @@
 #include "comms/details/macro_common.h"
 
 #include <tuple>
+#include <type_traits>
 #include <utility>
 
 #ifdef COMMS_MUST_DEFINE_BASE

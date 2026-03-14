@@ -14,10 +14,8 @@
 #include "comms/util/type_traits.h"
 
 #include <algorithm>
-#include <cstddef>
 #include <iterator>
 #include <limits>
-#include <utility>
 
 namespace comms
 {

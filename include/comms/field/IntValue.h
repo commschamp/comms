@@ -18,7 +18,6 @@
 #include "comms/options.h"
 #include "comms/util/type_traits.h"
 
-#include <cstddef>
 #include <limits>
 #include <ratio>
 #include <type_traits>

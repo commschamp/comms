@@ -9,15 +9,10 @@
 
 #include "comms/comms.h"
 
-#include <algorithm>
-#include <cstddef>
-#include <cstdint>
-#include <iostream>
-#include <iterator>
-#include <memory>
 #include <tuple>
-#include <type_traits>
 #include <vector>
+#include <iterator>
+#include <iostream>
 
 static_assert(0U < comms::version(), "Invalid version definition");
 static_assert(0U < COMMS_MAKE_VERSION(0, 29, 0), "Invalid version definition");

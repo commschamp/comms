@@ -9,9 +9,6 @@
 
 #include "comms/details/detect.h"
 
-#include <cstddef>
-#include <type_traits>
-
 namespace comms
 {
 

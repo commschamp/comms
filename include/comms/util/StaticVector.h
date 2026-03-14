@@ -19,7 +19,6 @@
 #include <cstddef>
 #include <initializer_list>
 #include <iterator>
-#include <type_traits>
 #include <utility>
 
 COMMS_GNU_WARNING_PUSH

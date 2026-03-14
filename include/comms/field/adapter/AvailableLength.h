@@ -16,11 +16,9 @@
 #include "comms/util/type_traits.h"
 
 #include <algorithm>
-#include <cstddef>
-#include <cstdint>
 #include <iterator>
 #include <limits>
-#include <utility>
+#include <type_traits>
 
 namespace comms
 {

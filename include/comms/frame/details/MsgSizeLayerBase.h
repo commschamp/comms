@@ -11,6 +11,8 @@
 #include "comms/frame/FrameLayerBase.h"
 #include "comms/options.h"
 
+#include <cstddef>
+
 namespace comms
 {
 

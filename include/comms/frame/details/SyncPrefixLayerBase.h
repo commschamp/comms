@@ -10,6 +10,8 @@
 #include "comms/frame/details/SyncPrefixLayerOptionsParser.h"
 #include "comms/frame/FrameLayerBase.h"
 
+#include <cstddef>
+
 namespace comms
 {
 

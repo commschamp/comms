@@ -9,8 +9,6 @@
 
 #include "comms/ErrorStatus.h"
 
-#include <utility>
-
 namespace comms
 {
 

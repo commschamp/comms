@@ -20,13 +20,11 @@
 #include "details/AdaptBasicField.h"
 #include "details/OptionsParser.h"
 
-#include <cstddef>
-#include <cstdint>
-#include <type_traits>
-#include <utility>
 #include <vector>
+#include <utility>
 
 #if COMMS_HAS_CPP20_SPAN
+#include <span>
 #endif // #if COMMS_HAS_CPP20_SPAN
 
 namespace comms

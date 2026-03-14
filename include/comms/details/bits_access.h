@@ -11,6 +11,9 @@
 #include "comms/details/gen_enum.h"
 #include "comms/details/macro_common.h"
 
+#include <tuple>
+#include <type_traits>
+
 #ifdef COMMS_MUST_DEFINE_BASE
 #define COMMS_AS_BITMASK_FUNC Base& asBitmask()
 #define COMMS_AS_BITMASK_CONST_FUNC const Base& asBitmask() const

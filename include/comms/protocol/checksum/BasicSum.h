@@ -12,8 +12,6 @@
 
 #include "comms/frame/checksum/BasicSum.h"
 
-#include <cstdint>
-
 namespace comms
 {
 

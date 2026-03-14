@@ -9,8 +9,6 @@
 
 #include "comms/options.h"
 
-#include <tuple>
-
 namespace comms
 {
 

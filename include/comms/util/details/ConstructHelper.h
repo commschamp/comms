@@ -9,7 +9,6 @@
 
 #include "comms/CompileControl.h"
 
-#include <cstddef>
 #include <iterator>
 
 #if COMMS_HAS_CPP20_SPAN

@@ -14,7 +14,6 @@
 #include "comms/util/ArrayView.h"
 
 #include <algorithm>
-#include <cstddef>
 #include <iterator>
 #include <limits>
 #include <string>

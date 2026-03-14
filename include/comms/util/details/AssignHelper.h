@@ -12,7 +12,6 @@
 #include "comms/util/detect.h"
 #include "comms/util/type_traits.h"
 
-#include <cstddef>
 #include <iterator>
 #include <type_traits>
 

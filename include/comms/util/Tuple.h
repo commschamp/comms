@@ -15,7 +15,6 @@
 #include "comms/util/type_traits.h"
 #include "comms/util/AlignedStorage.h"
 
-#include <cstddef>
 #include <tuple>
 #include <type_traits>
 #include <utility>
