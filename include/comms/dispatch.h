@@ -1,6 +1,8 @@
 //
 // Copyright 2019 - 2026 (C). Alex Robenko. All rights reserved.
 //
+// SPDX-License-Identifier: MPL-2.0
+//
 
 /// @file
 /// @brief Contains extra logic to help with dispatching message types and objects
