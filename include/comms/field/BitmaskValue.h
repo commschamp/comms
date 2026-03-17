@@ -1,5 +1,7 @@
 //
-// Copyright 2014 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2026 (C). Alex Robenko. All rights reserved.
+//
+// SPDX-License-Identifier: MPL-2.0
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -19,7 +21,8 @@
 #include "comms/field/tag.h"
 #include "comms/util/SizeToType.h"
 
-#include <limits>
+#include <cstddef>
+#include <type_traits>
 #include <utility>
 
 namespace comms

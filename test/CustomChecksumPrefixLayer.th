@@ -1,5 +1,5 @@
 //
-// Copyright 2021 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2021 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -15,12 +15,12 @@ CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
 CC_ENABLE_WARNINGS()
 
-#include <cstdint>
-#include <cstddef>
 #include <algorithm>
-#include <iterator>
-#include <iostream>
+#include <cstddef>
+#include <cstdint>
 #include <iomanip>
+#include <iostream>
+#include <iterator>
 
 class CustomChecksumPrefixLayerTestSuite : public CxxTest::TestSuite
 {

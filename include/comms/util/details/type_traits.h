@@ -1,5 +1,7 @@
 //
-// Copyright 2013 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2013 - 2026 (C). Alex Robenko. All rights reserved.
+//
+// SPDX-License-Identifier: MPL-2.0
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,8 +12,8 @@
 
 #pragma once
 
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 #include <limits>
 #include <type_traits>
 

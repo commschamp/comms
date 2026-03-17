@@ -1,5 +1,5 @@
 //
-// Copyright 2019 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2019 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -12,11 +12,11 @@ CC_DISABLE_WARNINGS()
 #include "cxxtest/TestSuite.h"
 CC_ENABLE_WARNINGS()
 
-#include <cstdint>
 #include <algorithm>
+#include <cstdint>
+#include <iterator>
 #include <limits>
 #include <memory>
-#include <iterator>
 #include <type_traits>
 
 class FieldsTestSuite2 : public CxxTest::TestSuite
@@ -64,6 +64,7 @@ public:
     void test36();
     void test37();
     void test38();
+    void test39();
 
 private:
     template <typename TField>
@@ -2251,6 +2252,35 @@ void FieldsTestSuite2::test38()
     TS_ASSERT_EQUALS(field.getBitValue(1), false);
 
     // field.setBitValue(1, true); // Must fail compilation
+}
+
+void FieldsTestSuite2::test39()
+{
+    typedef comms::field::IntValue<
+        comms::Field<BigEndianOpt>,
+        std::int16_t,
+        comms::option::VarLength<1, 4>,
+        comms::option::NumValueSerOffset<-1900>
+    > Field;
+
+    static_assert(!Field::isVersionDependent(), "Invalid version dependency assumption");
+
+    static const char Buf[] = {
+        static_cast<char>(0x81), 0x00,
+    };
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+    auto field = readWriteField<Field>(Buf, BufSize);
+
+    TS_ASSERT_EQUALS(field.length(), 2);
+    TS_ASSERT_EQUALS(field.value(), 2028);
+    TS_ASSERT(field.valid());
+
+    field.value() = 2030;
+    static const char ExpectedBuf[] = {
+        static_cast<char>(0x81), 0x02,
+    };
+    const std::size_t ExpectedBufSize = std::extent<decltype(ExpectedBuf)>::value;
+    writeReadField(field, ExpectedBuf, ExpectedBufSize);
 }
 
 template <typename TField>

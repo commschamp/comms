@@ -1,5 +1,7 @@
 //
-// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2026 (C). Alex Robenko. All rights reserved.
+//
+// SPDX-License-Identifier: MPL-2.0
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -22,12 +24,17 @@
 #include "comms/util/StringView.h"
 #include "comms/util/type_traits.h"
 
+#include <cstddef>
+#include <string>
+#include <type_traits>
+#include <utility>
+
 #if COMMS_HAS_CPP17_STRING_VIEW
 #include <string_view>
 #endif // #if COMMS_HAS_CPP17_STRING_VIEW
 
-#include <vector>
 #include <utility>
+#include <vector>
 
 namespace comms
 {

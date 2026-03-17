@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2014 - 2026 (C). Alex Robenko. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,10 +9,15 @@
 
 #include "comms/comms.h"
 
-#include <tuple>
-#include <vector>
-#include <iterator>
+#include <algorithm>
+#include <cstddef>
+#include <cstdint>
 #include <iostream>
+#include <iterator>
+#include <memory>
+#include <tuple>
+#include <type_traits>
+#include <vector>
 
 static_assert(0U < comms::version(), "Invalid version definition");
 static_assert(0U < COMMS_MAKE_VERSION(0, 29, 0), "Invalid version definition");

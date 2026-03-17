@@ -1,5 +1,7 @@
 //
-// Copyright 2019 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2019 - 2026 (C). Alex Robenko. All rights reserved.
+//
+// SPDX-License-Identifier: MPL-2.0
 //
 
 /// @file
@@ -13,6 +15,7 @@
 #include "comms/Message.h"
 #include "comms/util/type_traits.h"
 
+#include <cstddef>
 #include <type_traits>
 #include <utility>
 

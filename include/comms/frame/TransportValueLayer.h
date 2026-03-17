@@ -1,5 +1,7 @@
 //
-// Copyright 2017 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 - 2026 (C). Alex Robenko. All rights reserved.
+//
+// SPDX-License-Identifier: MPL-2.0
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -17,7 +19,10 @@
 #include "comms/frame/details/TransportValueLayerBase.h"
 #include "comms/util/type_traits.h"
 
+#include <cstddef>
 #include <iterator>
+#include <tuple>
+#include <type_traits>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4189) // Disable erroneous initialized but not referenced variable warning

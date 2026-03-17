@@ -1,5 +1,7 @@
 //
-// Copyright 2015 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2026 (C). Alex Robenko. All rights reserved.
+//
+// SPDX-License-Identifier: MPL-2.0
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -17,8 +19,10 @@
 #include "comms/util/type_traits.h"
 
 #include <algorithm>
+#include <cstddef>
+#include <cstdint>
 #include <limits>
-#include <type_traits>
+#include <utility>
 
 namespace comms
 {

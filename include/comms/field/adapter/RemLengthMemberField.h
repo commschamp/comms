@@ -1,5 +1,7 @@
 //
-// Copyright 2019 - 2025 (C). Alex Robenko. All rights reserved.
+// Copyright 2019 - 2026 (C). Alex Robenko. All rights reserved.
+//
+// SPDX-License-Identifier: MPL-2.0
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -12,10 +14,10 @@
 #include "comms/util/type_traits.h"
 #include "comms/details/tag.h"
 
+#include <algorithm>
 #include <cstddef>
 #include <iterator>
-#include <limits>
-#include <type_traits>
+#include <tuple>
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4127) // Disable warning about constant conditional expressions
