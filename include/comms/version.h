@@ -19,7 +19,7 @@
 #define COMMS_MINOR_VERSION 5U
 
 /// @brief Patch level of the library
-#define COMMS_PATCH_VERSION 2U
+#define COMMS_PATCH_VERSION 1U
 
 /// @brief Macro to create numeric version as single unsigned number
 #define COMMS_MAKE_VERSION(major_, minor_, patch_) \
