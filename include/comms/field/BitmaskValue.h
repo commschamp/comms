@@ -22,6 +22,7 @@
 #include "comms/util/SizeToType.h"
 
 #include <cstddef>
+#include <cstdint>
 #include <type_traits>
 #include <utility>
 
@@ -48,7 +49,7 @@ template <>
 struct BitmaskUndertlyingType<false>
 {
     template <typename TOptionsBundle>
-    using Type = unsigned;
+    using Type = std::uintmax_t;
 };
 
 template <typename TOptionsBundle>
