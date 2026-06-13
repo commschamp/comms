@@ -40,8 +40,6 @@ macro (cc_compile)
             "-Wno-unknown-pragmas" "-fdiagnostics-show-option"
             "-Wcast-align" "-Wunused" "-Wconversion"
             "-Wold-style-cast" "-Wdouble-promotion"
-
-            "-Wno-sign-conversion" # This one is impractical
         )
 
         if (CMAKE_COMPILER_IS_GNUCC)
