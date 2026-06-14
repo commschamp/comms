@@ -182,12 +182,12 @@ public:
     template <std::size_t TIdx, typename TField>
     void operator()()
     {
-#if COMMS_IS_MSVC
+#if COMMS_IS_MSVC_2025_OR_BELOW
         // VS compiler
         m_func.operator()<TIdx>(*(reinterpret_cast<TField*>(m_storage)));
-#else // #if COMMS_IS_MSVC
+#else // #if COMMS_IS_MSVC_2025_OR_BELOW
         m_func.template operator()<TIdx>(*(reinterpret_cast<TField*>(m_storage)));
-#endif // #if COMMS_IS_MSVC
+#endif // #if COMMS_IS_MSVC_2025_OR_BELOW
     }
 private:
     void* m_storage = nullptr;
@@ -206,12 +206,12 @@ public:
     template <std::size_t TIdx, typename TField>
     void operator()()
     {
-#if COMMS_IS_MSVC
+#if COMMS_IS_MSVC_2025_OR_BELOW
         // VS compiler
         m_func.operator()<TIdx>(*(reinterpret_cast<const TField*>(m_storage)));
-#else // #if COMMS_IS_MSVC
+#else // #if COMMS_IS_MSVC_2025_OR_BELOW
         m_func.template operator()<TIdx>(*(reinterpret_cast<const TField*>(m_storage)));
-#endif // #if COMMS_IS_MSVC
+#endif // #if COMMS_IS_MSVC_2025_OR_BELOW
     }
 private:
     const void* m_storage = nullptr;
