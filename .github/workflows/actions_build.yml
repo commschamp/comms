@@ -224,7 +224,7 @@ jobs:
       shell: cmd
       run: ctest -V
 
-  build_msvc_2025:
+  build_msvc_2026:
     runs-on: windows-2025
     strategy:
       fail-fast: false
