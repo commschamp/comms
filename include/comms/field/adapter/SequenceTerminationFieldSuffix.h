@@ -163,13 +163,16 @@ private:
     template <typename TIter, typename... TParams>
     comms::ErrorStatus readInternal(TIter& iter, std::size_t len, RawDataTag<TParams...>)
     {
+        using IterType = typename std::decay<decltype(iter)>::type;
+        using DiffType = typename std::iterator_traits<IterType>::difference_type;
+
         std::size_t consumed = 0U;
         std::size_t termFieldLen = 0U;
         while (consumed < len) {
-            auto iterCpy = iter + consumed;
+            auto iterCpy = iter + static_cast<DiffType>(consumed);
             auto es = m_termField.read(iterCpy, len - consumed);
             if (es == comms::ErrorStatus::Success) {
-                termFieldLen = static_cast<std::size_t>(std::distance(iter + consumed, iterCpy));
+                termFieldLen = static_cast<std::size_t>(std::distance(iter + static_cast<DiffType>(consumed), iterCpy));
                 break;
             }
 

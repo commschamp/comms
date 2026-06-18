@@ -673,7 +673,9 @@ private:
     template <typename TIter, typename... TParams>
     ErrorStatus readInternal(TIter& iter, std::size_t len, RawDataTag<TParams...>)
     {
-        comms::util::assign(value(), iter, iter + std::min(len, comms::util::maxSizeOf(value())));
+        using IterType = typename std::decay<decltype(iter)>::type;
+        using DiffType = typename std::iterator_traits<IterType>::difference_type;
+        comms::util::assign(value(), iter, iter + static_cast<DiffType>(std::min(len, comms::util::maxSizeOf(value()))));
         std::advance(iter, len);
         return ErrorStatus::Success;
     }
