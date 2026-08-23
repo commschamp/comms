@@ -51,6 +51,7 @@ jobs:
       run: ctest -V
 
     - name: Documentation
+      if: ${{matrix.type == 'Debug' && matrix.cpp == '17'}}
       working-directory: ${{runner.workspace}}/build
       shell: bash
       run: make doc_comms
