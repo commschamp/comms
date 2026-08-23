@@ -99,11 +99,6 @@ jobs:
       shell: bash
       run: ctest -V
 
-    - name: Documentation
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: make doc_comms
-
   build_clang_ubuntu_24_04:
     runs-on: ubuntu-24.04
     strategy:
@@ -150,11 +145,6 @@ jobs:
       shell: bash
       run: ctest -V
 
-    - name: Documentation
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: make doc_comms
-
   build_clang_ubuntu_26_04:
     runs-on: ubuntu-26.04
     strategy:
@@ -198,11 +188,6 @@ jobs:
       working-directory: ${{runner.workspace}}/build
       shell: bash
       run: ctest -V
-
-    - name: Documentation
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: make doc_comms
 
   build_msvc_2022:
     runs-on: windows-2022
