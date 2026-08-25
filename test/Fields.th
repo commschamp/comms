@@ -2913,9 +2913,9 @@ void FieldsTestSuite::test59()
     TS_ASSERT_EQUALS(comms::units::getNanometers<unsigned long long >(field), 345000000UL);
     TS_ASSERT_EQUALS(comms::units::getMicrometers<unsigned>(field), 345000U);
     TS_ASSERT_EQUALS(comms::units::getMillimeters<unsigned>(field), 345U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getCentimeters<double>(field) - (static_cast<double>(345) / 10)), std::numeric_limits<double>::epsilon());
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMeters<double>(field) - (static_cast<double>(345) / 1000)), std::numeric_limits<double>::epsilon());
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getKilometers<double>(field) - (static_cast<double>(345) / 1000000)), std::numeric_limits<double>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getCentimeters<double>(field), static_cast<double>(345) / 10, std::numeric_limits<double>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getMeters<double>(field), static_cast<double>(345) / 1000, std::numeric_limits<double>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getKilometers<double>(field), static_cast<double>(345) / 1000000, std::numeric_limits<double>::epsilon());
 
     comms::units::setNanometers(field, 100000000UL);
     TS_ASSERT_EQUALS(field.value(), 100U);
