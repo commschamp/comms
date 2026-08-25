@@ -196,9 +196,9 @@ private:
         comms::ErrorStatus expectedStatus = comms::ErrorStatus::Success);
 
     template <typename TFP>
-    bool fpEquals(TFP value1, TFP value2)
+    static constexpr TFP epsilon()
     {
-        return (std::abs(value1 - value2) < std::numeric_limits<TFP>::epsilon());
+        return std::numeric_limits<TFP>::epsilon();
     }
 };
 
@@ -1713,9 +1713,9 @@ void FieldsTestSuite::test35()
         "Invalid version dependency assumption");
 
     Field field;
-    TS_ASSERT(fpEquals(field.value(), 0.0f));
+    TS_ASSERT_DELTA(field.value(), 0.0f, epsilon<float>());
     field.value() = 1.23f;
-    TS_ASSERT(fpEquals(field.value(), 1.23f));
+    TS_ASSERT_DELTA(field.value(), 1.23f, epsilon<float>());
 
     std::vector<std::uint8_t> buf;
     auto writeIter = std::back_inserter(buf);
@@ -1724,12 +1724,12 @@ void FieldsTestSuite::test35()
     TS_ASSERT_EQUALS(buf.size(), sizeof(float));
 
     field = Field();
-    TS_ASSERT(fpEquals(field.value(), 0.0f));
+    TS_ASSERT_DELTA(field.value(), 0.0f, epsilon<float>());
 
     const auto* readIter = &buf[0];
     es = field.read(readIter, buf.size());
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
-    TS_ASSERT(fpEquals(field.value(), 1.23f));
+    TS_ASSERT_DELTA(field.value(), 1.23f, epsilon<float>());
 
     std::vector<Field> vec;
     vec.resize(2U);
@@ -1871,13 +1871,13 @@ void FieldsTestSuite::test39()
         "Invalid version dependency assumption");
 
     Field field;
-    TS_ASSERT(fpEquals(field.value(), 0.0f));
+    TS_ASSERT_DELTA(field.value(), 0.0f, epsilon<float>());
     TS_ASSERT(!field.valid());
     field.value() = 4.999999f;
-    TS_ASSERT(fpEquals(field.value(), 4.999999f));
+    TS_ASSERT_DELTA(field.value(), 4.999999f, epsilon<float>());
     TS_ASSERT(!field.valid());
     field.value() = 5.00001f;
-    TS_ASSERT(fpEquals(field.value(), 5.00001f));
+    TS_ASSERT_DELTA(field.value(), 5.00001f, epsilon<float>());
     TS_ASSERT(field.valid());
 }
 
@@ -1906,7 +1906,7 @@ void FieldsTestSuite::test40()
     static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
     field = readWriteField<Field>(Buf, BufSize);
     TS_ASSERT_EQUALS(field.value(), 115);
-    TS_ASSERT(fpEquals(field.scaleAs<float>(), 1.15f));
+    TS_ASSERT_DELTA(field.scaleAs<float>(), 1.15f, epsilon<float>());
 }
 
 void FieldsTestSuite::test41()
@@ -2703,30 +2703,30 @@ void FieldsTestSuite::test57()
 
     comms::units::setMilliseconds(field, 100U);
     TS_ASSERT_EQUALS(comms::units::getMilliseconds<unsigned>(field), 100U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getSeconds<float>(field) - 0.1f), std::numeric_limits<float>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getSeconds<float>(field), 0.1f, epsilon<float>());
     TS_ASSERT_EQUALS(field.value(), 1000);
 
     comms::units::setSeconds(field, 1.2);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getSeconds<float>(field) - 1.2f), std::numeric_limits<float>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getSeconds<float>(field), 1.2f, epsilon<float>());
     TS_ASSERT_EQUALS(comms::units::getMilliseconds<unsigned>(field), 1200U);
     TS_ASSERT_EQUALS(field.value(), 12000);
 
     comms::units::setMinutes(field, (double)1/3);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMinutes<double>(field) - (double)1/3), std::numeric_limits<double>::epsilon());
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getHours<double>(field) - (double)1/(3*60)), std::numeric_limits<double>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getMinutes<double>(field), (double)1/3, epsilon<double>());
+    TS_ASSERT_DELTA(comms::units::getHours<double>(field), (double)1/(3*60), epsilon<double>());
     TS_ASSERT_EQUALS(comms::units::getSeconds<unsigned>(field), 20U);
     TS_ASSERT_EQUALS(comms::units::getMilliseconds<unsigned>(field), 20000U);
     TS_ASSERT_EQUALS(field.value(), 200000);
 
     comms::units::setHours(field, 0.5f);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getHours<double>(field) - 0.5), std::numeric_limits<double>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getHours<double>(field), 0.5, epsilon<double>());
     TS_ASSERT_EQUALS(comms::units::getMinutes<unsigned>(field), 30U);
     TS_ASSERT_EQUALS(comms::units::getSeconds<unsigned>(field), 30U * 60U);
     TS_ASSERT_EQUALS(comms::units::getMilliseconds<unsigned>(field), 30U * 60U * 1000U);
     TS_ASSERT_EQUALS(field.value(), 30U * 60U * 1000U * 10U);
 
     comms::units::setDays(field, (float)1/3);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getDays<double>(field) - (double)1/3), std::numeric_limits<double>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getDays<double>(field), (double)1/3, epsilon<double>());
     TS_ASSERT_EQUALS(comms::units::getHours<unsigned>(field), 8U);
     TS_ASSERT_EQUALS(comms::units::getMinutes<unsigned>(field), 8U * 60);
     TS_ASSERT_EQUALS(comms::units::getSeconds<unsigned>(field), 8U * 60U * 60U);
@@ -2734,7 +2734,7 @@ void FieldsTestSuite::test57()
     TS_ASSERT_EQUALS(field.value(), 8UL * 60U * 60U * 1000U * 10U);
 
     comms::units::setWeeks(field, (double)2/7);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getWeeks<double>(field) - (double)2/7), std::numeric_limits<double>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getWeeks<double>(field), (double)2/7, epsilon<double>());
     TS_ASSERT_EQUALS(comms::units::getDays<unsigned>(field), 2U);
     TS_ASSERT_EQUALS(comms::units::getHours<unsigned>(field), 2U * 24U);
     TS_ASSERT_EQUALS(comms::units::getMinutes<unsigned>(field), 2U * 24 * 60);
@@ -2762,7 +2762,7 @@ void FieldsTestSuite::test58()
         static_assert(comms::units::isNanoseconds(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 1U);
         TS_ASSERT_EQUALS(comms::units::getNanoseconds<unsigned>(field), 100U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMicroseconds<double>(field) - 0.1), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getMicroseconds<double>(field), 0.1, epsilon<double>());
     } while (false);
 
     typedef comms::field::IntValue<
@@ -2781,7 +2781,7 @@ void FieldsTestSuite::test58()
         static_assert(comms::units::isMicroseconds(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 5U);
         TS_ASSERT_EQUALS(comms::units::getMicroseconds<unsigned>(field), 500U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMilliseconds<double>(field) - 0.5), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getMilliseconds<double>(field), 0.5, epsilon<double>());
     } while (false);
 
     typedef comms::field::IntValue<
@@ -2799,7 +2799,7 @@ void FieldsTestSuite::test58()
         static_assert(comms::units::isMilliseconds(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 200U);
         TS_ASSERT_EQUALS(comms::units::getMilliseconds<unsigned>(field), 200U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getSeconds<double>(field) - 0.2), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getSeconds<double>(field), 0.2, epsilon<double>());
     } while (false);
 
     typedef comms::field::IntValue<
@@ -2817,7 +2817,7 @@ void FieldsTestSuite::test58()
         Field4 field(1U);
         static_assert(comms::units::isSeconds(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 1U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getSeconds<double>(field) - 0.1), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getSeconds<double>(field), 0.1, epsilon<double>());
         TS_ASSERT_EQUALS(comms::units::getMilliseconds<unsigned>(field), 100U);
     } while (false);
 
@@ -2836,7 +2836,7 @@ void FieldsTestSuite::test58()
         Field5 field(1U);
         static_assert(comms::units::isMinutes(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 1U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMinutes<double>(field) - 0.1), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getMinutes<double>(field), 0.1, epsilon<double>());
         TS_ASSERT_EQUALS(comms::units::getSeconds<unsigned>(field), 6U);
     } while (false);
 
@@ -2855,7 +2855,7 @@ void FieldsTestSuite::test58()
         Field6 field(1U);
         static_assert(comms::units::isHours(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 1U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getHours<double>(field) - 0.1), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getHours<double>(field), 0.1, epsilon<double>());
         TS_ASSERT_EQUALS(comms::units::getSeconds<unsigned>(field), 6U * 60U);
     } while (false);
 
@@ -2874,7 +2874,7 @@ void FieldsTestSuite::test58()
         Field7 field(1U);
         static_assert(comms::units::isDays(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 1U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getDays<double>(field) - (double)1/12), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getDays<double>(field), (double)1/12, epsilon<double>());
         TS_ASSERT_EQUALS(comms::units::getHours<unsigned>(field), 2U);
     } while (false);
 
@@ -2913,9 +2913,9 @@ void FieldsTestSuite::test59()
     TS_ASSERT_EQUALS(comms::units::getNanometers<unsigned long long >(field), 345000000UL);
     TS_ASSERT_EQUALS(comms::units::getMicrometers<unsigned>(field), 345000U);
     TS_ASSERT_EQUALS(comms::units::getMillimeters<unsigned>(field), 345U);
-    TS_ASSERT_DELTA(comms::units::getCentimeters<double>(field), static_cast<double>(345) / 10, std::numeric_limits<double>::epsilon());
-    TS_ASSERT_DELTA(comms::units::getMeters<double>(field), static_cast<double>(345) / 1000, std::numeric_limits<double>::epsilon());
-    TS_ASSERT_DELTA(comms::units::getKilometers<double>(field), static_cast<double>(345) / 1000000, std::numeric_limits<double>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getCentimeters<double>(field), static_cast<double>(345) / 10, epsilon<double>());
+    TS_ASSERT_DELTA(comms::units::getMeters<double>(field), static_cast<double>(345) / 1000, epsilon<double>());
+    TS_ASSERT_DELTA(comms::units::getKilometers<double>(field), static_cast<double>(345) / 1000000, epsilon<double>());
 
     comms::units::setNanometers(field, 100000000UL);
     TS_ASSERT_EQUALS(field.value(), 100U);
@@ -2957,7 +2957,7 @@ void FieldsTestSuite::test60()
         static_assert(comms::units::isNanometers(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 1U);
         TS_ASSERT_EQUALS(comms::units::getNanometers<unsigned>(field), 100U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMicrometers<double>(field) - 0.1), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getMicrometers<double>(field), 0.1, epsilon<double>());
     } while (false);
 
     typedef comms::field::IntValue<
@@ -2976,7 +2976,7 @@ void FieldsTestSuite::test60()
         static_assert(comms::units::isMicrometers(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 5U);
         TS_ASSERT_EQUALS(comms::units::getMicrometers<unsigned>(field), 500U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMillimeters<double>(field) - 0.5), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getMillimeters<double>(field), 0.5, epsilon<double>());
     } while (false);
 
     typedef comms::field::IntValue<
@@ -2994,7 +2994,7 @@ void FieldsTestSuite::test60()
         static_assert(comms::units::isMillimeters(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 200U);
         TS_ASSERT_EQUALS(comms::units::getMillimeters<unsigned>(field), 200U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMeters<double>(field) - 0.2), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getMeters<double>(field), 0.2, epsilon<double>());
     } while (false);
 
     typedef comms::field::IntValue<
@@ -3012,7 +3012,7 @@ void FieldsTestSuite::test60()
         Field4 field(1U);
         static_assert(comms::units::isMeters(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 1U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMeters<double>(field) - 0.1), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getMeters<double>(field), 0.1, epsilon<double>());
         TS_ASSERT_EQUALS(comms::units::getMillimeters<unsigned>(field), 100U);
     } while (false);
 
@@ -3031,7 +3031,7 @@ void FieldsTestSuite::test60()
         Field5 field(1U);
         static_assert(comms::units::isCentimeters(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 1U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getCentimeters<double>(field) - 0.1), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getCentimeters<double>(field), 0.1, epsilon<double>());
         TS_ASSERT_EQUALS(comms::units::getMillimeters<unsigned>(field), 1U);
     } while (false);
 
@@ -3050,7 +3050,7 @@ void FieldsTestSuite::test60()
         Field6 field(1U);
         static_assert(comms::units::isKilometers(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 1U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getKilometers<double>(field) - 0.1), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getKilometers<double>(field), 0.1, epsilon<double>());
         TS_ASSERT_EQUALS(comms::units::getMeters<unsigned>(field), 100U);
     } while (false);
 }
@@ -3072,9 +3072,9 @@ void FieldsTestSuite::test61()
     TS_ASSERT_EQUALS(comms::units::getMicrometersPerSecond<unsigned>(field), 100000U);
     TS_ASSERT_EQUALS(comms::units::getMillimetersPerSecond<unsigned>(field), 100U);
     TS_ASSERT_EQUALS(comms::units::getCentimetersPerSecond<unsigned>(field), 10U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMetersPerSecond<double>(field) - 0.1), std::numeric_limits<double>::epsilon());
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getKilometersPerSecond<double>(field) - 0.0001), std::numeric_limits<double>::epsilon());
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getKilometersPerHour<double>(field) - (0.1 * 3600) / 1000), std::numeric_limits<double>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getMetersPerSecond<double>(field), 0.1, epsilon<double>());
+    TS_ASSERT_DELTA(comms::units::getKilometersPerSecond<double>(field), 0.0001, epsilon<double>());
+    TS_ASSERT_DELTA(comms::units::getKilometersPerHour<double>(field), (0.1 * 3600) / 1000, epsilon<double>());
 
     comms::units::setNanometersPerSecond(field, 50000000UL);
     TS_ASSERT_EQUALS(field.value(), 5U);
@@ -3119,7 +3119,7 @@ void FieldsTestSuite::test62()
         static_assert(comms::units::isNanometersPerSecond(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 1U);
         TS_ASSERT_EQUALS(comms::units::getNanometersPerSecond<unsigned>(field), 100U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMicrometersPerSecond<double>(field) - 0.1), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getMicrometersPerSecond<double>(field), 0.1, epsilon<double>());
     } while (false);
 
     typedef comms::field::IntValue<
@@ -3138,7 +3138,7 @@ void FieldsTestSuite::test62()
         static_assert(comms::units::isMicrometersPerSecond(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 5U);
         TS_ASSERT_EQUALS(comms::units::getMicrometersPerSecond<unsigned>(field), 500U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMillimetersPerSecond<double>(field) - 0.5), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getMillimetersPerSecond<double>(field), 0.5, epsilon<double>());
     } while (false);
 
     typedef comms::field::IntValue<
@@ -3156,7 +3156,7 @@ void FieldsTestSuite::test62()
         static_assert(comms::units::isMillimetersPerSecond(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 200U);
         TS_ASSERT_EQUALS(comms::units::getMillimetersPerSecond<unsigned>(field), 200U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMetersPerSecond<double>(field) - 0.2), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getMetersPerSecond<double>(field), 0.2, epsilon<double>());
     } while (false);
 
     typedef comms::field::IntValue<
@@ -3174,7 +3174,7 @@ void FieldsTestSuite::test62()
         Field4 field(1U);
         static_assert(comms::units::isMetersPerSecond(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 1U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMetersPerSecond<double>(field) - 0.1), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getMetersPerSecond<double>(field), 0.1, epsilon<double>());
         TS_ASSERT_EQUALS(comms::units::getMillimetersPerSecond<unsigned>(field), 100U);
     } while (false);
 
@@ -3193,7 +3193,7 @@ void FieldsTestSuite::test62()
         Field5 field(1U);
         static_assert(comms::units::isCentimetersPerSecond(field), "Invalid units");
         TS_ASSERT_EQUALS(field.value(), 1U);
-        TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getCentimetersPerSecond<double>(field) - 0.1), std::numeric_limits<double>::epsilon());
+        TS_ASSERT_DELTA(comms::units::getCentimetersPerSecond<double>(field), 0.1, epsilon<double>());
         TS_ASSERT_EQUALS(comms::units::getMillimetersPerSecond<unsigned>(field), 1U);
     } while (false);
 
@@ -3249,8 +3249,8 @@ void FieldsTestSuite::test63()
     field.value() = 10U;
     TS_ASSERT_EQUALS(comms::units::getHertz<unsigned long>(field), 10000UL);
     TS_ASSERT_EQUALS(comms::units::getKilohertz<unsigned>(field), 10U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMegahertz<double>(field) - 0.01), std::numeric_limits<double>::epsilon());
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getGigahertz<double>(field) - 0.00001), std::numeric_limits<double>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getMegahertz<double>(field), 0.01, epsilon<double>());
+    TS_ASSERT_DELTA(comms::units::getGigahertz<double>(field), 0.00001, epsilon<double>());
 
     comms::units::setHertz(field, 20000U);
     TS_ASSERT_EQUALS(comms::units::getKilohertz<unsigned>(field), 20U);
@@ -3282,17 +3282,17 @@ void FieldsTestSuite::test64()
     static_assert(comms::units::isDegrees(field), "Invalid units");
     field.value() = 300U;
     TS_ASSERT_EQUALS(comms::units::getDegrees<unsigned>(field), 30U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getRadians<double>(field) - 0.523599), 0.000001);
+    TS_ASSERT_DELTA(comms::units::getRadians<double>(field), 0.523599, 0.000001);
 
     comms::units::setDegrees(field, 50U);
     TS_ASSERT_EQUALS(field.value(), 500U);
     TS_ASSERT_EQUALS(comms::units::getDegrees<unsigned>(field), 50U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getRadians<double>(field) - 0.872665), 0.000001);
+    TS_ASSERT_DELTA(comms::units::getRadians<double>(field), 0.872665, 0.000001);
 
     comms::units::setRadians(field, 1.04719);
     TS_ASSERT_EQUALS(comms::units::getDegrees<unsigned>(field), 60U);
     TS_ASSERT_EQUALS(field.value(), 600U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getRadians<double>(field) - 1.04719), 0.00001);
+    TS_ASSERT_DELTA(comms::units::getRadians<double>(field), 1.04719, 0.00001);
 }
 
 void FieldsTestSuite::test65()
@@ -3312,17 +3312,17 @@ void FieldsTestSuite::test65()
     static_assert(comms::units::isRadians(field), "Invalid units");
     field.value() = 100U;
     TS_ASSERT_EQUALS(comms::units::getRadians<unsigned>(field), 1U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getDegrees<double>(field) - 57.2958), 0.0001);
+    TS_ASSERT_DELTA(comms::units::getDegrees<double>(field), 57.2958, 0.0001);
 
     comms::units::setRadians(field, 0.5);
     TS_ASSERT_EQUALS(field.value(), 50U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getRadians<double>(field) - 0.5), std::numeric_limits<double>::epsilon());
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getDegrees<double>(field) - 28.6479), 0.0001);
+    TS_ASSERT_DELTA(comms::units::getRadians<double>(field), 0.5, epsilon<double>());
+    TS_ASSERT_DELTA(comms::units::getDegrees<double>(field), 28.6479, 0.0001);
 
     comms::units::setDegrees(field, 114.592);
     TS_ASSERT_EQUALS(comms::units::getRadians<unsigned>(field), 2U);
     TS_ASSERT_EQUALS(field.value(), 200U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getDegrees<double>(field) - 114.592), 0.001);
+    TS_ASSERT_DELTA(comms::units::getDegrees<double>(field), 114.592, 0.001);
 }
 
 void FieldsTestSuite::test66()
@@ -3343,8 +3343,8 @@ void FieldsTestSuite::test66()
     TS_ASSERT_EQUALS(comms::units::getNanoamps<unsigned long long >(field), 345000000UL);
     TS_ASSERT_EQUALS(comms::units::getMicroamps<unsigned>(field), 345000U);
     TS_ASSERT_EQUALS(comms::units::getMilliamps<unsigned>(field), 345U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getAmps<double>(field) - 0.345), std::numeric_limits<double>::epsilon());
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getKiloamps<double>(field) - 0.000345), std::numeric_limits<double>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getAmps<double>(field), 0.345, epsilon<double>());
+    TS_ASSERT_DELTA(comms::units::getKiloamps<double>(field), 0.000345, epsilon<double>());
 
     comms::units::setNanoamps(field, 100000000UL);
     TS_ASSERT_EQUALS(field.value(), 100U);
@@ -3383,8 +3383,8 @@ void FieldsTestSuite::test67()
     TS_ASSERT_EQUALS(comms::units::getNanovolts<unsigned long long >(field), 345000000UL);
     TS_ASSERT_EQUALS(comms::units::getMicrovolts<unsigned>(field), 345000U);
     TS_ASSERT_EQUALS(comms::units::getMillivolts<unsigned>(field), 345U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getVolts<double>(field) - 0.345), std::numeric_limits<double>::epsilon());
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getKilovolts<double>(field) - 0.000345), std::numeric_limits<double>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getVolts<double>(field), 0.345, epsilon<double>());
+    TS_ASSERT_DELTA(comms::units::getKilovolts<double>(field), 0.000345, epsilon<double>());
 
     comms::units::setNanovolts(field, 100000000UL);
     TS_ASSERT_EQUALS(field.value(), 100U);
@@ -3421,20 +3421,20 @@ void FieldsTestSuite::test68()
     static_assert(comms::units::isSeconds(field), "Invalid units");
     field.value() = 1.345f;
 
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(field.value() - 1.345f), std::numeric_limits<float>::epsilon());
+    TS_ASSERT_DELTA(field.value(), 1.345f, epsilon<float>());
     TS_ASSERT_EQUALS(comms::units::getMicroseconds<unsigned>(field), 1345000U);
     TS_ASSERT_EQUALS(comms::units::getMilliseconds<unsigned>(field), 1345U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getSeconds<float>(field) - 1.345f), std::numeric_limits<float>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getSeconds<float>(field), 1.345f, epsilon<float>());
 
     comms::units::setMilliseconds(field, 500U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(field.value() - 0.5f), std::numeric_limits<float>::epsilon());
+    TS_ASSERT_DELTA(field.value(), 0.5f, epsilon<float>());
     TS_ASSERT_EQUALS(comms::units::getMilliseconds<unsigned>(field), 500U);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getSeconds<float>(field) - 0.5f), std::numeric_limits<float>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getSeconds<float>(field), 0.5f, epsilon<float>());
 
     comms::units::setMinutes(field, (float)1/180);
-    TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getSeconds<float>(field) - (float)1/3), std::numeric_limits<float>::epsilon());
+    TS_ASSERT_DELTA(comms::units::getSeconds<float>(field), (float)1/3, epsilon<float>());
     TS_ASSERT_EQUALS(comms::units::getMilliseconds<unsigned>(field), 333U);
-    TS_ASSERT_DELTA(comms::units::getMilliseconds<float>(field), 333.0f + 1.0f / 3.0f, 1e-5f);
+    TS_ASSERT_DELTA(comms::units::getMilliseconds<float>(field), 333.0f + 1.0f / 3.0f, epsilon<float>());
 }
 
 void FieldsTestSuite::test69()

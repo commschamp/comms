@@ -66,6 +66,12 @@ public:
     void test38();
     void test39();
 
+    template <typename TFP>
+    static constexpr TFP epsilon()
+    {
+        return std::numeric_limits<TFP>::epsilon();
+    }
+
 private:
     template <typename TField>
     static TField readWriteField(
@@ -86,12 +92,6 @@ private:
         const char* expectedBuf,
         std::size_t size,
         comms::ErrorStatus expectedStatus = comms::ErrorStatus::Success);
-
-    template <typename TFP>
-    bool fpEquals(TFP value1, TFP value2)
-    {
-        return (std::abs(value1 - value2) < std::numeric_limits<TFP>::epsilon());
-    }
 };
 
 using Test1_FieldBase = FieldsTestSuite2::BeFieldBase;
@@ -488,7 +488,6 @@ void FieldsTestSuite2::test6()
 
 void FieldsTestSuite2::test7()
 {
-    static const double Epsilon = std::numeric_limits<double>::epsilon();
     do {
         typedef comms::field::IntValue<
             comms::Field<BigEndianOpt>,
@@ -503,31 +502,31 @@ void FieldsTestSuite2::test7()
 
         comms::units::setBytes(field, Num);
         TS_ASSERT_EQUALS(comms::units::getBytes<unsigned>(field), Num);
-        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - (double(Num) / 1024)) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - (double(Num) / 1024 / 1024)) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - (double(Num) / 1024 / 1024 / 1024)) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - (double(Num) / 1024 / 1024 / 1024 / 1024)) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getKilobytes<double>(field), (double(Num) / 1024), epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getMegabytes<double>(field), (double(Num) / 1024 / 1024), epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getGigabytes<double>(field), (double(Num) / 1024 / 1024 / 1024), epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), (double(Num) / 1024 / 1024 / 1024 / 1024), epsilon<double>());
 
         comms::units::setKilobytes(field, Num);
         TS_ASSERT_EQUALS(comms::units::getBytes<unsigned>(field), Num * 1024);
         TS_ASSERT_EQUALS(comms::units::getKilobytes<unsigned>(field), Num);
-        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - (double(Num) / 1024 )) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - (double(Num) / 1024 / 1024)) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - (double(Num) / 1024 / 1024 / 1024)) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getMegabytes<double>(field), (double(Num) / 1024 ), epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getGigabytes<double>(field), (double(Num) / 1024 / 1024), epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), (double(Num) / 1024 / 1024 / 1024), epsilon<double>());
 
         comms::units::setMegabytes(field, Num);
         TS_ASSERT_EQUALS(comms::units::getBytes<unsigned long>(field), Num * 1024UL * 1024);
         TS_ASSERT_EQUALS(comms::units::getKilobytes<unsigned>(field), Num * 1024);
         TS_ASSERT_EQUALS(comms::units::getMegabytes<unsigned>(field), Num);
-        TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - (double(Num) / 1024)) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - (double(Num) / 1024 / 1024)) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getGigabytes<double>(field), (double(Num) / 1024), epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), (double(Num) / 1024 / 1024), epsilon<double>());
 
         comms::units::setGigabytes(field, Num);
         TS_ASSERT_EQUALS(comms::units::getBytes<std::uintmax_t>(field), Num * 1024ULL * 1024 * 1024);
         TS_ASSERT_EQUALS(comms::units::getKilobytes<std::uintmax_t>(field), Num * 1024ULL * 1024);
         TS_ASSERT_EQUALS(comms::units::getMegabytes<std::uintmax_t>(field), Num * 1024ULL);
         TS_ASSERT_EQUALS(comms::units::getGigabytes<std::uintmax_t>(field), Num);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - (double(Num) / 1024)) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), (double(Num) / 1024), epsilon<double>());
 
         comms::units::setTerabytes(field, Num);
         TS_ASSERT_EQUALS(comms::units::getBytes<std::uintmax_t>(field), Num * 1024ULL * 1024 * 1024 * 1024);
@@ -552,23 +551,23 @@ void FieldsTestSuite2::test7()
         comms::units::setKilobytes(field, Num);
         TS_ASSERT_EQUALS(comms::units::getBytes<unsigned>(field), Num * 1024);
         TS_ASSERT_EQUALS(comms::units::getKilobytes<unsigned>(field), Num);
-        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - (double(Num) / 1024 )) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - (double(Num) / 1024 / 1024)) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - (double(Num) / 1024 / 1024 / 1024)) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getMegabytes<double>(field), (double(Num) / 1024), epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getGigabytes<double>(field), (double(Num) / 1024 / 1024), epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), (double(Num) / 1024 / 1024 / 1024), epsilon<double>());
 
         comms::units::setMegabytes(field, Num);
         TS_ASSERT_EQUALS(comms::units::getBytes<unsigned long>(field), Num * 1024UL * 1024);
         TS_ASSERT_EQUALS(comms::units::getKilobytes<unsigned>(field), Num * 1024);
         TS_ASSERT_EQUALS(comms::units::getMegabytes<unsigned>(field), Num);
-        TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - (double(Num) / 1024)) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - (double(Num) / 1024 / 1024)) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getGigabytes<double>(field), (double(Num) / 1024), epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), (double(Num) / 1024 / 1024), epsilon<double>());
 
         comms::units::setGigabytes(field, Num);
         TS_ASSERT_EQUALS(comms::units::getBytes<std::uintmax_t>(field), Num * 1024ULL * 1024 * 1024);
         TS_ASSERT_EQUALS(comms::units::getKilobytes<std::uintmax_t>(field), Num * 1024ULL * 1024);
         TS_ASSERT_EQUALS(comms::units::getMegabytes<std::uintmax_t>(field), Num * 1024ULL);
         TS_ASSERT_EQUALS(comms::units::getGigabytes<std::uintmax_t>(field), Num);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - (double(Num) / 1024)) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), (double(Num) / 1024), epsilon<double>());
 
         comms::units::setTerabytes(field, Num);
         TS_ASSERT_EQUALS(comms::units::getBytes<std::uintmax_t>(field), Num * 1024ULL * 1024 * 1024 * 1024);
@@ -594,15 +593,15 @@ void FieldsTestSuite2::test7()
         TS_ASSERT_EQUALS(comms::units::getBytes<unsigned long>(field), Num * 1024UL * 1024);
         TS_ASSERT_EQUALS(comms::units::getKilobytes<unsigned>(field), Num * 1024);
         TS_ASSERT_EQUALS(comms::units::getMegabytes<unsigned>(field), Num);
-        TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - (double(Num) / 1024)) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - (double(Num) / 1024 / 1024)) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getGigabytes<double>(field), (double(Num) / 1024), epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), (double(Num) / 1024 / 1024), epsilon<double>());
 
         comms::units::setGigabytes(field, Num);
         TS_ASSERT_EQUALS(comms::units::getBytes<std::uintmax_t>(field), Num * 1024ULL * 1024 * 1024);
         TS_ASSERT_EQUALS(comms::units::getKilobytes<std::uintmax_t>(field), Num * 1024ULL * 1024);
         TS_ASSERT_EQUALS(comms::units::getMegabytes<std::uintmax_t>(field), Num * 1024ULL);
         TS_ASSERT_EQUALS(comms::units::getGigabytes<std::uintmax_t>(field), Num);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - (double(Num) / 1024)) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), (double(Num) / 1024), epsilon<double>());
 
         comms::units::setTerabytes(field, Num);
         TS_ASSERT_EQUALS(comms::units::getBytes<std::uintmax_t>(field), Num * 1024ULL * 1024 * 1024 * 1024);
@@ -629,7 +628,7 @@ void FieldsTestSuite2::test7()
         TS_ASSERT_EQUALS(comms::units::getKilobytes<std::uintmax_t>(field), Num * 1024ULL * 1024);
         TS_ASSERT_EQUALS(comms::units::getMegabytes<std::uintmax_t>(field), Num * 1024ULL);
         TS_ASSERT_EQUALS(comms::units::getGigabytes<std::uintmax_t>(field), Num);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - (double(Num) / 1024)) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), (double(Num) / 1024), epsilon<double>());
 
         comms::units::setTerabytes(field, Num);
         TS_ASSERT_EQUALS(comms::units::getBytes<std::uintmax_t>(field), Num * 1024ULL * 1024 * 1024 * 1024);
@@ -666,43 +665,42 @@ struct Test8_Helper
     template <typename TField>
     static void test(TField& field)
     {
-        static const double Epsilon = std::numeric_limits<double>::epsilon();
         static const double Num = 7;
 
         comms::units::setBytes(field, Num);
-        TS_ASSERT(std::abs(comms::units::getBytes<double>(field) - Num) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - Num / 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - Num / 1024 / 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - Num / 1024 / 1024 / 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - Num / 1024 / 1024 / 1024 / 1024) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getBytes<double>(field), Num, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getKilobytes<double>(field), Num / 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getMegabytes<double>(field), Num / 1024 / 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getGigabytes<double>(field), Num / 1024 / 1024 / 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), Num / 1024 / 1024 / 1024 / 1024, FieldsTestSuite2::epsilon<double>());
 
         comms::units::setKilobytes(field, Num);
-        TS_ASSERT(std::abs(comms::units::getBytes<double>(field) - Num * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - Num) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - Num / 1024 ) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - Num / 1024 / 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - Num / 1024 / 1024 / 1024) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getBytes<double>(field), Num * 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getKilobytes<double>(field), Num, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getMegabytes<double>(field), Num / 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getGigabytes<double>(field), Num / 1024 / 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), Num / 1024 / 1024 / 1024, FieldsTestSuite2::epsilon<double>());
 
         comms::units::setMegabytes(field, Num);
-        TS_ASSERT(std::abs(comms::units::getBytes<double>(field) - Num * 1024 * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - Num * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - Num) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - Num / 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - Num / 1024 / 1024) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getBytes<double>(field), Num * 1024 * 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getKilobytes<double>(field), Num * 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getMegabytes<double>(field), Num, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getGigabytes<double>(field), Num / 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), Num / 1024 / 1024, FieldsTestSuite2::epsilon<double>());
 
         comms::units::setGigabytes(field, Num);
-        TS_ASSERT(std::abs(comms::units::getBytes<double>(field) - Num * 1024 * 1024 * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - Num * 1024 * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - Num * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - Num) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - Num / 1024) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getBytes<double>(field), Num * 1024 * 1024 * 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getKilobytes<double>(field), Num * 1024 * 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getMegabytes<double>(field), Num * 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getGigabytes<double>(field), Num, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), Num / 1024, FieldsTestSuite2::epsilon<double>());
 
         comms::units::setTerabytes(field, Num);
-        TS_ASSERT(std::abs(comms::units::getBytes<double>(field) - Num * 1024 * 1024 * 1024 * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getKilobytes<double>(field) - Num * 1024 * 1024 * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getMegabytes<double>(field) - Num * 1024 * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getGigabytes<double>(field) - Num * 1024) < Epsilon);
-        TS_ASSERT(std::abs(comms::units::getTerabytes<double>(field) - Num) < Epsilon);
+        TS_ASSERT_DELTA(comms::units::getBytes<double>(field), Num * 1024 * 1024 * 1024 * 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getKilobytes<double>(field), Num * 1024 * 1024 * 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getMegabytes<double>(field), Num * 1024 * 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getGigabytes<double>(field), Num * 1024, FieldsTestSuite2::epsilon<double>());
+        TS_ASSERT_DELTA(comms::units::getTerabytes<double>(field), Num, FieldsTestSuite2::epsilon<double>());
     }
 };
 
