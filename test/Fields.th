@@ -2913,20 +2913,6 @@ void FieldsTestSuite::test59()
     TS_ASSERT_EQUALS(comms::units::getNanometers<unsigned long long >(field), 345000000UL);
     TS_ASSERT_EQUALS(comms::units::getMicrometers<unsigned>(field), 345000U);
     TS_ASSERT_EQUALS(comms::units::getMillimeters<unsigned>(field), 345U);
-
-    const double actual =
-        comms::units::getCentimeters<double>(field);
-
-    const double expected =
-        static_cast<double>(345) / 10;
-
-    std::printf("actual   = %.17g (%a)\n", actual, actual);
-    std::printf("expected = %.17g (%a)\n", expected, expected);
-    std::printf("diff     = %.17g (%a)\n", actual - expected, actual - expected);
-    std::printf("epsilon  = %.17g (%a)\n",
-                std::numeric_limits<double>::epsilon(),
-                std::numeric_limits<double>::epsilon());
-
     TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getCentimeters<double>(field) - (static_cast<double>(345) / 10)), std::numeric_limits<double>::epsilon());
     TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getMeters<double>(field) - (static_cast<double>(345) / 1000)), std::numeric_limits<double>::epsilon());
     TS_ASSERT_LESS_THAN_EQUALS(std::abs(comms::units::getKilometers<double>(field) - (static_cast<double>(345) / 1000000)), std::numeric_limits<double>::epsilon());
