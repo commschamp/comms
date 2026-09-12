@@ -750,7 +750,7 @@
 /// class SerialConfigField : public comms::field::Bitfield<...>
 /// {
 ///     // (Re)definition of the base class as inner Base type is
-///     // the requirement of @ref COMMS_FIELD_MEMBERS_NAMES() macro
+///     // the requirement of #COMMS_FIELD_MEMBERS_NAMES() macro
 ///     using Base = comms::field::Bitfield<...>
 /// public:
 ///     COMMS_FIELD_MEMBERS_NAMES(baud, parity, flags);
@@ -838,9 +838,9 @@
 /// auto parity = field.field_parity().value();
 /// auto flags = field.flags.value();
 /// @endcode
-/// <b>SIDE NOTE:</b> In addition to @ref COMMS_FIELD_MEMBERS_NAMES() macro
-/// there is @ref COMMS_FIELD_MEMBERS_ACCESS() one. It is very similar to
-/// @ref COMMS_FIELD_MEMBERS_NAMES() but does @b NOT (re)define the inner @b Field_*
+/// <b>SIDE NOTE:</b> In addition to #COMMS_FIELD_MEMBERS_NAMES() macro
+/// there is #COMMS_FIELD_MEMBERS_ACCESS() one. It is very similar to
+/// #COMMS_FIELD_MEMBERS_NAMES() but does @b NOT (re)define the inner @b Field_*
 /// types. It also does not require (except for @b clang) having base class to
 /// be (re)defined as inner @b Base type.
 /// @code
@@ -850,8 +850,8 @@
 ///     COMMS_FIELD_MEMBERS_ACCESS(baud, parity, flags);
 /// }
 /// @endcode
-/// In fact @ref COMMS_FIELD_MEMBERS_NAMES() is implemented as the wrapper
-/// around @ref COMMS_FIELD_MEMBERS_ACCESS().
+/// In fact #COMMS_FIELD_MEMBERS_NAMES() is implemented as the wrapper
+/// around #COMMS_FIELD_MEMBERS_ACCESS().
 ///
 /// @section sec_field_tutorial_bundle Bundle Fields
 /// There are cases when multiple independent fields need to be bundled into
@@ -905,8 +905,8 @@
 /// Please refer to the class documentation for the list of supported options.
 ///
 /// Just like with the @ref sec_field_tutorial_bitfield, the names to the
-/// member fields can be provided by using @ref COMMS_FIELD_MEMBERS_NAMES() or
-/// @ref COMMS_FIELD_MEMBERS_ACCESS() macro.
+/// member fields can be provided by using #COMMS_FIELD_MEMBERS_NAMES() or
+/// #COMMS_FIELD_MEMBERS_ACCESS() macro.
 /// @code
 /// class MyBundle : public comms::field::Bundle<...>
 /// {

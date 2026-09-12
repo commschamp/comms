@@ -101,7 +101,7 @@
 ///
 /// } // my_prot
 /// @endcode
-/// Again, just to refresh the reader's memory: the usage of @ref COMMS_FIELD_MEMBERS_NAMES()
+/// Again, just to refresh the reader's memory: the usage of #COMMS_FIELD_MEMBERS_NAMES()
 /// macro for the bitfield definition will generate @b field_X()
 /// convenience access member functions for the listed names.
 ///

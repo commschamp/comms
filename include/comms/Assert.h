@@ -183,7 +183,7 @@ private:
 #endif // #ifndef COMMS_ASSERT
 
 #ifndef GASSERT
-/// @brief Same as @ref COMMS_ASSERT
+/// @brief Same as #COMMS_ASSERT
 /// @details Kept for backward compatibility of already written protocols.
 #define GASSERT(expr) COMMS_ASSERT(expr)
 #endif // #ifndef GASSERT

@@ -217,7 +217,7 @@ public:
     }
 
     /// @brief Element access with range check
-    /// @details Checks the range with @ref COMMS_ASSERT() macro without throwing exception.
+    /// @details Checks the range with #COMMS_ASSERT() macro without throwing exception.
     const_reference at(size_type pos) const
     {
         COMMS_ASSERT(pos < m_len);

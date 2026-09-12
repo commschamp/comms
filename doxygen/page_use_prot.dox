@@ -1188,7 +1188,7 @@
 /// @b std::tuple of all member fields and call to @ref comms::field::Bitfield::value()
 /// member function will give an access to it.
 ///
-/// The field definition is expected to use @ref COMMS_FIELD_MEMBERS_NAMES() macro,
+/// The field definition is expected to use #COMMS_FIELD_MEMBERS_NAMES() macro,
 /// which will generate @b FieldIdx enum as well as convenience access member
 /// functions. The code becomes equivalent to:
 /// @code
@@ -1285,7 +1285,7 @@
 /// @endcode
 /// Just like with @ref page_use_prot_fields_bitfield, the inner @b ValueType type
 /// of such field is a @b std::tuple of member fields, and usage of
-/// @ref COMMS_FIELD_MEMBERS_NAMES() has exactly the same effect, i.e. generates
+/// #COMMS_FIELD_MEMBERS_NAMES() has exactly the same effect, i.e. generates
 /// inner @b FieldIdx enum and convenience access member functions:
 /// @code
 /// struct MyBundle : public

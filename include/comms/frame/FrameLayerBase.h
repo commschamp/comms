@@ -56,6 +56,10 @@ namespace frame
 ///     @li @ref comms::option::def::FrameLayerForceReadUntilDataSplit
 ///     @li @ref comms::option::def::FrameLayerDisallowReadUntilDataSplit
 /// @headerfile comms/frame/FrameLayerBase.h
+/// @see #COMMS_FRAME_LAYERS_ACCESS()
+/// @see #COMMS_FRAME_LAYERS_NAMES()
+/// @see #COMMS_FRAME_LAYERS_ACCESS_INNER()
+/// @see #COMMS_FRAME_LAYERS_ACCESS_OUTER()
 template <
     typename TField,
     typename TNextLayer,
@@ -1666,7 +1670,6 @@ details::MsgPayloadRetriever<TIter> msgPayload(TIter& iter, std::size_t& len)
 /// @details The first argument is a name for innermost layer
 ///     (@ref comms::frame::MsgDataLayer), while the last one
 ///     is the name for the outermost one.
-/// @related comms::frame::FrameLayerBase
 #define COMMS_FRAME_LAYERS_ACCESS(...) \
     COMMS_DO_ACCESS_LAYER_ACC_FUNC(__VA_ARGS__)
 
@@ -1675,18 +1678,15 @@ details::MsgPayloadRetriever<TIter> msgPayload(TIter& iter, std::size_t& len)
 /// @details Similar to #COMMS_FRAME_LAYERS_ACCESS() but
 ///     defines "Layer_<name>" type names.
 /// @pre Requires definition of inner "Base" type aliasing the base class.
-/// @related comms::frame::FrameLayerBase
 #define COMMS_FRAME_LAYERS_NAMES(...) \
     COMMS_DO_LAYER_TYPE_ALIAS(Base, __VA_ARGS__) \
     COMMS_DO_ACCESS_LAYER_ACC_FUNC(__VA_ARGS__)
 
 /// @brief Same as #COMMS_FRAME_LAYERS_ACCESS()
-/// @related comms::frame::FrameLayerBase
 #define COMMS_FRAME_LAYERS_ACCESS_INNER(...) \
     COMMS_FRAME_LAYERS_ACCESS(__VA_ARGS__)
 
 /// @brief Same as #COMMS_FRAME_LAYERS_NAMES()
-/// @related comms::frame::FrameLayerBase
 #define COMMS_FRAME_LAYERS_NAMES_INNER(...) \
     COMMS_FRAME_LAYERS_NAMES(__VA_ARGS__)
 
@@ -1697,7 +1697,6 @@ details::MsgPayloadRetriever<TIter> msgPayload(TIter& iter, std::size_t& len)
 ///     the first argument is the name of the outermost layer, while
 ///     the last one is the name for the innermost one
 ///     (@ref comms::frame::MsgDataLayer)
-/// @related comms::frame::FrameLayerBase
 #define COMMS_FRAME_LAYERS_ACCESS_OUTER(...) \
     COMMS_FRAME_LAYERS_ACCESS(COMMS_EXPAND(COMMS_REVERSE_MACRO_ARGS(__VA_ARGS__)))
 
@@ -1706,7 +1705,6 @@ details::MsgPayloadRetriever<TIter> msgPayload(TIter& iter, std::size_t& len)
 /// @details Similar to #COMMS_FRAME_LAYERS_ACCESS_OUTER() but
 ///     defines "Layer_<name>" type names.
 /// @pre Requires definition of inner "Base" type aliasing the base class.
-/// @related comms::frame::FrameLayerBase
 #define COMMS_FRAME_LAYERS_NAMES_OUTER(...) \
     COMMS_FRAME_LAYERS_NAMES(COMMS_EXPAND(COMMS_REVERSE_MACRO_ARGS(__VA_ARGS__)))
 

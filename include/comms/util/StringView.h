@@ -244,7 +244,7 @@ public:
     }
 
     /// @brief Similar to <a href="http://en.cppreference.com/w/cpp/string/basic_string_view/at">std::string_view::at()</a>
-    /// @details Checks the range with @ref COMMS_ASSERT() macro without throwing exception.
+    /// @details Checks the range with #COMMS_ASSERT() macro without throwing exception.
     const_reference at(size_type pos) const
     {
         return Base::at(pos);

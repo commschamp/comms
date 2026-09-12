@@ -100,6 +100,12 @@ jobs:
       shell: bash
       run: ctest -V
 
+    - name: Documentation
+      if: ${{matrix.type == 'Debug' && matrix.cpp == '17'}}
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: make doc_comms      
+
   build_clang_ubuntu_24_04:
     runs-on: ubuntu-24.04
     strategy:

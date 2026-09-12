@@ -54,10 +54,10 @@ namespace field
 ///     @li @ref comms::option::def::VersionStorage
 /// @extends comms::Field
 /// @headerfile comms/field/Bundle.h
-/// @see @ref COMMS_FIELD_MEMBERS_NAMES()
-/// @see @ref COMMS_FIELD_MEMBERS_ACCESS()
-/// @see @ref COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE()
-/// @see @ref COMMS_FIELD_ALIAS()
+/// @see #COMMS_FIELD_MEMBERS_NAMES()
+/// @see #COMMS_FIELD_MEMBERS_ACCESS()
+/// @see #COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE()
+/// @see #COMMS_FIELD_ALIAS()
 template <typename TFieldBase, typename TMembers, typename... TOptions>
 class Bundle : public
     details::AdaptBasicFieldT<

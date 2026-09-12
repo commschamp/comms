@@ -207,11 +207,11 @@ protected:
 
 /// @brief Add convenience access enum and functions to the members of
 ///     composite fields, such as @ref comms::field::Bundle or @ref comms::field::Bitfield.
-/// @details Very similar to @ref COMMS_FIELD_MEMBERS_NAMES(), but does @b NOT
+/// @details Very similar to #COMMS_FIELD_MEMBERS_NAMES(), but does @b NOT
 ///     require definition of @b Base inner member type (for some compilers) and does @b NOT
 ///     define inner @b Field_* types for used member fields.
 /// @param[in] ... List of fields' names.
-/// @see @ref COMMS_FIELD_MEMBERS_NAMES()
+/// @see #COMMS_FIELD_MEMBERS_NAMES()
 /// @note Relevant to @ref comms::field::Bundle and @ref comms::field::Bitfield
 /// @note Defined in "comms/Field.h"
 /// @warning Some compilers, such as @b clang or early versions of @b g++
@@ -219,7 +219,7 @@ protected:
 ///     though it uses valid C++11 constructs in attempt to automatically identify the
 ///     type of the base class. If the compilation fails,
 ///     and this macro resides inside a @b NON-template class, please use
-///     @ref COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE() macro instead. In
+///     #COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE() macro instead. In
 ///     case this macro needs to reside inside a @b template class, then
 ///     there is still a need to define inner @b Base type, which specifies
 ///     exact type of the @ref comms::field::Bitfield or @ref comms::field::Bundle class.
@@ -261,17 +261,17 @@ protected:
     } \
     COMMS_EXPAND(COMMS_DO_FIELD_ACC_FUNC(ValueType, value(), __VA_ARGS__))
 
-/// @brief Similar to @ref COMMS_FIELD_MEMBERS_ACCESS(), but dedicated for
+/// @brief Similar to #COMMS_FIELD_MEMBERS_ACCESS(), but dedicated for
 ///     non-template classes.
-/// @details The @ref COMMS_FIELD_MEMBERS_ACCESS() macro is a generic one,
+/// @details The #COMMS_FIELD_MEMBERS_ACCESS() macro is a generic one,
 ///     which can be used in any class (template, or non-template). However,
 ///     some compilers (such as <b>g++-4.9</b> and below, @b clang-4.0 and below) may fail
 ///     to compile it even though it uses valid C++11 constructs. If the
 ///     compilation fails and the class it is being used in is @b NOT a
-///     template one, please use @ref COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE()
+///     template one, please use #COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE()
 ///     instead.
-/// @see @ref COMMS_FIELD_MEMBERS_NAMES()
-/// @see @ref COMMS_FIELD_MEMBERS_ACCESS()
+/// @see #COMMS_FIELD_MEMBERS_NAMES()
+/// @see #COMMS_FIELD_MEMBERS_ACCESS()
 /// @note Defined in "comms/Field.h"
 #define COMMS_FIELD_MEMBERS_ACCESS_NOTEMPLATE(...) \
     COMMS_EXPAND(COMMS_DEFINE_FIELD_ENUM(__VA_ARGS__)) \
@@ -396,7 +396,7 @@ protected:
 /// @details Same as #COMMS_MSG_FIELD_ALIAS() but applicable to
 ///     @ref comms::field::Bundle field.
 /// @pre The macro #COMMS_FIELD_MEMBERS_ACCESS() needs to be used before
-///     @ref COMMS_FIELD_ALIAS() to define convenience access functions.
+///     #COMMS_FIELD_ALIAS() to define convenience access functions.
 #define COMMS_FIELD_ALIAS(f_, ...) COMMS_DO_ALIAS(field_, f_, __VA_ARGS__)
 
 }  // namespace comms

@@ -569,7 +569,6 @@ using MessageIdType =
 ///     require definition of @b Base inner member type (for some compilers) and does @b NOT
 ///     define inner @b TransportField_* types for used fields.
 /// @param[in] ... List of fields' names.
-/// @related comms::Message
 /// @see COMMS_MSG_TRANSPORT_FIELDS_NAMES()
 /// @note Defined in "comms/Message.h"
 #define COMMS_MSG_TRANSPORT_FIELDS_ACCESS(...) \
@@ -708,7 +707,6 @@ using MessageIdType =
 ///     }
 ///     @endcode
 /// @param[in] ... List of fields' names.
-/// @related comms::Message
 /// @pre Requires (re)definition of the message base class as
 ///     inner @b Base member type.
 /// @see COMMS_MSG_TRANSPORT_FIELDS_ACCESS()
@@ -719,16 +717,15 @@ using MessageIdType =
 
 /// @brief Generate convinience alias access member functions for extra
 ///     member transport fields.
-/// @details Similar to @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS() but requires usage
-///     of @ref COMMS_MSG_TRANSPORT_FIELDS_ACCESS() instead of #COMMS_MSG_TRANSPORT_FIELDS_NAMES()
+/// @details Similar to #COMMS_MSG_TRANSPORT_FIELD_ALIAS() but requires usage
+///     of #COMMS_MSG_TRANSPORT_FIELDS_ACCESS() instead of #COMMS_MSG_TRANSPORT_FIELDS_NAMES()
 ///     and does NOT create alias to the field type, only access functions.
 /// @param[in] f_ Alias field name.
 /// @param[in] ... List of fields' names.
-/// @pre The macro @ref COMMS_MSG_TRANSPORT_FIELDS_ACCESS() needs to be used before
-///     @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS_ACCESS() to define convenience access functions.
-/// @related comms::Message
-/// @see @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS_ACCESS_NOTEMPLATE()
-/// @see @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS()
+/// @pre The macro #COMMS_MSG_TRANSPORT_FIELDS_ACCESS() needs to be used before
+///     #COMMS_MSG_TRANSPORT_FIELD_ALIAS_ACCESS() to define convenience access functions.
+/// @see #COMMS_MSG_TRANSPORT_FIELD_ALIAS_ACCESS_NOTEMPLATE()
+/// @see #COMMS_MSG_TRANSPORT_FIELD_ALIAS()
 /// @note Defined in "comms/Message.h"
 #define COMMS_MSG_TRANSPORT_FIELD_ALIAS_ACCESS(f_, ...) COMMS_EXPAND(COMMS_DO_ALIAS(transportField_, f_, __VA_ARGS__))
 
@@ -751,7 +748,7 @@ using MessageIdType =
 ///     case the compilation of the existing client code (that already
 ///     uses published protocol definition) may fail. To avoid such scenarios
 ///     and make the transition to newer versions of the protocol easier,
-///     the @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS() macro can be used to create alias
+///     the #COMMS_MSG_TRANSPORT_FIELD_ALIAS() macro can be used to create alias
 ///     to other fields. For example, let's assume that some common interface class was defined:
 ///     like this.
 ///     @code
@@ -776,7 +773,7 @@ using MessageIdType =
 ///         COMMS_MSG_TRANSPORT_FIELD_ALIAS(name3, newName3);
 ///     };
 ///     @endcode
-///     The usage of @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS() in the code above is
+///     The usage of #COMMS_MSG_TRANSPORT_FIELD_ALIAS() in the code above is
 ///     equivalent to having the following type and functions defined:
 ///     @code
 ///     class MyInterface : public public comms::Message<...>
@@ -803,7 +800,7 @@ using MessageIdType =
 ///     of the used/valid values allows so). In order to keep the old client
 ///     code compiling, the access to the replaced field needs to be
 ///     an alias to the first member of the @ref comms::field::Bitfield.
-///     In this case the usage of @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS() will
+///     In this case the usage of #COMMS_MSG_TRANSPORT_FIELD_ALIAS() will
 ///     look like this:
 ///     @code
 ///     class MyInterface : public public comms::Message<...>
@@ -814,7 +811,7 @@ using MessageIdType =
 ///         COMMS_MSG_TRANSPORT_FIELD_ALIAS(name3, newName3, member1);
 ///     };
 ///     @endcode
-///     The usage of @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS() in the code above is
+///     The usage of #COMMS_MSG_TRANSPORT_FIELD_ALIAS() in the code above is
 ///     equivalent to having the following functions defined:
 ///     @code
 ///     class MyInterface : public public comms::Message<...>
@@ -837,10 +834,9 @@ using MessageIdType =
 /// @param[in] f_ Alias field name.
 /// @param[in] ... List of fields' names.
 /// @pre The macro #COMMS_MSG_TRANSPORT_FIELDS_NAMES() needs to be used before
-///     @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS() to define convenience access functions.
-/// @related comms::Message
-/// @see @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS_ACCESS_NOTEMPLATE()
-/// @see @ref COMMS_MSG_TRANSPORT_FIELD_ALIAS_NOTEMPLATE()
+///     #COMMS_MSG_TRANSPORT_FIELD_ALIAS() to define convenience access functions.
+/// @see #COMMS_MSG_TRANSPORT_FIELD_ALIAS_ACCESS_NOTEMPLATE()
+/// @see #COMMS_MSG_TRANSPORT_FIELD_ALIAS_NOTEMPLATE()
 /// @note Defined in "comms/Message.h"
 #define COMMS_MSG_TRANSPORT_FIELD_ALIAS(f_, ...) \
     COMMS_EXPAND(COMMS_MSG_TRANSPORT_FIELD_ALIAS_ACCESS(f_, __VA_ARGS__)) \

@@ -28,7 +28,7 @@
 /// The COMMS library is intended to be used in embedded systems (including
 /// bare metal), which may have standard library excluded from the compilation.
 /// In order to check pre- and post- conditions as well as inner assumptions, please
-/// use @ref COMMS_ASSERT macro (instead of standard @b assert()).
+/// use #COMMS_ASSERT macro (instead of standard @b assert()).
 /// It gives and ability to the application being developed
 /// in the future to choose and use its own means to report assertion failures.
 ///
@@ -1163,7 +1163,7 @@
 /// @subsection page_define_prot_field_aliases_bundles Aliases to Field Names Inside Bundle Fields
 /// Similar to defining aliases to message fields, @b COMMS library provides an ability to define
 /// aliases within @ref comms::field::Bundle "bundle" field definition using
-/// @ref COMMS_FIELD_ALIAS() macro.
+/// #COMMS_FIELD_ALIAS() macro.
 /// @code
 /// class MyBundle : public comms::field::Bundle<...>
 /// {
