@@ -13,8 +13,6 @@
 
 #pragma once
 
-#include "comms/util/access.h"
-
 #include <ratio>
 
 namespace comms
@@ -27,10 +25,10 @@ namespace endian
 {
 
 /// @brief Empty class used in traits to indicate Big Endian.
-using Big = util::traits::endian::Big;
+struct Big {};
 
 /// @brief Empty class used in traits to indicate Little Endian.
-using Little = util::traits::endian::Little;
+struct Little {};
 
 }  // namespace endian
 
