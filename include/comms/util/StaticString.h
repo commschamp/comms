@@ -22,6 +22,13 @@
 #include <initializer_list>
 #include <iterator>
 
+COMMS_GNU_WARNING_PUSH
+
+#if COMMS_IS_GCC_13_OR_ABOVE && defined(NDEBUG)
+// Release builds of gcc-13,14,15 seem to erroneously warn about buffer overflow
+COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow")
+#endif // #if COMMS_IS_GCC_13_OR_ABOVE && defined(NDEBUG)
+
 namespace comms
 {
 
@@ -360,12 +367,7 @@ protected:
                 return;
             }
 
-            COMMS_GNU_WARNING_PUSH
-#if COMMS_IS_GCC_11_OR_ABOVE
-            COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow")
-#endif // #if COMMS_IS_GCC_12
             *iter = static_cast<TChar>(*first2); // Wrong warning reported by gcc-12
-            COMMS_GNU_WARNING_POP
             ++first2;
         }
 
@@ -2065,3 +2067,5 @@ void swap(comms::util::StaticString<TSize1, TChar>& str1, comms::util::StaticStr
 }
 
 }  // namespace std
+
+COMMS_GNU_WARNING_POP

@@ -5789,7 +5789,7 @@ TField FieldsTestSuite::readWriteField(
     auto diff = static_cast<std::size_t>(std::distance(buf, iter));
     TS_ASSERT_EQUALS(field.length(), diff);
 
-    std::unique_ptr<char[]> outDataBuf(new char[diff]);
+    std::vector<char> outDataBuf(diff);
     auto writeIter = &outDataBuf[0];
 
     status = field.write(writeIter, diff);
@@ -5817,7 +5817,7 @@ void FieldsTestSuite::writeReadField(
     std::size_t size,
     comms::ErrorStatus expectedStatus)
 {
-    std::unique_ptr<char[]> outDataBuf(new char[size]);
+    std::vector<char> outDataBuf(size);
     auto writeIter = &outDataBuf[0];
     auto es = field.write(writeIter, size);
     TS_ASSERT_EQUALS(es, expectedStatus);
