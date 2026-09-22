@@ -104,7 +104,54 @@ jobs:
       if: ${{matrix.type == 'Debug' && matrix.cpp == '17'}}
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: make doc_comms      
+      run: make doc_comms    
+
+  build_gcc_ubuntu_26_04_no_sanitize:
+    runs-on: ubuntu-26.04
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [Release]
+        cc_ver: [13, 14, 15]
+        cpp: [11, 14, 17, 20, 23]
+        exclude:
+          - cc_ver: 13
+            cpp: 23
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Prepare Install
+      run: sudo apt-get update --fix-missing
+
+    - name: Install Packages
+      run: sudo apt install doxygen dia gcc-${{matrix.cc_ver}} g++-${{matrix.cc_ver}}
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: |
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install \
+          -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON \
+          -DCC_COMMS_UNIT_TESTS_USE_SANITIZERS=OFF
+      env:
+        CC: gcc-${{matrix.cc_ver}}
+        CXX: g++-${{matrix.cc_ver}}
+
+    - name: Build
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: cmake --build . --config ${{matrix.type}} --target install
+      env:
+        VERBOSE: 1
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: ctest -V
 
   build_clang_ubuntu_24_04:
     runs-on: ubuntu-24.04
@@ -195,6 +242,53 @@ jobs:
       working-directory: ${{runner.workspace}}/build
       shell: bash
       run: ctest -V
+
+  build_clang_ubuntu_26_04_no_sanitize:
+    runs-on: ubuntu-26.04
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [Release]
+        cc_ver: [17, 18, 19, 20, 21, 22]
+        cpp: [11, 14, 17, 20, 23]
+        exclude:
+          - cc_ver: 17
+            cpp: 23
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Prepare Install
+      run: sudo apt-get update --fix-missing
+
+    - name: Install Packages
+      run: sudo apt install doxygen dia clang-${{matrix.cc_ver}}
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: |
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install \
+          -DCMAKE_CXX_STANDARD=${{matrix.cpp}} -DCC_COMMS_BUILD_UNIT_TESTS=ON \
+          -DCC_COMMS_UNIT_TESTS_USE_SANITIZERS=OFF
+      env:
+        CC: clang-${{matrix.cc_ver}}
+        CXX: clang++-${{matrix.cc_ver}}
+
+    - name: Build
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: cmake --build . --config ${{matrix.type}} --target install
+      env:
+        VERBOSE: 1
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: ctest -V      
 
   build_msvc_2022:
     runs-on: windows-2022
