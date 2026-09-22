@@ -5790,7 +5790,7 @@ TField FieldsTestSuite::readWriteField(
     TS_ASSERT_EQUALS(field.length(), diff);
 
     std::vector<char> outDataBuf(diff);
-    auto writeIter = &outDataBuf[0];
+    auto writeIter = outDataBuf.data();
 
     status = field.write(writeIter, diff);
     TS_ASSERT_EQUALS(status, comms::ErrorStatus::Success);
@@ -5799,7 +5799,7 @@ TField FieldsTestSuite::readWriteField(
         std::cout << "Expected buffer: " << std::hex;
         std::copy_n(buf, diff, std::ostream_iterator<unsigned>(std::cout, " "));
         std::cout << "\nActual buffer: ";
-        std::copy_n(&outDataBuf[0], diff, std::ostream_iterator<unsigned>(std::cout, " "));
+        std::copy_n(outDataBuf.data(), diff, std::ostream_iterator<unsigned>(std::cout, " "));
         std::cout << std::dec << std::endl;
     }
     TS_ASSERT(bufAsExpected);
@@ -5818,21 +5818,21 @@ void FieldsTestSuite::writeReadField(
     comms::ErrorStatus expectedStatus)
 {
     std::vector<char> outDataBuf(size);
-    auto writeIter = &outDataBuf[0];
+    auto writeIter = outDataBuf.data();
     auto es = field.write(writeIter, size);
     TS_ASSERT_EQUALS(es, expectedStatus);
-    bool bufAsExpected = std::equal(expectedBuf, expectedBuf + size, static_cast<const char*>(&outDataBuf[0]));
+    bool bufAsExpected = std::equal(expectedBuf, expectedBuf + size, outDataBuf.data());
     if (!bufAsExpected) {
         std::cout << "Expected buffer: " << std::hex;
         std::copy_n(expectedBuf, size, std::ostream_iterator<unsigned>(std::cout, " "));
         std::cout << "\nActual buffer: ";
-        std::copy_n(&outDataBuf[0], size, std::ostream_iterator<unsigned>(std::cout, " "));
+        std::copy_n(outDataBuf.data(), size, std::ostream_iterator<unsigned>(std::cout, " "));
         std::cout << std::dec << std::endl;
     }
     TS_ASSERT(bufAsExpected);
 
     if (es == comms::ErrorStatus::Success) {
-        auto readIter = &outDataBuf[0];
+        auto readIter = outDataBuf.data();
         typename std::decay<decltype(field)>::type newField;
         auto readEs = newField.read(readIter, size);
         TS_ASSERT_EQUALS(readEs, comms::ErrorStatus::Success);
