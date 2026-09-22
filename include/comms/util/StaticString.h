@@ -25,9 +25,14 @@
 COMMS_GNU_WARNING_PUSH
 
 #if COMMS_IS_GCC_11_OR_ABOVE && defined(NDEBUG)
-// Release builds of gcc seem to erroneously warn about buffer overflow
+// Release builds of gcc seem to erroneously warn about buffer overflow in release builds
 COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow")
 #endif // #if COMMS_IS_GCC_13_OR_ABOVE && defined(NDEBUG)
+
+#if COMMS_IS_GCC_14 && defined(NDEBUG)
+// Release builds of gcc seem to erroneously warn about out of bounds access in release builds
+COMMS_GNU_WARNING_DISABLE("-Warray-bounds")
+#endif // #if COMMS_IS_GCC_14 && defined(NDEBUG)
 
 namespace comms
 {
