@@ -1,8 +1,11 @@
 #!/bin/bash
 
-if [ -z "${CC}" -o -z "${CXX}" ]; then
-    echo "ERROR: Compilers are not provided"
-    exit 1
+if [ -z "${CC}" ]; then
+    export CC=gcc
+fi
+
+if [ -z "${CXX}" ]; then
+    export CXX=g++
 fi
 
 export BUILD_TYPE=Release

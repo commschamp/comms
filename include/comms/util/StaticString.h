@@ -29,6 +29,10 @@ COMMS_GNU_WARNING_PUSH
 COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow")
 #endif // #if COMMS_IS_GCC_13_OR_ABOVE && defined(NDEBUG)
 
+#if COMMS_IS_GCC_11_OR_ABOVE && COMMS_IS_GCC_14_OR_BELOW && defined(NDEBUG)
+COMMS_GNU_WARNING_DISABLE("-Wstringop-overread")
+#endif // #if COMMS_IS_GCC_11_OR_ABOVE && COMMS_IS_GCC_14_OR_BELOW && defined(NDEBUG)
+
 #if COMMS_IS_GCC_14 && defined(NDEBUG)
 // Release builds of gcc seem to erroneously warn about out of bounds access in release builds
 COMMS_GNU_WARNING_DISABLE("-Warray-bounds")
