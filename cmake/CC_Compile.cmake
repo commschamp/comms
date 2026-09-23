@@ -53,13 +53,13 @@ macro (cc_compile)
                 )
             endif()
 
-            if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6.0")
+            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "6.0")
                 list (APPEND extra_flags_list
                     "-Wmisleading-indentation" "-Wduplicated-cond"
                 )
             endif()
 
-            if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.0")
+            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "7.0")
                 list (APPEND extra_flags_list
                     "-Wduplicated-branches"
                 )
@@ -68,7 +68,7 @@ macro (cc_compile)
         endif ()
 
         if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-            list (APPEND extra_flags_list "-Wno-dangling-field -Wno-unused-command-line-argument")
+            list (APPEND extra_flags_list "-Wno-unused-command-line-argument")
         endif ()
 
         if (CC_COMPILE_DEFAULT_SANITIZERS)
