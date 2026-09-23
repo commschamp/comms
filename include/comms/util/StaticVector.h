@@ -31,7 +31,7 @@ COMMS_GNU_WARNING_PUSH
 // assumes size / capacity of the StaticVectorBase is 0 and generates
 // unjustified warnings.
 COMMS_GNU_WARNING_DISABLE("-Warray-bounds")
-#endif
+#endif // #if COMMS_IS_GCC_12 && defined(NDEBUG)
 
 COMMS_MSVC_WARNING_PUSH
 COMMS_MSVC_WARNING_DISABLE(4324) // Disable warning about alignment padding

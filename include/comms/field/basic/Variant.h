@@ -33,9 +33,9 @@ COMMS_MSVC_WARNING_DISABLE(4324) // Disable warning about alignment padding
 
 COMMS_GNU_WARNING_PUSH
 
-#if COMMS_IS_GCC_13 && defined(NDEBUG)
+#if COMMS_IS_GCC_12_OR_ABOVE && COMMS_IS_GCC_13_OR_BELOW && defined(NDEBUG)
 COMMS_GNU_WARNING_DISABLE("-Wmaybe-uninitialized")
-#endif // #if COMMS_IS_GCC_13 && defined(NDEBUG)
+#endif // #if COMMS_IS_GCC_12_OR_ABOVE && COMMS_IS_GCC_13_OR_BELOW && defined(NDEBUG)
 
 namespace comms
 {
