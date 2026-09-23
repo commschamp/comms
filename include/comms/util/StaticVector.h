@@ -26,13 +26,6 @@
 
 COMMS_GNU_WARNING_PUSH
 
-#if COMMS_IS_GCC_11 && defined(NDEBUG)
-// Release compilation with gcc-12
-// assumes size / capacity of the StaticVectorBase is 0 and generates
-// unjustified warnings.
-COMMS_GNU_WARNING_DISABLE("-Wstringop-overread")
-#endif
-
 #if COMMS_IS_GCC_12 && defined(NDEBUG)
 // Release compilation with gcc-12
 // assumes size / capacity of the StaticVectorBase is 0 and generates

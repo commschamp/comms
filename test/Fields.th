@@ -1362,7 +1362,14 @@ void FieldsTestSuite::test28()
     TS_ASSERT(!field.valid());
     TS_ASSERT_EQUALS(field.value().size(), 10U);
 
+    COMMS_GNU_WARNING_PUSH
+#if COMMS_IS_GCC_13 && defined(NDEBUG)
+    COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow")
+#endif // #if COMMS_IS_GCC_13 && defined(NDEBUG)
+
     field.value().resize(5);
+    COMMS_GNU_WARNING_POP
+
     static const char ExpectedBuf[] = {
         0x0, 0x5, 0x0, 0x1, 0x2, 0x3, 0x4
     };
@@ -4536,7 +4543,14 @@ void FieldsTestSuite::test87()
     TS_ASSERT(field.valid());
     TS_ASSERT_EQUALS(field.value().size(), 4U);
 
+    COMMS_GNU_WARNING_PUSH
+#if COMMS_IS_GCC_13 && defined(NDEBUG)
+    COMMS_GNU_WARNING_DISABLE("-Wstringop-overflow")
+#endif // #if COMMS_IS_GCC_13 && defined(NDEBUG)
+
     field.value().resize(5);
+    COMMS_GNU_WARNING_POP
+
     static const char ExpectedBuf[] = {
         0x0, 0x5, 0x1, 0x0, 0x1, 0x1, 0x1, 0x2, 0x1, 0x3, 0x1, 0x0
     };

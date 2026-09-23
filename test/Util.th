@@ -46,6 +46,11 @@ public:
 
 void UtilTestSuite::test1()
 {
+    COMMS_GNU_WARNING_PUSH
+#if COMMS_IS_GCC_11 && defined(NDEBUG)
+    COMMS_GNU_WARNING_DISABLE("-Wstringop-overread")
+#endif
+
     typedef comms::util::StaticVector<std::uint8_t, 20> Vec;
 
     static const std::uint8_t Data[] = {
@@ -93,7 +98,6 @@ void UtilTestSuite::test1()
     TS_ASSERT_EQUALS(vec.size(), DataSize + InsData1Size + InsData2Size);
     TS_ASSERT(std::equal(std::begin(Data), std::end(Data), vec.begin()));
     TS_ASSERT(std::equal(std::begin(InsData2), std::end(InsData2), vec.begin() + DataSize));
-    COMMS_GNU_WARNING_PUSH
     TS_ASSERT(std::equal(std::begin(InsData1), std::end(InsData1), vec.begin() + DataSize + InsData2Size));
 
     iter = vec.erase(vec.begin() + DataSize, vec.begin() + DataSize + InsData2Size);
@@ -113,6 +117,7 @@ void UtilTestSuite::test1()
     TS_ASSERT(std::equal(std::begin(Data), std::end(Data), vec.begin()));
     TS_ASSERT(std::equal(std::begin(InsData3), std::end(InsData3), vec.begin() + DataSize));
     TS_ASSERT(std::equal(std::begin(InsData1), std::end(InsData1), vec.begin() + DataSize + InsData3Size));
+    COMMS_GNU_WARNING_POP
 }
 
 void UtilTestSuite::test2()
