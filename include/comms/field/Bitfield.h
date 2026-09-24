@@ -13,7 +13,7 @@
 #pragma once
 
 #include "comms/ErrorStatus.h"
-#include "comms/field/basic/Bitfield.h"
+#include "comms/field/basic/BasicBitfield.h"
 #include "comms/field/details/AdaptBasicField.h"
 #include "comms/options.h"
 
@@ -97,7 +97,7 @@ namespace field
 template <typename TFieldBase, typename TMembers, typename... TOptions>
 class Bitfield : public
     details::AdaptBasicFieldT<
-        basic::Bitfield<
+        basic::BasicBitfield<
             TFieldBase,
             details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
             TMembers
@@ -107,7 +107,7 @@ class Bitfield : public
 {
     using BaseImpl =
         details::AdaptBasicFieldT<
-            basic::Bitfield<
+            basic::BasicBitfield<
                 TFieldBase,
                 details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
                 TMembers

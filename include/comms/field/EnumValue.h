@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include "comms/field/basic/EnumValue.h"
+#include "comms/field/basic/BasicEnumValue.h"
 #include "comms/field/details/AdaptBasicField.h"
 #include "comms/field/details/OptionsParser.h"
 #include "comms/options.h"
@@ -75,9 +75,9 @@ namespace field
 /// @extends comms::Field
 /// @headerfile comms/field/Bundle.h
 template <typename TFieldBase, typename TEnum, typename... TOptions>
-class EnumValue : public details::AdaptBasicFieldT<basic::EnumValue<TFieldBase, TEnum>, TOptions...>
+class EnumValue : public details::AdaptBasicFieldT<basic::BasicEnumValue<TFieldBase, TEnum>, TOptions...>
 {
-    using BaseImpl = details::AdaptBasicFieldT<basic::EnumValue<TFieldBase, TEnum>, TOptions...>;
+    using BaseImpl = details::AdaptBasicFieldT<basic::BasicEnumValue<TFieldBase, TEnum>, TOptions...>;
     static_assert(std::is_enum<TEnum>::value, "TEnum must be enum type");
 
 public:

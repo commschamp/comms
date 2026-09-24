@@ -15,7 +15,7 @@
 #include "comms/CompileControl.h"
 #include "comms/ErrorStatus.h"
 #include "comms/details/tag.h"
-#include "comms/field/basic/IntValue.h"
+#include "comms/field/basic/BasicIntValue.h"
 #include "comms/field/details/AdaptBasicField.h"
 #include "comms/options.h"
 #include "comms/util/type_traits.h"
@@ -75,9 +75,9 @@ namespace field
 /// @extends comms::Field
 /// @headerfile comms/field/IntValue.h
 template <typename TFieldBase, typename T, typename... TOptions>
-class IntValue : public details::AdaptBasicFieldT<basic::IntValue<TFieldBase, T>, TOptions...>
+class IntValue : public details::AdaptBasicFieldT<basic::BasicIntValue<TFieldBase, T>, TOptions...>
 {
-    using BaseImpl = details::AdaptBasicFieldT<basic::IntValue<TFieldBase, T>, TOptions...>;
+    using BaseImpl = details::AdaptBasicFieldT<basic::BasicIntValue<TFieldBase, T>, TOptions...>;
 public:
 
     /// @brief Base class provided in the first template parameter.

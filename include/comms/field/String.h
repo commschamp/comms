@@ -15,7 +15,7 @@
 #include "comms/CompileControl.h"
 #include "comms/ErrorStatus.h"
 #include "comms/details/tag.h"
-#include "comms/field/basic/String.h"
+#include "comms/field/basic/BasicString.h"
 #include "comms/field/details/AdaptBasicField.h"
 #include "comms/field/details/OptionsParser.h"
 #include "comms/options.h"
@@ -124,7 +124,7 @@ using StringStorageTypeT =
 template <typename TFieldBase, typename... TOptions>
 using StringBase =
     AdaptBasicFieldT<
-        basic::String<TFieldBase, StringStorageTypeT<OptionsParser<TOptions...> > >,
+        basic::BasicString<TFieldBase, StringStorageTypeT<OptionsParser<TOptions...> > >,
         TOptions...
     >;
 

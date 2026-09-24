@@ -13,7 +13,7 @@
 #pragma once
 
 #include "comms/ErrorStatus.h"
-#include "comms/field/basic/FloatValue.h"
+#include "comms/field/basic/BasicFloatValue.h"
 #include "comms/field/details/AdaptBasicField.h"
 #include "comms/field/tag.h"
 #include "comms/options.h"
@@ -64,9 +64,9 @@ namespace field
 /// @extends comms::Field
 /// @headerfile comms/field/FloatValue.h
 template <typename TFieldBase, typename T, typename... TOptions>
-class FloatValue : public details::AdaptBasicFieldT<basic::FloatValue<TFieldBase, T>, TOptions...>
+class FloatValue : public details::AdaptBasicFieldT<basic::BasicFloatValue<TFieldBase, T>, TOptions...>
 {
-    using BaseImpl = details::AdaptBasicFieldT<basic::FloatValue<TFieldBase, T>, TOptions...>;
+    using BaseImpl = details::AdaptBasicFieldT<basic::BasicFloatValue<TFieldBase, T>, TOptions...>;
 public:
     /// @brief Base class provided in the first template parameter.
     using FieldBase = TFieldBase;

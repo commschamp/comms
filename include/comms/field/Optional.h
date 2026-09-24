@@ -14,7 +14,7 @@
 
 #include "comms/Assert.h"
 #include "comms/ErrorStatus.h"
-#include "comms/field/basic/Optional.h"
+#include "comms/field/basic/BasicOptional.h"
 #include "comms/field/details/AdaptBasicField.h"
 #include "comms/field/details/OptionsParser.h"
 #include "comms/field/OptionalMode.h"
@@ -49,9 +49,9 @@ namespace field
 /// @extends comms::Field
 /// @headerfile comms/field/Optional.h
 template <typename TField, typename... TOptions>
-class Optional : public details::AdaptBasicFieldT<basic::Optional<TField>, TOptions...>
+class Optional : public details::AdaptBasicFieldT<basic::BasicOptional<TField>, TOptions...>
 {
-    using BaseImpl = details::AdaptBasicFieldT<basic::Optional<TField>, TOptions...>;
+    using BaseImpl = details::AdaptBasicFieldT<basic::BasicOptional<TField>, TOptions...>;
 public:
     /// @brief Endian used for serialisation.
     using Endian = typename BaseImpl::Endian;

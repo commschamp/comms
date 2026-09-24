@@ -15,7 +15,7 @@
 #include "comms/details/macro_common.h"
 #include "comms/details/variant_access.h"
 #include "comms/ErrorStatus.h"
-#include "comms/field/basic/Variant.h"
+#include "comms/field/basic/BasicVariant.h"
 #include "comms/field/details/AdaptBasicField.h"
 #include "comms/options.h"
 #include "comms/util/Tuple.h"
@@ -79,7 +79,7 @@ namespace field
 template <typename TFieldBase, typename TMembers, typename... TOptions>
 class Variant : public
     details::AdaptBasicFieldT<
-        basic::Variant<
+        basic::BasicVariant<
             TFieldBase,
             details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
             TMembers
@@ -88,7 +88,7 @@ class Variant : public
 {
     using BaseImpl =
         details::AdaptBasicFieldT<
-        basic::Variant<
+        basic::BasicVariant<
             TFieldBase,
             details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
             TMembers

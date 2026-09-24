@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include "basic/ArrayList.h"
+#include "basic/BasicArrayList.h"
 #include "comms/CompileControl.h"
 #include "comms/ErrorStatus.h"
 #include "comms/options.h"
@@ -127,7 +127,7 @@ using ArrayListStorageTypeT =
 template <typename TFieldBase, typename TElement, typename... TOptions>
 using ArrayListBase =
     AdaptBasicFieldT<
-        comms::field::basic::ArrayList<
+        comms::field::basic::BasicArrayList<
             TFieldBase,
             ArrayListStorageTypeT<TElement, OptionsParser<TOptions...> >
         >,

@@ -13,7 +13,7 @@
 #pragma once
 
 #include "comms/ErrorStatus.h"
-#include "comms/field/basic/Bundle.h"
+#include "comms/field/basic/BasicBundle.h"
 #include "comms/field/details/AdaptBasicField.h"
 #include "comms/options.h"
 #include "comms/util/Tuple.h"
@@ -61,7 +61,7 @@ namespace field
 template <typename TFieldBase, typename TMembers, typename... TOptions>
 class Bundle : public
     details::AdaptBasicFieldT<
-        basic::Bundle<
+        basic::BasicBundle<
             TFieldBase,
             details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
             TMembers>,
@@ -70,7 +70,7 @@ class Bundle : public
 {
     using BaseImpl =
         details::AdaptBasicFieldT<
-            basic::Bundle<
+            basic::BasicBundle<
                 TFieldBase,
                 details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
                 TMembers>,

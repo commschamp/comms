@@ -195,7 +195,7 @@ public:
         typename comms::util::Conditional<
             std::is_same<typename TField::CommsTag, comms::field::tag::Variant>::value
         >::template Type<
-            comms::field::adapter::VariantResetOnDestruct<TField>,
+            comms::field::adapter::VariantResetOnDestructAdapter<TField>,
             TField
         >;
 
@@ -215,7 +215,7 @@ public:
     static constexpr bool HasCustomRead = true;
 
     template <typename TField>
-    using AdaptCustomRead = comms::field::adapter::CustomReadWrap<TField>;
+    using AdaptCustomRead = comms::field::adapter::CustomReadWrapAdapter<TField>;
 };
 
 template <std::intmax_t TOffset, typename... TOptions>
@@ -228,7 +228,7 @@ public:
     static const std::intmax_t SerOffset = TOffset;
 
     template <typename TField>
-    using AdaptSerOffset = comms::field::adapter::SerOffset<SerOffset, TField>;
+    using AdaptSerOffset = comms::field::adapter::SerOffsetAdapter<SerOffset, TField>;
 };
 
 template <std::size_t TLen, bool TSignExtend, typename... TOptions>
@@ -243,7 +243,7 @@ public:
 
     template <typename TField>
     using AdaptFixedLengthLimit =
-        comms::field::adapter::FixedLength<
+        comms::field::adapter::FixedLengthAdapter<
             FixedLength,
             FixedLengthSignExtend,
             TField
@@ -262,7 +262,7 @@ public:
 
     template <typename TField>
     using AdaptFixedBitLengthLimit =
-        comms::field::adapter::FixedBitLength<
+        comms::field::adapter::FixedBitLengthAdapter<
             FixedBitLength,
             FixedBitLengthSignExtend,
             TField>;
@@ -280,7 +280,7 @@ public:
 
     template <typename TField>
     using AdaptVarLengthLimits =
-        comms::field::adapter::VarLength<MinVarLength, MaxVarLength, TField>;
+        comms::field::adapter::VarLengthAdapter<MinVarLength, MaxVarLength, TField>;
 };
 
 template <typename... TOptions>
@@ -293,7 +293,7 @@ public:
 
     template <typename TField>
     using AdaptAvailableLengthLimit =
-        comms::field::adapter::AvailableLength<TField>;
+        comms::field::adapter::AvailableLengthAdapter<TField>;
 };
 
 template <typename... TOptions>
@@ -305,7 +305,7 @@ public:
     static constexpr bool HasSequenceSizeForcing = true;
 
     template <typename TField>
-    using AdaptSequenceSizeForcing = comms::field::adapter::SequenceSizeForcing<TField>;
+    using AdaptSequenceSizeForcing = comms::field::adapter::SequenceSizeForcingAdapter<TField>;
 };
 
 template <typename... TOptions>
@@ -317,7 +317,7 @@ public:
     static constexpr bool HasSequenceLengthForcing = true;
 
     template <typename TField>
-    using AdaptSequenceLengthForcing = comms::field::adapter::SequenceLengthForcing<TField>;
+    using AdaptSequenceLengthForcing = comms::field::adapter::SequenceLengthForcingAdapter<TField>;
 };
 
 template <typename... TOptions>
@@ -329,7 +329,7 @@ public:
     static constexpr bool HasSequenceElemLengthForcing = true;
 
     template <typename TField>
-    using AdaptSequenceElemLengthForcing = comms::field::adapter::SequenceElemLengthForcing<TField>;
+    using AdaptSequenceElemLengthForcing = comms::field::adapter::SequenceElemLengthForcingAdapter<TField>;
 };
 
 template <std::size_t TSize, typename... TOptions>
@@ -342,7 +342,7 @@ public:
     static constexpr std::size_t SequenceFixedSize = TSize;
 
     template <typename TField>
-    using AdaptSequenceFixedSize = comms::field::adapter::SequenceFixedSize<SequenceFixedSize, TField>;
+    using AdaptSequenceFixedSize = comms::field::adapter::SequenceFixedSizeAdapter<SequenceFixedSize, TField>;
 };
 
 template <typename... TOptions>
@@ -364,7 +364,7 @@ public:
     using SequenceSizeFieldPrefix = TSizeField;
 
     template <typename TField>
-    using AdaptSequenceSizeFieldPrefix = comms::field::adapter::SequenceSizeFieldPrefix<SequenceSizeFieldPrefix, TField>;
+    using AdaptSequenceSizeFieldPrefix = comms::field::adapter::SequenceSizeFieldPrefixAdapter<SequenceSizeFieldPrefix, TField>;
 };
 
 template <typename TField, comms::ErrorStatus TReadErrorStatus, typename... TOptions>
@@ -379,7 +379,7 @@ public:
 
     template <typename TWrappedField>
     using AdaptSequenceSerLengthFieldPrefix =
-        comms::field::adapter::SequenceSerLengthFieldPrefix<
+        comms::field::adapter::SequenceSerLengthFieldPrefixAdapter<
             SequenceSerLengthFieldPrefix,
             SequenceSerLengthFieldReadErrorStatus,
             TWrappedField
@@ -398,7 +398,7 @@ public:
 
     template <typename TWrappedField>
     using AdaptSequenceElemSerLengthFieldPrefix =
-        comms::field::adapter::SequenceElemSerLengthFieldPrefix<
+        comms::field::adapter::SequenceElemSerLengthFieldPrefixAdapter<
             SequenceElemSerLengthFieldPrefix,
             SequenceElemSerLengthFieldReadErrorStatus,
             TWrappedField
@@ -417,7 +417,7 @@ public:
 
     template <typename TWrappedField>
     using AdaptSequenceElemFixedSerLengthFieldPrefix =
-        comms::field::adapter::SequenceElemFixedSerLengthFieldPrefix<
+        comms::field::adapter::SequenceElemFixedSerLengthFieldPrefixAdapter<
             SequenceElemFixedSerLengthFieldPrefix,
             SequenceElemFixedSerLengthFieldReadErrorStatus,
             TWrappedField
@@ -434,7 +434,7 @@ public:
     using SequenceTrailingFieldSuffix = TTrailField;
 
     template <typename TField>
-    using AdaptSequenceTrailingFieldSuffix = comms::field::adapter::SequenceTrailingFieldSuffix<SequenceTrailingFieldSuffix, TField>;
+    using AdaptSequenceTrailingFieldSuffix = comms::field::adapter::SequenceTrailingFieldSuffixAdapter<SequenceTrailingFieldSuffix, TField>;
 };
 
 template <typename TTermField, typename... TOptions>
@@ -448,7 +448,7 @@ public:
 
     template <typename TField>
     using AdaptSequenceTerminationFieldSuffix =
-        comms::field::adapter::SequenceTerminationFieldSuffix<SequenceTerminationFieldSuffix, TField>;
+        comms::field::adapter::SequenceTerminationFieldSuffixAdapter<SequenceTerminationFieldSuffix, TField>;
 };
 
 template <typename TInitialiser, typename... TOptions>
@@ -462,7 +462,7 @@ public:
 
     template <typename TField>
     using AdaptDefaultValueInitialiser =
-        comms::field::adapter::DefaultValueInitialiser<DefaultValueInitialiser, TField>;
+        comms::field::adapter::DefaultValueInitialiserAdapter<DefaultValueInitialiser, TField>;
 };
 
 template <typename TValidator, typename... TOptions>
@@ -475,7 +475,7 @@ public:
     using CustomValidator = TValidator;
 
     template <typename TField>
-    using AdaptCustomValidator = comms::field::adapter::CustomValidator<CustomValidator, TField>;
+    using AdaptCustomValidator = comms::field::adapter::CustomValidatorAdapter<CustomValidator, TField>;
 };
 
 template <typename... TOptions>
@@ -487,7 +487,7 @@ public:
     static constexpr bool HasCustomRefresh = true;
 
     template <typename TField>
-    using AdaptCustomRefresh = comms::field::adapter::CustomRefreshWrap<TField>;
+    using AdaptCustomRefresh = comms::field::adapter::CustomRefreshWrapAdapter<TField>;
 };
 
 template <comms::ErrorStatus TStatus, typename... TOptions>
@@ -500,7 +500,7 @@ public:
     static constexpr comms::ErrorStatus FailOnInvalidStatus = TStatus;
 
     template <typename TField>
-    using AdaptFailOnInvalid = comms::field::adapter::FailOnInvalid<FailOnInvalidStatus, TField>;
+    using AdaptFailOnInvalid = comms::field::adapter::FailOnInvalidAdapter<FailOnInvalidStatus, TField>;
 };
 
 template <typename... TOptions>
@@ -512,7 +512,7 @@ public:
     static constexpr bool HasIgnoreInvalid = true;
 
     template <typename TField>
-    using AdaptIgnoreInvalid = comms::field::adapter::IgnoreInvalid<TField>;
+    using AdaptIgnoreInvalid = comms::field::adapter::IgnoreInvalidAdapter<TField>;
 };
 
 template <typename... TOptions>
@@ -524,7 +524,7 @@ public:
     static constexpr bool HasInvalidByDefault = true;
 
     template <typename TField>
-    using AdaptInvalidByDefault = comms::field::adapter::InvalidByDefault<TField>;
+    using AdaptInvalidByDefault = comms::field::adapter::InvalidByDefaultAdapter<TField>;
 };
 
 template <std::size_t TSize, typename... TOptions>
@@ -586,7 +586,7 @@ public:
     static constexpr bool HasEmptySerialization = true;
 
     template <typename TField>
-    using AdaptEmptySerialization = comms::field::adapter::EmptySerialization<TField>;
+    using AdaptEmptySerialization = comms::field::adapter::EmptySerializationAdapter<TField>;
 };
 
 template <bool THasMultiRangeValidation>
@@ -641,7 +641,7 @@ public:
 
     template <typename TField>
     using AdaptMultiRangeValidation =
-        comms::field::adapter::NumValueMultiRangeValidator<MultiRangeValidationRanges, TField>;
+        comms::field::adapter::NumValueMultiRangeValidatorAdapter<MultiRangeValidationRanges, TField>;
 };
 
 template <typename... TOptions>
@@ -676,7 +676,7 @@ public:
 
     template <typename TField>
     using AdaptMultiRangeValidation =
-        comms::field::adapter::NumValueMultiRangeValidator<MultiRangeValidationRanges, TField>;
+        comms::field::adapter::NumValueMultiRangeValidatorAdapter<MultiRangeValidationRanges, TField>;
 };
 
 template <typename... TOptions>
@@ -700,7 +700,7 @@ public:
 
     template <typename TField>
     using AdaptVersionsRange =
-        comms::field::adapter::ExistsBetweenVersions<ExistsFromVersion, ExistsUntilVersion, TField>;
+        comms::field::adapter::ExistsBetweenVersionsAdapter<ExistsFromVersion, ExistsUntilVersion, TField>;
 };
 
 template <typename... TOptions>
@@ -712,7 +712,7 @@ public:
     static constexpr bool HasVersionStorage = true;
 
     template <typename TField>
-    using AdaptVersionStorage = comms::field::adapter::VersionStorage<TField>;
+    using AdaptVersionStorage = comms::field::adapter::VersionStorageAdapter<TField>;
 };
 
 template <std::size_t TIdx, typename... TOptions>
@@ -729,7 +729,7 @@ public:
 
     template <typename TField>
     using AdaptRemLengthMemberField =
-        comms::field::adapter::RemLengthMemberField<RemLengthMemberFieldIdx, TField>;
+        comms::field::adapter::RemLengthMemberFieldAdapter<RemLengthMemberFieldIdx, TField>;
 };
 
 template <typename... TOptions>
@@ -741,7 +741,7 @@ public:
     static constexpr bool HasCustomWrite = true;
 
     template <typename TField>
-    using AdaptCustomWrite = comms::field::adapter::CustomWriteWrap<TField>;
+    using AdaptCustomWrite = comms::field::adapter::CustomWriteWrapAdapter<TField>;
 };
 
 template <typename TActField, typename... TOptions>
@@ -754,7 +754,7 @@ public:
     using FieldType = TActField;
 
     template <typename TField>
-    using AdaptFieldType = comms::field::adapter::FieldType<TActField, TField>;
+    using AdaptFieldType = comms::field::adapter::FieldTypeAdapter<TActField, TField>;
 };
 
 template <typename... TOptions>
@@ -766,7 +766,7 @@ public:
     static constexpr bool HasMissingOnReadFail = true;
 
     template <typename TField>
-    using AdaptMissingOnReadFail = comms::field::adapter::MissingOnReadFail<TField>;
+    using AdaptMissingOnReadFail = comms::field::adapter::MissingOnReadFailAdapter<TField>;
 };
 
 template <typename... TOptions>
@@ -778,7 +778,7 @@ public:
     static constexpr bool HasMissingOnInvalid = true;
 
     template <typename TField>
-    using AdaptMissingOnInvalid = comms::field::adapter::MissingOnInvalid<TField>;
+    using AdaptMissingOnInvalid = comms::field::adapter::MissingOnInvalidAdapter<TField>;
 };
 
 template <typename... TOptions>
@@ -813,7 +813,7 @@ public:
     static constexpr bool HasFixedValue = true;
 
     template <typename TField>
-    using AdaptFixedValue = comms::field::adapter::FixedValue<TField>;
+    using AdaptFixedValue = comms::field::adapter::FixedValueAdapter<TField>;
 };
 
 template <std::intmax_t TOffset, typename... TOptions>
@@ -826,7 +826,7 @@ public:
     static constexpr std::intmax_t DisplayOffset = TOffset;
 
     template <typename TField>
-    using AdaptDisplayOffset = comms::field::adapter::DisplayOffset<TOffset, TField>;
+    using AdaptDisplayOffset = comms::field::adapter::DisplayOffsetAdapter<TOffset, TField>;
 };
 
 template <typename... TOptions>

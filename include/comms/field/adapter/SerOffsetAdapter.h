@@ -1,0 +1,118 @@
+//
+// Copyright 2015 - 2026 (C). Alex Robenko. All rights reserved.
+//
+// SPDX-License-Identifier: MPL-2.0
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+#pragma once
+
+#include "comms/ErrorStatus.h"
+#include "comms/util/access.h"
+
+#include <cstddef>
+#include <utility>
+
+namespace comms
+{
+
+namespace field
+{
+
+namespace adapter
+{
+
+template <long long int TOffset, typename TBase>
+class SerOffsetAdapter : public TBase
+{
+    using BaseImpl = TBase;
+    static const auto Offset = TOffset;
+public:
+
+    using ValueType = typename BaseImpl::ValueType;
+    using SerialisedType = typename BaseImpl::SerialisedType;
+    using Endian = typename BaseImpl::Endian;
+
+    SerOffsetAdapter() = default;
+
+    explicit SerOffsetAdapter(const ValueType& val)
+      : BaseImpl(val)
+    {
+    }
+
+    explicit SerOffsetAdapter(ValueType&& val)
+      : BaseImpl(std::move(val))
+    {
+    }
+
+    SerOffsetAdapter(const SerOffsetAdapter&) = default;
+    SerOffsetAdapter(SerOffsetAdapter&&) = default;
+    SerOffsetAdapter& operator=(const SerOffsetAdapter&) = default;
+    SerOffsetAdapter& operator=(SerOffsetAdapter&&) = default;
+
+    template <typename TIter>
+    ErrorStatus read(TIter& iter, std::size_t size)
+    {
+        if (size < BaseImpl::length()) {
+            return ErrorStatus::NotEnoughData;
+        }
+
+        readNoStatus(iter);
+        return ErrorStatus::Success;
+    }
+
+    template <typename TIter>
+    void readNoStatus(TIter& iter)
+    {
+        auto serialisedValue =
+            comms::util::readData<SerialisedType>(iter, Endian());
+        BaseImpl::setValue(fromSerialised(serialisedValue));
+    }
+
+    template <typename TIter>
+    ErrorStatus write(TIter& iter, std::size_t size) const
+    {
+        if (size < BaseImpl::length()) {
+            return ErrorStatus::BufferOverflow;
+        }
+
+        writeNoStatus(iter);
+        return ErrorStatus::Success;
+    }
+
+    template <typename TIter>
+    void writeNoStatus(TIter& iter) const
+    {
+        comms::util::writeData(toSerialised(BaseImpl::getValue()), iter, Endian());
+    }
+
+    static constexpr SerialisedType toSerialised(ValueType val)
+    {
+        return adjustToSerialised(BaseImpl::toSerialised(val));
+    }
+
+    static constexpr ValueType fromSerialised(SerialisedType val)
+    {
+        return BaseImpl::fromSerialised(adjustFromSerialised(val));
+    }
+
+private:
+    static SerialisedType adjustToSerialised(SerialisedType val)
+    {
+        return static_cast<SerialisedType>(Offset + val);
+    }
+
+    static SerialisedType adjustFromSerialised(SerialisedType val)
+    {
+        return static_cast<SerialisedType>((-Offset) + val);
+    }
+};
+
+}  // namespace adapter
+
+}  // namespace field
+
+}  // namespace comms
+

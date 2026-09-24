@@ -11,7 +11,7 @@
 
 #include "comms/details/tag.h"
 #include "comms/ErrorStatus.h"
-#include "comms/field/basic/CommonFuncs.h"
+#include "comms/field/basic/BasicCommonFuncs.h"
 #include "comms/field/details/FieldOpHelpers.h"
 #include "comms/util/Tuple.h"
 
@@ -46,12 +46,12 @@ public:
 
     static constexpr bool areFieldsVersionDependent()
     {
-        return comms::field::basic::CommonFuncs::IsAnyFieldVersionDependentBoolType<TAllFields...>::value;
+        return comms::field::basic::BasicCommonFuncs::IsAnyFieldVersionDependentBoolType<TAllFields...>::value;
     }
 
     static constexpr bool doFieldsHaveNonDefaultRefresh()
     {
-        return comms::field::basic::CommonFuncs::AnyFieldHasNonDefaultRefreshBoolType<TAllFields...>::value;
+        return comms::field::basic::BasicCommonFuncs::AnyFieldHasNonDefaultRefreshBoolType<TAllFields...>::value;
     }
 
     template <typename TIter>
@@ -59,7 +59,7 @@ public:
     {
         using Tag =
             typename comms::util::LazyShallowConditional<
-                comms::field::basic::CommonFuncs::AllFieldsHaveReadNoStatusBoolType<TAllFields...>::value
+                comms::field::basic::BasicCommonFuncs::AllFieldsHaveReadNoStatusBoolType<TAllFields...>::value
             >::template Type<
                 NoStatusTag,
                 UseStatusTag
@@ -76,7 +76,7 @@ public:
 
         using Tag =
             typename comms::util::LazyShallowConditional<
-                comms::field::basic::CommonFuncs::AllFieldsHaveWriteNoStatusBoolType<TAllFields...>::value
+                comms::field::basic::BasicCommonFuncs::AllFieldsHaveWriteNoStatusBoolType<TAllFields...>::value
             >::template Type<
                 NoStatusTag,
                 UseStatusTag
@@ -477,7 +477,7 @@ public:
 
     bool doFieldsVersionUpdate()
     {
-        return comms::field::basic::CommonFuncs::setVersionForMembers(TBase::fields(), TBase::version());
+        return comms::field::basic::BasicCommonFuncs::setVersionForMembers(TBase::fields(), TBase::version());
     }
 
     template <typename TIter>
