@@ -250,7 +250,6 @@ jobs:
       run: ctest -V
 
   build_clang_ubuntu_24_04_no_sanitize:
-    if: false
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
