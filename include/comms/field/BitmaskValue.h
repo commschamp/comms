@@ -429,6 +429,15 @@ public:
         return m_intValue.getForcedLength();
     }
 
+    /// @brief Convert bit index to the mask that can be used with @ref setBits() or @ref clearBits()
+    /// @tparam TBitIdx Type of the @b BitIdx enum created by #COMMS_BITMASK_BITS_SEQ() or #COMMS_BITMASK_BITS()
+    /// @param idx Numeric bit index
+    template <typename TBitIdx>
+    static constexpr ValueType bitAsMask(TBitIdx idx)
+    {
+        return static_cast<ValueType>(static_cast<ValueType>(1) << static_cast<unsigned>(idx));
+    }
+
 protected:
     using BaseImpl::readData;
     using BaseImpl::writeData;

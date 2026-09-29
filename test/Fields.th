@@ -2412,6 +2412,10 @@ struct Test50_Field : public comms::field::BitmaskValue<
 {
     COMMS_BITMASK_BITS(first, second, third, fourth, sixth=5, seventh, eighth);
     COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE(first, second, third, fourth, sixth, seventh, eighth);
+
+    static constexpr ValueType FirstMask = bitAsMask(BitIdx_first);
+    static constexpr ValueType SecondMask = bitAsMask(BitIdx_second);
+    static_assert((FirstMask | SecondMask) == 0x3, "Invalid assumption");
 };
 
 template <typename... TExtraOpts>
