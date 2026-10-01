@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include "adapters.h"
-#include "OptionsParser.h"
+#include "comms/field/details/adapters.h"
+#include "comms/field/details/FieldOptionsParser.h"
 
 #include <cstddef>
 
@@ -46,7 +46,7 @@ struct FieldsOptionsCompatibilityCalc
 template <typename TBasic, typename... TOptions>
 class AdaptBasicField
 {
-    using ParsedOptions = OptionsParser<TOptions...>;
+    using ParsedOptions = FieldOptionsParser<TOptions...>;
 
     static const bool CustomReaderIncompatible =
             ParsedOptions::HasSerOffset ||
@@ -232,8 +232,11 @@ class AdaptBasicField
     using FixedValueAdapted =
         typename ParsedOptions::template AdaptFixedValue<VariantResetOnDestructAdapted>;
 
+    using ReadAlignAdapted =
+        typename ParsedOptions::template AdaptReadAlign<FixedValueAdapted>;
+
 public:
-    using Type = FixedValueAdapted;
+    using Type = ReadAlignAdapted;
 };
 
 template <typename TBasic, typename... TOptions>

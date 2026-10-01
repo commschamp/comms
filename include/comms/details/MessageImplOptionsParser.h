@@ -51,6 +51,7 @@ public:
     static constexpr bool HasNoIdImpl = false;
     static constexpr bool HasName = false;
     static constexpr bool HasFailOnInvalid = false;
+    static constexpr bool HasReadAlign = false;
 
     using Fields = std::tuple<>;
     using MsgType = void;
@@ -92,6 +93,9 @@ public:
 
     template <typename TBase>
     using BuildFailOnInvalidImpl = TBase;
+
+    template <typename TBase>
+    using BuildReadAlignImpl = TBase;
 };
 
 template <std::intmax_t TId,
@@ -517,6 +521,22 @@ public:
             comms::util::TypeDeepWrap,
             TBase, typename BaseImpl::MsgType, FailOnInvalidStatusWrapper
         >;
+};
+
+template <std::size_t TAlign, typename... TOptions>
+class MessageImplOptionsParser<
+    comms::option::def::ReadAlign<TAlign>,
+    TOptions...> : public MessageImplOptionsParser<TOptions...>
+{
+    using BaseImpl = MessageImplOptionsParser<TOptions...>;
+
+public:
+    static constexpr std::size_t ReadAlign = TAlign;
+    static constexpr bool HasReadAlign = true;
+
+    template <typename TBase>
+    using BuildReadAlignImpl =
+        MessageImplReadAlignBase<TBase, typename BaseImpl::MsgType, TAlign>;
 };
 
 template <typename... TOptions>

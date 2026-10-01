@@ -68,22 +68,24 @@ using FieldsMessage1 =
         comms::field::IntValue<TField, std::uint16_t>
     >;
 
-template <typename TMessage>
+template <typename TMessage, typename... TExtraOpts>
 class Message1 : public
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType1>,
             comms::option::FieldsImpl<FieldsMessage1<typename TMessage::Field> >,
-            comms::option::MsgType<Message1<TMessage> >,
+            comms::option::MsgType<Message1<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >
 {
     using Base =
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType1>,
             comms::option::FieldsImpl<FieldsMessage1<typename TMessage::Field> >,
-            comms::option::MsgType<Message1<TMessage> >,
+            comms::option::MsgType<Message1<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >;
 public:

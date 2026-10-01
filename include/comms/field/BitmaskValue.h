@@ -16,7 +16,7 @@
 #include "comms/details/gen_enum.h"
 #include "comms/Field.h"
 #include "comms/field/details/AdaptBasicField.h"
-#include "comms/field/details/OptionsParser.h"
+#include "comms/field/details/FieldOptionsParser.h"
 #include "comms/field/IntValue.h"
 #include "comms/field/tag.h"
 #include "comms/util/SizeToType.h"
@@ -96,6 +96,7 @@ using BitmaskUndertlyingTypeT =
 ///     @li @ref comms::option::def::HasCustomRefresh
 ///     @li @ref comms::option::def::HasName
 ///     @li @ref comms::option::def::IgnoreInvalid
+///     @li @ref comms::option::def::ReadAlign
 ///     @li @ref comms::option::def::VersionStorage
 /// @extends comms::Field
 /// @headerfile comms/field/BitmaskValue.h
@@ -109,7 +110,7 @@ class BitmaskValue : public TFieldBase
 {
     using BaseImpl = TFieldBase;
 
-    using OptionsBundle = details::OptionsParser<TOptions...>;
+    using OptionsBundle = details::FieldOptionsParser<TOptions...>;
 
     using IntValueType = details::BitmaskUndertlyingTypeT<OptionsBundle>;
 
@@ -206,6 +207,13 @@ public:
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::ReadAlign option
+    ///     has been used.
+    static constexpr bool hasReadAlign()
+    {
+        return ParsedOptions::HasReadAlign;
     }
 
     /// @brief Get access to underlying mask value storage.

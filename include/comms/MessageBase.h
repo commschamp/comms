@@ -199,6 +199,13 @@ public:
         return ImplOptions::HasStaticMsgId || ImplOptions::HasDoGetId;
     }
 
+    /// @brief Compile time inquiry of whether @ref comms::option::def::ReadAlign option
+    ///     has been used.
+    static constexpr bool hasReadAlign()
+    {
+        return ImplOptions::HasReadAlign;
+    }
+
 #ifdef FOR_DOXYGEN_DOC_ONLY
 
     /// @brief All field classes provided with @ref comms::option::def::FieldsImpl option.

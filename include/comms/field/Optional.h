@@ -16,7 +16,7 @@
 #include "comms/ErrorStatus.h"
 #include "comms/field/basic/BasicOptional.h"
 #include "comms/field/details/AdaptBasicField.h"
-#include "comms/field/details/OptionsParser.h"
+#include "comms/field/details/FieldOptionsParser.h"
 #include "comms/field/OptionalMode.h"
 
 #include <cstddef>
@@ -45,6 +45,7 @@ namespace field
 ///     @li @ref comms::option::def::HasName
 ///     @li @ref comms::option::def::MissingOnInvalid
 ///     @li @ref comms::option::def::MissingOnReadFail
+///     @li @ref comms::option::def::ReadAlign
 ///     @li @ref comms::option::def::VersionStorage
 /// @extends comms::Field
 /// @headerfile comms/field/Optional.h
@@ -60,7 +61,7 @@ public:
     using VersionType = typename BaseImpl::VersionType;
 
     /// @brief All the options provided to this class bundled into struct.
-    using ParsedOptions = details::OptionsParser<TOptions...>;
+    using ParsedOptions = details::FieldOptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
     using CommsTag = typename BaseImpl::CommsTag;
@@ -153,6 +154,13 @@ public:
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::ReadAlign option
+    ///     has been used.
+    static constexpr bool hasReadAlign()
+    {
+        return ParsedOptions::HasReadAlign;
     }
 
     /// @brief Check whether mode is equivalent to Mode::Tentative

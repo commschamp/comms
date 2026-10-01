@@ -17,7 +17,7 @@
 #include "comms/details/tag.h"
 #include "comms/field/basic/BasicString.h"
 #include "comms/field/details/AdaptBasicField.h"
-#include "comms/field/details/OptionsParser.h"
+#include "comms/field/details/FieldOptionsParser.h"
 #include "comms/options.h"
 #include "comms/util/detect.h"
 #include "comms/util/StaticString.h"
@@ -124,7 +124,7 @@ using StringStorageTypeT =
 template <typename TFieldBase, typename... TOptions>
 using StringBase =
     AdaptBasicFieldT<
-        basic::BasicString<TFieldBase, StringStorageTypeT<OptionsParser<TOptions...> > >,
+        basic::BasicString<TFieldBase, StringStorageTypeT<FieldOptionsParser<TOptions...> > >,
         TOptions...
     >;
 
@@ -161,6 +161,7 @@ using StringBase =
 ///     @li @ref comms::option::app::CustomStorageType
 ///     @li @ref comms::option::app::FixedSizeStorage
 ///     @li @ref comms::option::app::OrigDataView
+///     @li @ref comms::option::def::ReadAlign
 /// @extends comms::Field
 /// @headerfile comms/field/String.h
 template <typename TFieldBase, typename... TOptions>
@@ -178,7 +179,7 @@ public:
     using VersionType = typename BaseImpl::VersionType;
 
     /// @brief All the options provided to this class bundled into struct.
-    using ParsedOptions = details::OptionsParser<TOptions...>;
+    using ParsedOptions = details::FieldOptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
     using CommsTag = typename BaseImpl::CommsTag;
@@ -322,6 +323,13 @@ public:
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::ReadAlign option
+    ///     has been used.
+    static constexpr bool hasReadAlign()
+    {
+        return ParsedOptions::HasReadAlign;
     }
 
     /// @brief Compile time inquiry of fixed size provided via @ref comms::option::def::SequenceFixedSize option.

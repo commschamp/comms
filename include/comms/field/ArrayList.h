@@ -19,8 +19,8 @@
 #include "comms/util/StaticVector.h"
 #include "comms/util/ArrayView.h"
 #include "comms/util/type_traits.h"
-#include "details/AdaptBasicField.h"
-#include "details/OptionsParser.h"
+#include "comms/field/details/AdaptBasicField.h"
+#include "comms/field/details/FieldOptionsParser.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -129,7 +129,7 @@ using ArrayListBase =
     AdaptBasicFieldT<
         comms::field::basic::BasicArrayList<
             TFieldBase,
-            ArrayListStorageTypeT<TElement, OptionsParser<TOptions...> >
+            ArrayListStorageTypeT<TElement, FieldOptionsParser<TOptions...> >
         >,
         TOptions...
     >;
@@ -178,6 +178,7 @@ using ArrayListBase =
 ///     @li @ref comms::option::def::HasCustomRefresh
 ///     @li @ref comms::option::def::HasName
 ///     @li @ref comms::option::def::IgnoreInvalid
+///     @li @ref comms::option::def::ReadAlign
 ///     @li @ref comms::option::def::SequenceElemFixedSerLengthFieldPrefix
 ///     @li @ref comms::option::def::SequenceElemSerLengthFieldPrefix
 ///     @li @ref comms::option::def::SequenceFixedSize
@@ -210,7 +211,7 @@ public:
     using VersionType = typename BaseImpl::VersionType;
 
     /// @brief All the options provided to this class bundled into struct.
-    using ParsedOptions = details::OptionsParser<TOptions...>;
+    using ParsedOptions = details::FieldOptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
     using CommsTag = typename BaseImpl::CommsTag;
@@ -373,6 +374,13 @@ public:
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::ReadAlign option
+    ///     has been used.
+    static constexpr bool hasReadAlign()
+    {
+        return ParsedOptions::HasReadAlign;
     }
 
     /// @brief Compile time inquiry of fixed size provided via @ref comms::option::def::SequenceFixedSize option.

@@ -16,6 +16,8 @@
 #include "comms/util/Tuple.h"
 
 #include <cstddef>
+#include <cstdint>
+#include <iterator>
 #include <tuple>
 #include <type_traits>
 
@@ -73,7 +75,6 @@ public:
         TIter& iter,
         std::size_t size) const
     {
-
         using Tag =
             typename comms::util::LazyShallowConditional<
                 comms::field::basic::BasicCommonFuncs::AllFieldsHaveWriteNoStatusBoolType<TAllFields...>::value
@@ -884,6 +885,37 @@ protected:
     virtual const char* nameImpl() const override
     {
         return static_cast<const TActual*>(this)->doName();
+    }
+};
+
+// ------------------------------------------------------
+
+template <typename TBase, typename TActual, std::size_t TAlign>
+class MessageImplReadAlignBase : public TBase
+{
+    static constexpr auto Align = TAlign;
+    static_assert((Align & (Align - 1U)) == 0, "Alignment parameter is expected to be power of 2");
+    static const auto AlignMask = Align - 1U;
+
+public:
+    template <typename TIter>
+    comms::ErrorStatus doRead(TIter& iter, std::size_t size)
+    {
+        using IterType = typename std::decay<decltype(iter)>::type;
+        using IterCategory = typename std::iterator_traits<IterType>::iterator_category;
+        static_assert(std::is_base_of<std::random_access_iterator_tag, IterCategory>::value,
+            "Use random access iterators when using comms::option::def::ReadAlign option");
+
+        while (0U < size) {
+            if ((reinterpret_cast<std::uintptr_t>(&(*iter)) & AlignMask) == 0) {
+                return TBase::doRead(iter, size);
+            }
+
+            std::advance(iter, 1);
+            size -= 1U;
+        }
+
+        return ErrorStatus::NotEnoughData;
     }
 };
 

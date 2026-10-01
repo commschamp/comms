@@ -17,6 +17,7 @@
 #include "comms/details/tag.h"
 #include "comms/field/basic/BasicIntValue.h"
 #include "comms/field/details/AdaptBasicField.h"
+#include "comms/field/details/FieldOptionsParser.h"
 #include "comms/options.h"
 #include "comms/util/type_traits.h"
 
@@ -64,6 +65,7 @@ namespace field
 ///     @li @ref comms::option::def::IgnoreInvalid
 ///     @li @ref comms::option::def::InvalidByDefault
 ///     @li @ref comms::option::def::NumValueSerOffset
+///     @li @ref comms::option::def::ReadAlign
 ///     @li @ref comms::option::def::ScalingRatio
 ///     @li @b comms::option::def::Units* - all variants of value units, see
 ///         @ref sec_field_tutorial_int_value_units for details.
@@ -90,7 +92,7 @@ public:
     using VersionType = typename BaseImpl::VersionType;
 
     /// @brief All the options provided to this class bundled into struct.
-    using ParsedOptions = details::OptionsParser<TOptions...>;
+    using ParsedOptions = details::FieldOptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
     using CommsTag = typename BaseImpl::CommsTag;
@@ -203,6 +205,13 @@ public:
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::ReadAlign option
+    ///     has been used.
+    static constexpr bool hasReadAlign()
+    {
+        return ParsedOptions::HasReadAlign;
     }
 
     /// @brief Scales value according to ratio specified in provided

@@ -63,8 +63,11 @@ class MessageImplBuilder
     using PolymorphicStaticNumIdBase =
         typename ParsedOptions::template BuildMsgIdImpl<StaticNumIdBase>;
 
+    using ReadAlignBase =
+        typename ParsedOptions::template BuildReadAlignImpl<PolymorphicStaticNumIdBase>;
+
     using NameBase =
-        typename ParsedOptions::template BuildNameImpl<PolymorphicStaticNumIdBase>;
+        typename ParsedOptions::template BuildNameImpl<ReadAlignBase>;
 
 public:
     using Options = ParsedOptions;

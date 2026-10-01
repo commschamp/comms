@@ -17,6 +17,7 @@
 #include "comms/ErrorStatus.h"
 #include "comms/field/basic/BasicVariant.h"
 #include "comms/field/details/AdaptBasicField.h"
+#include "comms/field/details/FieldOptionsParser.h"
 #include "comms/options.h"
 #include "comms/util/Tuple.h"
 
@@ -67,6 +68,7 @@ namespace field
 ///         refresh functionality.
 ///     @li @ref comms::option::def::HasName
 ///     @li @ref comms::option::def::HasVersionDependentMembers
+///     @li @ref comms::option::def::ReadAlign
 ///     @li @ref comms::option::def::VariantHasCustomResetOnDestruct - avoid calling
 ///         default @ref comms::field::Variant::reset() "reset()" on destruction, assume
 ///         it is called by the extending class destructor.
@@ -81,7 +83,7 @@ class Variant : public
     details::AdaptBasicFieldT<
         basic::BasicVariant<
             TFieldBase,
-            details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+            details::FieldOptionsParser<TOptions...>::ForcedMembersVersionDependency,
             TMembers
         >,
         TOptions...>
@@ -90,7 +92,7 @@ class Variant : public
         details::AdaptBasicFieldT<
         basic::BasicVariant<
             TFieldBase,
-            details::OptionsParser<TOptions...>::ForcedMembersVersionDependency,
+            details::FieldOptionsParser<TOptions...>::ForcedMembersVersionDependency,
             TMembers
         >,
         TOptions...>;
@@ -113,7 +115,7 @@ public:
     using VersionType = typename BaseImpl::VersionType;
 
     /// @brief All the options provided to this class bundled into struct.
-    using ParsedOptions = details::OptionsParser<TOptions...>;
+    using ParsedOptions = details::FieldOptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
     using CommsTag = typename BaseImpl::CommsTag;
@@ -189,6 +191,13 @@ public:
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::ReadAlign option
+    ///     has been used.
+    static constexpr bool hasReadAlign()
+    {
+        return ParsedOptions::HasReadAlign;
     }
 
     /// @brief Get access to the internal storage buffer.

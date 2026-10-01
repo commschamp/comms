@@ -1274,6 +1274,13 @@ struct FixedValue {};
 template <std::intmax_t TOffset>
 struct DisplayOffset {};
 
+/// @brief Option used to force adjustment of the read iterator to aligned address @b before performing read operation
+/// @tparam TAlign Alignment, expected to be power of 2.
+template <std::size_t TAlign>
+struct ReadAlign {
+    static_assert((TAlign & (TAlign - 1U)) == 0, "Alignment parameter is expected to be power of 2");
+};
+
 } // namespace def
 
 namespace app

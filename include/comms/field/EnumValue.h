@@ -14,7 +14,7 @@
 
 #include "comms/field/basic/BasicEnumValue.h"
 #include "comms/field/details/AdaptBasicField.h"
-#include "comms/field/details/OptionsParser.h"
+#include "comms/field/details/FieldOptionsParser.h"
 #include "comms/options.h"
 
 #include <cstddef>
@@ -67,6 +67,7 @@ namespace field
 ///     @li @ref comms::option::def::IgnoreInvalid
 ///     @li @ref comms::option::def::InvalidByDefault
 ///     @li @ref comms::option::def::NumValueSerOffset
+///     @li @ref comms::option::def::ReadAlign
 ///     @li @ref comms::option::def::ValidNumValueRange, @ref comms::option::def::ValidNumValue,
 ///         @ref comms::option::def::ValidBigUnsignedNumValueRange, @ref comms::option::def::ValidBigUnsignedNumValue
 ///     @li @ref comms::option::def::ValidRangesClear
@@ -91,7 +92,7 @@ public:
     using VersionType = typename BaseImpl::VersionType;
 
     /// @brief All the options provided to this class bundled into struct.
-    using ParsedOptions = details::OptionsParser<TOptions...>;
+    using ParsedOptions = details::FieldOptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
     using CommsTag = typename BaseImpl::CommsTag;
@@ -163,6 +164,13 @@ public:
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::ReadAlign option
+    ///     has been used.
+    static constexpr bool hasReadAlign()
+    {
+        return ParsedOptions::HasReadAlign;
     }
 
     /// @brief Get access to enum value storage.

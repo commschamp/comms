@@ -15,6 +15,7 @@
 #include "comms/ErrorStatus.h"
 #include "comms/field/basic/BasicFloatValue.h"
 #include "comms/field/details/AdaptBasicField.h"
+#include "comms/field/details/FieldOptionsParser.h"
 #include "comms/field/tag.h"
 #include "comms/options.h"
 
@@ -55,6 +56,7 @@ namespace field
 ///     @li @ref comms::option::def::HasName
 ///     @li @ref comms::option::def::IgnoreInvalid
 ///     @li @ref comms::option::def::InvalidByDefault
+///     @li @ref comms::option::def::ReadAlign
 ///     @li @b comms::option::def::Units* - all variants of value units, see
 ///         @ref sec_field_tutorial_int_value_units for details.
 ///     @li @ref comms::option::def::ValidNumValueRange, @ref comms::option::def::ValidNumValue,
@@ -78,7 +80,7 @@ public:
     using VersionType = typename BaseImpl::VersionType;
 
     /// @brief All the options provided to this class bundled into struct.
-    using ParsedOptions = details::OptionsParser<TOptions...>;
+    using ParsedOptions = details::FieldOptionsParser<TOptions...>;
 
     /// @brief Tag indicating type of the field
     using CommsTag = typename BaseImpl::CommsTag;
@@ -157,6 +159,13 @@ public:
     static constexpr bool hasName()
     {
         return ParsedOptions::HasName;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::ReadAlign option
+    ///     has been used.
+    static constexpr bool hasReadAlign()
+    {
+        return ParsedOptions::HasReadAlign;
     }
 
     /// @brief Get access to floating point value storage.

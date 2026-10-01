@@ -28,6 +28,7 @@
 #include "comms/field/adapter/MissingOnInvalidAdapter.h"
 #include "comms/field/adapter/MissingOnReadFailAdapter.h"
 #include "comms/field/adapter/NumValueMultiRangeValidatorAdapter.h"
+#include "comms/field/adapter/ReadAlignAdapter.h"
 #include "comms/field/adapter/RemLengthMemberFieldAdapter.h"
 #include "comms/field/adapter/SequenceElemFixedSerLengthFieldPrefixAdapter.h"
 #include "comms/field/adapter/SequenceElemLengthForcingAdapter.h"
