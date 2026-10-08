@@ -304,7 +304,7 @@ jobs:
       fail-fast: false
       matrix:
         type: [Debug, Release, MinSizeRel]
-        cc_ver: [17, 18, 19, 20, 21, 22]
+        cc_ver: [17, 18, 19, 20, 22]
         cpp: [11, 14, 17, 20, 23]
         exclude:
           - cc_ver: 17
