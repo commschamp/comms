@@ -100,11 +100,12 @@ using BitmaskUndertlyingTypeT =
 ///     @li @ref comms::option::def::VersionStorage
 /// @extends comms::Field
 /// @headerfile comms/field/BitmaskValue.h
-/// @see COMMS_BITMASK_BITS()
-/// @see COMMS_BITMASK_BITS_ACCESS()
-/// @see COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE()
-/// @see COMMS_BITMASK_BITS_SEQ()
-/// @see COMMS_BITMASK_BITS_SEQ_NOTEMPLATE()
+/// @see #COMMS_BITMASK_BITS()
+/// @see #COMMS_BITMASK_BITS_ACCESS()
+/// @see #COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE()
+/// @see #COMMS_BITMASK_BITS_SEQ()
+/// @see #COMMS_BITMASK_BITS_SEQ_NOTEMPLATE()
+/// @see #COMMS_BITMASK_MASK()
 template <typename TFieldBase, typename... TOptions>
 class BitmaskValue : public TFieldBase
 {
@@ -355,6 +356,14 @@ public:
     bool hasAnyBitsSet(ValueType mask) const
     {
         return (value() & mask) != 0;
+    }
+
+    /// @brief Check whether all bits from provided mask are cleared.
+    /// @param[in] mask Mask to check against
+    /// @return true in case all the bits are cleared, false otherwise
+    bool hasAllBitsCleared(ValueType mask) const
+    {
+        return (value() & mask) == 0U;
     }
 
     /// @brief Set all the provided bits.
@@ -821,6 +830,61 @@ toFieldBase(const BitmaskValue<TFieldBase, TOptions...>& field)
 #define COMMS_BITMASK_BITS_SEQ_NOTEMPLATE(...) \
     COMMS_BITMASK_BITS(__VA_ARGS__) \
     COMMS_BITMASK_BITS_ACCESS_NOTEMPLATE(__VA_ARGS__)
+
+/// @brief Make a mask definition out of multiple bits.
+/// @details Use is as #COMMS_BITMASK_MASK(<mask_name>, <bit_name>, <bit_name>, ...)
+///     The bit names are as ones listed in #COMMS_BITMASK_BITS_SEQ() or #COMMS_BITMASK_BITS().@n
+///     Creates `BitMask_<mask_name>` constant and list of wrapping functions.
+///         @li `bool hasAllBitsSet_<mask_name>() const`
+///         @li `bool hasAnyBitsSet_<mask_name>() const`
+///         @li `bool hasAnyBitsCleared_<mask_name>() const`
+///         @li `void setBits_<mask_name>()`
+///         @li `void clearBits_<mask_name>()`
+///
+///     @code
+///     using MyFieldBase = comms::Field<comms::option::BigEndian>;
+///     template <typename... TExtraOptions>
+///     class MyField : public
+///         comms::field::BitmaskValue<
+///             MyFieldBase,
+///             comms::field::FixedLength<1>,
+///             comms::field::BitmaskReservedBits<0xf0, 0>,
+///             TExtraOptions...
+///         >
+///     {
+///         // Duplicate definition of the base class
+///         using Base =
+///             comms::field::BitmaskValue<
+///                 MyFieldBase,
+///                 comms::field::FixedLength<1>,
+///                 scomms::field::BitmaskReservedBits<0xf0, 0>,
+///                 TExtraOptions...
+///             >;
+///     public:
+///         // ValueType type must be visible.
+///         using ValueType = typename Base::ValueType;
+///
+///         COMMS_BITMASK_BITS_SEQ(first, second, third, fourth);
+///
+///         COMMS_BITMASK_MASK(M0, first, second)
+///         // Equivalent to having:
+///         // static const ValueType BitMask_M0 =
+///         //     (1 << BitIdx_first)
+///         //     (1 << BitIdx_second);
+///         //
+///         // bool hasAllBitsSet_M0() const;
+///         // bool hasAnyBitsSet_M0() const;
+///         // bool hasAllBitsCleared_M0() const;
+///         // void setBits_M0();
+///         // void clearBits_M0();
+///     }
+///     @endcode
+/// @pre Must be used alongside the #COMMS_BITMASK_BITS_SEQ() or #COMMS_BITMASK_BITS_ACCESS()
+/// @pre Requires inherited @b ValueType type to be visible, i.e. must be redefined in template classes.
+/// @note Defined in "comms/field/BitmaskValue.h"
+#define COMMS_BITMASK_MASK(...) \
+    COMMS_DEFINE_BIT_MASK(__VA_ARGS__) \
+    COMMS_DO_MASK_FUNC(__VA_ARGS__)
 
 }  // namespace field
 

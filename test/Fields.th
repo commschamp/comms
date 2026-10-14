@@ -2433,7 +2433,12 @@ class Test50_Field2 : public
             TExtraOpts...
         >;
 public:
+    using ValueType = typename Base::ValueType;
+
     COMMS_BITMASK_BITS_SEQ(first, second, third, fourth, fifth, sixth, seventh, eighth);
+
+    COMMS_BITMASK_MASK(M0, first, second);
+    static_assert(BitMask_M0 == 0x3, "Invalid mask");
 };
 
 void FieldsTestSuite::test50()
