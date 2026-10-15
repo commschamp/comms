@@ -883,8 +883,8 @@ toFieldBase(const BitmaskValue<TFieldBase, TOptions...>& field)
 /// @pre Requires inherited @b ValueType type to be visible, i.e. must be redefined in template classes.
 /// @note Defined in "comms/field/BitmaskValue.h"
 #define COMMS_BITMASK_MASK(...) \
-    COMMS_DEFINE_BIT_MASK(__VA_ARGS__) \
-    COMMS_DO_MASK_FUNC(__VA_ARGS__)
+    COMMS_EXPAND(COMMS_DEFINE_BIT_MASK(__VA_ARGS__)) \
+    COMMS_EXPAND(COMMS_DO_MASK_FUNC(__VA_ARGS__))
 
 }  // namespace field
 
