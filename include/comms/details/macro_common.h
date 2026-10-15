@@ -14,7 +14,6 @@
 #define COMMS_EXPAND(x_) x_
 #define COMMS_CONCATENATE_(x_, y_) x_##y_
 #define COMMS_CONCATENATE(x_, y_) COMMS_CONCATENATE_(x_, y_)
-#define COMMS_APPLY(macro_, args_) COMMS_EXPAND(macro_ args_)
 
 /// MSVC doesn't allow more than 127 macro arguments
 #define COMMS_NUM_ARGS_(X,\
