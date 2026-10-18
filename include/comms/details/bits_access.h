@@ -311,7 +311,7 @@
         return asBitmask().hasAllBitsSet(COMMS_CONCATENATE(BitMask_, n_)); \
     } \
     bool COMMS_CONCATENATE(hasAnyBitsSet_, n_)() const {\
-        return asBitmask().hasAnyBitsSet_(COMMS_CONCATENATE(BitMask_, n_)); \
+        return asBitmask().hasAnyBitsSet(COMMS_CONCATENATE(BitMask_, n_)); \
     } \
     bool COMMS_CONCATENATE(hasAllBitsCleared_, n_)() const {\
         return asBitmask().hasAllBitsCleared(COMMS_CONCATENATE(BitMask_, n_)); \

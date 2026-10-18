@@ -2470,10 +2470,24 @@ void FieldsTestSuite::test50()
 
     using Field2 = Test50_Field2<>;
     Field2 field2;
-    static_cast<void>(field2);
 
     static_assert(!Field2::isVersionDependent(),
         "Invalid version dependency assumption");
+
+    field2.setBitValue_first(true);
+    TS_ASSERT(field2.hasAnyBitsSet_M0());
+    TS_ASSERT(!field2.hasAllBitsSet_M0());
+
+    field2.setBitValue_second(true);
+    TS_ASSERT(field2.hasAllBitsSet_M0());
+    TS_ASSERT(!field2.hasAllBitsCleared_M0());
+
+    field2.clearBits_M0();
+    TS_ASSERT(field2.hasAllBitsCleared_M0());
+    TS_ASSERT(!field2.hasAllBitsSet_M0());
+
+    field2.setBits_M0();
+    TS_ASSERT(field2.hasAllBitsSet_M0());
 }
 
 class Field_51 : public comms::field::Bitfield<
