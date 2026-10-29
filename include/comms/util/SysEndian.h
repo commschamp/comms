@@ -20,7 +20,11 @@ namespace comms
 namespace util
 {
 
-#if defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+#ifdef COMMS_FORCE_ENDIAN
+
+using SysEndian = comms::traits::endian::COMMS_FORCE_ENDIAN;
+
+#elif defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 
 using SysEndian = comms::traits::endian::Big;
 
@@ -35,7 +39,8 @@ using SysEndian = comms::traits::endian::Little;
 
 #else
 
-using SysEndian = void;
+#warning "Unknown system endian assuming Little, use COMMS_FORCE_ENDIAN define to override."
+using SysEndian = comms::traits::endian::Little;
 
 #endif
 
