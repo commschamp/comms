@@ -15,6 +15,7 @@
 #include "comms/ErrorStatus.h"
 #include "comms/field/OptionalMode.h"
 #include "comms/traits.h"
+#include "comms/util/SysEndian.h"
 #include "comms/util/type_traits.h"
 
 #include <cstddef>
@@ -179,6 +180,10 @@ using BigEndian = Endian<comms::traits::endian::Big>;
 /// @brief Alias option to Endian specifying Little endian.
 /// @headerfile comms/options.h
 using LittleEndian = Endian<comms::traits::endian::Little>;
+
+/// @brief Alias option to Endian specifying "system" endian.
+/// @headerfile comms/options.h
+using SystemEndian = Endian<comms::util::SysEndian>;
 
 /// @brief Option used to specify type of the ID.
 /// @tparam T Type of the message ID.

@@ -22,8 +22,9 @@ CC_ENABLE_WARNINGS()
 class FieldsTestSuite2 : public CxxTest::TestSuite
 {
 public:
-    using BigEndianOpt = comms::option::BigEndian;
-    using LittleEndianOpt = comms::option::LittleEndian;
+    using BigEndianOpt = comms::option::def::BigEndian;
+    using LittleEndianOpt = comms::option::def::LittleEndian;
+    using SystemEndianOpt = comms::option::def::SystemEndian;
     using BeFieldBase = comms::Field<BigEndianOpt>;
 
     void test1();
@@ -66,6 +67,7 @@ public:
     void test38();
     void test39();
     void test40();
+    void test41();
 
     template <typename TFP>
     static constexpr TFP epsilon()
@@ -2303,6 +2305,19 @@ void FieldsTestSuite2::test40()
 
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT_EQUALS(field.value(), 0x0304);
+}
+
+void FieldsTestSuite2::test41()
+{
+    using Field =
+        comms::field::IntValue<
+            comms::Field<SystemEndianOpt>,
+            std::uint16_t
+        >;
+
+    static_assert(
+        std::is_same<Field::Endian, comms::traits::endian::Big>::value || std::is_same<Field::Endian, comms::traits::endian::Little>::value,
+        "System endian didn't work");
 }
 
 template <typename TField>
