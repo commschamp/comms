@@ -53,8 +53,9 @@
 /// The main things to note are that every field definition class:
 /// @li receives its base class as the first
 ///     template parameter. It is expected to be a variant of @ref
-///     comms::Field with @ref comms::option::def::BigEndian or @ref
-///     comms::option::def::LittleEndian option to specify the serialisation endian.
+///     comms::Field with @ref comms::option::def::BigEndian, @ref
+///     comms::option::def::LittleEndian, or @ref comms::option::def::SystemEndian
+///     option to specify the serialisation endian.
 /// @li exhibits some default behaviour which can be modified by
 ///     passing various options from @ref comms::option namespace as additional template
 ///     parameters. All the available options are described below in this tutorial.
@@ -74,6 +75,11 @@
 ///
 /// Also note that all the member function are NON-virtual, i.e. the field
 /// abstractions do not have polymorphic behaviour.
+///
+/// The "system" endian (selected by the @ref comms::option::def::SystemEndian) is intended
+/// for binary encoding / decoding functionality rather than communication protocols. It
+/// is equivalent to selection of big endian serialization on big endian systems like PowerPC and
+/// little endian serialization on little endian systems like Intel / AMD.
 ///
 /// The available fields abstractions are:
 /// @li @ref comms::field::IntValue - used to define @ref sec_field_tutorial_int_value

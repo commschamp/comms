@@ -844,8 +844,9 @@
 /// The main things to note are that every field definition class:
 /// @li receives its base class as the first
 ///     template parameter. It is expected to be a variant of @ref
-///     comms::Field with @ref comms::option::def::BigEndian or @ref
-///     comms::option::def::LittleEndian option to specify the serialisation endian.
+///     comms::Field with @ref comms::option::def::BigEndian, @ref
+///     comms::option::def::LittleEndian, or @ref comms::option::def::SystemEndian
+///     option to specify the serialisation endian.
 ///     It may be inner @b Field type of @b MyMessage interface class defined
 ///     earlier (@b MyMessage::Field - documented as @ref comms::Message::Field)
 /// @li exhibits some default behaviour which can be modified by

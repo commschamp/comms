@@ -69,7 +69,8 @@
 /// The defined class / type needs to pin the type used for message IDs
 /// with @ref comms::option::def::MsgIdType and defined
 /// earlier enum. It also should specify the serialisation endian with either
-/// @ref comms::option::def::BigEndian or @ref comms::option::def::LittleEndian options.
+/// @ref comms::option::def::BigEndian, @ref comms::option::def::LittleEndian, or
+/// @ref comms::option::def::SystemEndian options.
 /// However it must also
 /// allow extension with other options by the application.
 /// @code
