@@ -35,7 +35,6 @@ class ReadAlignAdapter : public TBase
 public:
 
     using ValueType = typename BaseImpl::ValueType;
-    using SerialisedType = typename BaseImpl::SerialisedType;
 
     ReadAlignAdapter() = default;
 

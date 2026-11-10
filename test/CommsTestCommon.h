@@ -123,22 +123,24 @@ private:
     unsigned* m_destructorCounter = nullptr;
 };
 
-template <typename TMessage>
+template <typename TMessage, typename... TExtraOpts>
 class Message2 : public
     comms::MessageBase<
         TMessage,
+        TExtraOpts...,
         comms::option::StaticNumIdImpl<MessageType2>,
         comms::option::ZeroFieldsImpl,
-        comms::option::MsgType<Message2<TMessage> >,
+        comms::option::MsgType<Message2<TMessage, TExtraOpts...> >,
         comms::option::HasName
     >
 {
     using Base =
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType2>,
             comms::option::ZeroFieldsImpl,
-            comms::option::MsgType<Message2<TMessage> >,
+            comms::option::MsgType<Message2<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >;
 
@@ -170,22 +172,24 @@ using Message3Fields =
         comms::field::BitmaskValue<TField, comms::option::FixedLength<3> >
     >;
 
-template <typename TMessage>
+template <typename TMessage, typename... TExtraOpts>
 class Message3 : public
     comms::MessageBase<
         TMessage,
+        TExtraOpts...,
         comms::option::StaticNumIdImpl<MessageType3>,
         comms::option::FieldsImpl<Message3Fields<typename TMessage::Field> >,
-        comms::option::MsgType<Message3<TMessage> >,
+        comms::option::MsgType<Message3<TMessage, TExtraOpts...> >,
         comms::option::HasName
     >
 {
     using Base =
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType3>,
             comms::option::FieldsImpl<Message3Fields<typename TMessage::Field> >,
-            comms::option::MsgType<Message3<TMessage> >,
+            comms::option::MsgType<Message3<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >;
 public:
@@ -240,13 +244,14 @@ using Message4Fields =
         >
     >;
 
-template <typename TMessage>
+template <typename TMessage, typename... TExtraOpts>
 class Message4 : public
     comms::MessageBase<
         TMessage,
+        TExtraOpts...,
         comms::option::StaticNumIdImpl<MessageType4>,
         comms::option::FieldsImpl<Message4Fields<typename TMessage::Field> >,
-        comms::option::MsgType<Message4<TMessage> >,
+        comms::option::MsgType<Message4<TMessage, TExtraOpts...> >,
         comms::option::HasDoRefresh,
         comms::option::HasName
     >
@@ -254,9 +259,10 @@ class Message4 : public
     using Base =
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType4>,
             comms::option::FieldsImpl<Message4Fields<typename TMessage::Field> >,
-            comms::option::MsgType<Message4<TMessage> >,
+            comms::option::MsgType<Message4<TMessage, TExtraOpts...> >,
             comms::option::HasDoRefresh,
             comms::option::HasName
         >;
@@ -331,22 +337,24 @@ using FieldsMessage5 =
         comms::field::IntValue<TField, std::int8_t>
     >;
 
-template <typename TMessage>
+template <typename TMessage, typename... TExtraOpts>
 class Message5 : public
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType5>,
             comms::option::FieldsImpl<FieldsMessage5<comms::Field<comms::option::BigEndian> > >,
-            comms::option::MsgType<Message5<TMessage> >,
+            comms::option::MsgType<Message5<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >
 {
     using Base =
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType5>,
             comms::option::FieldsImpl<FieldsMessage5<comms::Field<comms::option::BigEndian> > >,
-            comms::option::MsgType<Message5<TMessage> >,
+            comms::option::MsgType<Message5<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >;
 public:
@@ -443,22 +451,24 @@ struct Message6Fields
 
 };
 
-template <typename TMessage>
+template <typename TMessage, typename... TExtraOpts>
 class Message6 : public
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType6>,
             comms::option::FieldsImpl<typename Message6Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message6<TMessage> >,
+            comms::option::MsgType<Message6<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >
 {
     using Base =
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType6>,
             comms::option::FieldsImpl<typename Message6Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message6<TMessage> >,
+            comms::option::MsgType<Message6<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >;
 public:
@@ -507,22 +517,24 @@ struct Message7Fields
 
 };
 
-template <typename TMessage>
+template <typename TMessage, typename... TExtraOpts>
 class Message7 : public
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType7>,
             comms::option::FieldsImpl<typename Message7Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message7<TMessage> >,
+            comms::option::MsgType<Message7<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >
 {
     using Base =
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType7>,
             comms::option::FieldsImpl<typename Message7Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message7<TMessage> >,
+            comms::option::MsgType<Message7<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >;
 public:
@@ -569,22 +581,23 @@ struct Message8Fields
 
 };
 
-template <typename TMessage>
+template <typename TMessage, typename... TExtraOpts>
 class Message8 : public
         comms::MessageBase<
             TMessage,
             comms::option::StaticNumIdImpl<MessageType8>,
             comms::option::FieldsImpl<typename Message8Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message8<TMessage> >,
+            comms::option::MsgType<Message8<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >
 {
     using Base =
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType8>,
             comms::option::FieldsImpl<typename Message8Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message8<TMessage> >,
+            comms::option::MsgType<Message8<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >;
 public:
@@ -641,22 +654,24 @@ struct Message9Fields
 
 };
 
-template <typename TMessage>
+template <typename TMessage, typename... TExtraOpts>
 class Message9 : public
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType9>,
             comms::option::FieldsImpl<typename Message9Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message9<TMessage> >,
+            comms::option::MsgType<Message9<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >
 {
     using Base =
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType9>,
             comms::option::FieldsImpl<typename Message9Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message9<TMessage> >,
+            comms::option::MsgType<Message9<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >;
 public:
@@ -704,13 +719,14 @@ struct Message10Fields
 
 };
 
-template <typename TMessage>
+template <typename TMessage, typename... TExtraOpts>
 class Message10 : public
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType10>,
             comms::option::FieldsImpl<typename Message10Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message10<TMessage> >,
+            comms::option::MsgType<Message10<TMessage, TExtraOpts...> >,
             comms::option::HasName,
             comms::option::FailOnInvalid<>
         >
@@ -718,9 +734,10 @@ class Message10 : public
     using Base =
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType10>,
             comms::option::FieldsImpl<typename Message10Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message10<TMessage> >,
+            comms::option::MsgType<Message10<TMessage, TExtraOpts...> >,
             comms::option::HasName,
             comms::option::FailOnInvalid<>
         >;
@@ -764,13 +781,14 @@ struct Message11Fields
 
 };
 
-template <typename TMessage>
+template <typename TMessage, typename... TExtraOpts>
 class Message11 : public
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType11>,
             comms::option::FieldsImpl<typename Message11Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message11<TMessage> >,
+            comms::option::MsgType<Message11<TMessage, TExtraOpts...> >,
             comms::option::HasName,
             comms::option::FailOnInvalid<>
         >
@@ -778,9 +796,10 @@ class Message11 : public
     using Base =
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType11>,
             comms::option::FieldsImpl<typename Message11Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message11<TMessage> >,
+            comms::option::MsgType<Message11<TMessage, TExtraOpts...> >,
             comms::option::HasName,
             comms::option::FailOnInvalid<>
         >;
@@ -824,22 +843,24 @@ struct Message90_1Fields
 
 };
 
-template <typename TMessage>
+template <typename TMessage, typename... TExtraOpts>
 class Message90_1 : public
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType90>,
             comms::option::FieldsImpl<typename Message90_1Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message90_1<TMessage> >,
+            comms::option::MsgType<Message90_1<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >
 {
     using Base =
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType90>,
             comms::option::FieldsImpl<typename Message90_1Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message90_1<TMessage> >,
+            comms::option::MsgType<Message90_1<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >;
 public:
@@ -884,22 +905,24 @@ struct Message90_2Fields
     >;
 };
 
-template <typename TMessage>
+template <typename TMessage, typename... TExtraOpts>
 class Message90_2 : public
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType90>,
             comms::option::FieldsImpl<typename Message90_2Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message90_2<TMessage> >,
+            comms::option::MsgType<Message90_2<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >
 {
     using Base =
         comms::MessageBase<
             TMessage,
+            TExtraOpts...,
             comms::option::StaticNumIdImpl<MessageType90>,
             comms::option::FieldsImpl<typename Message90_2Fields<typename TMessage::Field>::All>,
-            comms::option::MsgType<Message90_2<TMessage> >,
+            comms::option::MsgType<Message90_2<TMessage, TExtraOpts...> >,
             comms::option::HasName
         >;
 public:

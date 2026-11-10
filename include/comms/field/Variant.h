@@ -73,6 +73,7 @@ namespace field
 ///         default @ref comms::field::Variant::reset() "reset()" on destruction, assume
 ///         it is called by the extending class destructor.
 ///     @li @ref comms::option::def::VersionStorage - Add version storage.
+///     @li @ref comms::option::def::WritePadAlign
 /// @extends comms::Field
 /// @headerfile comms/field/Variant.h
 /// @see COMMS_VARIANT_MEMBERS_NAMES()
@@ -198,6 +199,13 @@ public:
     static constexpr bool hasReadAlign()
     {
         return ParsedOptions::HasReadAlign;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::WritePadAlign option
+    ///     has been used.
+    static constexpr bool hasWritePadAlign()
+    {
+        return ParsedOptions::HasWritePadAlign;
     }
 
     /// @brief Get access to the internal storage buffer.

@@ -52,6 +52,7 @@ public:
     static constexpr bool HasName = false;
     static constexpr bool HasFailOnInvalid = false;
     static constexpr bool HasReadAlign = false;
+    static constexpr bool HasWritePadAlign = false;
 
     using Fields = std::tuple<>;
     using MsgType = void;
@@ -96,6 +97,9 @@ public:
 
     template <typename TBase>
     using BuildReadAlignImpl = TBase;
+
+    template <typename TBase>
+    using BuildWritePadAlignImpl = TBase;
 };
 
 template <std::intmax_t TId,
@@ -537,6 +541,23 @@ public:
     template <typename TBase>
     using BuildReadAlignImpl =
         MessageImplReadAlignBase<TBase, typename BaseImpl::MsgType, TAlign>;
+};
+
+template <std::size_t TAlign, bool TWritePadInLength, typename... TOptions>
+class MessageImplOptionsParser<
+    comms::option::def::WritePadAlign<TAlign, TWritePadInLength>,
+    TOptions...> : public MessageImplOptionsParser<TOptions...>
+{
+    using BaseImpl = MessageImplOptionsParser<TOptions...>;
+
+public:
+    static constexpr std::size_t WritePadAlign = TAlign;
+    static constexpr bool WritePadInLength = TWritePadInLength;
+    static constexpr bool HasWritePadAlign = true;
+
+    template <typename TBase>
+    using BuildWritePadAlignImpl =
+        MessageImplWritePadAlignBase<TBase, typename BaseImpl::MsgType, TAlign, TWritePadInLength>;
 };
 
 template <typename... TOptions>

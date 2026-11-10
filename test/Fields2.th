@@ -68,6 +68,7 @@ public:
     void test39();
     void test40();
     void test41();
+    void test42();
 
     template <typename TFP>
     static constexpr TFP epsilon()
@@ -2318,6 +2319,47 @@ void FieldsTestSuite2::test41()
     static_assert(
         std::is_same<Field::Endian, comms::traits::endian::Big>::value || std::is_same<Field::Endian, comms::traits::endian::Little>::value,
         "System endian didn't work");
+}
+
+void FieldsTestSuite2::test42()
+{
+    typedef comms::field::String<
+        comms::Field<BigEndianOpt>,
+        comms::option::def::WritePadAlign<4, false>
+    > Field1;
+
+    typedef comms::field::String<
+        comms::Field<BigEndianOpt>,
+        comms::option::def::WritePadAlign<4, true>
+    > Field2;
+
+    static_assert(Field1::hasWritePadAlign(), "Option is not applied");
+    static_assert(Field2::hasWritePadAlign(), "Option is not applied");
+
+    static const char Buf[] = {
+        'h', 'e', 'l', 'l', 'o', 0x0, 0x0, 0x0
+    };
+    static const std::size_t BufSize = std::extent<decltype(Buf)>::value;
+
+    Field1 field1;
+    field1.value() = "hello";
+    TS_ASSERT_EQUALS(field1.length(), 5U);
+    std::string outBuf1(16, 'a');
+    char* writeIter1 = &outBuf1[0];
+    auto es = field1.write(writeIter1, outBuf1.size());
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS(static_cast<std::size_t>(std::distance(&outBuf1[0], writeIter1)), BufSize);
+    TS_ASSERT(std::equal(std::begin(Buf), std::end(Buf), outBuf1.begin()));
+
+    Field2 field2;
+    field2.value() = "hello";
+    TS_ASSERT_EQUALS(field2.length(), 8U);
+    std::string outBuf2(16, 'a');
+    char* writeIter2 = &outBuf2[0];
+    es = field2.write(writeIter2, outBuf2.size());
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS(static_cast<std::size_t>(std::distance(&outBuf2[0], writeIter2)), BufSize);
+    TS_ASSERT(std::equal(std::begin(Buf), std::end(Buf), outBuf2.begin()));
 }
 
 template <typename TField>

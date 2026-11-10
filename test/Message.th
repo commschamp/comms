@@ -61,6 +61,7 @@ public:
     void test39();
     void test40();
     void test41();
+    void test42();
 
 private:
 
@@ -2020,6 +2021,48 @@ void MessageTestSuite::test41()
     auto es = msg.read(readIter, BufSize - 1U);
     TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
     TS_ASSERT_EQUALS(msg.field_value1().value(), 0x0304);
+}
+
+void MessageTestSuite::test42()
+{
+    using TestMsg1 =
+        Message1<
+            BeMessageBase,
+            comms::option::def::WritePadAlign<4>
+        >;
+
+    static_assert(TestMsg1::hasWritePadAlign(), "WritePadAlign option hasn't been applied");
+
+    TestMsg1 msg1;
+    msg1.field_value1().setValue(0x0123);
+    TS_ASSERT_EQUALS(msg1.length(), 2U);
+
+    std::vector<std::uint8_t> outBuf1(16);
+    auto writeIter1 = comms::writeIteratorFor<TestMsg1>(&outBuf1[0]);
+    auto es = msg1.write(writeIter1, outBuf1.size());
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS(std::distance(comms::writeIteratorFor<TestMsg1>(&outBuf1[0]), writeIter1), 4);
+
+    using TestMsg2 =
+        Message9<
+            BeMessageBase,
+            comms::option::def::WritePadAlign<4, true>
+        >;
+
+    static_assert(TestMsg1::hasWritePadAlign(), "WritePadAlign option hasn't been applied");
+
+    TestMsg2 msg2;
+    msg2.field_f1().field_str().setValue("hello");
+    msg2.doRefresh();
+
+    TS_ASSERT_EQUALS(msg2.field_f1().length(), 6U);
+    TS_ASSERT_EQUALS(msg2.length(), 8);
+
+    std::vector<std::uint8_t> outBuf2(32);
+    auto writeIter2 = comms::writeIteratorFor<TestMsg1>(&outBuf2[0]);
+    es = msg2.write(writeIter2, outBuf2.size());
+    TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
+    TS_ASSERT_EQUALS(std::distance(comms::writeIteratorFor<TestMsg1>(&outBuf2[0]), writeIter2), 8);
 }
 
 template <typename TMessage>

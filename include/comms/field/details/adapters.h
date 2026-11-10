@@ -44,3 +44,4 @@
 #include "comms/field/adapter/VariantResetOnDestructAdapter.h"
 #include "comms/field/adapter/VarLengthAdapter.h"
 #include "comms/field/adapter/VersionStorageAdapter.h"
+#include "comms/field/adapter/WritePadAlignAdapter.h"

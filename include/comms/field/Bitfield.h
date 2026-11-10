@@ -86,7 +86,7 @@ namespace field
 ///     @li @ref comms::option::def::HasVersionDependentMembers
 ///     @li @ref comms::option::def::ReadAlign
 ///     @li @ref comms::option::def::VersionStorage
-
+///     @li @ref comms::option::def::WritePadAlign
 /// @pre TMember is a variant of std::tuple, that contains other fields.
 /// @pre Every field member specifies its length in bits using
 ///     @ref comms::option::def::FixedBitLength option.
@@ -208,6 +208,13 @@ public:
     static constexpr bool hasReadAlign()
     {
         return ParsedOptions::HasReadAlign;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::WritePadAlign option
+    ///     has been used.
+    static constexpr bool hasWritePadAlign()
+    {
+        return ParsedOptions::HasWritePadAlign;
     }
 
     /// @brief Retrieve number of bits specified member field consumes.

@@ -9,10 +9,12 @@
 
 #pragma once
 
+#include "comms/Assert.h"
 #include "comms/details/tag.h"
 #include "comms/ErrorStatus.h"
 #include "comms/field/basic/BasicCommonFuncs.h"
 #include "comms/field/details/FieldOpHelpers.h"
+#include "comms/util/access.h"
 #include "comms/util/Tuple.h"
 
 #include <cstddef>
@@ -916,6 +918,79 @@ public:
         }
 
         return ErrorStatus::NotEnoughData;
+    }
+};
+
+// ------------------------------------------------------
+
+template <typename TBase, typename TActual, std::size_t TAlign, bool TWritePadInLength>
+class MessageImplWritePadAlignBase : public TBase
+{
+    static constexpr auto Align = TAlign;
+    static_assert((Align & (Align - 1U)) == 0, "Alignment parameter is expected to be power of 2");
+    static const auto AlignMask = Align - 1U;
+    static const bool WritePadInLength = TWritePadInLength;
+
+public:
+    template <typename TIter>
+    comms::ErrorStatus doWrite(TIter& iter, std::size_t size) const
+    {
+        using IterType = typename std::decay<decltype(iter)>::type;
+        using IterCategory = typename std::iterator_traits<IterType>::iterator_category;
+        static_assert(std::is_base_of<std::random_access_iterator_tag, IterCategory>::value,
+            "Use random access iterators when using comms::option::def::WritePadAlign option");
+
+        auto fromIter = iter;
+        COMMS_ASSERT((!WritePadInLength) || ((reinterpret_cast<std::uintptr_t>(&(*iter)) & AlignMask) == 0));
+        auto es = TBase::doWrite(iter, size);
+        if (es != comms::ErrorStatus::Success) {
+            return es;
+        }
+
+        auto consumed = static_cast<std::size_t>(std::distance(fromIter, iter));
+        COMMS_ASSERT(consumed <= size);
+        while (consumed < size) {
+            if ((reinterpret_cast<std::uintptr_t>(&(*iter)) & AlignMask) == 0) {
+                return es;
+            }
+
+            comms::util::writeBig(std::uint8_t(0), iter);
+            ++consumed;
+        }
+
+        return ErrorStatus::BufferOverflow;
+    }
+
+    std::size_t doLength() const
+    {
+        using Tag =
+            typename comms::util::LazyShallowConditional<
+                WritePadInLength
+            >::template Type<
+                PadInLengthTag,
+                InheritedLengthTag
+            >;
+
+        return doLengthInternal(Tag());
+    }
+
+private:
+    template <typename... TParams>
+    using PadInLengthTag = comms::details::tag::Tag1<>;
+
+    template <typename... TParams>
+    using InheritedLengthTag = comms::details::tag::Tag2<>;
+
+    template <typename... TParams>
+    std::size_t doLengthInternal(PadInLengthTag<TParams...>) const
+    {
+        return static_cast<std::size_t>((TBase::doLength() + AlignMask) & static_cast<std::size_t>(~AlignMask));
+    }
+
+    template <typename... TParams>
+    std::size_t doLengthInternal(InheritedLengthTag<TParams...>) const
+    {
+        return TBase::doLength();
     }
 };
 

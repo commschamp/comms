@@ -63,6 +63,7 @@ namespace field
 ///         @ref comms::option::def::ValidBigUnsignedNumValueRange, @ref comms::option::def::ValidBigUnsignedNumValue
 ///     @li @ref comms::option::def::ValidRangesClear
 ///     @li @ref comms::option::def::VersionStorage
+///     @li @ref comms::option::def::WritePadAlign
 /// @extends comms::Field
 /// @headerfile comms/field/FloatValue.h
 template <typename TFieldBase, typename T, typename... TOptions>
@@ -166,6 +167,13 @@ public:
     static constexpr bool hasReadAlign()
     {
         return ParsedOptions::HasReadAlign;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::WritePadAlign option
+    ///     has been used.
+    static constexpr bool hasWritePadAlign()
+    {
+        return ParsedOptions::HasWritePadAlign;
     }
 
     /// @brief Get access to floating point value storage.

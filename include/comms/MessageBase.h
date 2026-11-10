@@ -73,6 +73,8 @@ namespace comms
 ///         @ref comms::option::def::MsgType.
 ///     @li @ref comms::option::def::HasName - Notify @ref comms::MessageBase that
 ///             there is custom doName() member function in the message definition class.
+///     @li @ref comms::option::def::ReadAlign - Force adjustment of the read iterator to aligned address @b before performing read operation
+///     @li @ref comms::option::def::WritePadAlign - Oad the output buffer to force write iterator to an aligned address @b after performing write operation
 ///     @li @ref comms::option::def::FailOnInvalid - Fail the read operation if the contents are invalid.
 ///     @li @ref comms::option::app::NoReadImpl - Inhibit the implementation of readImpl().
 ///     @li @ref comms::option::app::NoWriteImpl - Inhibit the implementation of writeImpl().
@@ -204,6 +206,13 @@ public:
     static constexpr bool hasReadAlign()
     {
         return ImplOptions::HasReadAlign;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::ReadAlign option
+    ///     has been used.
+    static constexpr bool hasWritePadAlign()
+    {
+        return ImplOptions::HasWritePadAlign;
     }
 
 #ifdef FOR_DOXYGEN_DOC_ONLY

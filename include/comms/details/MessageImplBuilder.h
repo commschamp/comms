@@ -66,8 +66,11 @@ class MessageImplBuilder
     using ReadAlignBase =
         typename ParsedOptions::template BuildReadAlignImpl<PolymorphicStaticNumIdBase>;
 
+    using WritePadAlignBase =
+        typename ParsedOptions::template BuildWritePadAlignImpl<ReadAlignBase>;
+
     using NameBase =
-        typename ParsedOptions::template BuildNameImpl<ReadAlignBase>;
+        typename ParsedOptions::template BuildNameImpl<WritePadAlignBase>;
 
 public:
     using Options = ParsedOptions;

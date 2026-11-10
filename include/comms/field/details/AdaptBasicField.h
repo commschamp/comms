@@ -235,8 +235,11 @@ class AdaptBasicField
     using ReadAlignAdapted =
         typename ParsedOptions::template AdaptReadAlign<FixedValueAdapted>;
 
+    using WritePadAlignAdapted =
+        typename ParsedOptions::template AdaptWritePadAlign<ReadAlignAdapted>;
+
 public:
-    using Type = ReadAlignAdapted;
+    using Type = WritePadAlignAdapted;
 };
 
 template <typename TBasic, typename... TOptions>

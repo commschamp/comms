@@ -189,11 +189,10 @@ using ArrayListBase =
 ///     @li @ref comms::option::def::SequenceTerminationFieldSuffix
 ///     @li @ref comms::option::def::SequenceTrailingFieldSuffix
 ///     @li @ref comms::option::def::VersionStorage
+///     @li @ref comms::option::def::WritePadAlign
 ///     @li @ref comms::option::app::CustomStorageType
 ///     @li @ref comms::option::app::FixedSizeStorage
-///     @li @ref comms::option::app::OrigDataView (valid only if TElement is integral type
-///         of 1 byte size.
-
+///     @li @ref comms::option::app::OrigDataView (valid only if TElement is integral type of 1 byte size.
 /// @extends comms::Field
 /// @headerfile comms/field/ArrayList.h
 template <typename TFieldBase, typename TElement, typename... TOptions>
@@ -381,6 +380,13 @@ public:
     static constexpr bool hasReadAlign()
     {
         return ParsedOptions::HasReadAlign;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::WritePadAlign option
+    ///     has been used.
+    static constexpr bool hasWritePadAlign()
+    {
+        return ParsedOptions::HasWritePadAlign;
     }
 
     /// @brief Compile time inquiry of fixed size provided via @ref comms::option::def::SequenceFixedSize option.

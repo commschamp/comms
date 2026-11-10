@@ -162,6 +162,7 @@ using StringBase =
 ///     @li @ref comms::option::app::FixedSizeStorage
 ///     @li @ref comms::option::app::OrigDataView
 ///     @li @ref comms::option::def::ReadAlign
+///     @li @ref comms::option::def::WritePadAlign
 /// @extends comms::Field
 /// @headerfile comms/field/String.h
 template <typename TFieldBase, typename... TOptions>
@@ -330,6 +331,13 @@ public:
     static constexpr bool hasReadAlign()
     {
         return ParsedOptions::HasReadAlign;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::WritePadAlign option
+    ///     has been used.
+    static constexpr bool hasWritePadAlign()
+    {
+        return ParsedOptions::HasWritePadAlign;
     }
 
     /// @brief Compile time inquiry of fixed size provided via @ref comms::option::def::SequenceFixedSize option.

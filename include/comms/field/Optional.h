@@ -47,6 +47,7 @@ namespace field
 ///     @li @ref comms::option::def::MissingOnReadFail
 ///     @li @ref comms::option::def::ReadAlign
 ///     @li @ref comms::option::def::VersionStorage
+///     @li @ref comms::option::def::WritePadAlign
 /// @extends comms::Field
 /// @headerfile comms/field/Optional.h
 template <typename TField, typename... TOptions>
@@ -161,6 +162,13 @@ public:
     static constexpr bool hasReadAlign()
     {
         return ParsedOptions::HasReadAlign;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::WritePadAlign option
+    ///     has been used.
+    static constexpr bool hasWritePadAlign()
+    {
+        return ParsedOptions::HasWritePadAlign;
     }
 
     /// @brief Check whether mode is equivalent to Mode::Tentative

@@ -98,6 +98,7 @@ using BitmaskUndertlyingTypeT =
 ///     @li @ref comms::option::def::IgnoreInvalid
 ///     @li @ref comms::option::def::ReadAlign
 ///     @li @ref comms::option::def::VersionStorage
+///     @li @ref comms::option::def::WritePadAlign
 /// @extends comms::Field
 /// @headerfile comms/field/BitmaskValue.h
 /// @see #COMMS_BITMASK_BITS()
@@ -215,6 +216,13 @@ public:
     static constexpr bool hasReadAlign()
     {
         return ParsedOptions::HasReadAlign;
+    }
+
+    /// @brief Compile time inquiry of whether @ref comms::option::def::WritePadAlign option
+    ///     has been used.
+    static constexpr bool hasWritePadAlign()
+    {
+        return ParsedOptions::HasWritePadAlign;
     }
 
     /// @brief Get access to underlying mask value storage.

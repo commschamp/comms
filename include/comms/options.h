@@ -1286,6 +1286,15 @@ struct ReadAlign {
     static_assert((TAlign & (TAlign - 1U)) == 0, "Alignment parameter is expected to be power of 2");
 };
 
+/// @brief Option used to pad the output buffer to force write iterator to an aligned address @b after performing write operation
+/// @tparam TAlign Alignment, expected to be power of 2.
+/// @tparam TWritePadInLength A flag that defines whether the padding is included in the field / message length calculation
+/// @pre When TWritePadInLength is @b true the field / message class using this option is expected to start write on the aligned address.
+template <std::size_t TAlign, bool TWritePadInLength = false>
+struct WritePadAlign {
+    static_assert((TAlign & (TAlign - 1U)) == 0, "Alignment parameter is expected to be power of 2");
+};
+
 } // namespace def
 
 namespace app
