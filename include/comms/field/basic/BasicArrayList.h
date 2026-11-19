@@ -716,7 +716,7 @@ private:
                 readElementNoStatus(elem, iter);
             }
             else {
-                ElementType elem;
+                auto elem = ElementType();
                 readElementNoStatus(elem, iter);
             }
             --count;
@@ -797,7 +797,7 @@ private:
             return es;
         }
 
-        ElementType elem;
+        auto elem = ElementType();
         return readElement(elem, iter, len);
     }
 
